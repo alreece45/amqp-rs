@@ -56,8 +56,12 @@ impl<'a> Parser<'a> {
                 }
             }
 
-            let name = try!(name.ok_or(ParseError::ExpectedAttribute("constant".into(), "name".into())));
-            let value = try!(value.ok_or(ParseError::ExpectedAttribute("constant".into(), "value".into())));
+            let name = try!(name.ok_or_else(|| {
+                ParseError::ExpectedAttribute("constant".into(), "name".into())
+            }));
+            let value = try!(value.ok_or_else(|| {
+                ParseError::ExpectedAttribute("constant".into(), "value".into())
+            }));
 
             Ok(Parser::Idle(Constant {
                 name: name.into(),

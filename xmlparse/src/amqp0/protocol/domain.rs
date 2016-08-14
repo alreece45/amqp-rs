@@ -50,8 +50,12 @@ impl<'a> Parser<'a> {
                 };
             }
 
-            let name = try!(name.ok_or(ParseError::ExpectedAttribute("field".into(), "name".into())));
-            let mapping = try!(mapping.ok_or(ParseError::ExpectedAttribute("field".into(), "domain".into())));
+            let name = try!(name.ok_or_else(|| {
+                ParseError::ExpectedAttribute("field".into(), "name".into())
+            }));
+            let mapping = try!(mapping.ok_or_else(|| {
+                ParseError::ExpectedAttribute("field".into(), "domain".into())
+            }));
 
             Ok(Parser::Idle(Domain {
                 name: name.into(),
