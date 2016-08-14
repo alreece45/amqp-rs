@@ -33,8 +33,8 @@ impl<'a> WriteRust<Protocol<'a>> for Unified<'a> {
             .map(|(response_type, constants)| {
                 let name = response_type.name().to_pascal_case();
                 if constants.len() > 1 {
-                    let module = response_type.name().to_snake_case();
-                    try!(writeln!(writer, "{}(self::{}::Type),", name, module));
+                    let inner = response_type.name().to_pascal_case();
+                    try!(writeln!(writer, "{}({}Type),", name, inner));
                 } else if constants.len() == 1 {
                     try!(writeln!(writer, "{},", name));
                 }
