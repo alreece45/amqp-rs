@@ -29,7 +29,7 @@ impl<'a, 'b: 'a> WriteRust<Protocol<'b>> for Class<'a, 'b> {
     {
         let module_name = match self.0.name().to_snake_case() {
             ref name if name == "tx" => Cow::Borrowed("transaction"),
-            name => Cow::Owned(name)
+            name => Cow::Owned(name),
         };
         try!(writeln!(writer, "pub mod {} {{", module_name));
         {

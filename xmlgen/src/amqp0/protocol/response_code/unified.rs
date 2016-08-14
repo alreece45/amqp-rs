@@ -17,7 +17,7 @@ use super::Group;
 pub struct Unified<'a>(&'a Group<'a>);
 
 impl<'a> Unified<'a> {
-    pub fn new(group: &'a Group) -> Self{
+    pub fn new(group: &'a Group) -> Self {
         Unified(group)
     }
 }
@@ -35,8 +35,7 @@ impl<'a> WriteRust<Protocol<'a>> for Unified<'a> {
                 if constants.len() > 1 {
                     let module = response_type.name().to_snake_case();
                     try!(writeln!(writer, "{}(self::{}::Type),", name, module));
-                }
-                else if constants.len() == 1 {
+                } else if constants.len() == 1 {
                     try!(writeln!(writer, "{},", name));
                 }
                 Ok(())
