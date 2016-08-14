@@ -1,0 +1,26 @@
+[package]
+name = "xmlspec"
+version = "0.1.0"
+authors = ["Alexander Reece <github@reece45.com>"]
+build = "build.rs"
+
+[features]
+default = []
+
+[build-dependencies]
+env_logger = "0.3"
+log = "0.3"
+amqp-xmlgen = { path = "../xmlgen", version = "0.0.1" }
+amqp-xmlparse = { path = "../xmlparse", version = "0.0.1" }
+
+[build-dependencies.rustfmt]
+git = "https://github.com/rust-lang-nursery/rustfmt"
+rev = "69f647b9f1bc53b97577137da11c37213a44d1fd"
+
+[build-dependencies.clippy]
+version = "*"
+optional = true
+
+[dependencies.clippy]
+version = "*"
+optional = true

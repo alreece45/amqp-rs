@@ -1,0 +1,34 @@
+
+{% for constant in ungrouped_constants %}
+pub const {{ constant.name }}: {{ constant.type }} = {{ constant.value }};
+{% endfor %}
+
+{% for constant in frame_constants %}
+pub const {{ constant.name }}: {{ constant.type }} = {{ constant.value }};
+{% endfor %}
+
+#[derive(Debug)]
+pub enum FrameType {
+    {% for constant in frame_constants %}
+    {{ constant.enum_name }},
+    {% endfor %}
+}
+
+impl FrameType {
+    pub fn from_id(id: u16) -> Option<FrameType> {
+        match id {
+            {% for constant in frame_constants %}
+            constant.name => Some(FrameType::{{ constant.enum_name }},
+            {% endfor %}
+            _ => None,
+        }
+    }
+}
+
+{% for group in response_type_groups %}
+pub enum {{ group.name }} {
+    {% for constant in group.constants %}
+    constant.enum_name
+    {% endfor %}
+}
+{% endfor %}
