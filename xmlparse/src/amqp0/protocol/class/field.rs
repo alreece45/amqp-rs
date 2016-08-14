@@ -54,9 +54,12 @@ impl<'a> Parser<'a> {
                 };
             }
 
-            let name = try!(name.ok_or(ParseError::ExpectedAttribute("field".into(), "name".into())));
-            let domain =
-            try!(domain.ok_or(ParseError::ExpectedAttribute("field".into(), "domain".into())));
+            let name = try!(name.ok_or_else(|| {
+                ParseError::ExpectedAttribute("field".into(), "name".into())
+            }));
+            let domain = try!(domain.ok_or_else(|| {
+                ParseError::ExpectedAttribute("field".into(), "domain".into())
+            }));
 
             Ok(Parser::Idle(Field {
                 name: name.into(),
@@ -74,9 +77,7 @@ impl<'a> Parser<'a> {
         Ok(match self {
             Parser::Idle(argument) => {
                 match *event {
-                    XmlEvent::StartElement { .. } => {
-                        Parser::Void(argument, VoidParser::new())
-                    }
+                    XmlEvent::StartElement { .. } => Parser::Void(argument, VoidParser::new()),
                     XmlEvent::EndElement { .. } => Parser::Finished(argument),
                     _ => Parser::Idle(argument),
                 }

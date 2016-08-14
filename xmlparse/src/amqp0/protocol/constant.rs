@@ -63,12 +63,10 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse(self, event: &XmlEvent) -> Result<Self, ParseError> {
-        Ok (match self {
+        Ok(match self {
             Parser::Idle(argument) => {
                 match *event {
-                    XmlEvent::StartElement { .. } => {
-                        Parser::Void(argument, VoidParser::new())
-                    }
+                    XmlEvent::StartElement { .. } => Parser::Void(argument, VoidParser::new()),
                     XmlEvent::EndElement { .. } => Parser::Finished(argument),
                     _ => Parser::Idle(argument),
                 }

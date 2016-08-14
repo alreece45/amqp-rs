@@ -60,8 +60,13 @@ impl<'a> Parser<'a> {
                 }
             }
 
-            let name = try!(name.ok_or(ParseError::ExpectedAttribute("method".into(), "name".into())));
-            let index = try!(index.ok_or(ParseError::ExpectedAttribute("field".into(), "index".into())));
+            let name = try!(name.ok_or_else(|| {
+                ParseError::ExpectedAttribute("method".into(), "name".into())
+            }));
+            let index = try!(index.ok_or_else(|| {
+                ParseError::ExpectedAttribute("field".into(), "index".into())
+            }));
+
             Ok(Parser::Idle(Class {
                 name: name.into(),
                 index: index.into(),
@@ -76,13 +81,12 @@ impl<'a> Parser<'a> {
         Ok(match self {
             Parser::Idle(class) => {
                 match *event {
-                    XmlEvent::StartElement { name: ref element, .. } if element.local_name ==
-                        "method" => {
-                        trace!(" > Method {} ", element.local_name);
+                    XmlEvent::StartElement { name: ref el, .. } if el.local_name == "method" => {
+                        trace!(" > Method {} ", el.local_name);
                         Parser::Method(class, try!(MethodParser::from_xml_event(&event)))
                     }
-                    XmlEvent::StartElement { name: ref element, .. } => {
-                        trace!(" > Ignored Element {} ", element.local_name);
+                    XmlEvent::StartElement { name: ref el, .. } => {
+                        trace!(" > Ignored Element {} ", el.local_name);
                         Parser::Void(class, VoidParser::new())
                     }
                     XmlEvent::EndElement { .. } => Parser::Finished(class),

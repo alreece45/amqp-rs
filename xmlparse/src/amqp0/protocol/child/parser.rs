@@ -23,7 +23,7 @@ impl<'a> Parser<'a> {
                     Ok(child) => Parser::Finished(child.into()),
                     Err(parser) => Parser::Parsing(parser),
                 })
-            },
+            }
             _ => Err(ParseError::ExpectedEnd),
         }
     }

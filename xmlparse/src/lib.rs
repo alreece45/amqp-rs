@@ -6,4 +6,3 @@
 extern crate xml;
 
 pub mod amqp0;
-

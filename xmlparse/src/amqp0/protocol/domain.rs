@@ -31,7 +31,7 @@ impl<'a> Parser<'a> {
     pub fn from_xml_event(event: &XmlEvent) -> Result<Self, ParseError> {
         if let XmlEvent::StartElement { name: ref e, ref attributes, .. } = *event {
             if e.local_name != "domain" {
-                return Err(ParseError::ExpectedElementStart("domain".into()))
+                return Err(ParseError::ExpectedElementStart("domain".into()));
             }
 
             let (mut name, mut mapping) = (None, None);
@@ -50,8 +50,7 @@ impl<'a> Parser<'a> {
                 name: name.into(),
                 mapping: mapping.into(),
             }))
-        }
-        else {
+        } else {
             Err(ParseError::ExpectedElementStart("field".into()))
         }
     }
@@ -60,9 +59,7 @@ impl<'a> Parser<'a> {
         Ok(match self {
             Parser::Idle(domain) => {
                 match *event {
-                    XmlEvent::StartElement { .. } => {
-                        Parser::Void(domain, VoidParser::new())
-                    }
+                    XmlEvent::StartElement { .. } => Parser::Void(domain, VoidParser::new()),
                     XmlEvent::EndElement { .. } => Parser::Finished(domain),
                     _ => Parser::Idle(domain),
                 }

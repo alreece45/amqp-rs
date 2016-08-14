@@ -54,7 +54,9 @@ impl<'a> Parser<'a> {
             Parser::Start(protocol) => {
                 match *event {
                     XmlEvent::StartDocument { .. } => Parser::Start(protocol),
-                    XmlEvent::StartElement { name: ref e, .. } if e.local_name == "amqp" => Parser::Idle(protocol),
+                    XmlEvent::StartElement { name: ref e, .. } if e.local_name == "amqp" => {
+                        Parser::Idle(protocol)
+                    }
                     _ => return Err(ParseError::ExpectedAmqpRoot),
                 }
             },
@@ -63,30 +65,35 @@ impl<'a> Parser<'a> {
             Parser::Idle(protocol) => {
                 match *event {
                     XmlEvent::StartElement { name: ref e, .. } => {
-                        Parser::Child(protocol, ChildParser::new(match e.local_name.as_str() {
-                            "class" => try!(ClassParser::from_xml_event(event)).into(),
+                        let child_parser = match e.local_name.as_str() {
+                            "class"    => try!(ClassParser::from_xml_event(event)).into(),
                             "constant" => try!(ConstantParser::from_xml_event(event)).into(),
-                            "domain" => try!(DomainParser::from_xml_event(event)).into(),
-                            _ => VoidParser::new    ().into(),
-                        }))
+                            "domain"   => try!(DomainParser::from_xml_event(event)).into(),
+                            _ => VoidParser::new().into(),
+                        };
+                        Parser::Child(protocol, ChildParser::new(child_parser))
                     },
                     XmlEvent::EndDocument => Parser::Finished(protocol),
                     _ => Parser::Idle(protocol),
                 }
             },
             // Child
-            Parser::Child(mut protocol, parser) => match try!(parser.parse(event)) {
-                ChildParser::Finished(child) => {
-                    if let Some(child) = child {
-                        match child {
-                            Child::Class(class) => protocol.classes.push(class),
-                            Child::Constant(constant) => protocol.constants.push(constant),
-                            Child::Domain(domain) => { protocol.domains.insert(domain.name().to_string(), domain); },
+            Parser::Child(mut protocol, parser) => {
+                match try!(parser.parse(event)) {
+                    ChildParser::Finished(child) => {
+                        if let Some(child) = child {
+                            match child {
+                                Child::Class(class) => protocol.classes.push(class),
+                                Child::Constant(constant) => protocol.constants.push(constant),
+                                Child::Domain(domain) => {
+                                    protocol.domains.insert(domain.name().to_string(), domain);
+                                },
+                            }
                         }
+                        Parser::Idle(protocol)
                     }
-                    Parser::Idle(protocol)
-                },
-                parser => Parser::Child(protocol, parser),
+                    parser => Parser::Child(protocol, parser),
+                }
             },
             // End
             Parser::Finished(_) => return Err(ParseError::ExpectedEnd),
@@ -97,8 +104,10 @@ impl<'a> Parser<'a> {
 impl<'a> From<Parser<'a>> for Protocol<'a> {
     fn from(parser: Parser<'a>) -> Protocol<'a> {
         match parser {
-            Parser::Start(p) | Parser::Idle(p)
-                | Parser::Child(p, _) | Parser::Finished(p) => p,
+            Parser::Start(p)
+             | Parser::Idle(p)
+             | Parser::Child(p, _)
+             | Parser::Finished(p) => p,
         }
     }
 }

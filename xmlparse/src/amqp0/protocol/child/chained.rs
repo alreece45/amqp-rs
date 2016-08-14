@@ -25,22 +25,30 @@ impl<'a> Parser<'a> {
 
     pub fn child(self) -> Result<Option<Child<'a>>, Self> {
         match self {
-            Parser::Void(parser) => match parser {
-                VoidParser::Finished => Ok(None),
-                parser               => Err(Parser::Void(parser)),
-            },
-            Parser::Constant(parser) => match parser {
-                ConstantParser::Finished(c) => Ok(Some(c.into())),
-                parser                      => Err(Parser::Constant(parser)),
-            },
-            Parser::Domain(parser) => match parser {
-                DomainParser::Finished(d) => Ok(Some(d.into())),
-                parser                    => Err(Parser::Domain(parser)),
-            },
-            Parser::Class(parser) => match parser {
-                ClassParser::Finished(c) => Ok(Some(c.into())),
-                parser                   => Err(Parser::Class(parser)),
-            },
+            Parser::Void(parser) => {
+                match parser {
+                    VoidParser::Finished => Ok(None),
+                    parser => Err(Parser::Void(parser)),
+                }
+            }
+            Parser::Constant(parser) => {
+                match parser {
+                    ConstantParser::Finished(c) => Ok(Some(c.into())),
+                    parser => Err(Parser::Constant(parser)),
+                }
+            }
+            Parser::Domain(parser) => {
+                match parser {
+                    DomainParser::Finished(d) => Ok(Some(d.into())),
+                    parser => Err(Parser::Domain(parser)),
+                }
+            }
+            Parser::Class(parser) => {
+                match parser {
+                    ClassParser::Finished(c) => Ok(Some(c.into())),
+                    parser => Err(Parser::Class(parser)),
+                }
+            }
         }
     }
 

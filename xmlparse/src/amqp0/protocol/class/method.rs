@@ -67,8 +67,12 @@ impl<'a> Parser<'a> {
                 }
             }
 
-            let name = try!(name.ok_or(ParseError::ExpectedAttribute("method".into(), "name".into())));
-            let index = try!(index.ok_or(ParseError::ExpectedAttribute("field".into(), "index".into())));
+            let name = try!(name.ok_or_else(|| {
+                ParseError::ExpectedAttribute("method".into(), "name".into())
+            }));
+            let index = try!(index.ok_or_else(|| {
+                ParseError::ExpectedAttribute("field".into(), "index".into())
+            }));
             Ok(Parser::Idle(Method::new(name, index, is_synchronous)))
         } else {
             Err(ParseError::ExpectedElementStart("method".into()))

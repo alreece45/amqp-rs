@@ -28,7 +28,7 @@ impl VoidParser {
                     XmlEvent::StartElement { .. } => VoidParser::Parsing(depth + 1),
                     XmlEvent::EndElement { .. } if depth == 0 => VoidParser::Finished,
                     XmlEvent::EndElement { .. } => VoidParser::Parsing(depth - 1),
-                    _ => self
+                    _ => self,
                 }
             }
             VoidParser::Finished => return Err(ParseError::ExpectedEnd),
@@ -81,4 +81,3 @@ impl<'a> From<XmlError> for ParseError {
         ParseError::Xml(e)
     }
 }
-
