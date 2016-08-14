@@ -1,1 +1,0 @@
-initSidebarItems({"constant":[["TYPE_ACCESS_REFUSED",""],["TYPE_NOT_FOUND",""],["TYPE_PATH_INVALID",""],["TYPE_RESOURCE_LOCKED",""]],"enum":[["Type",""]]});

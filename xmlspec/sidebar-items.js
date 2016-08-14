@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["amqp0_8_0",""],["amqp0_9_0",""],["amqp0_9_1",""],["qpid0_10_0",""],["qpid0_8_0",""],["rabbitmq0_9_1",""]]});

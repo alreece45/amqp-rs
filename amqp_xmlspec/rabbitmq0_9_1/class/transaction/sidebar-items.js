@@ -1,1 +1,0 @@
-initSidebarItems({"constant":[["METHOD_COMMIT",""],["METHOD_COMMIT_OK",""],["METHOD_ROLLBACK",""],["METHOD_ROLLBACK_OK",""],["METHOD_SELECT",""],["METHOD_SELECT_OK",""]],"struct":[["Commit",""],["CommitOk",""],["Rollback",""],["RollbackOk",""],["Select",""],["SelectOk",""]]});

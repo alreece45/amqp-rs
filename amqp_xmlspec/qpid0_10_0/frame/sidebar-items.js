@@ -1,1 +1,0 @@
-initSidebarItems({"constant":[["TYPE_BODY",""],["TYPE_HEADER",""],["TYPE_HEARTBEAT",""],["TYPE_METHOD",""],["TYPE_OOB_BODY",""],["TYPE_OOB_HEADER",""],["TYPE_OOB_METHOD",""],["TYPE_TRACE",""]],"enum":[["Type",""]]});
