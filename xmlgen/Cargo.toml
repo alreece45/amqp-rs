@@ -1,0 +1,21 @@
+[package]
+name = "amqp-xmlgen"
+version = "0.0.1"
+authors = ["Alexander Reece <github@reece45.com>"]
+
+[lib]
+name = "amqp_xmlgen"
+path = "src/lib.rs"
+
+[features]
+default = []
+
+[dependencies]
+amqp-xmlparse = { version = "0.0.1", path = "../xmlparse" }
+inflections = "1.0.0"
+log = "0.3"
+xml-rs = "0.3.4"
+
+[dependencies.clippy]
+version = "*"
+optional = true
