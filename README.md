@@ -1,3 +1,8 @@
+#amqp-rs
+
+AMQP specification parser, code generation, and generated spec crates.
+
+Still in early stages: experimental and under development.
 
 ## License
 
