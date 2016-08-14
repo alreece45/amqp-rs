@@ -10,12 +10,10 @@ default = []
 [build-dependencies]
 env_logger = "0.3"
 log = "0.3"
+rustfmt = "0.6.0"
+
 amqp-xmlgen = { path = "../xmlgen", version = "0.0.1" }
 amqp-xmlparse = { path = "../xmlparse", version = "0.0.1" }
-
-[build-dependencies.rustfmt]
-git = "https://github.com/rust-lang-nursery/rustfmt"
-rev = "69f647b9f1bc53b97577137da11c37213a44d1fd"
 
 [build-dependencies.clippy]
 version = "*"
