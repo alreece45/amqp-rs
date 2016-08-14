@@ -33,7 +33,7 @@ impl<'a, 'b: 'a> WriteRust<Protocol<'b>> for Class<'a, 'b> {
         };
         try!(writeln!(writer, "pub mod {} {{", module_name));
         {
-            try!(self.0.methods()
+            try!(self.0.methods().iter()
                 .map(|m| {
                     let ty = protocol.map_domain("method-id");
                     let value = try!(protocol.map_value(&ty, m.index()));
@@ -47,7 +47,7 @@ impl<'a, 'b: 'a> WriteRust<Protocol<'b>> for Class<'a, 'b> {
                 .map(|_| ())
             );
 
-                try!(self.0.methods()
+            try!(self.0.methods().iter()
                 .map(|m| {
                     let name = m.name().to_pascal_case();
                     if m.fields().len() > 0 {

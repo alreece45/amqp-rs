@@ -7,7 +7,6 @@
 // except according to those terms.
 
 use std::borrow::Cow;
-use std::slice::Iter;
 use xml::reader::XmlEvent;
 
 use amqp0::{ParseError, VoidParser};
@@ -29,17 +28,8 @@ impl<'a> Class<'a> {
         &self.index
     }
 
-    pub fn methods(&'a self) -> Methods<'a> {
-        Methods(self.methods.iter())
-    }
-}
-
-pub struct Methods<'a>(Iter<'a, Method<'a>>);
-
-impl<'a> Iterator for Methods<'a> {
-    type Item = &'a Method<'a>;
-    fn next(&mut self) -> Option<Self::Item> {
-        self.0.next()
+    pub fn methods(&'a self) -> &Vec<Method<'a>> {
+        &self.methods
     }
 }
 
