@@ -9,7 +9,15 @@ name = "amqp_xmlspec"
 path = "src/lib.rs"
 
 [features]
-default = []
+default = ["amqp", "0.9.1"]
+all = []
+all0 = []
+amqp = []
+rabbitmq = []
+qpid = []
+"0.9.1" = []
+"0.9" = []
+"0.8" = []
 
 [build-dependencies]
 env_logger = "0.3"

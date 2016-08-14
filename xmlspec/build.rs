@@ -27,14 +27,7 @@ fn main() {
     let cwd = env::current_dir().expect("Unable to get current directory");
     let protocols_dir = cwd.join("protocols");
 
-    let amqp0_specs = vec![
-        ("amqp0-9-1.stripped.xml",          "amqp-0.9.1"),
-        ("amqp0-9.stripped.xml",            "amqp-0.9.0"),
-        ("amqp0-8.stripped.xml",            "amqp-0.8.0"),
-        ("amqp0-9-1.stripped.rabbitmq.xml", "rabbitmq-0.9.1"),
-        ("amqp0-9-qpid.stripped.xml",       "qpid-0.9"),
-        ("amqp0-8-qpid.stripped.xml",       "qpid-0.8"),
-    ];
+    let amqp0_specs = amqp0_specs();
 
     println!("Iterating over amqp0_specs");
     let paths = amqp0_specs.into_iter()
@@ -69,6 +62,63 @@ fn main() {
         if cfg!(feature = "rustfmt") {
             format_files(paths.into_iter())
         }
+}
+
+fn amqp0_specs() -> Vec<(&'static str, &'static str)> {
+    let compile_all = cfg!(feature = "all0") || cfg!(feature = "all");
+    let spec_count = if compile_all {
+        6
+    } else {
+        let mut count = 0;
+        if cfg!(feature = "amqp") || compile_all{
+            if cfg!(feature = "0.9.1") || compile_all {
+                count += 1
+            }
+            if cfg!(feature = "0.9") || compile_all{
+                count += 1
+            }
+            if cfg!(feature = "0.8") || compile_all{
+                count += 1
+            }
+        }
+        if (cfg!(feature = "rabbitmq") && cfg!(feature = "0.9.1")) || compile_all {
+            count += 1
+        }
+        if cfg!(feature = "qpid") || compile_all {
+            if cfg!(feature = "0.9") || compile_all {
+                count += 1
+            }
+            if cfg!(feature = "0.8") || compile_all {
+                count += 1
+            }
+        }
+        count
+    };
+
+    let mut specs = Vec::with_capacity(spec_count);
+    if cfg!(feature = "amqp") || compile_all{
+        if cfg!(feature = "0.9.1") || compile_all {
+            specs.push(("amqp0-9-1.stripped.xml", "amqp-0.9.1"));
+        }
+        if cfg!(feature = "0.9") || compile_all{
+            specs.push(("amqp0-9.stripped.xml", "amqp-0.9.0"));
+        }
+        if cfg!(feature = "0.8") || compile_all{
+            specs.push(("amqp0-8.stripped.xml", "amqp-0.8.0"));
+        }
+    }
+    if (cfg!(feature = "rabbitmq") && cfg!(feature = "0.9.1")) || compile_all {
+        specs.push(("amqp0-9-1.stripped.rabbitmq.xml", "rabbitmq-0.9.1"));
+    }
+    if cfg!(feature = "qpid") || compile_all{
+        if cfg!(feature = "0.9") || compile_all {
+            specs.push(("amqp0-9-qpid.stripped.xml", "qpid-0.9"));
+        }
+        if cfg!(feature = "0.8") || compile_all {
+            specs.push(("amqp0-8-qpid.stripped.xml", "qpid-0.8"));
+        }
+    }
+    specs
 }
 
 #[cfg(not(feature = "rustfmt"))]
