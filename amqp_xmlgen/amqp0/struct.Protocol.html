@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Protocol` struct in crate `amqp_xmlgen`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Protocol">
+
+    <title>amqp_xmlgen::amqp0::Protocol - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>amqp_xmlgen</a>::<wbr><a href='index.html'>amqp0</a></p><script>window.sidebarCurrent = {name: 'Protocol', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>amqp_xmlgen</a>::<wbr><a href='index.html'>amqp0</a>::<wbr><a class='struct' href=''>Protocol</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-572' class='srclink' href='../../src/amqp_xmlgen/src/amqp0/protocol/protocol.rs.html#10' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Protocol&lt;'a&gt;(_);</pre><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='struct' href='../../amqp_xmlgen/amqp0/struct.Protocol.html' title='amqp_xmlgen::amqp0::Protocol'>Protocol</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a id='src-576' class='srclink' href='../../src/amqp_xmlgen/src/amqp0/protocol/protocol.rs.html#19-135' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(protocol: <a class='struct' href='../../amqp_xmlparse/amqp0/protocol/protocol/struct.Protocol.html' title='amqp_xmlparse::amqp0::protocol::protocol::Protocol'>Protocol</a>&lt;'a&gt;) -&gt; Self</code></h4>
+<h4 id='method.parsed_protocol' class='method'><code>fn <a href='#method.parsed_protocol' class='fnname'>parsed_protocol</a>&lt;'_self&gt;(&amp;'_self self) -&gt; &amp;'_self <a class='struct' href='../../amqp_xmlparse/amqp0/protocol/protocol/struct.Protocol.html' title='amqp_xmlparse::amqp0::protocol::protocol::Protocol'>Protocol</a>&lt;'a&gt;</code></h4>
+<h4 id='method.map_constant' class='method'><code>fn <a href='#method.map_constant' class='fnname'>map_constant</a>&lt;'c&gt;(&amp;self, constant: &amp;'c <a class='struct' href='../../amqp_xmlparse/amqp0/protocol/constant/struct.Constant.html' title='amqp_xmlparse::amqp0::protocol::constant::Constant'>Constant</a>&lt;'c&gt;) -&gt; Constant&lt;'c&gt;</code></h4>
+<h4 id='method.map_domain' class='method'><code>fn <a href='#method.map_domain' class='fnname'>map_domain</a>&lt;'b,&nbsp;D&gt;(&amp;self, domain: D) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/collections/borrow/enum.Cow.html' title='collections::borrow::Cow'>Cow</a>&lt;'a,&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt; <span class='where'>where D: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/collections/borrow/enum.Cow.html' title='collections::borrow::Cow'>Cow</a>&lt;'b,&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;&gt;</span></code></h4>
+<h4 id='method.map_error_class_enum_name' class='method'><code>fn <a href='#method.map_error_class_enum_name' class='fnname'>map_error_class_enum_name</a>&lt;'b&gt;(&amp;self, error_class: &amp;'b <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/collections/borrow/enum.Cow.html' title='collections::borrow::Cow'>Cow</a>&lt;'b,&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<h4 id='method.map_group_enum_name' class='method'><code>fn <a href='#method.map_group_enum_name' class='fnname'>map_group_enum_name</a>&lt;'b&gt;(&amp;self, group: &amp;'b ConstantGroup, constant: &amp;'b <a class='struct' href='../../amqp_xmlparse/amqp0/protocol/constant/struct.Constant.html' title='amqp_xmlparse::amqp0::protocol::constant::Constant'>Constant</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/collections/borrow/enum.Cow.html' title='collections::borrow::Cow'>Cow</a>&lt;'b,&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<h4 id='method.map_group_constant_name' class='method'><code>fn <a href='#method.map_group_constant_name' class='fnname'>map_group_constant_name</a>&lt;'b&gt;(&amp;self, group: &amp;'b ConstantGroup, constant: &amp;'b <a class='struct' href='../../amqp_xmlparse/amqp0/protocol/constant/struct.Constant.html' title='amqp_xmlparse::amqp0::protocol::constant::Constant'>Constant</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/collections/borrow/enum.Cow.html' title='collections::borrow::Cow'>Cow</a>&lt;'b,&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<h4 id='method.map_value' class='method'><code>fn <a href='#method.map_value' class='fnname'>map_value</a>&lt;'value&gt;(&amp;self, ty: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, value: &amp;'value <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/collections/borrow/enum.Cow.html' title='collections::borrow::Cow'>Cow</a>&lt;'value,&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;,&nbsp;<a class='enum' href='../../amqp_xmlgen/enum.Error.html' title='amqp_xmlgen::Error'>Error</a>&gt;</code></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='trait' href='../../amqp_xmlgen/trait.WriteRust.html' title='amqp_xmlgen::WriteRust'>WriteRust</a>&lt;<a class='struct' href='../../amqp_xmlgen/amqp0/struct.Protocol.html' title='amqp_xmlgen::amqp0::Protocol'>Protocol</a>&lt;'a&gt;&gt; for <a class='struct' href='../../amqp_xmlgen/amqp0/struct.Protocol.html' title='amqp_xmlgen::amqp0::Protocol'>Protocol</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a id='src-948' class='srclink' href='../../src/amqp_xmlgen/src/amqp0/protocol/mod.rs.html#27-105' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.write_rust' class='method'><code>fn <a href='../../amqp_xmlgen/trait.WriteRust.html#tymethod.write_rust' class='fnname'>write_rust</a>&lt;W&gt;(&amp;self, protocol: &amp;<a class='struct' href='../../amqp_xmlgen/amqp0/struct.Protocol.html' title='amqp_xmlgen::amqp0::Protocol'>Protocol</a>&lt;'a&gt;, writer: &amp;mut W) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='enum' href='../../amqp_xmlgen/enum.Error.html' title='amqp_xmlgen::Error'>Error</a>&gt; <span class='where'>where W: <a class='trait' href='https://doc.rust-lang.org/nightly/std/io/trait.Write.html' title='std::io::Write'>Write</a></span></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "amqp_xmlgen";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

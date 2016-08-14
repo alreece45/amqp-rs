@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["TYPE_CHANNEL",""],["TYPE_COMMAND_INVALID",""],["TYPE_FRAME",""],["TYPE_INTERNAL",""],["TYPE_NOT_ALLOWED",""],["TYPE_NOT_IMPLEMENTED",""],["TYPE_RESOURCE",""],["TYPE_SYNTAX",""],["TYPE_UNEXPECTED_FRAME",""]],"enum":[["Type",""]]});
