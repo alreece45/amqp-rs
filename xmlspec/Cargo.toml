@@ -1,8 +1,12 @@
 [package]
-name = "xmlspec"
-version = "0.1.0"
+name = "amql-xmlspec"
+version = "0.0.1"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
+
+[lib]
+name = "amqp_xmlspec"
+path = "src/lib.rs"
 
 [features]
 default = []
