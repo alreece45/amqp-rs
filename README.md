@@ -1,6 +1,10 @@
 #amqp-rs
 
-AMQP specification parser, code generation, and generated spec crates.
+AMQP [specification parser](https://alreece45.github.io/amqp-rs/amqp_xmlparse/index.html),
+[code generation](https://alreece45.github.io/amqp-rs/amqp_xmlgen/index.html), and
+[generated spec](https://alreece45.github.io/amqp-rs/amqp_xmlspec/index.html) crates.
+
+This library does not yet interact with clients or servers.
 
 Still in early stages: experimental and under development.
 
