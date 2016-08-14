@@ -2,6 +2,7 @@
 name = "amqp-xmlparse"
 version = "0.0.1"
 authors = ["Alexander Reece <github@reece45.com>"]
+license = "Apache-2.0/MIT"  
 
 [lib]
 name = "amqp_xmlparse"
