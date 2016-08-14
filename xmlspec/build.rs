@@ -5,6 +5,7 @@
 extern crate env_logger;
 extern crate amqp_xmlgen as xmlgen;
 extern crate amqp_xmlparse as xmlparse;
+#[cfg(feature = "rustfmt")]
 extern crate rustfmt;
 
 #[macro_use]
@@ -14,9 +15,6 @@ use std::env;
 use std::fs::File;
 use std::io::{self, BufWriter, Write};
 use std::path::PathBuf;
-
-use rustfmt::{Input, Summary};
-use rustfmt::config::{self as fmtconfig};
 
 use xmlparse::amqp0::{parse as parse0, ParseError};
 use xmlgen::WriteRust;
@@ -68,17 +66,34 @@ fn main() {
         .collect::<Result<Vec<_>, _>>()
         .expect("Failed to compile files");
 
-    let mut summary = Summary::new();
+        if cfg!(feature = "rustfmt") {
+            format_files(paths.into_iter())
+        }
+}
+
+#[cfg(not(feature = "rustfmt"))]
+fn format_files<I>(_: I)
+    where I: Iterator<Item = PathBuf>
+{}
+
+#[cfg(feature = "rustfmt")]
+fn format_files<I>(paths: I)
+    where I: Iterator<Item = PathBuf>,
+{
+    use rustfmt::Input;
+    use rustfmt::config::{self as fmtconfig};
+
     let config = {
         let mut config = fmtconfig::Config::default();
         config.write_mode = fmtconfig::WriteMode::Overwrite;
         config
     };
 
-    for path in paths.into_iter() {
-        summary.add(rustfmt::run(Input::File(path), &config))
+    for path in paths {
+        let _ = rustfmt::run(Input::File(path), &config);
     }
 }
+
 
 #[derive(Debug)]
 enum Error {
