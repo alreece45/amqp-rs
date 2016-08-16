@@ -15,7 +15,7 @@ use xml::reader::{XmlEvent, EventReader, Error as XmlError};
 
 mod protocol;
 
-pub use self::protocol::ProtocolParser as Parser;
+use self::protocol::ProtocolParser as Parser;
 pub use self::protocol::{Class, Constant, Domain, Field, Method, Protocol};
 
 #[derive(Debug)]
