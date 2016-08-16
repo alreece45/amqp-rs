@@ -9,6 +9,7 @@
 use std::collections::HashMap;
 use xml::reader::XmlEvent;
 
+use amqp0::{Version, ParseError};
 use amqp0::{VoidParser, ParseError};
 use super::{Child, Class, Constant, Domain};
 use super::{ClassParser, ConstantParser, DomainParser, ChildParser};
@@ -17,15 +18,17 @@ use super::{ClassParser, ConstantParser, DomainParser, ChildParser};
 pub struct Protocol<'a> {
     classes: Vec<Class<'a>>,
     domains: HashMap<String, Domain<'a>>,
+    version: Version,
     constants: Vec<Constant<'a>>,
 }
 
 impl<'a> Protocol<'a> {
-    pub fn new() -> Self {
+    pub fn new(version: Version) -> Self {
         Protocol {
             domains: HashMap::new(),
             classes: vec![],
             constants: vec![],
+            version: version,
         }
     }
 
@@ -41,10 +44,13 @@ impl<'a> Protocol<'a> {
     pub fn constants(&self) -> &Vec<Constant<'a>> {
         &self.constants
     }
+    pub fn version(&self) -> &Version {
+        &self.version
+    }
 }
 
 pub enum Parser<'a> {
-    Start(Protocol<'a>),
+    Start,
     Idle(Protocol<'a>),
     Child(Protocol<'a>, ChildParser<'a>),
     Finished(Protocol<'a>),
@@ -52,17 +58,45 @@ pub enum Parser<'a> {
 
 impl<'a> Parser<'a> {
     pub fn new() -> Self {
-        Parser::Start(Protocol::new())
+        Parser::Start
+    }
+
+    pub fn into_protocol(self) -> Result<Protocol<'a>, ParseError> {
+        match self {
+            Parser::Start => Err(ParseError::ExpectedElementStart("amqp".into())),
+            Parser::Idle(p) | Parser::Child(p, _) | Parser::Finished(p) => Ok(p),
+        }
     }
 
     pub fn parse(self, event: &XmlEvent) -> Result<Self, ParseError> {
         Ok(match self {
             // Start
-            Parser::Start(protocol) => {
+            Parser::Start => {
                 match *event {
-                    XmlEvent::StartDocument { .. } => Parser::Start(protocol),
-                    XmlEvent::StartElement { name: ref e, .. } if e.local_name == "amqp" => {
-                        Parser::Idle(protocol)
+                    XmlEvent::StartDocument { .. } => Parser::Start,
+                    XmlEvent::StartElement { name: ref e, ref attributes, .. } if e.local_name == "amqp" => {
+                        let mut attributes = try!(attributes.iter()
+                            .map(|a| (a.name.local_name.as_str(), &a.value))
+                            .filter(|&(name, _)| name == "major" || name == "minor" || name == "revision")
+                            .map(|(name, value)| {
+                                let value = try!(value.parse::<u8>()
+                                    .map_err(|_| ParseError::invalid_value("amqp", name.to_string(), "u8", value.to_string()))
+                                );
+                                Ok((name, value))
+                            })
+                            .collect::<Result<HashMap<&str, u8>, ParseError>>()
+                        );
+
+                        let major = try!(attributes.remove("major").ok_or_else(|| {
+                            ParseError::expected_attribute("protocol", "major")
+                        }));
+                        let minor = try!(attributes.remove("minor").ok_or_else(|| {
+                            ParseError::expected_attribute("protocol", "minor")
+                        }));
+                        let revision = attributes.remove("revision").unwrap_or(0);
+                        let version = Version::new(major, minor, revision);
+
+                        Parser::Idle(Protocol::new(version))
                     }
                     _ => return Err(ParseError::ExpectedAmqpRoot),
                 }
@@ -105,23 +139,6 @@ impl<'a> Parser<'a> {
             // End
             Parser::Finished(_) => return Err(ParseError::ExpectedEnd),
         })
-    }
-}
-
-impl<'a> From<Parser<'a>> for Protocol<'a> {
-    fn from(parser: Parser<'a>) -> Protocol<'a> {
-        match parser {
-            Parser::Start(p)
-             | Parser::Idle(p)
-             | Parser::Child(p, _)
-             | Parser::Finished(p) => p,
-        }
-    }
-}
-
-impl<'a> Default for Protocol<'a> {
-    fn default() -> Self {
-        Protocol::new()
     }
 }
 

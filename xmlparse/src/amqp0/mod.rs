@@ -63,7 +63,7 @@ pub fn parse<'a, P>(path: P) -> Result<Protocol<'a>, ParseError>
         parser = try!(parser.parse(&event));
     }
 
-    Ok(parser.into())
+    Ok(try!(parser.into_protocol()))
 }
 
 #[derive(Debug)]
