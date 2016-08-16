@@ -58,16 +58,6 @@ impl<'a> Parser<'a> {
             }
         }
     }
-
-    pub fn is_finished(&self) -> bool {
-        match *self {
-            Parser::Void(VoidParser::Finished)
-                | Parser::Constant(ConstantParser::Finished(_))
-                | Parser::Domain(DomainParser::Finished(_))
-                | Parser::Class(ClassParser::Finished(_))       => true,
-            _ => false,
-        }
-    }
 }
 
 impl<'a> From<VoidParser> for Parser<'a> {
