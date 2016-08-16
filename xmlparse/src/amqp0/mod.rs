@@ -42,6 +42,8 @@ pub enum ParseError {
     ExpectedAmqpRoot,
     // No more events are expected
     ExpectedEnd,
+    // element, attribute, type, value
+    InvalidValue(Cow<'static, str>, Cow<'static, str>, &'static str, Cow<'static, str>),
     Io(io::Error),
     Xml(XmlError),
 }
