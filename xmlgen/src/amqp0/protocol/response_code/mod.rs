@@ -13,8 +13,8 @@ use inflections::Inflect;
 use parser::amqp0 as parsed;
 
 use {Error, WriteRust};
+use amqp0::protocol::Protocol;
 use common::ConstantGroup;
-use amqp0::Protocol;
 use super::Constant;
 
 mod error_class;

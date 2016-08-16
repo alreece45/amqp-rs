@@ -10,7 +10,7 @@ use std::io;
 use std::collections::HashSet;
 
 use {Error, WriteRust};
-use amqp0::Protocol;
+use amqp0::protocol::Protocol;
 use super::Group;
 
 pub struct ErrorClass<'a>(&'a Group<'a>);
@@ -21,7 +21,7 @@ impl<'a> ErrorClass<'a> {
     }
 }
 
-impl<'a> WriteRust<Protocol<'a>> for ErrorClass<'a> {
+impl<'a, 'b> WriteRust<Protocol<'a, 'b>> for ErrorClass<'a> {
     fn write_rust<W>(&self, protocol: &Protocol, writer: &mut W) -> Result<(), Error>
         where W: io::Write
     {

@@ -11,7 +11,7 @@ use inflections::Inflect;
 
 use {Error, WriteRust};
 use common::ConstantGroup;
-use amqp0::Protocol;
+use amqp0::protocol::Protocol;
 use super::Group;
 
 pub struct Unified<'a>(&'a Group<'a>);
