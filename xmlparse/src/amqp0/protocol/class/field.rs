@@ -9,7 +9,8 @@
 use std::borrow::Cow;
 use xml::reader::XmlEvent;
 
-use amqp0::{VoidParser, ParseError};
+use amqp0::ParseError;
+use amqp0::protocol::VoidParser;
 
 #[derive(Debug)]
 pub struct Field<'a> {

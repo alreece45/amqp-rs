@@ -10,7 +10,8 @@ use std::collections::HashMap;
 use std::borrow::Cow;
 use xml::reader::XmlEvent;
 
-use amqp0::{ParseError, VoidParser};
+use amqp0::ParseError;
+use amqp0::protocol::VoidParser;
 use super::{Field, FieldParser};
 
 #[derive(Debug)]

@@ -9,8 +9,8 @@
 use xml::reader::XmlEvent;
 
 use super::Child;
-use amqp0::{VoidParser, ParseError};
-use amqp0::protocol::{ClassParser, ConstantParser, DomainParser};
+use amqp0::ParseError;
+use amqp0::protocol::{ClassParser, ConstantParser, DomainParser, VoidParser};
 
 #[derive(Debug)]
 pub enum Parser<'a> {

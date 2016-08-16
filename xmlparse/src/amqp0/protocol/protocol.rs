@@ -10,9 +10,8 @@ use std::collections::HashMap;
 use xml::reader::XmlEvent;
 
 use amqp0::{Version, ParseError};
-use amqp0::{VoidParser, ParseError};
 use super::{Child, Class, Constant, Domain};
-use super::{ClassParser, ConstantParser, DomainParser, ChildParser};
+use super::{ClassParser, ConstantParser, DomainParser, ChildParser, VoidParser};
 
 #[derive(Debug)]
 pub struct Protocol<'a> {

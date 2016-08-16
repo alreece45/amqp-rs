@@ -9,7 +9,8 @@
 use std::borrow::{Borrow, Cow};
 use xml::reader::XmlEvent;
 
-use amqp0::{ParseError, VoidParser};
+use amqp0::ParseError;
+use amqp0::protocol::VoidParser;
 
 #[derive(Debug)]
 pub struct Constant<'a> {
