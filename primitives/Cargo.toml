@@ -1,0 +1,40 @@
+[package]
+name = "amqp-primitives"
+version = "0.0.2"
+authors = ["Alexander Reece <github@reece45.com>"]
+build = "build.rs"
+
+[features]
+default = ["lifeguard"]
+pregen-amqp-primitives = ["amqp-primalgen", "amqp-specs", "rustfmt"]
+build-amqp-primitives = ["amqp-primalgen", "amqp-specs"]
+
+[dependencies]
+nom = "2.0.0"
+
+[dependencies.lifeguard]
+version = "0.5.2"
+optional = true
+
+[dependencies.clippy]
+version = "*"
+optional = true
+
+[build-dependencies]
+env_logger = "0.3.5"
+
+[build-dependencies.amqp-primalgen]
+path = "../primalgen"
+optional = true
+
+[build-dependencies.amqp-specs]
+path = "../specs"
+optional = true
+
+[build-dependencies.clippy]
+version = "*"
+optional = true
+
+[build-dependencies.rustfmt]
+version = "0.6.2"
+optional = true

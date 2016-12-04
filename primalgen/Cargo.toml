@@ -1,0 +1,15 @@
+[package]
+name = "amqp-primalgen"
+authors = ["Alexander Reece <github@reece45.com>"]
+version = "0.0.1"
+
+[features]
+default = []
+
+[dependencies]
+inflections = "1.0.0"
+amqp-specs = { version = "0.0.2", path = "../specs" }
+
+[dependencies.clippy]
+version = "*"
+optional = true
