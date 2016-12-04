@@ -1,0 +1,31 @@
+[package]
+name = "amqp-specs"
+version = "0.0.3"
+authors = ["Alexander Reece <github@reece45.com>"]
+build = "build.rs"
+
+[features]
+default = []
+amqp-build-specs = ["amqp-specgen"]
+amqp-pregen-specs = ["amqp-specgen", "rustfmt"]
+
+[dependencies]
+
+[dependencies.clippy]
+version = "*"
+optional = true
+
+[build-dependencies]
+env_logger = "0.3.5"
+
+[build-dependencies.amqp-specgen]
+path = "../specgen"
+optional = true
+
+[build-dependencies.clippy]
+version = "*"
+optional = true
+
+[build-dependencies.rustfmt]
+version = "0.6.2"
+optional = true
