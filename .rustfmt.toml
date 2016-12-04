@@ -1,2 +1,3 @@
-reorder_imports = true
 match_block_trailing_comma = true
+fn_args_paren_newline = true
+reorder_imported_names = true
