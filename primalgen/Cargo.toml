@@ -8,7 +8,7 @@ default = []
 
 [dependencies]
 inflections = "1.0.0"
-amqp-specs = { version = "0.0.2", path = "../specs" }
+amqp-specs = { version = "0.0.3", path = "../specs" }
 
 [dependencies.clippy]
 version = "*"
