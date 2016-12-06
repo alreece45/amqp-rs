@@ -6,13 +6,13 @@ include!(concat!(env!("OUT_DIR"), "/amqp0.rs"));
 #[cfg(not(feature = "amqp-build-specs"))]
 include!(concat!("mod.pregen.rs"));
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Version {
     minor: u16,
     revision: u16,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Spec {
     name: &'static str,
     classes: BTreeMap<&'static str, Class>,
@@ -23,14 +23,14 @@ pub struct Spec {
     version: Version,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Class {
     name: &'static str,
     index: u16,
     methods: Vec<ClassMethod>,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct ClassMethod {
     name: &'static str,
     index: u16,
@@ -42,7 +42,7 @@ pub struct ClassMethod {
     chassis_client: Option<&'static str>,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct ClassMethodField {
     name: &'static str,
     domain: &'static str,
@@ -50,7 +50,7 @@ pub struct ClassMethodField {
     is_reserved: bool,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum ClassMethodFieldAssertion {
     Null,
     NotNull,
@@ -62,7 +62,7 @@ pub enum ClassMethodFieldAssertion {
     Syntax(&'static str),
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Constant {
     name: &'static str,
     value: u32,
