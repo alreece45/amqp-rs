@@ -6,17 +6,15 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::io;
 use std::collections::BTreeMap;
 
-use inflections::Inflect;
-
-mod specs;
+mod common;
 mod spec;
 mod nom;
 
 pub use self::spec::SpecWriter;
 pub use self::nom::ParserWriter;
+pub use self::common::{CommonSpecs, CommonSpecsWriter};
 
 pub struct DomainMapper<'a> {
     domains: &'a BTreeMap<&'a str, &'a str>,
@@ -39,91 +37,6 @@ impl<'a> DomainMapper<'a> {
         }
         ty
     }
-}
-
-pub use self::specs::Specs;
-
-pub fn write_common<W>(writer: &mut W, specs: &Specs) -> io::Result<()>
-    where W: io::Write
-{
-    // ensure that class ids remain consistent accross the specs
-    specs.assert_name_indexes_consistent();
-
-    try!(write_common_classes(writer, specs));
-    try!(write_common_methods(writer, specs));
-
-    Ok(())
-}
-
-pub fn write_common_classes<W>(writer: &mut W, specs: &Specs) -> io::Result<()>
-    where W: io::Write
-{
-    try!(writeln!(writer, "//"));
-    try!(writeln!(writer, "// Index values for classes shared among multiple specs"));
-    try!(writeln!(writer, "//"));
-    try!(writeln!(writer, "// Sometimes, the index value is repeated in different classes, but these are not reused"));
-    try!(writeln!(writer, "// within a single protocol"));
-    try!(writeln!(writer, "//"));
-    try!(writeln!(writer, "// Classes are currently only considered common if they are used in more than one"));
-    try!(writeln!(writer, "// spec. This behavior *may* change in the future as more specs are added."));
-    try!(writeln!(writer, "//"));
-
-    let common_classes = {
-        let mut clasess = specs.common_classes().into_iter().collect::<Vec<_>>();
-        clasess.sort_by(|&(_, a), &(_, b)| a.cmp(&b));
-        clasess
-    };
-
-    for (class_name, index) in common_classes {
-        let constant_class = class_name.to_constant_case();
-        try!(writeln!(writer, "pub const CLASS_{}: u16 = {};", constant_class, index));
-    }
-    try!(writeln!(writer, ""));
-
-    Ok(())
-}
-
-pub fn write_common_methods<W>(writer: &mut W, specs: &Specs) -> io::Result<()>
-    where W: io::Write
-{
-    try!(writeln!(writer, "//"));
-    try!(writeln!(writer, "// Index values for methods common among the different specs"));
-    try!(writeln!(writer, "//"));
-    try!(writeln!(writer, "// Methods are only considered common when:"));
-    try!(writeln!(writer, "//"));
-    try!(writeln!(writer, "//   * The index value is consistent across all of the specs"));
-    try!(writeln!(writer, "//   * The method is used in more than one spec"));
-    try!(writeln!(writer, "//"));
-    try!(writeln!(writer, "// This may change in the future-- in that case, methods *may* be removed, or"));
-    try!(writeln!(writer, "// one of the requirements may be relaxed."));
-    try!(writeln!(writer, "//"));
-
-    let common_methods = {
-        let mut methods = specs.common_methods().into_iter().collect::<Vec<_>>();
-        methods.sort_by(|&(a, _), &(b, _)| a.cmp(b));
-        methods
-    };
-
-    for (class_name, methods) in common_methods {
-        let methods = {
-            let mut methods = methods.into_iter().collect::<Vec<_>>();
-            methods.sort_by(|&(_, a), &(_, b)| a.cmp(&b));
-            methods
-        };
-
-        let constant_class = class_name.to_constant_case();
-
-        for (method_name, index) in methods {
-            let constant_method = method_name.to_constant_case();
-
-            if constant_method != "_" {
-                try!(writeln!(writer, "pub const METHOD_{}_{}: u16 = {};", constant_class, constant_method, index));
-            }
-        }
-        try!(writeln!(writer, ""));
-    }
-
-    Ok(())
 }
 
 enum AmqpType {
