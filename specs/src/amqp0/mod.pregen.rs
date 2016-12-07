@@ -13,6 +13,67 @@ pub fn amqp0_9_1() -> Spec {
                 v.push(("basic",
                         Class {
                             name: "basic",
+                            fields: {
+                                let mut v = Vec::with_capacity(14);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "delivery-mode",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "correlation-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "expiration",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "user-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "app-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reserved",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 60,
                             methods: {
                                 let mut v = Vec::with_capacity(17);
@@ -500,6 +561,7 @@ pub fn amqp0_9_1() -> Spec {
                 v.push(("channel",
                         Class {
                             name: "channel",
+                            fields: vec![],
                             index: 20,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -632,6 +694,7 @@ pub fn amqp0_9_1() -> Spec {
                 v.push(("connection",
                         Class {
                             name: "connection",
+                            fields: vec![],
                             index: 10,
                             methods: {
                                 let mut v = Vec::with_capacity(10);
@@ -954,6 +1017,7 @@ pub fn amqp0_9_1() -> Spec {
                 v.push(("exchange",
                         Class {
                             name: "exchange",
+                            fields: vec![],
                             index: 40,
                             methods: {
                                 let mut v = Vec::with_capacity(4);
@@ -1096,6 +1160,7 @@ pub fn amqp0_9_1() -> Spec {
                 v.push(("queue",
                         Class {
                             name: "queue",
+                            fields: vec![],
                             index: 50,
                             methods: {
                                 let mut v = Vec::with_capacity(10);
@@ -1425,6 +1490,7 @@ pub fn amqp0_9_1() -> Spec {
                 v.push(("tx",
                         Class {
                             name: "tx",
+                            fields: vec![],
                             index: 90,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -1701,6 +1767,7 @@ pub fn amqp0_9_0() -> Spec {
                 v.push(("access",
                         Class {
                             name: "access",
+                            fields: vec![],
                             index: 30,
                             methods: {
                                 let mut v = Vec::with_capacity(2);
@@ -1779,6 +1846,67 @@ pub fn amqp0_9_0() -> Spec {
                 v.push(("basic",
                         Class {
                             name: "basic",
+                            fields: {
+                                let mut v = Vec::with_capacity(14);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "delivery-mode",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "correlation-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "expiration",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "user-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "app-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 60,
                             methods: {
                                 let mut v = Vec::with_capacity(15);
@@ -2238,6 +2366,7 @@ pub fn amqp0_9_0() -> Spec {
                 v.push(("channel",
                         Class {
                             name: "channel",
+                            fields: vec![],
                             index: 20,
                             methods: {
                                 let mut v = Vec::with_capacity(10);
@@ -2421,6 +2550,7 @@ pub fn amqp0_9_0() -> Spec {
                 v.push(("connection",
                         Class {
                             name: "connection",
+                            fields: vec![],
                             index: 10,
                             methods: {
                                 let mut v = Vec::with_capacity(11);
@@ -2778,6 +2908,7 @@ is_reserved: false
                 v.push(("dtx",
                         Class {
                             name: "dtx",
+                            fields: vec![],
                             index: 100,
                             methods: {
                                 let mut v = Vec::with_capacity(4);
@@ -2839,6 +2970,7 @@ is_reserved: false
                 v.push(("exchange",
                         Class {
                             name: "exchange",
+                            fields: vec![],
                             index: 40,
                             methods: {
                                 let mut v = Vec::with_capacity(4);
@@ -2986,6 +3118,47 @@ is_reserved: false
                 v.push(("file",
                         Class {
                             name: "file",
+                            fields: {
+                                let mut v = Vec::with_capacity(9);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "filename",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 70,
                             methods: {
                                 let mut v = Vec::with_capacity(14);
@@ -3398,6 +3571,7 @@ is_reserved: false
                 v.push(("message",
                         Class {
                             name: "message",
+                            fields: vec![],
                             index: 120,
                             methods: {
                                 let mut v = Vec::with_capacity(15);
@@ -3889,6 +4063,7 @@ is_reserved: false
                 v.push(("queue",
                         Class {
                             name: "queue",
+                            fields: vec![],
                             index: 50,
                             methods: {
                                 let mut v = Vec::with_capacity(10);
@@ -4223,6 +4398,31 @@ is_reserved: false
                 v.push(("stream",
                         Class {
                             name: "stream",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+
+                                v
+                            },
                             index: 80,
                             methods: {
                                 let mut v = Vec::with_capacity(9);
@@ -4519,6 +4719,31 @@ is_reserved: false
                 v.push(("tunnel",
                         Class {
                             name: "tunnel",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "proxy-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "data-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "durable",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "broadcast",
+                                    domain: "octet",
+                                });
+
+                                v
+                            },
                             index: 110,
                             methods: {
                                 let mut v = Vec::with_capacity(1);
@@ -4548,6 +4773,7 @@ is_reserved: false
                 v.push(("tx",
                         Class {
                             name: "tx",
+                            fields: vec![],
                             index: 90,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -4862,6 +5088,7 @@ pub fn amqp0_8_0() -> Spec {
                 v.push(("access",
                         Class {
                             name: "access",
+                            fields: vec![],
                             index: 30,
                             methods: {
                                 let mut v = Vec::with_capacity(2);
@@ -4940,6 +5167,67 @@ pub fn amqp0_8_0() -> Spec {
                 v.push(("basic",
                         Class {
                             name: "basic",
+                            fields: {
+                                let mut v = Vec::with_capacity(14);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "delivery-mode",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "correlation-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "expiration",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "user-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "app-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 60,
                             methods: {
                                 let mut v = Vec::with_capacity(15);
@@ -5393,6 +5681,7 @@ pub fn amqp0_8_0() -> Spec {
                 v.push(("channel",
                         Class {
                             name: "channel",
+                            fields: vec![],
                             index: 20,
                             methods: {
                                 let mut v = Vec::with_capacity(7);
@@ -5551,6 +5840,7 @@ pub fn amqp0_8_0() -> Spec {
                 v.push(("connection",
                         Class {
                             name: "connection",
+                            fields: vec![],
                             index: 10,
                             methods: {
                                 let mut v = Vec::with_capacity(11);
@@ -5908,6 +6198,7 @@ is_reserved: false
                 v.push(("dtx",
                         Class {
                             name: "dtx",
+                            fields: vec![],
                             index: 100,
                             methods: {
                                 let mut v = Vec::with_capacity(4);
@@ -5969,6 +6260,7 @@ is_reserved: false
                 v.push(("exchange",
                         Class {
                             name: "exchange",
+                            fields: vec![],
                             index: 40,
                             methods: {
                                 let mut v = Vec::with_capacity(4);
@@ -6116,6 +6408,47 @@ is_reserved: false
                 v.push(("file",
                         Class {
                             name: "file",
+                            fields: {
+                                let mut v = Vec::with_capacity(9);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "filename",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 70,
                             methods: {
                                 let mut v = Vec::with_capacity(14);
@@ -6522,6 +6855,7 @@ is_reserved: false
                 v.push(("queue",
                         Class {
                             name: "queue",
+                            fields: vec![],
                             index: 50,
                             methods: {
                                 let mut v = Vec::with_capacity(8);
@@ -6804,6 +7138,31 @@ is_reserved: false
                 v.push(("stream",
                         Class {
                             name: "stream",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+
+                                v
+                            },
                             index: 80,
                             methods: {
                                 let mut v = Vec::with_capacity(9);
@@ -7094,6 +7453,7 @@ is_reserved: false
                 v.push(("test",
                         Class {
                             name: "test",
+                            fields: vec![],
                             index: 120,
                             methods: {
                                 let mut v = Vec::with_capacity(8);
@@ -7348,6 +7708,31 @@ is_reserved: false
                 v.push(("tunnel",
                         Class {
                             name: "tunnel",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "proxy-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "data-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "durable",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "broadcast",
+                                    domain: "octet",
+                                });
+
+                                v
+                            },
                             index: 110,
                             methods: {
                                 let mut v = Vec::with_capacity(1);
@@ -7377,6 +7762,7 @@ is_reserved: false
                 v.push(("tx",
                         Class {
                             name: "tx",
+                            fields: vec![],
                             index: 90,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -7656,6 +8042,67 @@ pub fn rabbitmq0_9_1() -> Spec {
                 v.push(("basic",
                         Class {
                             name: "basic",
+                            fields: {
+                                let mut v = Vec::with_capacity(14);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "delivery-mode",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "correlation-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "expiration",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "user-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "app-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reserved",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 60,
                             methods: {
                                 let mut v = Vec::with_capacity(18);
@@ -8174,6 +8621,7 @@ pub fn rabbitmq0_9_1() -> Spec {
                 v.push(("channel",
                         Class {
                             name: "channel",
+                            fields: vec![],
                             index: 20,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -8306,6 +8754,7 @@ pub fn rabbitmq0_9_1() -> Spec {
                 v.push(("confirm",
                         Class {
                             name: "confirm",
+                            fields: vec![],
                             index: 85,
                             methods: {
                                 let mut v = Vec::with_capacity(2);
@@ -8344,6 +8793,7 @@ pub fn rabbitmq0_9_1() -> Spec {
                 v.push(("connection",
                         Class {
                             name: "connection",
+                            fields: vec![],
                             index: 10,
                             methods: {
                                 let mut v = Vec::with_capacity(12);
@@ -8694,6 +9144,7 @@ pub fn rabbitmq0_9_1() -> Spec {
                 v.push(("exchange",
                         Class {
                             name: "exchange",
+                            fields: vec![],
                             index: 40,
                             methods: {
                                 let mut v = Vec::with_capacity(8);
@@ -8952,6 +9403,7 @@ pub fn rabbitmq0_9_1() -> Spec {
                 v.push(("queue",
                         Class {
                             name: "queue",
+                            fields: vec![],
                             index: 50,
                             methods: {
                                 let mut v = Vec::with_capacity(10);
@@ -9281,6 +9733,7 @@ pub fn rabbitmq0_9_1() -> Spec {
                 v.push(("tx",
                         Class {
                             name: "tx",
+                            fields: vec![],
                             index: 90,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -9557,6 +10010,7 @@ pub fn qpid0_9_0() -> Spec {
                 v.push(("access",
                         Class {
                             name: "access",
+                            fields: vec![],
                             index: 30,
                             methods: {
                                 let mut v = Vec::with_capacity(2);
@@ -9635,6 +10089,67 @@ pub fn qpid0_9_0() -> Spec {
                 v.push(("basic",
                         Class {
                             name: "basic",
+                            fields: {
+                                let mut v = Vec::with_capacity(14);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "delivery-mode",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "correlation-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "expiration",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "user-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "app-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 60,
                             methods: {
                                 let mut v = Vec::with_capacity(17);
@@ -10122,6 +10637,7 @@ pub fn qpid0_9_0() -> Spec {
                 v.push(("channel",
                         Class {
                             name: "channel",
+                            fields: vec![],
                             index: 20,
                             methods: {
                                 let mut v = Vec::with_capacity(10);
@@ -10305,6 +10821,7 @@ pub fn qpid0_9_0() -> Spec {
                 v.push(("connection",
                         Class {
                             name: "connection",
+                            fields: vec![],
                             index: 10,
                             methods: {
                                 let mut v = Vec::with_capacity(11);
@@ -10662,6 +11179,7 @@ is_reserved: false
                 v.push(("dtx",
                         Class {
                             name: "dtx",
+                            fields: vec![],
                             index: 100,
                             methods: {
                                 let mut v = Vec::with_capacity(4);
@@ -10723,6 +11241,7 @@ is_reserved: false
                 v.push(("exchange",
                         Class {
                             name: "exchange",
+                            fields: vec![],
                             index: 40,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -10926,6 +11445,47 @@ is_reserved: false
                 v.push(("file",
                         Class {
                             name: "file",
+                            fields: {
+                                let mut v = Vec::with_capacity(9);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "filename",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 70,
                             methods: {
                                 let mut v = Vec::with_capacity(14);
@@ -11338,6 +11898,7 @@ is_reserved: false
                 v.push(("message",
                         Class {
                             name: "message",
+                            fields: vec![],
                             index: 120,
                             methods: {
                                 let mut v = Vec::with_capacity(15);
@@ -11829,6 +12390,7 @@ is_reserved: false
                 v.push(("queue",
                         Class {
                             name: "queue",
+                            fields: vec![],
                             index: 50,
                             methods: {
                                 let mut v = Vec::with_capacity(10);
@@ -12163,6 +12725,31 @@ is_reserved: false
                 v.push(("stream",
                         Class {
                             name: "stream",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+
+                                v
+                            },
                             index: 80,
                             methods: {
                                 let mut v = Vec::with_capacity(9);
@@ -12459,6 +13046,31 @@ is_reserved: false
                 v.push(("tunnel",
                         Class {
                             name: "tunnel",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "proxy-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "data-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "durable",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "broadcast",
+                                    domain: "octet",
+                                });
+
+                                v
+                            },
                             index: 110,
                             methods: {
                                 let mut v = Vec::with_capacity(1);
@@ -12488,6 +13100,7 @@ is_reserved: false
                 v.push(("tx",
                         Class {
                             name: "tx",
+                            fields: vec![],
                             index: 90,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -12802,6 +13415,7 @@ pub fn qpid0_8_0() -> Spec {
                 v.push(("access",
                         Class {
                             name: "access",
+                            fields: vec![],
                             index: 30,
                             methods: {
                                 let mut v = Vec::with_capacity(2);
@@ -12880,6 +13494,67 @@ pub fn qpid0_8_0() -> Spec {
                 v.push(("basic",
                         Class {
                             name: "basic",
+                            fields: {
+                                let mut v = Vec::with_capacity(14);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "delivery-mode",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "correlation-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "expiration",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "user-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "app-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 60,
                             methods: {
                                 let mut v = Vec::with_capacity(16);
@@ -13348,6 +14023,7 @@ pub fn qpid0_8_0() -> Spec {
                 v.push(("channel",
                         Class {
                             name: "channel",
+                            fields: vec![],
                             index: 20,
                             methods: {
                                 let mut v = Vec::with_capacity(7);
@@ -13506,6 +14182,7 @@ pub fn qpid0_8_0() -> Spec {
                 v.push(("connection",
                         Class {
                             name: "connection",
+                            fields: vec![],
                             index: 10,
                             methods: {
                                 let mut v = Vec::with_capacity(11);
@@ -13863,6 +14540,7 @@ is_reserved: false
                 v.push(("dtx",
                         Class {
                             name: "dtx",
+                            fields: vec![],
                             index: 100,
                             methods: {
                                 let mut v = Vec::with_capacity(4);
@@ -13924,6 +14602,7 @@ is_reserved: false
                 v.push(("exchange",
                         Class {
                             name: "exchange",
+                            fields: vec![],
                             index: 40,
                             methods: {
                                 let mut v = Vec::with_capacity(6);
@@ -14127,6 +14806,47 @@ is_reserved: false
                 v.push(("file",
                         Class {
                             name: "file",
+                            fields: {
+                                let mut v = Vec::with_capacity(9);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "reply-to",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "message-id",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "filename",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+                                v.push(ClassField {
+                                    name: "cluster-id",
+                                    domain: "shortstr",
+                                });
+
+                                v
+                            },
                             index: 70,
                             methods: {
                                 let mut v = Vec::with_capacity(14);
@@ -14533,6 +15253,7 @@ is_reserved: false
                 v.push(("queue",
                         Class {
                             name: "queue",
+                            fields: vec![],
                             index: 50,
                             methods: {
                                 let mut v = Vec::with_capacity(8);
@@ -14815,6 +15536,31 @@ is_reserved: false
                 v.push(("stream",
                         Class {
                             name: "stream",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "content-type",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "content-encoding",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "priority",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "timestamp",
+                                    domain: "timestamp",
+                                });
+
+                                v
+                            },
                             index: 80,
                             methods: {
                                 let mut v = Vec::with_capacity(9);
@@ -15105,6 +15851,7 @@ is_reserved: false
                 v.push(("test",
                         Class {
                             name: "test",
+                            fields: vec![],
                             index: 120,
                             methods: {
                                 let mut v = Vec::with_capacity(8);
@@ -15359,6 +16106,31 @@ is_reserved: false
                 v.push(("tunnel",
                         Class {
                             name: "tunnel",
+                            fields: {
+                                let mut v = Vec::with_capacity(5);
+                                v.push(ClassField {
+                                    name: "headers",
+                                    domain: "table",
+                                });
+                                v.push(ClassField {
+                                    name: "proxy-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "data-name",
+                                    domain: "shortstr",
+                                });
+                                v.push(ClassField {
+                                    name: "durable",
+                                    domain: "octet",
+                                });
+                                v.push(ClassField {
+                                    name: "broadcast",
+                                    domain: "octet",
+                                });
+
+                                v
+                            },
                             index: 110,
                             methods: {
                                 let mut v = Vec::with_capacity(1);
@@ -15388,6 +16160,7 @@ is_reserved: false
                 v.push(("tx",
                         Class {
                             name: "tx",
+                            fields: vec![],
                             index: 90,
                             methods: {
                                 let mut v = Vec::with_capacity(6);

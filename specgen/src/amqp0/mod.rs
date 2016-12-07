@@ -46,8 +46,15 @@ pub enum Assertion {
 #[derive(Debug)]
 pub struct Class<'a> {
     name: Cow<'a, str>,
+    fields: Vec<ClassField<'a>>,
     index: Cow<'a, str>,
     methods: Vec<Method<'a>>,
+}
+
+#[derive(Debug)]
+pub struct ClassField<'a> {
+    name: Cow<'a, str>,
+    domain: Cow<'a, str>,
 }
 
 #[derive(Debug)]
@@ -64,7 +71,7 @@ pub struct Domain<'a> {
 }
 
 #[derive(Debug)]
-pub struct Field<'a> {
+pub struct ClassMethodField<'a> {
     name: Cow<'a, str>,
     domain: Cow<'a, str>,
     assertions: Vec<Assertion>,
@@ -77,7 +84,7 @@ pub struct Method<'a> {
     index: Cow<'a, str>,
     chassis: HashMap<String, String>,
     response: Option<Cow<'a, str>>,
-    fields: Vec<Field<'a>>,
+    fields: Vec<ClassMethodField<'a>>,
     is_synchronous: bool,
 }
 
@@ -110,12 +117,26 @@ impl<'a> Class<'a> {
         &self.name
     }
 
+    pub fn fields(&self) -> &Vec<ClassField<'a>> {
+        &self.fields
+    }
+
     pub fn index(&self) -> &str {
         &self.index
     }
 
     pub fn methods(&'a self) -> &Vec<Method<'a>> {
         &self.methods
+    }
+}
+
+impl<'a> ClassField<'a> {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn domain(&self) -> &str {
+        &self.domain
     }
 }
 
@@ -143,7 +164,7 @@ impl<'a> Domain<'a> {
     }
 }
 
-impl<'a> Field<'a> {
+impl<'a> ClassMethodField<'a> {
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -186,7 +207,7 @@ impl<'a> Method<'a> {
     pub fn chassis(&self) -> &HashMap<String, String> {
         &self.chassis
     }
-    pub fn fields(&self) -> &Vec<Field<'a>> {
+    pub fn fields(&self) -> &Vec<ClassMethodField<'a>> {
         &self.fields
     }
     pub fn response(&self) -> Option<&str> {

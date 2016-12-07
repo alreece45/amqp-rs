@@ -9,7 +9,7 @@
 use std::collections::BTreeMap;
 use std::io;
 
-use amqp0::{Assertion, Class, Constant, Domain, Field, Method, Spec, Version};
+use amqp0::{Assertion, Class, ClassField, Constant, Domain, ClassMethodField, Method, Spec, Version};
 use codegen::{self, FormatRustCode};
 
 #[allow(match_same_arms)]
@@ -68,10 +68,21 @@ impl<'a> FormatRustCode for Version {
 impl<'a> FormatRustCode for Class<'a> {
     fn format_rust(&self) -> String {
         format!(
-            "Class {{\nname: {},\nindex: {},\nmethods: {}\n}}",
+            "Class {{\nname: {},\nfields: {},\nindex: {},\nmethods: {}\n}}",
             self.name().format_rust(),
+            self.fields().format_rust(),
             self.index(),
             self.methods().format_rust(),
+        )
+    }
+}
+
+impl<'a> FormatRustCode for ClassField<'a> {
+    fn format_rust(&self) -> String {
+        format!(
+            "ClassField {{\nname: {},\ndomain: {}\n}}",
+            self.name().replace(" ", "-").format_rust(),
+            self.domain().replace(" ", "-").format_rust(),
         )
     }
 }
@@ -111,7 +122,7 @@ impl<'a> FormatRustCode for Method<'a> {
     }
 }
 
-impl<'a> FormatRustCode for Field<'a> {
+impl<'a> FormatRustCode for ClassMethodField<'a> {
     fn format_rust(&self) -> String {
         format!(
             "ClassMethodField {{\nname: {},\ndomain: {},\nassertions: {},\nis_reserved: {}\n}}",

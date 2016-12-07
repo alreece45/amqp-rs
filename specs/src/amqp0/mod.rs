@@ -26,6 +26,7 @@ pub struct Spec {
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Class {
     name: &'static str,
+    fields: Vec<ClassField>,
     index: u16,
     methods: Vec<ClassMethod>,
 }
@@ -40,6 +41,12 @@ pub struct ClassMethod {
 
     chassis_server: Option<&'static str>,
     chassis_client: Option<&'static str>,
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+pub struct ClassField {
+    name: &'static str,
+    domain: &'static str,
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -101,6 +108,16 @@ impl Class {
 
     pub fn methods(&self) -> &Vec<ClassMethod> {
         &self.methods
+    }
+}
+
+impl ClassField {
+    pub fn name(&self) -> &'static str {
+        &self.name
+    }
+
+    pub fn domain(&self) -> &'static str {
+        self.domain
     }
 }
 

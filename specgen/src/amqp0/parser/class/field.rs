@@ -8,16 +8,16 @@
 
 use xml::reader::XmlEvent;
 
-use amqp0::{Assertion, Field};
+use amqp0::{Assertion, ClassMethodField};
 use amqp0::parser::Error;
 use parser::VoidParser;
 
 #[derive(Debug)]
 pub enum Parser<'a> {
-    Idle(Field<'a>),
-    Enum(Field<'a>, EnumParser),
-    Void(Field<'a>, VoidParser),
-    Finished(Field<'a>),
+    Idle(ClassMethodField<'a>),
+    Enum(ClassMethodField<'a>, EnumParser),
+    Void(ClassMethodField<'a>, VoidParser),
+    Finished(ClassMethodField<'a>),
 }
 
 impl<'a> Parser<'a> {
@@ -43,7 +43,7 @@ impl<'a> Parser<'a> {
                 Error::ExpectedAttribute("field".into(), "domain".into())
             }));
 
-            Ok(Parser::Idle(Field {
+            Ok(Parser::Idle(ClassMethodField {
                 name: name.into(),
                 domain: domain.into(),
                 assertions: Vec::new(),

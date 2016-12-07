@@ -11,7 +11,7 @@ mod method;
 
 use xml::reader::XmlEvent;
 
-use amqp0::Class;
+use amqp0::{Class, ClassField};
 use amqp0::parser::Error;
 use parser::VoidParser;
 
@@ -51,6 +51,7 @@ impl<'a> Parser<'a> {
 
             Ok(Parser::Idle(Class {
                 name: name.into(),
+                fields: vec![],
                 index: index.into(),
                 methods: vec![],
             }))
@@ -61,8 +62,33 @@ impl<'a> Parser<'a> {
 
     pub fn parse(self, event: &XmlEvent) -> Result<Self, Error> {
         Ok(match self {
-            Parser::Idle(class) => {
+            Parser::Idle(mut class) => {
                 match *event {
+                    XmlEvent::StartElement { name: ref el, ref attributes, .. } if el.local_name == "field" => {
+                        trace!(" > Field {} ", el.local_name);
+
+                        let (mut name, mut domain) = (None, None);
+                        for attribute in attributes.iter() {
+                            match attribute.name.local_name.as_ref() {
+                                "name" => name = name.or_else(|| Some(attribute.value.clone())),
+                                "domain"|"type" => domain = domain.or_else(|| Some(attribute.value.clone())),
+                                name => trace!("Unknown class field attribute: {}", name),
+                            };
+                        }
+
+                        let name = try!(name.ok_or_else(|| {
+                            Error::ExpectedAttribute("field".into(), "name".into())
+                        }));
+                        let domain = try!(domain.ok_or_else(|| {
+                            println!("{:?}", class);
+                            Error::ExpectedAttribute("field".into(), "domain".into())
+                        }));
+
+                        let field = ClassField { name: name.into(), domain: domain.into() };
+                        class.fields.push(field);
+
+                        Parser::Void(class, VoidParser::new())
+                    },
                     XmlEvent::StartElement { name: ref el, .. } if el.local_name == "method" => {
                         trace!(" > Method {} ", el.local_name);
                         Parser::Method(class, try!(MethodParser::from_xml_event(&event)))
