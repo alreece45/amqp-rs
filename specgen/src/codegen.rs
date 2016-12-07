@@ -80,6 +80,13 @@ impl<T: FormatRustCode> FormatRustCode for Vec<T> {
     }
 }
 
+
+impl<'a, T: FormatRustCode> FormatRustCode for &'a [T] {
+    fn format_rust(&self) -> String {
+        format_to_vec(self.iter())
+    }
+}
+
 pub fn format_to_vec<I, T>(iter: I) -> String
     where I: Iterator<Item = T>,
           T: FormatRustCode

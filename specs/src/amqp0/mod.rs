@@ -106,7 +106,7 @@ impl Class {
         self.index
     }
 
-    pub fn methods(&self) -> &Vec<ClassMethod> {
+    pub fn methods(&self) -> &[ClassMethod] {
         &self.methods
     }
 }
@@ -128,7 +128,7 @@ impl ClassMethod {
     pub fn name(&self) -> &str {
         &self.name
     }
-    pub fn fields(&self) -> &Vec<ClassMethodField> {
+    pub fn fields(&self) -> &[ClassMethodField] {
         &self.fields
     }
 }
@@ -142,7 +142,7 @@ impl ClassMethodField {
         self.domain
     }
 
-    pub fn assertions(&self) -> &Vec<ClassMethodFieldAssertion> {
+    pub fn assertions(&self) -> &[ClassMethodFieldAssertion] {
         &self.assertions
     }
 

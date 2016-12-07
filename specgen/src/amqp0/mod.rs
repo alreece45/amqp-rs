@@ -117,7 +117,7 @@ impl<'a> Class<'a> {
         &self.name
     }
 
-    pub fn fields(&self) -> &Vec<ClassField<'a>> {
+    pub fn fields(&self) -> &[ClassField<'a>] {
         &self.fields
     }
 
@@ -125,7 +125,7 @@ impl<'a> Class<'a> {
         &self.index
     }
 
-    pub fn methods(&'a self) -> &Vec<Method<'a>> {
+    pub fn methods(&self) -> &[Method<'a>] {
         &self.methods
     }
 }
@@ -173,7 +173,7 @@ impl<'a> ClassMethodField<'a> {
         &self.domain
     }
 
-    pub fn assertions(&self) -> &Vec<Assertion> {
+    pub fn assertions(&self) -> &[Assertion] {
         &self.assertions
     }
 
@@ -207,7 +207,7 @@ impl<'a> Method<'a> {
     pub fn chassis(&self) -> &HashMap<String, String> {
         &self.chassis
     }
-    pub fn fields(&self) -> &Vec<ClassMethodField<'a>> {
+    pub fn fields(&self) -> &[ClassMethodField<'a>] {
         &self.fields
     }
     pub fn response(&self) -> Option<&str> {
