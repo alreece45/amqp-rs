@@ -8,7 +8,7 @@
 
 #[cfg(not(feature = "amqp-build-primitives"))]
 include!(concat!("mod.pregen.rs"));
-#[cfg(feature = "amqp-pregen-primitives")]
+#[cfg(feature = "amqp-build-primitives")]
 include!(concat!(env!("OUT_DIR"), "/amqp0.rs"));
 
 use std::io;

@@ -66,66 +66,6 @@ pub enum Val<'a> {
 }
 
 impl<'a> Val<'a> {
-    pub fn id(&self) -> char {
-        match *self {
-            Val::Table(_)       => 'F',
-            Val::Bool(_)        => 't',
-            Val::I8(_)          => 'b',
-            Val::U8(_)          => 'B',
-            Val::I16(_)         => 'U',
-            Val::U16(_)         => 'u',
-            Val::I32(_)         => 'I',
-            Val::U32(_)         => 'i',
-            Val::I64(_)         => 'L',
-            Val::U64(_)         => 'l',
-            Val::F32(_)         => 'd',
-            Val::F64(_)         => 'f',
-            Val::Timestamp(_)   => 'T',
-            Val::Decimal(_, _)  => 'D',
-            Val::ShortString(_) => 's',
-            Val::LongString(_)  => 'S',
-            Val::List(_)        => 'A',
-            Val::Void           => 'V',
-        }
-    }
-
-    pub fn amqp_size(&self) -> usize {
-        match *self {
-            Val::Void => 0,
-            Val::Bool(_) | Val::I8(_)  | Val::U8(_)  => 1,
-            Val::I16(_) | Val::U16(_) => 2,
-            Val::I32(_) | Val::U32(_) | Val::F32(_) | Val::Timestamp(_) => 4,
-            Val::I64(_) | Val::U64(_) | Val::F64(_) => 8,
-            Val::Decimal(_, _) => 3,
-            Val::ShortString(ref value) => value.len(),
-            Val::LongString(ref value) => value.len(),
-            Val::List(ref entries) => entries.iter().map(|e| e.amqp_size()).sum(),
-            Val::Table(ref table) => table.amqp_size(),
-        }
-    }
-
-    pub fn into_owned(self) -> Value {
-        match self {
-            Val::Bool(val)           => Value::Bool(val),
-            Val::I8(val)             => Value::I8(val),
-            Val::U8(val)             => Value::U8(val),
-            Val::I16(val)            => Value::I16(val),
-            Val::U16(val)            => Value::U16(val),
-            Val::I32(val)            => Value::I32(val),
-            Val::U32(val)            => Value::U32(val),
-            Val::I64(val)            => Value::I64(val),
-            Val::U64(val)            => Value::U64(val),
-            Val::F32(val)            => Value::F32(val),
-            Val::F64(val)            => Value::F64(val),
-            Val::Timestamp(val)      => Value::Timestamp(val),
-            Val::Decimal(s, b)       => Value::Decimal(s, b),
-            Val::ShortString(string) => Value::ShortString(string.into_owned()),
-            Val::LongString(bytes)   => Value::LongString(bytes.into_owned()),
-            Val::List(list)          => Value::List(list.into_owned()),
-            Val::Table(table)        => Value::Table(table.into_owned()),
-            Val::Void                => Value::Void,
-        }
-    }
 }
 
 macro_rules! impl_from_primitive {

@@ -1,16 +1,11 @@
 
 use std::ops::{Deref, DerefMut};
 
-use super::{Val, Value};
+use super::Value;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct List<'a> {
-    values: Vec<Val<'a>>,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct ListBuf {
-    values: Vec<Value>,
+    values: Vec<Value<'a>>,
 }
 
 impl<'a> List<'a> {
@@ -18,7 +13,7 @@ impl<'a> List<'a> {
         Self::from_vec(Vec::new())
     }
 
-    pub fn from_vec(values: Vec<Val<'a>>) -> Self {
+    pub fn from_vec(values: Vec<Value<'a>>) -> Self {
         List {
             values: values
         }
@@ -28,14 +23,14 @@ impl<'a> List<'a> {
         Self::from_vec(Vec::with_capacity(cap))
     }
 
-    pub fn into_owned(self) -> ListBuf {
-        ListBuf::from_vec(self.values.into_iter()
-            .map(|v| v.into_owned())
+    pub fn to_owned(self) -> List<'static> {
+        List::from_vec(self.values.into_iter()
+            .map(|v| v.to_owned())
             .collect())
     }
 
     pub fn push<V>(&mut self, value: V)
-        where V: Into<Val<'a>>
+        where V: Into<Value<'a>>
     {
         self.values.push(value.into())
     }
@@ -47,22 +42,8 @@ impl<'a> List<'a> {
     }
 }
 
-impl ListBuf {
-    pub fn new() -> Self {
-        Self::from_vec(Vec::new())
-    }
-    pub fn from_vec(values: Vec<Value>) -> Self {
-        ListBuf {
-            values: values
-        }
-    }
-    pub fn with_capacity(cap: usize) -> Self {
-        Self::from_vec(Vec::with_capacity(cap))
-    }
-}
-
 impl<'a> Deref for List<'a> {
-    type Target = Vec<Val<'a>>;
+    type Target = Vec<Value<'a>>;
 
     fn deref(&self) -> &Self::Target {
         &self.values

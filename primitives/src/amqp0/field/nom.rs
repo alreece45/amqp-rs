@@ -10,39 +10,39 @@ use nom::{be_i8, be_i16, be_i32, be_i64};
 
 use amqp0::nom::{shortstr, longstr};
 use amqp0::nom::{NomBytes, ParserPool};
-use super::{List, Table, Val};
+use super::{List, Table, Value};
 
-impl<'a> NomBytes<'a> for Val<'a> {
+impl<'a> NomBytes<'a> for Value<'a> {
 
     #[allow(unused_variables)]
     fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
         where P: ParserPool
     {
         let result = switch!(input, take!(1),
-            b"s" => map!(shortstr, |s: &'a str| Val::ShortString(Cow::Borrowed(s))) |
-            b"S" => map!(longstr, |b: &'a [u8]| Val::LongString(Cow::Borrowed(b))) |
-            b"t" => map!(be_u8, |b| Val::Bool(b != 0)) |
-            b"b" => map!(be_i8, Val::I8) |
-            b"B" => map!(be_u8, Val::U8) |
-            b"u" => map!(be_i16, Val::I16) |
-            b"U" => map!(be_u16, Val::U16) |
-            b"i" => map!(be_i32, Val::I32) |
-            b"I" => map!(be_u32, Val::U32) |
-            b"l" => map!(be_i64, Val::I64) |
-            b"L" => map!(be_u64, Val::U64) |
-            b"f" => map!(be_f32, Val::F32) |
-            b"d" => map!(be_f64, Val::F64) |
-            b"D" => map!(tuple!(be_u8, be_u32), |(scale, val): (u8, u32)| Val::Decimal(scale, val)) |
-            b"T" => map!(be_u64, Val::Timestamp) |
-            b"V" => value!(Val::Void) |
-            b"F" => map!(call!(Table::nom_bytes, pool), Val::Table) |
-            b"A" => map!(call!(List::nom_bytes, pool), Val::List)
+            b"s" => map!(shortstr, |s: &'a str| Value::ShortString(Cow::Borrowed(s))) |
+            b"S" => map!(longstr, |b: &'a [u8]| Value::LongString(Cow::Borrowed(b))) |
+            b"t" => map!(be_u8, |b| Value::Bool(b != 0)) |
+            b"b" => map!(be_i8, Value::I8) |
+            b"B" => map!(be_u8, Value::U8) |
+            b"u" => map!(be_i16, Value::I16) |
+            b"U" => map!(be_u16, Value::U16) |
+            b"i" => map!(be_i32, Value::I32) |
+            b"I" => map!(be_u32, Value::U32) |
+            b"l" => map!(be_i64, Value::I64) |
+            b"L" => map!(be_u64, Value::U64) |
+            b"f" => map!(be_f32, Value::F32) |
+            b"d" => map!(be_f64, Value::F64) |
+            b"D" => map!(tuple!(be_u8, be_u32), |(scale, value): (u8, u32)| Value::Decimal(scale, value)) |
+            b"T" => map!(be_u64, Value::Timestamp) |
+            b"V" => value!(Value::Void) |
+            b"F" => map!(call!(Table::nom_bytes, pool), Value::Table) |
+            b"A" => map!(call!(List::nom_bytes, pool), Value::List)
         );
         result
     }
 }
 
-type TableEntry<'a> = (&'a str, Val<'a>);
+type TableEntry<'a> = (&'a str, Value<'a>);
 
 impl<'a> NomBytes<'a> for Table<'a> {
     fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
@@ -54,7 +54,7 @@ impl<'a> NomBytes<'a> for Table<'a> {
         let (rem, mut entries) = try_parse!(input,
             length_value!(be_u32,
                 fold_many0!(
-                    tuple!(shortstr, apply!(Val::nom_bytes, pool)),
+                    tuple!(shortstr, apply!(Value::nom_bytes, pool)),
                     pool.new_table_entries_vec(bytes),
                     |mut entries: Vec<TableEntry<'a>>, entry: TableEntry<'a>| {
                         entries.push(entry);
@@ -85,12 +85,12 @@ impl<'a> NomBytes<'a> for List<'a> {
         let (_, bytes) = try_parse!(input, peek!(length_bytes!(be_u32)));
 
         #[ignore(unused_variables)]
-        let (rem, entries): (&'a [u8], Vec<Val<'a>>) = try_parse!(input,
+        let (rem, entries): (&'a [u8], Vec<Value<'a>>) = try_parse!(input,
             length_value!(be_u32,
                 fold_many0!(
-                    apply!(Val::nom_bytes, pool),
-                    pool.new_vals_vec(bytes),
-                    |mut entries: Vec<Val<'a>>, entry: Val<'a>| {
+                    apply!(Value::nom_bytes, pool),
+                    pool.new_values_vec(bytes),
+                    |mut entries: Vec<Value<'a>>, entry: Value<'a>| {
                         entries.push(entry);
                         entries
                     }
@@ -108,41 +108,41 @@ mod test {
     use amqp0::nom::NoParserPool;
 
     #[test]
-    fn val_short_string() {
+    fn value_short_string() {
         let bytes = b"s\x0FThis is a test.";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
-        assert_eq!(val, Val::ShortString(Cow::Borrowed("This is a test.")));
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        assert_eq!(value, Value::ShortString(Cow::Borrowed("This is a test.")));
     }
 
     #[test]
-    fn val_short_string_invalid() {
-        let bytes = b"s\x12Invalid UTF-8: \xe2\x28\xa1";
-        assert!(Val::nom_bytes(bytes, &mut NoParserPool).is_err());
+    fn value_short_string_invalueid() {
+        let bytes = b"s\x12Invalueid UTF-8: \xe2\x28\xa1";
+        assert!(Value::nom_bytes(bytes, &mut NoParserPool).is_err());
     }
 
     #[test]
-    fn val_short_string_incomplete() {
+    fn value_short_string_incomplete() {
         let bytes = b"s\xffThis is expected to be much longer...";
-        assert!(Val::nom_bytes(bytes, &mut NoParserPool).is_incomplete());
+        assert!(Value::nom_bytes(bytes, &mut NoParserPool).is_incomplete());
     }
 
     #[test]
-    fn val_long_string() {
+    fn value_long_string() {
         let bytes = b"S\x00\x00\x00\x0FThis is a test.";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
-        assert_eq!(val, Val::LongString(Cow::Borrowed(&bytes[5..])));
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        assert_eq!(value, Value::LongString(Cow::Borrowed(&bytes[5..])));
     }
 
     #[test]
-    fn val_long_string_incomplete() {
+    fn value_long_string_incomplete() {
         let bytes = b"S\x00\x00\x00\xffThis is expected to be much longer...";
-        assert!(Val::nom_bytes(bytes, &mut NoParserPool).is_incomplete());
+        assert!(Value::nom_bytes(bytes, &mut NoParserPool).is_incomplete());
     }
 
-    macro_rules! parse_val {
-        ($bytes:expr) => { Val::nom_bytes(&$bytes[..], &mut NoParserPool) }
+    macro_rules! parse_value {
+        ($bytes:expr) => { Value::nom_bytes(&$bytes[..], &mut NoParserPool) }
     }
-    macro_rules! parse_done_val {
+    macro_rules! parse_done_value {
         ($bytes:expr) => {{
             let bytes = &$bytes;
 
@@ -150,9 +150,9 @@ mod test {
                 assert_incomplete!(bytes[0..bytes.len() - 1]);
             }
 
-            let result = parse_val!(bytes);
+            let result = parse_value!(bytes);
             if !result.is_done() {
-                panic!("Expected IResult::Done when parsing val, got {:?}", result);
+                panic!("Expected IResult::Done when parsing value, got {:?}", result);
             }
 
             let result = result.unwrap();
@@ -165,30 +165,32 @@ mod test {
 
     /// Like above, but changes the value of the specified offset and ensure it errors.
     /// Usually used to make one of the lengths invalid.
-    macro_rules! parse_done_val_with_length_offset {
+    macro_rules! parse_done_value_with_length_offset {
         ($bytes:expr, $offset:expr) => {{
             let bytes = &$bytes;
             let offset = $offset;
             if offset > 0 && bytes.len() > offset + 1 {
                 let mut bytes = bytes[..].to_vec();
                 bytes[$offset] -= 1;
-                assert_incomplete!(bytes[..bytes.len() - 1]);
-
-                assert_error!(bytes);
+                {
+                    assert_incomplete!(bytes[..bytes.len() - 1]);
+                    assert_error!(bytes);
+                }
+                bytes[$offset] += 1;
             }
-            parse_done_val!(bytes)
+            parse_done_value!(bytes)
         }}
     }
-    macro_rules! assert_val_parses {
+    macro_rules! assert_value_parses {
        ($bytes:expr, $expected:expr) => {
-            let _ = parse_done_val!($bytes);
+            let _ = parse_done_value!($bytes);
        }
     }
 
     macro_rules! assert_incomplete {
         ($bytes:expr) => {
             let bytes = &$bytes;
-            let result = Val::nom_bytes(&bytes[..], &mut NoParserPool);
+            let result = Value::nom_bytes(&bytes[..], &mut NoParserPool);
             if !result.is_incomplete() {
                 panic!("Expected result to be IResult::Incomplete, got: {:?}", result)
             }
@@ -201,7 +203,7 @@ mod test {
     macro_rules! assert_error {
         ($bytes:expr) => {
             let bytes = &$bytes;
-            let result = Val::nom_bytes(&bytes[..], &mut NoParserPool);
+            let result = Value::nom_bytes(&bytes[..], &mut NoParserPool);
             if !result.is_err() {
                 panic!("Expected result to be IResult::Err, got: {:?}", result)
             }
@@ -209,197 +211,197 @@ mod test {
     }
 
     #[test]
-    fn val_void() {
-        assert_val_parses!(b"V", Val::Void);
+    fn value_void() {
+        assert_value_parses!(b"V", Value::Void);
     }
 
     #[test]
-    fn val_bool() {
-        assert_val_parses!(b"t\x00", Val::Bool(false));
-        assert_val_parses!(b"t\x01", Val::Bool(true));
-        assert_val_parses!(b"t\x11", Val::Bool(true));
-        assert_val_parses!(b"t\xff", Val::Bool(true));
+    fn value_bool() {
+        assert_value_parses!(b"t\x00", Value::Bool(false));
+        assert_value_parses!(b"t\x01", Value::Bool(true));
+        assert_value_parses!(b"t\x11", Value::Bool(true));
+        assert_value_parses!(b"t\xff", Value::Bool(true));
     }
     
     #[test]
-    fn val_i8() {
-        assert_val_parses!(b"b\x01", Val::I8(0x01));
-        assert_val_parses!(b"b\x11", Val::I8(0x11));
-        assert_val_parses!(b"b\xff", Val::I8(-1));
+    fn value_i8() {
+        assert_value_parses!(b"b\x01", Value::I8(0x01));
+        assert_value_parses!(b"b\x11", Value::I8(0x11));
+        assert_value_parses!(b"b\xff", Value::I8(-1));
     }
 
     #[test]
-    fn val_u8() {
-        assert_val_parses!(b"B\x00", Val::U8(0x00));
-        assert_val_parses!(b"B\x01", Val::U8(0x01));
-        assert_val_parses!(b"B\x11", Val::U8(0x11));
-        assert_val_parses!(b"B\xff", Val::U8(0xff));
+    fn value_u8() {
+        assert_value_parses!(b"B\x00", Value::U8(0x00));
+        assert_value_parses!(b"B\x01", Value::U8(0x01));
+        assert_value_parses!(b"B\x11", Value::U8(0x11));
+        assert_value_parses!(b"B\xff", Value::U8(0xff));
     }
 
     #[test]
-    fn val_i16() {
-        assert_val_parses!(b"u\x00\x00", Val::I16(0x0000));
-        assert_val_parses!(b"u\x01\x01", Val::I16(0x0101));
-        assert_val_parses!(b"u\x11\x11", Val::I16(0x1111));
-        assert_val_parses!(b"u\xff\xff", Val::I16(-1));
+    fn value_i16() {
+        assert_value_parses!(b"u\x00\x00", Value::I16(0x0000));
+        assert_value_parses!(b"u\x01\x01", Value::I16(0x0101));
+        assert_value_parses!(b"u\x11\x11", Value::I16(0x1111));
+        assert_value_parses!(b"u\xff\xff", Value::I16(-1));
     }
 
     #[test]
-    fn val_u16() {
-        assert_val_parses!(b"U\x00\x00", Val::U16(0x0000));
-        assert_val_parses!(b"U\x01\x01", Val::U16(0x0101));
-        assert_val_parses!(b"U\x11\x11", Val::U16(0x1111));
-        assert_val_parses!(b"U\xff\xff", Val::U16(0xffff));
+    fn value_u16() {
+        assert_value_parses!(b"U\x00\x00", Value::U16(0x0000));
+        assert_value_parses!(b"U\x01\x01", Value::U16(0x0101));
+        assert_value_parses!(b"U\x11\x11", Value::U16(0x1111));
+        assert_value_parses!(b"U\xff\xff", Value::U16(0xffff));
     }
     #[test]
-    fn val_i32() {
-        assert_val_parses!(b"i\x00\x00\x00\x00", Val::I32(0x00000000));
-        assert_val_parses!(b"i\x01\x01\x01\x01", Val::I32(0x01010101));
-        assert_val_parses!(b"i\x11\x11\x11\x11", Val::I32(0x11111111));
-        assert_val_parses!(b"i\xff\xff\xff\xff", Val::I32(-1));
-    }
-
-    #[test]
-    fn val_u32() {
-        assert_val_parses!(b"I\x00\x00\x00\x00", Val::U32(0x00000000));
-        assert_val_parses!(b"I\x01\x01\x01\x01", Val::U32(0x01010101));
-        assert_val_parses!(b"I\x11\x11\x11\x11", Val::U32(0x11111111));
-        assert_val_parses!(b"I\xff\xff\xff\xff", Val::U32(0xffffffff));
+    fn value_i32() {
+        assert_value_parses!(b"i\x00\x00\x00\x00", Value::I32(0x00000000));
+        assert_value_parses!(b"i\x01\x01\x01\x01", Value::I32(0x01010101));
+        assert_value_parses!(b"i\x11\x11\x11\x11", Value::I32(0x11111111));
+        assert_value_parses!(b"i\xff\xff\xff\xff", Value::I32(-1));
     }
 
     #[test]
-    fn val_i64() {
-        assert_val_parses!(b"l\x00\x00\x00\x00\x00\x00\x00\x00", Val::I64(0x0000000000000000));
-        assert_val_parses!(b"l\x01\x01\x01\x01\x01\x01\x01\x01", Val::I64(0x0101010101010101));
-        assert_val_parses!(b"l\x11\x11\x11\x11\x11\x11\x11\x11", Val::I64(0x1111111111111111));
-        assert_val_parses!(b"l\xff\xff\xff\xff\xff\xff\xff\xff", Val::I64(-1));
+    fn value_u32() {
+        assert_value_parses!(b"I\x00\x00\x00\x00", Value::U32(0x00000000));
+        assert_value_parses!(b"I\x01\x01\x01\x01", Value::U32(0x01010101));
+        assert_value_parses!(b"I\x11\x11\x11\x11", Value::U32(0x11111111));
+        assert_value_parses!(b"I\xff\xff\xff\xff", Value::U32(0xffffffff));
     }
 
     #[test]
-    fn val_u64() {
-        assert_val_parses!(b"L\x00\x00\x00\x00\x00\x00\x00\x00", Val::U64(0));
-        assert_val_parses!(b"L\x01\x01\x01\x01\x01\x01\x01\x01", Val::U64(0x0101010101010101));
-        assert_val_parses!(b"L\x11\x11\x11\x11\x11\x11\x11\x11", Val::U64(0x1111111111111111));
-        assert_val_parses!(b"L\xff\xff\xff\xff\xff\xff\xff\xff", Val::U64(0xffffffffffffffff));
+    fn value_i64() {
+        assert_value_parses!(b"l\x00\x00\x00\x00\x00\x00\x00\x00", Value::I64(0x0000000000000000));
+        assert_value_parses!(b"l\x01\x01\x01\x01\x01\x01\x01\x01", Value::I64(0x0101010101010101));
+        assert_value_parses!(b"l\x11\x11\x11\x11\x11\x11\x11\x11", Value::I64(0x1111111111111111));
+        assert_value_parses!(b"l\xff\xff\xff\xff\xff\xff\xff\xff", Value::I64(-1));
     }
 
     #[test]
-    fn val_decimal() {
-        assert_val_parses!(b"D\x01\x00\x00\x00\x00", Val::Decimal(1, 0));
-        assert_val_parses!(b"D\x01\x01\x01\x01\x01", Val::Decimal(1, 0x01010101));
-        assert_val_parses!(b"D\x11\x11\x11\x11\x11", Val::Decimal(0x11, 0x11111111));
-        assert_val_parses!(b"D\xff\xff\xff\xff\xff", Val::Decimal(0xff, 0xffffffff));
+    fn value_u64() {
+        assert_value_parses!(b"L\x00\x00\x00\x00\x00\x00\x00\x00", Value::U64(0));
+        assert_value_parses!(b"L\x01\x01\x01\x01\x01\x01\x01\x01", Value::U64(0x0101010101010101));
+        assert_value_parses!(b"L\x11\x11\x11\x11\x11\x11\x11\x11", Value::U64(0x1111111111111111));
+        assert_value_parses!(b"L\xff\xff\xff\xff\xff\xff\xff\xff", Value::U64(0xffffffffffffffff));
     }
 
     #[test]
-    fn val_timestamp() {
+    fn value_decimal() {
+        assert_value_parses!(b"D\x01\x00\x00\x00\x00", Value::Decimal(1, 0));
+        assert_value_parses!(b"D\x01\x01\x01\x01\x01", Value::Decimal(1, 0x01010101));
+        assert_value_parses!(b"D\x11\x11\x11\x11\x11", Value::Decimal(0x11, 0x11111111));
+        assert_value_parses!(b"D\xff\xff\xff\xff\xff", Value::Decimal(0xff, 0xffffffff));
+    }
+
+    #[test]
+    fn value_timestamp() {
         assert_incomplete!(b"T\x00\x00\x00\x00\x00\x00\x00");
-        assert_val_parses!(b"T\x00\x00\x00\x00\x00\x00\x00\x00", Val::Timestamp(0));
-        assert_val_parses!(b"T\x01\x01\x01\x01\x01\x01\x01\x01", Val::Timestamp(0x0101010101010101));
-        assert_val_parses!(b"T\x11\x11\x11\x11\x11\x11\x11\x11", Val::Timestamp(0x1111111111111111));
-        assert_val_parses!(b"T\xff\xff\xff\xff\xff\xff\xff\xff", Val::Timestamp(0xffffffffffffffff));
+        assert_value_parses!(b"T\x00\x00\x00\x00\x00\x00\x00\x00", Value::Timestamp(0));
+        assert_value_parses!(b"T\x01\x01\x01\x01\x01\x01\x01\x01", Value::Timestamp(0x0101010101010101));
+        assert_value_parses!(b"T\x11\x11\x11\x11\x11\x11\x11\x11", Value::Timestamp(0x1111111111111111));
+        assert_value_parses!(b"T\xff\xff\xff\xff\xff\xff\xff\xff", Value::Timestamp(0xffffffffffffffff));
     }
 
     #[test]
-    fn val_f32() {
-        assert_val_parses!(b"f\x00\x00\x00\x00", Val::F32(0.0));
-        assert_val_parses!(b"f\xc0\x78\x00\x00", Val::F32(-3.875));
-        assert_val_parses!(b"f\x47\xf8\x00\x00", Val::F32(126976.0));
+    fn value_f32() {
+        assert_value_parses!(b"f\x00\x00\x00\x00", Value::F32(0.0));
+        assert_value_parses!(b"f\xc0\x78\x00\x00", Value::F32(-3.875));
+        assert_value_parses!(b"f\x47\xf8\x00\x00", Value::F32(126976.0));
 
         let bytes = b"f\xff\xff\xff\xff";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
-        match val {
-            Val::F32(f) if f.is_nan() => (),
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        match value {
+            Value::F32(f) if f.is_nan() => (),
             _ => panic!("Expected f32 to be NaN"),
         }
 
         let bytes = b"f\x7f\x80\x00\x00";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
-        match val {
-            Val::F32(f) if f.is_infinite() => (),
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        match value {
+            Value::F32(f) if f.is_infinite() => (),
             _ => panic!("Expected f32 to be infinite"),
         }
     }
 
     #[test]
-    fn val_f64() {
-        assert_val_parses!(b"d\x00\x00\x00\x00\x00\x00\x00\x00", Val::F64(0.0));
-        assert_val_parses!(b"d\xc0\x0f\x00\x00\x00\x00\x00\x00", Val::F64(-3.875));
-        assert_val_parses!(b"d\x40\xfe\xf9\xc0\x00\x00\x00\x00", Val::F64(126876.0));
+    fn value_f64() {
+        assert_value_parses!(b"d\x00\x00\x00\x00\x00\x00\x00\x00", Value::F64(0.0));
+        assert_value_parses!(b"d\xc0\x0f\x00\x00\x00\x00\x00\x00", Value::F64(-3.875));
+        assert_value_parses!(b"d\x40\xfe\xf9\xc0\x00\x00\x00\x00", Value::F64(126876.0));
 
         let bytes = b"d\x7f\xff\xff\xff\xff\xff\xff\xff";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
-        match val {
-            Val::F64(f) if f.is_nan() => (),
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        match value {
+            Value::F64(f) if f.is_nan() => (),
             _ => panic!("Expected f32 to be NaN"),
         }
 
         let bytes = b"d\x7f\xf0\x00\x00\x00\x00\x00\x00";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
-        match val {
-            Val::F64(f) if f.is_infinite() => (),
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        match value {
+            Value::F64(f) if f.is_infinite() => (),
             _ => panic!("Expected f32 to be infinite"),
         }
     }
     #[test]
-    fn val_list_empty() {
-        let result = parse_done_val!(b"A\x00\x00\x00\x00");
+    fn value_list_empty() {
+        let result = parse_done_value!(b"A\x00\x00\x00\x00");
 
         match result {
-            Val::List(ref list) if list.len() == 0 => (),
-            val => panic!("Expected empty list, got {:?}", val)
+            Value::List(ref list) if list.len() == 0 => (),
+            value => panic!("Expected empty list, got {:?}", value)
         }
     }
 
     #[test]
-    fn val_list_with_entry() {
+    fn value_list_with_entry() {
         let bytes = b"A\x00\x00\x00\x07s\x05value";
-        let val = parse_done_val_with_length_offset!(bytes, 6);
+        let value = parse_done_value_with_length_offset!(bytes, 6);
 
-        let list = match val {
-            Val::List(ref list) if list.len() == 1 => list,
-            val => panic!("Expected list with [value], got {:?}", val)
+        let list = match value {
+            Value::List(ref list) if list.len() == 1 => list,
+            value => panic!("Expected list with [value], got {:?}", value)
         };
 
-        assert_eq!(list.last(), Some(&Val::ShortString(Cow::Borrowed("value"))));
+        assert_eq!(list.last(), Some(&Value::ShortString(Cow::Borrowed("value"))));
     }
 
     #[test]
-    fn val_list_with_entries() {
+    fn value_list_with_entries() {
         let bytes = b"A\x00\x00\x00\x12VVVVVs\x0Bhello world";
         assert_error!(b"A\x00\x00\x00\x08VVVVVs\x02a");
 
         let bytes = b"A\x00\x00\x00\x12VVVVVs\x0Bhello world";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
 
-        let list = match val {
-            Val::List(ref list) if list.len() == 6 => list,
-            val => panic!("Expected list with 6 elements, got {:?}", val)
+        let list = match value {
+            Value::List(ref list) if list.len() == 6 => list,
+            value => panic!("Expected list with 6 elements, got {:?}", value)
         };
 
-        assert_eq!(list.get(0), Some(&Val::Void));
-        assert_eq!(list.get(1), Some(&Val::Void));
-        assert_eq!(list.get(2), Some(&Val::Void));
-        assert_eq!(list.get(3), Some(&Val::Void));
-        assert_eq!(list.get(4), Some(&Val::Void));
-        assert_eq!(list.get(5), Some(&Val::ShortString(Cow::Borrowed("hello world"))));
+        assert_eq!(list.get(0), Some(&Value::Void));
+        assert_eq!(list.get(1), Some(&Value::Void));
+        assert_eq!(list.get(2), Some(&Value::Void));
+        assert_eq!(list.get(3), Some(&Value::Void));
+        assert_eq!(list.get(4), Some(&Value::Void));
+        assert_eq!(list.get(5), Some(&Value::ShortString(Cow::Borrowed("hello world"))));
     }
 
     #[test]
-    fn val_table_empty() {
+    fn value_table_empty() {
         assert_incomplete!(b"F\x00\x00\x00");
 
         let bytes = b"F\x00\x00\x00\x00";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
 
-        match val {
-            Val::Table(ref table) if table.len() == 0 => {},
-            val => panic!("Expected empty table, got {:?}", val)
+        match value {
+            Value::Table(ref table) if table.len() == 0 => {},
+            value => panic!("Expected empty table, got {:?}", value)
         }
     }
 
     #[test]
-    fn val_table_with_entry() {
+    fn value_table_with_entry() {
         assert_incomplete!(b"F\x00\x00\x00\x01");
         assert_error!     (b"F\x00\x00\x00\x01\x01");
         assert_incomplete!(b"F\x00\x00\x00\x02\x01");
@@ -415,32 +417,32 @@ mod test {
         let bytes = b"F\x00\x00\x00\x0B\
             \x03key\
             s\x05value";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
 
-        let table = match val {
-            Val::Table(ref table) if table.len() == 1 => table,
-            val => panic!("Expected table with keys set to value, got {:?}", val)
+        let table = match value {
+            Value::Table(ref table) if table.len() == 1 => table,
+            value => panic!("Expected table with keys set to value, got {:?}", value)
         };
 
-        assert_eq!(table.get("key"), Some(&Val::ShortString(Cow::Borrowed("value"))));
+        assert_eq!(table.get("key"), Some(&Value::ShortString(Cow::Borrowed("value"))));
     }
 
     #[test]
-    fn val_table_with_entries() {
+    fn value_table_with_entries() {
 
         let bytes = b"A\x00\x00\x00\x12VVVVVs\x0Bhello world";
-        let (_, val) = Val::nom_bytes(bytes, &mut NoParserPool).unwrap();
+        let (_, value) = Value::nom_bytes(bytes, &mut NoParserPool).unwrap();
 
-        let list = match val {
-            Val::List(ref list) if list.len() == 6 => list,
-            val => panic!("Expected list with 6 elements, got {:?}", val)
+        let list = match value {
+            Value::List(ref list) if list.len() == 6 => list,
+            value => panic!("Expected list with 6 elements, got {:?}", value)
         };
 
-        assert_eq!(list.get(0), Some(&Val::Void));
-        assert_eq!(list.get(1), Some(&Val::Void));
-        assert_eq!(list.get(2), Some(&Val::Void));
-        assert_eq!(list.get(3), Some(&Val::Void));
-        assert_eq!(list.get(4), Some(&Val::Void));
-        assert_eq!(list.get(5), Some(&Val::ShortString(Cow::Borrowed("hello world"))));
+        assert_eq!(list.get(0), Some(&Value::Void));
+        assert_eq!(list.get(1), Some(&Value::Void));
+        assert_eq!(list.get(2), Some(&Value::Void));
+        assert_eq!(list.get(3), Some(&Value::Void));
+        assert_eq!(list.get(4), Some(&Value::Void));
+        assert_eq!(list.get(5), Some(&Value::ShortString(Cow::Borrowed("hello world"))));
     }
 }

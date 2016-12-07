@@ -16,7 +16,7 @@ use nom::{be_u8, be_u32};
 #[cfg(not(feature = "lifeguard"))]
 pub use self::lifeguard::LifeguardParserPool;
 
-use super::field::{Table, List, Val};
+use super::field::{Table, List, Value};
 
 pub trait NomBytes<'a>: Sized {
     fn nom_bytes<'b, P>(&'a [u8], &'b mut P) -> IResult<&'a [u8], Self>
@@ -47,16 +47,16 @@ pub trait ParserPool {
     fn new_table(&mut self, usize) -> Table<'static>;
     /// Given a capacity, returns a vector for Vals
     /// Most likely to be used to assemble a List
-    fn new_vals_vec(&mut self, &[u8]) -> Vec<Val<'static>>;
+    fn new_values_vec(&mut self, &[u8]) -> Vec<Value<'static>>;
 
     /// Given the bytes for a table, returns a Vec to accept table entries
     /// Most likely to be used to assemble a table
-    fn new_table_entries_vec(&mut self, &[u8]) -> Vec<(&'static str, Val<'static>)>;
+    fn new_table_entries_vec(&mut self, &[u8]) -> Vec<(&'static str, Value<'static>)>;
 
     fn return_list(&mut self, _: List<'static>) {}
     fn return_table(&mut self, _: Table<'static>) {}
-    fn return_table_entries_vec(&mut self, _: Vec<(&'static str, Val<'static>)>) {}
-    fn return_vec(&mut self, _: Vec<Val<'static>>) {}
+    fn return_table_entries_vec(&mut self, _: Vec<(&'static str, Value<'static>)>) {}
+    fn return_vec(&mut self, _: Vec<Value<'static>>) {}
 }
 
 /// Creates objects as needed (no pools, no configuration, no attributes)
@@ -66,10 +66,10 @@ impl ParserPool for NoParserPool {
     fn new_table(&mut self, cap: usize) -> Table<'static> {
         Table::with_capacity(cap)
     }
-    fn new_vals_vec(&mut self, _: &[u8]) -> Vec<Val<'static>> {
+    fn new_values_vec(&mut self, _: &[u8]) -> Vec<Value<'static>> {
         Vec::with_capacity(10)
     }
-    fn new_table_entries_vec(&mut self, _: &[u8]) -> Vec<(&'static str, Val<'static>)> {
+    fn new_table_entries_vec(&mut self, _: &[u8]) -> Vec<(&'static str, Value<'static>)> {
         Vec::with_capacity(10)
     }
 }

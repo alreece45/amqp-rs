@@ -25,13 +25,11 @@
 
 const MAX_SHORTSTR_LEN: usize = 255;
 
-mod val;
 mod value;
 mod list;
 mod table;
 mod nom;
 
-pub use self::list::{List, ListBuf};
-pub use self::table::{Table, TableBuf};
-pub use self::val::Val;
+pub use self::list::List;
+pub use self::table::Table;
 pub use self::value::Value;
