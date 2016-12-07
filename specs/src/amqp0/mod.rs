@@ -102,6 +102,10 @@ impl Class {
         self.name
     }
 
+    pub fn fields(&self) -> &[ClassField] {
+        &self.fields
+    }
+
     pub fn index(&self) -> u16 {
         self.index
     }
