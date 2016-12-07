@@ -44,7 +44,9 @@ impl<'a> SpecWriter<'a> {
         &self.mod_name
     }
 
-    pub fn write<W: io::Write>(&self, writer: &mut W) -> io::Result<()> {
+    pub fn write<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
         if self.spec.classes().len() == 0 {
             return Ok(());
         }
@@ -83,7 +85,9 @@ impl<'a> SpecWriter<'a> {
         Ok(())
     }
 
-    pub fn write_class_constants<W: io::Write>(&self, writer: &mut W) -> io::Result<()> {
+    pub fn write_class_constants<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
         try!(writeln!(writer, "// Class Constants"));
         for class in self.spec.classes().values() {
             let constant_class = class.name().to_constant_case();
@@ -93,7 +97,9 @@ impl<'a> SpecWriter<'a> {
         Ok(())
     }
 
-    pub fn write_method_constants<W: io::Write>(&self, writer: &mut W) -> io::Result<()> {
+    pub fn write_method_constants<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
         try!(write!(writer, "\n// Class Methods"));
         for class in self.spec.classes().values() {
             try!(writeln!(writer, ""));
