@@ -6,8 +6,8 @@ build = "build.rs"
 
 [features]
 default = ["lifeguard"]
-pregen-amqp-primitives = ["amqp-primalgen", "amqp-specs", "rustfmt"]
-build-amqp-primitives = ["amqp-primalgen", "amqp-specs"]
+amqp-pregen-primitives = ["amqp-primalgen", "amqp-specs", "rustfmt"]
+amqp-build-primitives = ["amqp-primalgen", "amqp-specs"]
 
 [dependencies]
 nom = "2.0.0"
