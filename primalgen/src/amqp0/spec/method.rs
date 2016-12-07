@@ -10,44 +10,12 @@ use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::mem;
 use std::io;
-use std::ops::Deref;
 
 use inflections::Inflect;
-use specs::amqp0;
+use specs::amqp0::{self, ClassMethodField};
 
-use amqp0::{AmqpType, DomainMapper};
-
-struct Field<'a> {
-    field: &'a amqp0::ClassMethodField,
-    var_name: String,
-    ty: AmqpType,
-}
-
-impl<'a> Field<'a> {
-    pub fn from_amqp0_field(
-        field: &'a amqp0::ClassMethodField,
-        ty: AmqpType
-    ) -> Self {
-        let var_name = match field.name() {
-            "type" => "ty".into(),
-            name => name.to_snake_case().into(),
-        };
-
-        Field {
-            field: field,
-            var_name: var_name,
-            ty: ty,
-        }
-    }
-}
-
-impl<'a> Deref for Field<'a> {
-    type Target = amqp0::ClassMethodField;
-
-    fn deref(&self) -> &Self::Target {
-        &self.field
-    }
-}
+use amqp0::{Domain, DomainMapper};
+type Field<'a> = super::field::Field<'a, ClassMethodField>;
 
 #[derive(Debug)]
 enum Part<'a> {
@@ -58,16 +26,16 @@ enum Part<'a> {
 impl<'a> Part<'a> {
     pub fn from_field(field: &'a Field, flag_num: u8) -> Self {
         if field.is_reserved() {
-            match field.ty {
-                AmqpType::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], None),
-                _ => Part::Field(field.ty.nom_parser(), None),
+            match *field.ty() {
+                Domain::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], None),
+                _ => Part::Field(field.ty().nom_parser(), None),
             }
         }
         else {
-            let name = field.var_name.as_str();
-            match field.ty {
-                AmqpType::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], Some(name.into())),
-                _ => Part::Field(field.ty.nom_parser(), Some(name)),
+            let name = field.var_name();
+            match *field.ty() {
+                Domain::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], Some(name.into())),
+                _ => Part::Field(field.ty().nom_parser(), Some(name)),
             }
         }
     }
@@ -162,7 +130,7 @@ impl<'a> ModuleWriter<'a> {
     ) -> Self {
         let fields = method.fields().iter()
             .map(|field| {
-                let ty = AmqpType::new(domain_mapper.map(field.domain()));
+                let ty = Domain::new(domain_mapper.map(field.domain()));
                 Field::from_amqp0_field(field, ty)
             })
             .collect::<Vec<_>>();
@@ -170,10 +138,10 @@ impl<'a> ModuleWriter<'a> {
         let generic_types = {
             let mut labels = HashSet::new();
             fields.iter()
-                .filter(|f| !f.is_reserved() && !f.ty.is_copy())
+                .filter(|f| !f.is_reserved() && !f.ty().is_copy())
                 .map(|field| {
                     let name = field.name();
-                    let first_char = field.var_name.chars().next().unwrap();
+                    let first_char = field.var_name().chars().next().unwrap();
                     let prefix = first_char.to_uppercase().collect::<String>();
 
                     let mut label: String = prefix.clone();
@@ -191,7 +159,7 @@ impl<'a> ModuleWriter<'a> {
         };
 
         let has_lifetimes = fields.iter()
-            .map(|f| !f.is_reserved() && !f.ty.is_copy())
+            .map(|f| !f.is_reserved() && !f.ty().is_copy())
             .any(|is_copy| is_copy);
 
         ModuleWriter {
@@ -231,12 +199,12 @@ impl<'a> ModuleWriter<'a> {
                 continue
             }
 
-            try!(write!(writer, "{}: ", field.var_name));
-            if field.ty.is_copy() {
-                try!(writeln!(writer, "{},", field.ty.owned_type()));
+            try!(write!(writer, "{}: ", field.var_name()));
+            if field.ty().is_copy() {
+                try!(writeln!(writer, "{},", field.ty().owned_type()));
             }
             else {
-                try!(writeln!(writer, "::std::borrow::Cow<'a, {}>,", field.ty.borrowed_type()));
+                try!(writeln!(writer, "::std::borrow::Cow<'a, {}>,", field.ty().borrowed_type()));
             }
         }
         try!(writeln!(writer, "}}"));
@@ -284,10 +252,10 @@ impl<'a> ModuleWriter<'a> {
                 let ty = if let Some(generic) = self.generic_types.get(field.name()) {
                     generic
                 } else {
-                    field.ty.owned_type()
+                    field.ty().owned_type()
                 };
 
-                format!("{}: {}", field.var_name, ty)
+                format!("{}: {}", field.var_name(), ty)
             }).collect::<Vec<_>>();
 
         // function arguments: (name1: ty1, name2: ty2)
@@ -298,7 +266,7 @@ impl<'a> ModuleWriter<'a> {
             try!(write!(writer, "\n where "));
             for field in &self.fields {
                 if let Some(label) = self.generic_types.get(field.name()) {
-                    let ty = field.ty.borrowed_type();
+                    let ty = field.ty().borrowed_type();
                     try!(writeln!(writer, "{}: Into<::std::borrow::Cow<'a, {}>>,", label, ty));
                 }
             }
@@ -313,7 +281,7 @@ impl<'a> ModuleWriter<'a> {
                 continue
             }
 
-            let name = &field.var_name;
+            let name = field.var_name();
             if self.generic_types.contains_key(field.name()) {
                 try!(writeln!(writer, "{}: {}.into(),", name, name));
             }
@@ -338,13 +306,13 @@ impl<'a> ModuleWriter<'a> {
             if field.is_reserved() {
                 continue;
             }
-            let is_copy = field.ty.is_copy();
-            let ty = field.ty.borrowed_type();
+            let is_copy = field.ty().is_copy();
+            let ty = field.ty().borrowed_type();
             let borrow = if is_copy { "" } else { "&" };
-            try!(writeln!(writer, "pub fn {}(&self) -> {}{} {{", field.var_name, borrow, ty));
+            try!(writeln!(writer, "pub fn {}(&self) -> {}{} {{", field.var_name(), borrow, ty));
 
             let borrow = if is_copy { "" } else { "&*" };
-            try!(writeln!(writer, "{}self.{}", borrow, field.var_name));
+            try!(writeln!(writer, "{}self.{}", borrow, field.var_name()));
             try!(writeln!(writer, "}}"));
         }
 
@@ -371,12 +339,12 @@ impl<'a> ModuleWriter<'a> {
         try!(writeln!(writer, "{{\n::std::result::Result::Ok(())\n}}"));
 
         let static_size_bits = self.fields.iter()
-            .map(|field| field.ty.num_bits_fixed())
+            .map(|field| field.ty().num_bits_fixed())
             .fold(0, |sum, num_bits| sum + num_bits);
 
         let static_size = static_size_bits / 8 + if static_size_bits % 8 > 0 { 1 } else { 0 };
         let has_dynamic_field = self.fields.iter()
-            .any(|field| field.ty.dynamic_bit_method().is_some());
+            .any(|field| field.ty().dynamic_bit_method().is_some());
 
         try!(writeln!(writer, "fn len(&self) -> usize {{"));
         if has_dynamic_field {
@@ -387,8 +355,8 @@ impl<'a> ModuleWriter<'a> {
                     continue;
                 }
 
-                if let Some(method) = field.ty.dynamic_bit_method() {
-                    try!(writeln!(writer, "self.{}.{}(),", field.var_name, method));
+                if let Some(method) = field.ty().dynamic_bit_method() {
+                    try!(writeln!(writer, "self.{}.{}(),", field.var_name(), method));
                 }
             }
             try!(writeln!(writer, "].iter().sum()"));
@@ -411,7 +379,7 @@ impl<'a> ModuleWriter<'a> {
             let parts: Vec<Part> = Vec::new();
             self.fields.iter()
                 .fold(parts, |mut parts, field| {
-                    let part_needs_adding = if let AmqpType::Bit = field.ty {
+                    let part_needs_adding = if let Domain::Bit = *field.ty() {
                         let needs_adding = parts.last_mut()
                             .map(|flag| !flag.add_field(&field))
                             .unwrap_or(true);
@@ -426,7 +394,7 @@ impl<'a> ModuleWriter<'a> {
                     };
 
                     if part_needs_adding {
-                        if let AmqpType::Bit = field.ty {
+                        if let Domain::Bit = *field.ty() {
                             assert_ne!(0, num_flags);
                         }
                         parts.push(Part::from_field(field, num_flags))

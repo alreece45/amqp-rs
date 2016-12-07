@@ -6,15 +6,18 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+mod field;
+mod method;
+mod properties;
+
 use std::io;
 
 use inflections::Inflect;
 use specs::amqp0::Spec;
 
-mod method;
-
 pub use amqp0::DomainMapper;
 use self::method::ModuleWriter;
+use self::properties::PropertiesWriter;
 
 pub struct SpecWriter<'a> {
     struct_name: String,
@@ -57,6 +60,10 @@ impl<'a> SpecWriter<'a> {
         try!(writeln!(writer, "\n// Class Modules"));
         for class in self.spec.classes().values() {
             try!(writeln!(writer, "pub mod {} {{", class.name().to_camel_case()));
+
+            let property_writer = PropertiesWriter::new(&class, &self.domain_mapper);
+            try!(property_writer.write_to(writer));
+
             for method in class.methods() {
                 let method_writer = ModuleWriter::new(&class, &method, &self.domain_mapper);
                 try!(method_writer.write_to(writer));

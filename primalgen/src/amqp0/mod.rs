@@ -6,6 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use std::borrow::Cow;
 use std::collections::BTreeMap;
 
 mod common;
@@ -39,7 +40,9 @@ impl<'a> DomainMapper<'a> {
     }
 }
 
-enum AmqpType {
+/// TODO: ensure this is private
+#[doc(hidden)]
+pub enum Domain {
     Bit,
     Octet,
     Short,
@@ -52,87 +55,98 @@ enum AmqpType {
     Content,
 }
 
-impl AmqpType {
+impl Domain {
     pub fn new(name: &str) -> Self {
         match name {
-            "bit" => AmqpType::Bit,
-            "octet" => AmqpType::Octet,
-            "short" => AmqpType::Short,
-            "long" => AmqpType::Long,
-            "longlong" => AmqpType::LongLong,
-            "timestamp" => AmqpType::Timestamp,
-            "shortstr" => AmqpType::ShortString,
-            "longstr" => AmqpType::LongString,
-            "table" => AmqpType::Table,
-            "content" => AmqpType::Content,
+            "bit" => Domain::Bit,
+            "octet" => Domain::Octet,
+            "short" => Domain::Short,
+            "long" => Domain::Long,
+            "longlong" => Domain::LongLong,
+            "timestamp" => Domain::Timestamp,
+            "shortstr" => Domain::ShortString,
+            "longstr" => Domain::LongString,
+            "table" => Domain::Table,
+            "content" => Domain::Content,
             _ => panic!("Unimplemented type: {}", name)
         }
     }
 
     fn is_copy(&self) -> bool {
         match *self {
-            AmqpType::Bit | AmqpType::Octet
-             | AmqpType::Short | AmqpType::Long
-             | AmqpType::LongLong | AmqpType::Timestamp => true,
+            Domain::Bit | Domain::Octet
+             | Domain::Short | Domain::Long
+             | Domain::LongLong | Domain::Timestamp => true,
             _ => false,
         }
     }
     fn borrowed_type(&self) -> &'static str {
         match *self {
-            AmqpType::ShortString => "str",
-            AmqpType::LongString => "[u8]",
-            AmqpType::Content => "[u8]",
+            Domain::ShortString => "str",
+            Domain::LongString => "[u8]",
+            Domain::Content => "[u8]",
             _ => self.owned_type(),
         }
     }
     fn owned_type(&self) -> &'static str {
         match *self {
-            AmqpType::Bit => "bool",
-            AmqpType::Octet => "u8",
-            AmqpType::Short => "u16",
-            AmqpType::Long => "u32",
-            AmqpType::LongLong => "u64",
-            AmqpType::Timestamp => "u64",
-            AmqpType::ShortString => "String",
-            AmqpType::LongString => "Vec<u8>",
-            AmqpType::Table => "::amqp0::field::Table<'a>",
-            AmqpType::Content => "::amqp0::field::List<'a>",
+            Domain::Bit => "bool",
+            Domain::Octet => "u8",
+            Domain::Short => "u16",
+            Domain::Long => "u32",
+            Domain::LongLong => "u64",
+            Domain::Timestamp => "u64",
+            Domain::ShortString => "String",
+            Domain::LongString => "Vec<u8>",
+            Domain::Table => "::amqp0::field::Table<'a>",
+            Domain::Content => "::amqp0::field::List<'a>",
         }
     }
 
     fn num_bits_fixed(&self) -> usize {
         match *self {
-            AmqpType::Bit => 1,
-            AmqpType::Octet | AmqpType::ShortString | AmqpType::Content => 8,
-            AmqpType::Short | AmqpType::LongString => 16,
-            AmqpType::Long => 32,
-            AmqpType::LongLong => 64,
-            AmqpType::Timestamp => 64,
-            AmqpType::Table => 0,
+            Domain::Bit => 1,
+            Domain::Octet | Domain::ShortString | Domain::Content => 8,
+            Domain::Short | Domain::LongString => 16,
+            Domain::Long => 32,
+            Domain::LongLong => 64,
+            Domain::Timestamp => 64,
+            Domain::Table => 0,
         }
     }
 
     fn dynamic_bit_method(&self) -> Option<&'static str> {
         match *self {
-            AmqpType::ShortString | AmqpType::LongString | AmqpType::Content => Some("len"),
-            AmqpType::Table => Some("amqp_size"),
+            Domain::ShortString | Domain::LongString | Domain::Content => Some("len"),
+            Domain::Table => Some("amqp_size"),
             _ => None,
         }
     }
 
     pub fn nom_parser(&self) -> &'static str {
         match *self {
-            AmqpType::Bit => "be_u8",
-            AmqpType::Octet => "be_u8",
-            AmqpType::Short => "be_u16",
-            AmqpType::Long => "be_u32",
-            AmqpType::LongLong => "be_u64",
-            AmqpType::Timestamp => "be_u64",
-            AmqpType::ShortString => "call!(::amqp0::nom::shortstr)",
-            AmqpType::LongString => "call!(::amqp0::nom::longstr)",
-            AmqpType::Table => "call!(::amqp0::field::Table::nom_bytes)",
+            Domain::Bit => "be_u8",
+            Domain::Octet => "be_u8",
+            Domain::Short => "be_u16",
+            Domain::Long => "be_u32",
+            Domain::LongLong => "be_u64",
+            Domain::Timestamp => "be_u64",
+            Domain::ShortString => "call!(::amqp0::nom::shortstr)",
+            Domain::LongString => "call!(::amqp0::nom::longstr)",
+            Domain::Table => "call!(::amqp0::field::Table::nom_bytes)",
             //AmqpType::Content => "::amqp0::value::Content::from_bytes",
-            AmqpType::Content => "length_bytes!(be_u32)",
+            Domain::Content => "length_bytes!(be_u32)",
+        }
+    }
+
+    pub fn cow_definition<S>(&self, lifetime: S) -> Cow<'static, str>
+        where S: AsRef<str>
+    {
+        if self.is_copy() {
+            Cow::Borrowed(self.borrowed_type())
+        }
+        else {
+            format!("::std::Borrow::Cow<'{}, {}>", lifetime.as_ref(), self.borrowed_type()).into()
         }
     }
 }
