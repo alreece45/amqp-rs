@@ -1,9 +1,9 @@
 
 use std::collections::BTreeMap;
 
-#[cfg(feature = "amqp-build-specs")]
+#[cfg(feature = "amqp0-build-specs")]
 include!(concat!(env!("OUT_DIR"), "/amqp0.rs"));
-#[cfg(not(feature = "amqp-build-specs"))]
+#[cfg(not(feature = "amqp0-build-specs"))]
 include!(concat!("mod.pregen.rs"));
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]

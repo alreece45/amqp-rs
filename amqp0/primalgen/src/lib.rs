@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-extern crate amqp_specs as specs;
+extern crate amqp0_specs as specs;
 extern crate inflections;
 
 pub mod amqp0;

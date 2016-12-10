@@ -1,13 +1,13 @@
 [package]
-name = "amqp-primitives"
+name = "amqp0-primitives"
 version = "0.0.2"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
 [features]
 default = ["lifeguard"]
-amqp-pregen-primitives = ["amqp-primalgen", "amqp-specs", "rustfmt"]
-amqp-build-primitives = ["amqp-primalgen", "amqp-specs"]
+amqp0-pregen-primitives = ["amqp0-primalgen", "amqp0-specs", "rustfmt"]
+amqp0-build-primitives = ["amqp0-primalgen", "amqp0-specs"]
 
 [dependencies]
 nom = "2.0.0"
@@ -23,11 +23,11 @@ optional = true
 [build-dependencies]
 env_logger = "0.3.5"
 
-[build-dependencies.amqp-primalgen]
+[build-dependencies.amqp0-primalgen]
 path = "../primalgen"
 optional = true
 
-[build-dependencies.amqp-specs]
+[build-dependencies.amqp0-specs]
 path = "../specs"
 optional = true
 

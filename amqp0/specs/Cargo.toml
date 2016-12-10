@@ -1,13 +1,13 @@
 [package]
-name = "amqp-specs"
+name = "amqp0-specs"
 version = "0.0.3"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
 [features]
 default = []
-amqp-build-specs = ["amqp-specgen"]
-amqp-pregen-specs = ["amqp-specgen", "rustfmt"]
+amqp0-build-specs = ["amqp0-specgen"]
+amqp0-pregen-specs = ["amqp0-specgen", "rustfmt"]
 
 [dependencies]
 
@@ -18,7 +18,7 @@ optional = true
 [build-dependencies]
 env_logger = "0.3.5"
 
-[build-dependencies.amqp-specgen]
+[build-dependencies.amqp0-specgen]
 path = "../specgen"
 optional = true
 

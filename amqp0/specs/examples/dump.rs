@@ -1,5 +1,5 @@
 
-extern crate amqp_specs as specs;
+extern crate amqp0_specs as specs;
 
 use specs::amqp0;
 

@@ -1,5 +1,5 @@
 
-extern crate amqp_specs as specs;
+extern crate amqp0_specs as specs;
 
 // use std::collections::{HashMap, HashSet};
 use specs::amqp0;

@@ -9,7 +9,7 @@ Pregenerated Files
 To save some processing power, and the need for dependencies, a 
 pre-generated file is used by default. To generate from the XML files:
 
- * Testing/Usage from another crate: enable the amqp-build-specs feature
+ * Testing/Usage from another crate: enable the amqp0-build-specs feature
  * Committing/preparing to release: amqp-pregen-specs
 
 Contributing/Developing

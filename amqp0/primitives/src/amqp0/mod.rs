@@ -6,9 +6,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#[cfg(not(feature = "amqp-build-primitives"))]
+#[cfg(not(feature = "amqp0-build-primitives"))]
 include!(concat!("mod.pregen.rs"));
-#[cfg(feature = "amqp-build-primitives")]
+#[cfg(feature = "amqp0-build-primitives")]
 include!(concat!(env!("OUT_DIR"), "/amqp0/mod.rs"));
 
 use std::io;

@@ -5,21 +5,21 @@
 #[cfg(feature = "rustfmt")]
 extern crate rustfmt;
 
-#[cfg(any(feature = "amqp-build-specs", feature = "amqp-pregen-specs"))]
-extern crate amqp_specgen as specgen;
+#[cfg(any(feature = "amqp0-build-specs", feature = "amqp-pregen-specs"))]
+extern crate amqp0_specgen as specgen;
 
 fn main() {
     spec0_builder::build();
 }
 
-#[cfg(not(any(feature = "amqp-build-specs", feature = "amqp-pregen-specs")))]
+#[cfg(not(any(feature = "amqp0-build-specs", feature = "amqp-pregen-specs")))]
 mod spec0_builder {
     pub fn build() {
-        println!("Skipping build (neither amqp-build-specs nor amqp-pregen-specs specified)");
+        println!("Skipping build (neither amqp0-build-specs nor amqp-pregen-specs specified)");
     }
 }
 
-#[cfg(any(feature = "amqp-build-specs", feature = "amqp-pregen-specs"))]
+#[cfg(any(feature = "amqp0-build-specs", feature = "amqp-pregen-specs"))]
 mod spec0_builder {
     extern crate env_logger;
 

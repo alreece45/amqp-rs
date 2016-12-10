@@ -1,5 +1,5 @@
 [package]
-name = "amqp-specgen"
+name = "amqp0-specgen"
 authors = ["Alexander Reece <github@reece45.com>"]
 version = "0.0.3"
 
