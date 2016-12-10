@@ -13,9 +13,9 @@ mod properties;
 use std::io;
 
 use inflections::Inflect;
-use specs::amqp0::Spec;
+use amqp0::Spec;
 
-pub use amqp0::DomainMapper;
+pub use DomainMapper;
 use self::method::ModuleWriter;
 use self::properties::PropertiesWriter;
 

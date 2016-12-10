@@ -2,8 +2,8 @@
 use std::ops::Deref;
 use inflections::Inflect;
 
-use amqp0::Domain;
-use specs::amqp0::{ClassField, ClassMethodField};
+use Domain;
+use amqp0::{ClassField, ClassMethodField};
 
 pub struct Field<'a, T: 'a>
     where T: BasicField

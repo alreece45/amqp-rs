@@ -2,7 +2,7 @@
 use std::collections::BTreeMap;
 use std::io;
 use inflections::Inflect;
-use specs::amqp0::Constant;
+use amqp0::Constant;
 
 pub struct FrameWriter<'a> {
     frame_types: &'a BTreeMap<&'static str,  Constant>,

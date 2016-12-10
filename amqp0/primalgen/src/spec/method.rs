@@ -12,9 +12,10 @@ use std::mem;
 use std::io;
 
 use inflections::Inflect;
-use specs::amqp0::{self, ClassMethodField};
+use amqp0::{self, ClassMethodField};
 
-use amqp0::{Domain, DomainMapper};
+use {Domain, DomainMapper};
+
 type Field<'a> = super::field::Field<'a, ClassMethodField>;
 
 #[derive(Debug)]

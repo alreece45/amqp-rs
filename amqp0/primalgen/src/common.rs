@@ -13,7 +13,7 @@ use std::ops::Deref;
 
 use inflections::Inflect;
 
-use specs::amqp0::Spec;
+use amqp0::Spec;
 
 #[derive(Debug)]
 pub struct CommonSpecs<'a> {

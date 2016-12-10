@@ -7,8 +7,8 @@
 // except according to those terms.
 
 use std::io;
-use specs::amqp0::{self, ClassField};
-use amqp0::{Domain, DomainMapper};
+use amqp0::{self, ClassField};
+use {Domain, DomainMapper};
 
 type Field<'a> = super::field::Field<'a, ClassField>;
 
