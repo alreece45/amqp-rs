@@ -1,9 +1,8 @@
 
-extern crate amqp0_specs as specs;
+extern crate amqp0_specs as amqp0;
 
 use std::collections::HashMap;
 use amqp0::ClassMethod;
-use specs::amqp0;
 
 fn main() {
     let specs = amqp0::specs();

@@ -10,7 +10,7 @@ To save some processing power, and the need for dependencies, a
 pre-generated file is used by default. To generate from the XML files:
 
  * Testing/Usage from another crate: enable the amqp0-build-specs feature
- * Committing/preparing to release: amqp-pregen-specs
+ * Committing/preparing to release: amqp0-pregen-specs
 
 Contributing/Developing
 =======================
