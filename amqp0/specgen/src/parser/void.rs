@@ -7,8 +7,7 @@
 // except according to those terms.
 
 use xml::reader::XmlEvent;
-
-use amqp0::parser::Error;
+use super::Error;
 
 #[derive(Debug)]
 pub enum VoidParser {

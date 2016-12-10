@@ -8,9 +8,8 @@
 
 use xml::reader::XmlEvent;
 
-use amqp0::Domain;
-use amqp0::parser::Error;
-use parser::VoidParser;
+use Domain;
+use parser::{VoidParser, Error};
 
 #[derive(Debug)]
 pub enum Parser<'a> {

@@ -7,51 +7,21 @@
 // except according to those terms.
 
 use std::collections::BTreeMap;
-use std::io;
 
-use amqp0::{Assertion, Class, ClassField, Constant, Domain, ClassMethodField, Method, Spec, Version};
-use codegen::{self, FormatRustCode};
-
-#[allow(match_same_arms)]
-pub fn write_generated<W>(writer: &mut W, name: &'static str, spec: &Spec) -> io::Result<()>
-    where W: io::Write
-{
-    let (ungrouped, frame_types, response_codes) = {
-        let (mut ungrouped, mut frame_types, mut response_codes) = (vec![], vec![], vec![]);
-        for constant in spec.constants().values() {
-            match constant.name().replace(" ", "-").as_str() {
-                "frame-min-size" | "frame-end"      => &mut ungrouped,
-                name if name.starts_with("frame-")
-                    && name != "frame-error"        => &mut frame_types,
-                _ if constant.value().len() == 3    => &mut response_codes,
-                _                                   => &mut ungrouped,
-            }.push((constant.name().replace(" ", "-"), constant));
-        };
-        (ungrouped, frame_types, response_codes)
-    };
-    try!(writeln!(writer, "Spec {{"));
-    try!(writeln!(writer, "name: {},", name.format_rust()));
-    try!(writeln!(writer, "classes: {},", spec.classes().format_rust()));
-    try!(writeln!(writer, "constants: {}.into_iter().collect(),", codegen::format_to_vec(ungrouped.iter())));
-    try!(writeln!(writer, "domains: {},", spec.domains().format_rust()));
-    try!(writeln!(writer, "frame_types: {}.into_iter().collect(),", codegen::format_to_vec(frame_types.iter())));
-    try!(writeln!(writer, "response_codes: {}.into_iter().collect(),", codegen::format_to_vec(response_codes.iter())));
-    try!(writeln!(writer, "version: {},", spec.version().format_rust()));
-    try!(writeln!(writer, "}}"));
-
-    Ok(())
-}
+use super::FormatRustCode;
+use super::format_to_vec;
+use {Assertion, Constant, Class, ClassField, ClassMethod, ClassMethodField, Domain, Version};
 
 impl<'a> FormatRustCode for BTreeMap<String, Class<'a>> {
     fn format_rust(&self) -> String {
-        format!("{}.into_iter().collect()", codegen::format_to_vec(self.iter()))
+        format!("{}.into_iter().collect()", format_to_vec(self.iter()))
     }
 }
 
 impl<'a> FormatRustCode for BTreeMap<String, Domain<'a>> {
     fn format_rust(&self) -> String {
         let iter = self.iter().map(|(k, v)| (k.replace(" ", "-"), v));
-        format!("{}.into_iter().collect()", codegen::format_to_vec(iter))
+        format!("{}.into_iter().collect()", format_to_vec(iter))
     }
 }
 
@@ -104,7 +74,7 @@ impl<'a> FormatRustCode for Constant<'a> {
     }
 }
 
-impl<'a> FormatRustCode for Method<'a> {
+impl<'a> FormatRustCode for ClassMethod<'a> {
     fn format_rust(&self) -> String {
         let chassis = self.chassis();
         let chassis_client = chassis.get("client");
@@ -142,7 +112,7 @@ impl FormatRustCode for Assertion {
             Assertion::ChannelMax => "ClassMethodFieldAssertion::ChannelMax".to_string(),
             Assertion::NotZero => "ClassMethodFieldAssertion::NotZero".to_string(),
             Assertion::Enum(ref values) => {
-                format!("ClassMethodFieldAssertion::Enum({})", codegen::format_to_vec(values.iter()))
+                format!("ClassMethodFieldAssertion::Enum({})", format_to_vec(values.iter()))
             },
             Assertion::Length(ref length) => format!("ClassMethodFieldAssertion::Length({})", length),
             Assertion::Regexp(ref pattern) => {

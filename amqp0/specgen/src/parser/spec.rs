@@ -9,9 +9,8 @@
 use std::collections::HashMap;
 use xml::reader::XmlEvent;
 
-use amqp0::{Spec, Version};
-use amqp0::parser::Error;
-use parser::VoidParser;
+use {Spec, Version};
+use parser::{VoidParser, Error};
 
 use super::Child;
 use super::{ChildParser, ClassParser, ConstantParser, DomainParser};

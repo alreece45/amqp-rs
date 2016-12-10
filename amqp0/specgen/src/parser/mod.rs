@@ -11,38 +11,17 @@ mod class;
 mod constant;
 mod domain;
 mod spec;
+mod void;
 
-use std::fs::File;
-use std::io::{self, BufReader};
-use std::path::Path;
-
-use xml::reader::EventReader;
+use std::io;
 use xml::reader::Error as XmlError;
-
-use amqp0::Spec;
 
 pub use self::child::{Child, Parser as ChildParser};
 pub use self::class::{FieldParser, Parser as ClassParser};
 pub use self::constant::Parser as ConstantParser;
 pub use self::domain::Parser as DomainParser;
 pub use self::spec::Parser;
-
-pub fn parse<'a, P>(path: P) -> Result<Spec<'a>, Error>
-    where P: AsRef<Path>
-{
-    let path = path.as_ref();
-    let file = try!(File::open(&path));
-    let file = BufReader::new(file);
-
-    let mut parser = Parser::new();
-
-    for event in EventReader::new(file) {
-        let event = try!(event);
-        parser = try!(parser.parse(&event));
-    }
-
-    Ok(try!(parser.into_spec()))
-}
+pub use self::void::VoidParser;
 
 #[derive(Debug)]
 pub enum Error {

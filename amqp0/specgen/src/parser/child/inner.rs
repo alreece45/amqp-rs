@@ -7,10 +7,7 @@
 // except according to those terms.
 
 use xml::reader::XmlEvent;
-
-use amqp0::parser::{ClassParser, ConstantParser, DomainParser, Error};
-use parser::VoidParser;
-
+use parser::{ClassParser, ConstantParser, DomainParser, VoidParser, Error};
 use super::Child;
 
 #[derive(Debug)]

@@ -8,16 +8,15 @@
 
 use xml::reader::XmlEvent;
 
-use amqp0::Method;
-use amqp0::parser::{Error, FieldParser};
-use parser::VoidParser;
+use ClassMethod;
+use parser::{Error, FieldParser, VoidParser};
 
 #[derive(Debug)]
 pub enum Parser<'a> {
-    Idle(Method<'a>),
-    Void(Method<'a>, VoidParser),
-    Field(Method<'a>, FieldParser<'a>),
-    Finished(Method<'a>),
+    Idle(ClassMethod<'a>),
+    Void(ClassMethod<'a>, VoidParser),
+    Field(ClassMethod<'a>, FieldParser<'a>),
+    Finished(ClassMethod<'a>),
 }
 
 impl<'a> Parser<'a> {
@@ -42,7 +41,7 @@ impl<'a> Parser<'a> {
             let index = try!(index.ok_or_else(|| {
                 Error::ExpectedAttribute("field".into(), "index".into())
             }));
-            Ok(Parser::Idle(Method::new(name, index, is_synchronous)))
+            Ok(Parser::Idle(ClassMethod::new(name, index, is_synchronous)))
         } else {
             Err(Error::ExpectedElementStart("method".into()))
         }

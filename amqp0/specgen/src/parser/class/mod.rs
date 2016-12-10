@@ -10,19 +10,17 @@ mod field;
 mod method;
 
 use xml::reader::XmlEvent;
-
-use amqp0::{Class, ClassField};
-use amqp0::parser::Error;
-use parser::VoidParser;
+use {Class, ClassField};
+use parser::{VoidParser, Error};
 
 pub use self::field::Parser as FieldParser;
-pub use self::method::Parser as MethodParser;
+pub use self::method::Parser as ClassMethodParser;
 
 #[derive(Debug)]
 pub enum Parser<'a> {
     Idle(Class<'a>),
     Void(Class<'a>, VoidParser),
-    Method(Class<'a>, MethodParser<'a>),
+    Method(Class<'a>, ClassMethodParser<'a>),
     Finished(Class<'a>),
 }
 
@@ -91,7 +89,7 @@ impl<'a> Parser<'a> {
                     },
                     XmlEvent::StartElement { name: ref el, .. } if el.local_name == "method" => {
                         trace!(" > Method {} ", el.local_name);
-                        Parser::Method(class, try!(MethodParser::from_xml_event(&event)))
+                        Parser::Method(class, try!(ClassMethodParser::from_xml_event(&event)))
                     },
                     XmlEvent::StartElement { name: ref el, .. } => {
                         trace!(" > Ignored Element {} ", el.local_name);
@@ -109,7 +107,7 @@ impl<'a> Parser<'a> {
             },
             Parser::Method(mut class, parser) => {
                 match try!(parser.parse(event)) {
-                    MethodParser::Finished(method) => {
+                    ClassMethodParser::Finished(method) => {
                         class.methods.push(method);
                         Parser::Idle(class)
                     },

@@ -8,10 +8,9 @@
 
 mod inner;
 
-use amqp0::{Class, Constant, Domain};
-use amqp0::parser::Error;
-
 use xml::reader::XmlEvent;
+use {Class, Constant, Domain};
+use parser::Error;
 
 pub use self::inner::Parser as InnerParser;
 

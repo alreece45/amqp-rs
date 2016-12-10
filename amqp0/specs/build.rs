@@ -27,12 +27,10 @@ mod spec0_builder {
     use std::fs::{self, File};
     use std::io::{BufWriter, Write};
     use std::path::PathBuf;
+    use specgen::{Spec, ParseError};
 
     #[cfg(feature = "rustfmt")]
     use rustfmt;
-
-    use specgen::amqp0::{parse, write_generated};
-    use specgen::amqp0::parser::Error as ParserError;
 
     pub fn build() {
         env_logger::init().unwrap();
@@ -57,10 +55,10 @@ mod spec0_builder {
                 .map(|(name, filename)| {
                     let path = xml_dir.join(filename.to_string());
                     println!("cargo:rerun-if-changed={}", path.display());
-                    let spec = try!(parse(path));
+                    let spec = try!(Spec::parse_xml_path(path));
                     Ok((name, spec))
                 })
-                .collect::<Result<Vec<_>, ParserError>>()
+                .collect::<Result<Vec<_>, ParseError>>()
                 .unwrap();
 
             for &(name, ref spec) in &specs {
@@ -68,7 +66,7 @@ mod spec0_builder {
                     let v = spec.version();
                     writeln!(writer, "pub fn {}0_{}_{}() -> Spec {{", name, v.minor(), v.revision()).unwrap();
                 }
-                write_generated(&mut writer, name, spec).unwrap();
+                spec.write_generated(name, &mut writer).unwrap();
                 writeln!(writer, "}}").unwrap();
             }
 
