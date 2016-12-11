@@ -101,8 +101,8 @@ impl Domain {
             Domain::Timestamp => "u64",
             Domain::ShortString => "String",
             Domain::LongString => "Vec<u8>",
-            Domain::Table => "::amqp0::field::Table<'a>",
-            Domain::Content => "::amqp0::field::List<'a>",
+            Domain::Table => "::field::Table<'a>",
+            Domain::Content => "::field::List<'a>",
         }
     }
 
@@ -134,9 +134,9 @@ impl Domain {
             Domain::Long => "be_u32",
             Domain::LongLong => "be_u64",
             Domain::Timestamp => "be_u64",
-            Domain::ShortString => "call!(::amqp0::nom::shortstr)",
-            Domain::LongString => "call!(::amqp0::nom::longstr)",
-            Domain::Table => "call!(::amqp0::field::Table::nom_bytes)",
+            Domain::ShortString => "call!(::nom::shortstr)",
+            Domain::LongString => "call!(::nom::longstr)",
+            Domain::Table => "call!(::field::Table::nom_bytes)",
             //AmqpType::Content => "::amqp0::value::Content::from_bytes",
             Domain::Content => "length_bytes!(be_u32)",
         }
@@ -149,7 +149,7 @@ impl Domain {
             Cow::Borrowed(self.borrowed_type())
         }
             else {
-                format!("::std::Borrow::Cow<'{}, {}>", lifetime.as_ref(), self.borrowed_type()).into()
+                format!("::std::borrow::Cow<'{}, {}>", lifetime.as_ref(), self.borrowed_type()).into()
             }
     }
 }

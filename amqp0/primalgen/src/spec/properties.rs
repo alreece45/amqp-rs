@@ -94,7 +94,7 @@ impl<'a> PropertiesWriter<'a> {
                 try!(writeln!(writer, "self.{}", field.var_name()));
             }
             else {
-                try!(writeln!(writer, "self.{}.map(|v| &*v)", field.var_name()));
+                try!(writeln!(writer, "self.{}.as_ref().map(|v| &**v)", field.var_name()));
             }
 
             try!(writeln!(writer, "}}"));

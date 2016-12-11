@@ -87,7 +87,7 @@ impl<'a> SpecWriter<'a> {
 
         try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
         try!(writeln!(writer, "pub struct {};", self.struct_name));
-        try!(writeln!(writer, "impl Spec for {} {{}}\n", self.struct_name));
+        try!(writeln!(writer, "impl ::Spec for {} {{}}\n", self.struct_name));
 
         Ok(())
     }

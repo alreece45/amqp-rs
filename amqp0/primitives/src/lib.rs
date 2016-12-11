@@ -9,30 +9,23 @@
 #[macro_use]
 extern crate nom;
 
-use std::fmt;
+#[cfg(not(feature = "amqp0-build-primitives"))]
+include!(concat!("../pregen/mod.rs"));
+#[cfg(feature = "amqp0-build-primitives")]
+include!(concat!(env!("OUT_DIR"), "/amqp0/lib.rs"));
 
-pub mod amqp0;
-pub mod amqp0_10;
-pub mod amqp1;
+mod field;
 
-pub struct Version {
-    major: u8,
-    minor: u8,
-    revision: u8,
+use std::io;
+
+pub trait Spec {
+
 }
 
-impl Version {
-    pub fn new(major: u8, minor: u8, revision: u8) -> Version {
-        Version {
-            major: major,
-            minor: minor,
-            revision: revision,
-        }
-    }
+pub trait Payload {
+    fn class_id(&self) -> u16;
+    fn method_id(&self) -> u16;
+    fn len(&self) -> usize;
+    fn write_to<W: io::Write>(&self, &mut W) -> io::Result<()>;
 }
 
-impl fmt::Display for Version {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}.{}.{}", self.major, self.minor, self.revision)
-    }
-}

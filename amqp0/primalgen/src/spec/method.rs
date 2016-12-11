@@ -325,7 +325,7 @@ impl<'a> ModuleWriter<'a> {
     {
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "impl{} ::amqp0::Payload for {}{} {{", lifetimes, self.struct_name, lifetimes));
+        try!(writeln!(writer, "impl{} ::Payload for {}{} {{", lifetimes, self.struct_name, lifetimes));
 
         try!(writeln!(writer, "fn class_id(&self) -> u16 {{"));
         try!(writeln!(writer, "{}", self.class.index()));
