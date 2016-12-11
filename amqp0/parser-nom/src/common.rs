@@ -7,7 +7,6 @@
 // except according to those terms.
 
 use std::str;
-use nom::IResult;
 use nom::{be_u8, be_u32};
 
 named!(pub bool_bit<(&[u8], usize), bool>,
