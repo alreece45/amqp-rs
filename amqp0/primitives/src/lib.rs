@@ -6,15 +6,12 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#[macro_use]
-extern crate nom;
-
 #[cfg(not(feature = "amqp0-build-primitives"))]
 include!(concat!("../pregen/mod.rs"));
 #[cfg(feature = "amqp0-build-primitives")]
 include!(concat!(env!("OUT_DIR"), "/amqp0/lib.rs"));
 
-mod field;
+pub mod field;
 
 use std::io;
 
