@@ -66,7 +66,7 @@ impl<'a> Part<'a> {
 
     pub fn arg_names(&self) -> Vec<Cow<str>> {
         match *self {
-            Part::Field(_, Some(ref name)) => vec![(*name).into()],
+            Part::Field(_, Some(name)) => vec![(*name).into()],
             Part::Flags(_, ref bits, Some(ref name)) => {
                 if bits.len() > 1 {
                     bits.iter()
@@ -383,7 +383,7 @@ impl<'a> ModuleWriter<'a> {
                 .fold(parts, |mut parts, field| {
                     let part_needs_adding = if let Domain::Bit = *field.ty() {
                         let needs_adding = parts.last_mut()
-                            .map(|flag| !flag.add_field(&field))
+                            .map(|flag| !flag.add_field(field))
                             .unwrap_or(true);
 
                         if needs_adding {

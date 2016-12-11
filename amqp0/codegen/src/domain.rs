@@ -74,8 +74,7 @@ impl Domain {
     pub fn borrowed_type(&self) -> &'static str {
         match *self {
             Domain::ShortString => "str",
-            Domain::LongString => "[u8]",
-            Domain::Content => "[u8]",
+            Domain::LongString | Domain::Content => "[u8]",
             _ => self.owned_type(),
         }
     }
@@ -85,8 +84,7 @@ impl Domain {
             Domain::Octet => "u8",
             Domain::Short => "u16",
             Domain::Long => "u32",
-            Domain::LongLong => "u64",
-            Domain::Timestamp => "u64",
+            Domain::LongLong | Domain::Timestamp => "u64",
             Domain::ShortString => "String",
             Domain::LongString => "Vec<u8>",
             Domain::Table => "::field::Table<'a>",
@@ -100,8 +98,7 @@ impl Domain {
             Domain::Octet | Domain::ShortString | Domain::Content => 8,
             Domain::Short | Domain::LongString => 16,
             Domain::Long => 32,
-            Domain::LongLong => 64,
-            Domain::Timestamp => 64,
+            Domain::LongLong | Domain::Timestamp => 64,
             Domain::Table => 0,
         }
     }
@@ -116,12 +113,10 @@ impl Domain {
 
     pub fn nom_parser(&self) -> &'static str {
         match *self {
-            Domain::Bit => "be_u8",
-            Domain::Octet => "be_u8",
+            Domain::Bit | Domain::Octet => "be_u8",
             Domain::Short => "be_u16",
             Domain::Long => "be_u32",
-            Domain::LongLong => "be_u64",
-            Domain::Timestamp => "be_u64",
+            Domain::LongLong | Domain::Timestamp => "be_u64",
             Domain::ShortString => "call!(::nom::shortstr)",
             Domain::LongString => "call!(::nom::longstr)",
             Domain::Table => "call!(::field::Table::nom_bytes)",

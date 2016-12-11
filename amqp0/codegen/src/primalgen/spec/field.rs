@@ -54,7 +54,7 @@ impl<'a, T> Deref for Field<'a, T>
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
-        &self.field
+        self.field
     }
 }
 

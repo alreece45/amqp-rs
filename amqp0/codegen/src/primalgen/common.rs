@@ -193,7 +193,7 @@ impl<'a> CommonSpecs<'a> {
         }
 
         groups.into_iter()
-            .filter(|&(_, ref group)| group.maybe_common.len() > 0)
+            .filter(|&(_, ref group)| !group.maybe_common.is_empty())
             .map(|(class_name, group)| {
                 let methods = group.maybe_common.into_iter()
                     .map(|(method_name, group)| (method_name, group.index))

@@ -50,7 +50,7 @@ impl<'a> SpecWriter<'a> {
     pub fn write<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if self.spec.classes().len() == 0 {
+        if self.spec.classes().is_empty() {
             return Ok(());
         }
         //try!(writeln!(writer, "pub mod {} {{", self.mod_name));
@@ -61,11 +61,11 @@ impl<'a> SpecWriter<'a> {
         for class in self.spec.classes().values() {
             try!(writeln!(writer, "pub mod {} {{", class.name().to_camel_case()));
 
-            let property_writer = PropertiesWriter::new(&class, &self.domain_mapper);
+            let property_writer = PropertiesWriter::new(class, &self.domain_mapper);
             try!(property_writer.write_to(writer));
 
             for method in class.methods() {
-                let method_writer = ModuleWriter::new(&class, &method, &self.domain_mapper);
+                let method_writer = ModuleWriter::new(class, method, &self.domain_mapper);
                 try!(method_writer.write_to(writer));
             }
             try!(writeln!(writer, "}}"));

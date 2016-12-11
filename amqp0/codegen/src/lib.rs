@@ -6,6 +6,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+#![cfg_attr(feature="clippy", feature(plugin))]
+#![cfg_attr(feature="clippy", plugin(clippy))]
+#![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
+
 extern crate amqp0_specs as specs;
 extern crate inflections;
 
