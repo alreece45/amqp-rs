@@ -13,9 +13,9 @@ mod properties;
 use std::io;
 
 use inflections::Inflect;
-use amqp0::Spec;
+use specs::Spec;
 
-pub use DomainMapper;
+use domain::DomainMapper;
 use self::method::ModuleWriter;
 use self::properties::PropertiesWriter;
 
@@ -74,7 +74,7 @@ impl<'a> SpecWriter<'a> {
         /*
         try!(writeln!(writer, "fn parse(class: u8, method: u8, bytes: &[u8]) -> u8 {{"));
         try!(writeln!(writer, "match (class, method) {{"));
-        for class in self.spec.classes().values() {
+        for class in self.primalgen.spec.classes().values() {
             for method in class.methods() {
                 try!(writeln!(writer, "({}, {}) => {}::{}", class.index(), method.index()));
             }
@@ -83,7 +83,7 @@ impl<'a> SpecWriter<'a> {
         try!(writeln!(writer, "}}"));
         */
 
-        //try!(writeln!(writer, "}}")); // spec mod
+        //try!(writeln!(writer, "}}")); // primalgen.spec mod
 
         try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
         try!(writeln!(writer, "pub struct {};", self.struct_name));

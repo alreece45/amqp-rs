@@ -13,7 +13,7 @@ use std::ops::Deref;
 
 use inflections::Inflect;
 
-use amqp0::Spec;
+use specs::Spec;
 
 #[derive(Debug)]
 pub struct CommonSpecs<'a> {
@@ -34,17 +34,17 @@ impl<'a> CommonSpecs<'a> {
     ///
     /// Some of the class indexes change their purpose, based on the protocol version (e.g: 160 is
     /// sometimes the "message" class, and sometimes the "test" class. This isn't usually a problem,
-    /// since its clear, from the spec, what the intended use is.
+    /// since its clear, from the primalgen.spec, what the intended use is.
     ///
     /// We only define the constants in the common namespace, so it is important than a name should
     /// NOT have different indexes, e.g: if CLASS_ABC is 0x01 in one version, and 0x02 in another-- we
-    /// can't reliably define them here (they must be definied in the spec-specific module, rather than
+    /// can't reliably define them here (they must be definied in the primalgen.spec-specific module, rather than
     /// the generic one). here.
     ///
-    /// In AMQP, this never happens, so we don't worry about defining the spec-specific
+    /// In AMQP, this never happens, so we don't worry about defining the primalgen.spec-specific
     /// versions. Rather than implement functionality that will never be used, we assert that
     /// our expectation is true (the index for a given name is constant accross all of the
-    /// spec versions).
+    /// primalgen.spec versions).
     ///
     /// No breakage is expected if the assumption ever changes (e.g: if a 0.9.2 is ever released). The
     /// expected behavior, in such a case, is already used when defining common methods. The common
@@ -72,9 +72,9 @@ impl<'a> CommonSpecs<'a> {
         }
     }
 
-    /// Finds classes that exist in more than one spec
+    /// Finds classes that exist in more than one primalgen.spec
     ///
-    /// The only requirement here is for a class to exist in more than one spec.
+    /// The only requirement here is for a class to exist in more than one primalgen.spec.
     ///
     pub fn common_classes(&self) -> HashMap<&str, u16> {
         let mut classes = HashMap::new();
@@ -91,9 +91,9 @@ impl<'a> CommonSpecs<'a> {
             .collect()
     }
 
-    /// Finds classes that exist in more than one spec
+    /// Finds classes that exist in more than one primalgen.spec
     ///
-    /// The only requirement here is for a class to exist in more than one spec.
+    /// The only requirement here is for a class to exist in more than one primalgen.spec.
     ///
     pub fn common_frame_types(&self) -> HashMap<&str, u8> {
         let mut frame_types = HashMap::new();
@@ -248,7 +248,7 @@ impl<'a> CommonSpecsWriter<'a> {
         try!(writeln!(writer, "// within a single protocol"));
         try!(writeln!(writer, "//"));
         try!(writeln!(writer, "// Classes are currently only considered common if they are used in more than one"));
-        try!(writeln!(writer, "// spec. This behavior *may* change in the future as more specs are added."));
+        try!(writeln!(writer, "// primalgen.spec. This behavior *may* change in the future as more specs are added."));
         try!(writeln!(writer, "//"));
 
         let common_classes = {
@@ -297,7 +297,7 @@ impl<'a> CommonSpecsWriter<'a> {
         try!(writeln!(writer, "// Methods are only considered common when:"));
         try!(writeln!(writer, "//"));
         try!(writeln!(writer, "//   * The index value is consistent across all of the specs"));
-        try!(writeln!(writer, "//   * The method is used in more than one spec"));
+        try!(writeln!(writer, "//   * The method is used in more than one primalgen.spec"));
         try!(writeln!(writer, "//"));
         try!(writeln!(writer, "// This may change in the future-- in that case, methods *may* be removed, or"));
         try!(writeln!(writer, "// one of the requirements may be relaxed."));

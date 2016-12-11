@@ -15,7 +15,7 @@ extern crate env_logger;
 extern crate rustfmt;
 
 #[cfg(any(feature = "amqp0-build-primitives", feature = "amqp0-pregen-primitives"))]
-extern crate amqp0_primalgen as primalgen;
+extern crate amqp0_codegen as codegen;
 #[cfg(any(feature = "amqp0-build-primitives", feature = "amqp0-pregen-primitives"))]
 extern crate amqp0_specs as specs;
 
@@ -41,7 +41,7 @@ mod amqp0 {
     #[cfg(feature = "rustfmt")]
     use rustfmt;
 
-    use primalgen::{CommonSpecs, CommonSpecsWriter, SpecWriter};
+    use codegen::primalgen::{CommonSpecs, CommonSpecsWriter, SpecWriter};
     use specs::specs as amqp0_specs;
 
     pub fn build() {

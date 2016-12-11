@@ -12,9 +12,9 @@ use std::mem;
 use std::io;
 
 use inflections::Inflect;
-use amqp0::{self, ClassMethodField};
+use specs::{self, ClassMethodField};
 
-use {Domain, DomainMapper};
+use domain::{Domain, DomainMapper};
 
 type Field<'a> = super::field::Field<'a, ClassMethodField>;
 
@@ -104,8 +104,8 @@ impl<'a> Part<'a> {
 }
 
 pub struct ModuleWriter<'a> {
-    class: &'a amqp0::Class,
-    method: &'a amqp0::ClassMethod,
+    class: &'a specs::Class,
+    method: &'a specs::ClassMethod,
     struct_name: String,
     fields: Vec<Field<'a>>,
 
@@ -125,8 +125,8 @@ pub struct ModuleWriter<'a> {
 
 impl<'a> ModuleWriter<'a> {
     pub fn new(
-        class: &'a amqp0::Class,
-        method: &'a amqp0::ClassMethod,
+        class: &'a specs::Class,
+        method: &'a specs::ClassMethod,
         domain_mapper: &DomainMapper
     ) -> Self {
         let fields = method.fields().iter()

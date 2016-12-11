@@ -6,19 +6,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-extern crate amqp0_specs as amqp0;
-extern crate inflections;
-
 use std::borrow::Cow;
 use std::collections::BTreeMap;
-
-mod common;
-mod spec;
-mod nom;
-
-pub use self::spec::SpecWriter;
-pub use self::nom::ParserWriter;
-pub use self::common::{CommonSpecs, CommonSpecsWriter};
 
 pub struct DomainMapper<'a> {
     domains: &'a BTreeMap<&'a str, &'a str>,
@@ -43,7 +32,6 @@ impl<'a> DomainMapper<'a> {
     }
 }
 
-/// TODO: ensure this is private
 #[doc(hidden)]
 pub enum Domain {
     Bit,
@@ -75,7 +63,7 @@ impl Domain {
         }
     }
 
-    fn is_copy(&self) -> bool {
+    pub fn is_copy(&self) -> bool {
         match *self {
             Domain::Bit | Domain::Octet
             | Domain::Short | Domain::Long
@@ -83,7 +71,7 @@ impl Domain {
             _ => false,
         }
     }
-    fn borrowed_type(&self) -> &'static str {
+    pub fn borrowed_type(&self) -> &'static str {
         match *self {
             Domain::ShortString => "str",
             Domain::LongString => "[u8]",
@@ -91,7 +79,7 @@ impl Domain {
             _ => self.owned_type(),
         }
     }
-    fn owned_type(&self) -> &'static str {
+    pub fn owned_type(&self) -> &'static str {
         match *self {
             Domain::Bit => "bool",
             Domain::Octet => "u8",
@@ -106,7 +94,7 @@ impl Domain {
         }
     }
 
-    fn num_bits_fixed(&self) -> usize {
+    pub fn num_bits_fixed(&self) -> usize {
         match *self {
             Domain::Bit => 1,
             Domain::Octet | Domain::ShortString | Domain::Content => 8,
@@ -118,7 +106,7 @@ impl Domain {
         }
     }
 
-    fn dynamic_bit_method(&self) -> Option<&'static str> {
+    pub fn dynamic_bit_method(&self) -> Option<&'static str> {
         match *self {
             Domain::ShortString | Domain::LongString | Domain::Content => Some("len"),
             Domain::Table => Some("amqp_size"),

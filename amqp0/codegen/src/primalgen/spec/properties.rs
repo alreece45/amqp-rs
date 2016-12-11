@@ -7,8 +7,8 @@
 // except according to those terms.
 
 use std::io;
-use amqp0::{self, ClassField};
-use {Domain, DomainMapper};
+use specs::{Class, ClassField};
+use domain::{Domain, DomainMapper};
 
 type Field<'a> = super::field::Field<'a, ClassField>;
 
@@ -18,7 +18,7 @@ pub struct PropertiesWriter<'a> {
 }
 
 impl<'a> PropertiesWriter<'a> {
-    pub fn new(class: &'a amqp0::Class,domain_mapper: &DomainMapper) -> Self {
+    pub fn new(class: &'a Class,domain_mapper: &DomainMapper) -> Self {
         let fields = class.fields().iter()
             .map(|field| {
                 let ty = Domain::new(domain_mapper.map(field.domain()));
