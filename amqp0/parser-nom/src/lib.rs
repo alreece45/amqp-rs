@@ -14,7 +14,8 @@ extern crate amqp0_primitives as primitives;
 extern crate lifeguard;
 
 mod common;
-mod pool;
+
+pub mod pool;
 
 use nom::IResult;
 use pool::ParserPool;
