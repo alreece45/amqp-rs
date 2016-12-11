@@ -9,31 +9,8 @@
 #[cfg(not(feature = "lifeguard"))]
 mod lifeguard;
 
-use std::str;
-use nom::IResult;
-use nom::{be_u8, be_u32};
-
-#[cfg(not(feature = "lifeguard"))]
-pub use self::lifeguard::LifeguardParserPool;
-
-use super::field::{Table, List, Value};
-
-pub trait NomBytes<'a>: Sized {
-    fn nom_bytes<'b, P>(&'a [u8], &'b mut P) -> IResult<&'a [u8], Self>
-        where P: ParserPool,
-              Self: 'a;
-}
-
-named!(pub bool_bit<(&[u8], usize), bool>,
-    map!(take_bits!(u8, 1), |b: u8| -> bool { b != 0 })
-);
-
-named!(pub shortstr<&str>, map_res!(
-    length_bytes!(be_u8),
-    str::from_utf8
-));
-
-named!(pub longstr, length_bytes!(be_u32));
+use std::collections::HashMap;
+use primitives::field::Value;
 
 /// Creates the objects that may be needed for parsing
 ///
@@ -44,27 +21,27 @@ named!(pub longstr, length_bytes!(be_u32));
 /// on the needed capacity.
 pub trait ParserPool {
     /// Given a capacity, returns a Table
-    fn new_table(&mut self, usize) -> Table<'static>;
-    /// Given a capacity, returns a vector for Vals
-    /// Most likely to be used to assemble a List
-    fn new_values_vec(&mut self, &[u8]) -> Vec<Value<'static>>;
+    fn new_table_hashmap(&mut self, usize) -> HashMap<&'static str, &'static str>;
 
     /// Given the bytes for a table, returns a Vec to accept table entries
     /// Most likely to be used to assemble a table
     fn new_table_entries_vec(&mut self, &[u8]) -> Vec<(&'static str, Value<'static>)>;
 
-    fn return_list(&mut self, _: List<'static>) {}
-    fn return_table(&mut self, _: Table<'static>) {}
+    /// Given a capacity, returns a vector for Vals
+    /// Most likely to be used to assemble a List
+    fn new_values_vec(&mut self, &[u8]) -> Vec<Value<'static>>;
+
+    fn return_table_hashmap(&mut self, _: HashMap<&'static str, &'static str>) {}
     fn return_table_entries_vec(&mut self, _: Vec<(&'static str, Value<'static>)>) {}
-    fn return_vec(&mut self, _: Vec<Value<'static>>) {}
+    fn return_values_vec(&mut self, _: Vec<Value<'static>>) {}
 }
 
 /// Creates objects as needed (no pools, no configuration, no attributes)
 pub struct NoParserPool;
 
 impl ParserPool for NoParserPool {
-    fn new_table(&mut self, cap: usize) -> Table<'static> {
-        Table::with_capacity(cap)
+    fn new_table_hashmap(&mut self, cap: usize) -> HashMap<&'static str, &'static str> {
+        HashMap::with_capacity(cap)
     }
     fn new_values_vec(&mut self, _: &[u8]) -> Vec<Value<'static>> {
         Vec::with_capacity(10)

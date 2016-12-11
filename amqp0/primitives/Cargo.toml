@@ -1,20 +1,12 @@
 [package]
 name = "amqp0-primitives"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
 [features]
-default = ["lifeguard"]
 amqp0-pregen-primitives = ["amqp0-codegen", "amqp0-specs", "rustfmt"]
 amqp0-build-primitives = ["amqp0-codegen", "amqp0-specs"]
-
-[dependencies]
-nom = "2.0.0"
-
-[dependencies.lifeguard]
-version = "0.5.2"
-optional = true
 
 [dependencies.clippy]
 version = "*"
