@@ -9,15 +9,15 @@
 use std::collections::BTreeMap;
 use std::io;
 use inflections::Inflect;
-use amqp0::Constant;
+use specs::Constant;
 
-pub struct FrameWriter<'a> {
+pub struct FrameEnumWriter<'a> {
     frame_types: &'a BTreeMap<&'static str,  Constant>,
 }
 
-impl<'a> FrameWriter<'a> {
+impl<'a> FrameEnumWriter<'a> {
     pub fn new(frame_types: &'a BTreeMap<&'static str, Constant>) -> Self {
-        FrameWriter {
+        FrameEnumWriter {
             frame_types: frame_types,
         }
     }
@@ -25,20 +25,14 @@ impl<'a> FrameWriter<'a> {
     pub fn write_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if self.frame_types.    len() == 0 {
+        if self.frame_types.is_empty() {
             return Ok(())
         }
 
         try!(writeln!(writer, "enum Frame {{"));
         for frame_type in self.frame_types.keys() {
-            let pascal_case = match frame_type.starts_with("frame-") {
-                true => (&frame_type[6..]).to_pascal_case(),
-                false => frame_type.to_pascal_case(),
-            };
-            let args = match pascal_case {
-                "Method" => "Method",
-                "Header" => "Header"
-            };
+            let name_start = if frame_type.starts_with("frame-") { 6 } else { 0 };
+            let pascal_case = (&frame_type[name_start..]).to_pascal_case();
             try!(writeln!(writer, "{},", pascal_case));
         }
         try!(writeln!(writer, "}}"));

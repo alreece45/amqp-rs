@@ -6,14 +6,18 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-mod frame;
-mod method;
-mod properties;
-mod spec;
-mod specs;
+mod field;
+pub mod domain;
 
-pub use self::frame::FrameEnumWriter;
-pub use self::method::MethodModuleWriter;
-pub use self::properties::PropertiesStructWriter;
-pub use self::spec::SpecModuleWriter;
-pub use self::specs::SpecsModuleWriter;
+use specs::Spec;
+use inflections::Inflect;
+
+pub use self::field::Field;
+
+pub fn spec_mod_name(spec: &Spec) -> String {
+    let (minor, revision) = {
+        let version = spec.version();
+        (version.minor(), version.revision())
+    };
+    format!("{}{}_{}", spec.name().to_snake_case(), minor, revision)
+}

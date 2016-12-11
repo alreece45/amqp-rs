@@ -6,27 +6,28 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+mod writer;
+
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
-use std::io;
 use std::ops::Deref;
-
-use inflections::Inflect;
 
 use specs::Spec;
 
+pub use self::writer::SpecsModuleWriter;
+
 #[derive(Debug)]
-pub struct CommonSpecs<'a> {
+pub struct Specs<'a> {
     /// TODO: is Cow<> really the appropriate type, here?
     /// Would AsRef or Borrow be better, since we never take ownership?
     specs: Cow<'a, [Spec]>
 }
 
-impl<'a> CommonSpecs<'a> {
+impl<'a> Specs<'a> {
     pub fn new<S>(specs: S) -> Self
         where S: Into<Cow<'a, [Spec]>>
     {
-        CommonSpecs {
+        Specs {
             specs: specs.into()
         }
     }
@@ -34,22 +35,22 @@ impl<'a> CommonSpecs<'a> {
     ///
     /// Some of the class indexes change their purpose, based on the protocol version (e.g: 160 is
     /// sometimes the "message" class, and sometimes the "test" class. This isn't usually a problem,
-    /// since its clear, from the primalgen.spec, what the intended use is.
+    /// since its clear, from the spec, what the intended use is.
     ///
     /// We only define the constants in the common namespace, so it is important than a name should
-    /// NOT have different indexes, e.g: if CLASS_ABC is 0x01 in one version, and 0x02 in another-- we
-    /// can't reliably define them here (they must be definied in the primalgen.spec-specific module, rather than
-    /// the generic one). here.
+    /// NOT have different indexes, e.g: if CLASS_ABC is 0x01 in one version, and 0x02 in another--
+    /// we can't reliably define them here (they must be defined in the spec-specific module, rather
+    /// than the generic one). here.
     ///
-    /// In AMQP, this never happens, so we don't worry about defining the primalgen.spec-specific
+    /// In AMQP, this never happens, so we don't worry about defining the spec-specific
     /// versions. Rather than implement functionality that will never be used, we assert that
-    /// our expectation is true (the index for a given name is constant accross all of the
+    /// our expectation is true (the index for a given name is constant across all of the
     /// primalgen.spec versions).
     ///
-    /// No breakage is expected if the assumption ever changes (e.g: if a 0.9.2 is ever released). The
-    /// expected behavior, in such a case, is already used when defining common methods. The common
-    /// methods are defined in both the common/shared namespace, and in the version-specific namespaces.
-    /// See get_common_methods() for more details.
+    /// No breakage is expected if the assumption ever changes (e.g: if a 0.9.2 is ever released).
+    /// The expected behavior, in such a case, is already used when defining common methods. The
+    /// common methods are defined in both the common/shared namespace, and in the version-specific
+    /// namespaces. See get_common_methods() for more details.
     ///
     pub fn assert_name_indexes_consistent(&self) {
         let mut defined_classes = HashMap::<&str, u16>::new();
@@ -204,130 +205,10 @@ impl<'a> CommonSpecs<'a> {
     }
 }
 
-impl<'a> Deref for CommonSpecs<'a> {
+impl<'a> Deref for Specs<'a> {
     type Target = [Spec];
 
     fn deref(&self) -> &Self::Target {
         &self.specs[..]
-    }
-}
-
-pub struct CommonSpecsWriter<'a> {
-    specs: &'a CommonSpecs<'a>,
-}
-
-impl<'a> CommonSpecsWriter<'a> {
-    pub fn new<S>(specs: S) -> Self
-        where S: Into<&'a CommonSpecs<'a>>
-    {
-        CommonSpecsWriter {
-            specs: specs.into()
-        }
-    }
-
-    pub fn write<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        // ensure that class ids remain consistent accross the specs
-        self.specs.assert_name_indexes_consistent();
-
-        try!(self.write_frame_types(writer));
-        try!(self.write_classes(writer));
-        try!(self.write_methods(writer));
-
-        Ok(())
-    }
-
-    pub fn write_classes<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Index values for classes shared among multiple specs"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Sometimes, the index value is repeated in different classes, but these are not reused"));
-        try!(writeln!(writer, "// within a single protocol"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Classes are currently only considered common if they are used in more than one"));
-        try!(writeln!(writer, "// primalgen.spec. This behavior *may* change in the future as more specs are added."));
-        try!(writeln!(writer, "//"));
-
-        let common_classes = {
-            let mut classes = self.specs.common_classes().into_iter().collect::<Vec<_>>();
-            classes.sort_by(|&(_, a), &(_, b)| a.cmp(&b));
-            classes
-        };
-
-        for (class_name, index) in common_classes {
-            let constant_class = class_name.to_constant_case();
-            try!(writeln!(writer, "pub const CLASS_{}: u16 = {};", constant_class, index));
-        }
-        try!(writeln!(writer, ""));
-
-        Ok(())
-    }
-
-    pub fn write_frame_types<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Frame types ids shared among multiple specs"));
-        try!(writeln!(writer, "//"));
-
-        let common_frame_types = {
-            let mut frame_types = self.specs.common_frame_types().into_iter().collect::<Vec<_>>();
-            frame_types.sort_by(|&(_, a), &(_, b)| a.cmp(&b));
-            frame_types
-        };
-
-        for (class_name, index) in common_frame_types {
-            let constant_class = class_name.to_constant_case();
-            try!(writeln!(writer, "pub const {}: u8 = {};", constant_class, index));
-        }
-        try!(writeln!(writer, ""));
-
-        Ok(())
-    }
-
-    pub fn write_methods<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Index values for methods common among the different specs"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Methods are only considered common when:"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "//   * The index value is consistent across all of the specs"));
-        try!(writeln!(writer, "//   * The method is used in more than one primalgen.spec"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// This may change in the future-- in that case, methods *may* be removed, or"));
-        try!(writeln!(writer, "// one of the requirements may be relaxed."));
-        try!(writeln!(writer, "//"));
-
-        let common_methods = {
-            let mut methods = self.specs.common_methods().into_iter().collect::<Vec<_>>();
-            methods.sort_by(|&(a, _), &(b, _)| a.cmp(b));
-            methods
-        };
-
-        for (class_name, methods) in common_methods {
-            let methods = {
-                let mut methods = methods.into_iter().collect::<Vec<_>>();
-                methods.sort_by(|&(_, a), &(_, b)| a.cmp(&b));
-                methods
-            };
-
-            let constant_class = class_name.to_constant_case();
-
-            for (method_name, index) in methods {
-                let constant_method = method_name.to_constant_case();
-
-                if constant_method != "_" {
-                    try!(writeln!(writer, "pub const METHOD_{}_{}: u16 = {};", constant_class, constant_method, index));
-                }
-            }
-            try!(writeln!(writer, ""));
-        }
-
-        Ok(())
     }
 }

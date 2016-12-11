@@ -13,3 +13,7 @@ amqp0-specs = { version = "0.0.4", path = "../specs" }
 [dependencies.clippy]
 version = "*"
 optional = true
+
+[dependencies.rustfmt]
+version = "0.6.2"
+optional = true

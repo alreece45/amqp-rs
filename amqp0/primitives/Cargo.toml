@@ -5,8 +5,9 @@ authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
 [features]
-amqp0-pregen-primitives = ["amqp0-codegen", "amqp0-specs", "rustfmt"]
+amqp0-pregen-primitives = ["amqp0-build-primitives", "rustfmt"]
 amqp0-build-primitives = ["amqp0-codegen", "amqp0-specs"]
+rustfmt = ["amqp0-codegen/rustfmt"]
 
 [dependencies.clippy]
 version = "*"
@@ -25,8 +26,4 @@ optional = true
 
 [build-dependencies.clippy]
 version = "*"
-optional = true
-
-[build-dependencies.rustfmt]
-version = "0.6.2"
 optional = true

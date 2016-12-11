@@ -8,16 +8,18 @@
 
 use std::io;
 use specs::{Class, ClassField};
-use domain::{Domain, DomainMapper};
 
-type Field<'a> = super::field::Field<'a, ClassField>;
+use common;
+use common::domain::{Domain, DomainMapper};
 
-pub struct PropertiesWriter<'a> {
+type Field<'a> = common::Field<'a, ClassField>;
+
+pub struct PropertiesStructWriter<'a> {
     fields: Vec<Field<'a>>,
     has_lifetimes: bool,
 }
 
-impl<'a> PropertiesWriter<'a> {
+impl<'a> PropertiesStructWriter<'a> {
     pub fn new(class: &'a Class,domain_mapper: &DomainMapper) -> Self {
         let fields = class.fields().iter()
             .map(|field| {
@@ -30,7 +32,7 @@ impl<'a> PropertiesWriter<'a> {
             .map(|f| !f.ty().is_copy())
             .any(|is_copy| is_copy);
 
-        PropertiesWriter {
+        PropertiesStructWriter {
             fields: fields,
             has_lifetimes: has_lifetimes,
         }

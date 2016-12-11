@@ -10,7 +10,7 @@ use std::ops::Deref;
 use inflections::Inflect;
 use specs::{ClassField, ClassMethodField};
 
-use domain::Domain;
+use common::domain::Domain;
 
 pub struct Field<'a, T: 'a>
     where T: BasicField

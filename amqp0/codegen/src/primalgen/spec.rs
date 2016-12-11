@@ -6,54 +6,32 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-mod field;
-mod method;
-mod properties;
-
 use std::io;
 
 use inflections::Inflect;
 use specs::Spec;
 
-use domain::DomainMapper;
-use self::method::ModuleWriter;
-use self::properties::PropertiesWriter;
+use CodeGenerator;
+use common::domain::DomainMapper;
+use super::{MethodModuleWriter, PropertiesStructWriter};
 
-pub struct SpecWriter<'a> {
+pub struct SpecModuleWriter<'a> {
     struct_name: String,
     mod_name: String,
     domain_mapper: DomainMapper<'a>,
     spec: &'a Spec,
 }
 
-impl<'a> SpecWriter<'a> {
-    pub fn new(spec: &'a Spec) -> Self {
-        let (minor, revision) = {
-            let version = spec.version();
-            (version.minor(), version.revision())
-        };
-        let struct_name = format!("{}{}_{}", spec.name().to_pascal_case(), minor, revision);
-        let mod_name = format!("{}{}_{}", spec.name().to_snake_case(), minor, revision);
-
-        SpecWriter {
-            struct_name: struct_name,
-            mod_name: mod_name,
-            domain_mapper: DomainMapper::new(spec.domains()),
-            spec: spec,
-        }
-    }
-
-    pub fn mod_name(&self) -> &str {
-        &self.mod_name
-    }
-
-    pub fn write<W>(&self, writer: &mut W) -> io::Result<()>
+impl<'a> CodeGenerator for SpecModuleWriter<'a> {
+    fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
         if self.spec.classes().is_empty() {
             return Ok(());
         }
-        //try!(writeln!(writer, "pub mod {} {{", self.mod_name));
+
+        try!(writeln!(writer, "#![allow(too_many_arguments)]\n"));
+
         try!(self.write_class_constants(writer));
         try!(self.write_method_constants(writer));
 
@@ -61,12 +39,12 @@ impl<'a> SpecWriter<'a> {
         for class in self.spec.classes().values() {
             try!(writeln!(writer, "pub mod {} {{", class.name().to_camel_case()));
 
-            let property_writer = PropertiesWriter::new(class, &self.domain_mapper);
+            let property_writer = PropertiesStructWriter::new(class, &self.domain_mapper);
             try!(property_writer.write_to(writer));
 
             for method in class.methods() {
-                let method_writer = ModuleWriter::new(class, method, &self.domain_mapper);
-                try!(method_writer.write_to(writer));
+                let method_writer = MethodModuleWriter::new(class, method, &self.domain_mapper);
+                try!(method_writer.write_rust_to(writer));
             }
             try!(writeln!(writer, "}}"));
         }
@@ -90,6 +68,28 @@ impl<'a> SpecWriter<'a> {
         try!(writeln!(writer, "impl ::Spec for {} {{}}\n", self.struct_name));
 
         Ok(())
+    }
+}
+
+impl<'a> SpecModuleWriter<'a> {
+    pub fn new(spec: &'a Spec) -> Self {
+        let (minor, revision) = {
+            let version = spec.version();
+            (version.minor(), version.revision())
+        };
+        let struct_name = format!("{}{}_{}", spec.name().to_pascal_case(), minor, revision);
+        let mod_name = format!("{}{}_{}", spec.name().to_snake_case(), minor, revision);
+
+        SpecModuleWriter {
+            struct_name: struct_name,
+            mod_name: mod_name,
+            domain_mapper: DomainMapper::new(spec.domains()),
+            spec: spec,
+        }
+    }
+
+    pub fn mod_name(&self) -> &str {
+        &self.mod_name
     }
 
     pub fn write_class_constants<W>(&self, writer: &mut W) -> io::Result<()>

@@ -6,124 +6,46 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
-use std::mem;
 use std::io;
 
 use inflections::Inflect;
 use specs::{self, ClassMethodField};
 
-use domain::{Domain, DomainMapper};
+use CodeGenerator;
+use common;
+use common::domain::{Domain, DomainMapper};
 
-type Field<'a> = super::field::Field<'a, ClassMethodField>;
+type Field<'a> = common::Field<'a, ClassMethodField>;
 
-#[derive(Debug)]
-enum Part<'a> {
-    Field(&'a str, Option<&'a str>), // parser, var_name
-    Flags(u8, Vec<bool>, Option<Cow<'a, str>>),   // flag number, num_bits, is_used
-}
+impl<'a> CodeGenerator for MethodModuleWriter<'a> {
+    fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        try!(self.write_struct(writer));
+        try!(self.write_inherent_impl(writer));
+        try!(self.write_amqp0_payload_impl(writer));
+        // try!(self.write_nom_bytes_impl(writer));
 
-impl<'a> Part<'a> {
-    pub fn from_field(field: &'a Field, flag_num: u8) -> Self {
-        if field.is_reserved() {
-            match *field.ty() {
-                Domain::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], None),
-                _ => Part::Field(field.ty().nom_parser(), None),
-            }
-        }
-        else {
-            let name = field.var_name();
-            match *field.ty() {
-                Domain::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], Some(name.into())),
-                _ => Part::Field(field.ty().nom_parser(), Some(name)),
-            }
-        }
-    }
-
-    pub fn add_field(&mut self, field: &'a Field) -> bool {
-        match *self {
-            Part::Flags(flag_num, ref mut bits, ref mut name) if bits.len() <= 8 => {
-                bits.push(!field.is_reserved());
-
-                if bits.len() > 1 {
-                    if let Some(Cow::Borrowed(_)) = *name {
-                        mem::replace(name, Some(format!("flag{}", flag_num).into()));
-                    }
-                }
-                true
-            }
-            _ => false,
-        }
-    }
-
-    pub fn capture_name(&self) -> Option<&str> {
-         match *self {
-            Part::Flags(_, _, ref name) => name.as_ref().map(|n| n.as_ref()),
-            Part::Field(_, name) => name,
-        }
-    }
-
-    pub fn arg_names(&self) -> Vec<Cow<str>> {
-        match *self {
-            Part::Field(_, Some(name)) => vec![(*name).into()],
-            Part::Flags(_, ref bits, Some(ref name)) => {
-                if bits.len() > 1 {
-                    bits.iter()
-                        .filter(|f| **f)
-                        .enumerate()
-                        .map(|(bit, _): (usize, &bool)| -> Cow<str> { format!("{}.{}", name, bit).into() })
-                        .collect()
-                }
-                else {
-                    vec![Cow::Borrowed(&*name)]
-                }
-            },
-            _ => vec![],
-        }
-    }
-
-    pub fn nom_parser(&self) -> Cow<'a, str> {
-        const BOOL_MAPPER: &'static str = "call!(::amqp0::nom::bool_bit)";
-        match *self {
-            Part::Field(parser, _) => parser.into(),
-            Part::Flags(_, ref bits, _) => {
-                if bits.len()> 1 {
-                    let collectors = bits.iter()
-                        .map(|_| BOOL_MAPPER)
-                        .collect::<Vec<_>>()
-                        .join(",\n");
-                    format!("bits!(tuple!(\n{}\n))", collectors).into()
-                }
-                else {
-                    format!("bits!({})", BOOL_MAPPER).into()
-                }
-            },
-        }
+        Ok(())
     }
 }
 
-pub struct ModuleWriter<'a> {
+pub struct MethodModuleWriter<'a> {
     class: &'a specs::Class,
     method: &'a specs::ClassMethod,
     struct_name: String,
     fields: Vec<Field<'a>>,
 
-    /// For non-copy parameters, allow conversion using Into<>
-    /// the conversions require generic parameters: we generate
-    /// and store the generic parameters for those properties here
+    /// For non-copy parameters, allow conversion using Into<>.
+    /// Using Into requires defining generic parameters.
+    /// We store the names of the generic parameters here
     generic_types: HashMap<&'a str, String>,
-
-    /// some values ("bit") are grouped together into one byte. To extract
-    /// them, we need to extract and parse the individual bits. Before
-    /// parsing, we group those those bits up into "parts", and then generate
-    /// the parser code for each individual part
-    // parts: Vec<Part<'a>>,
 
     has_lifetimes: bool,
 }
 
-impl<'a> ModuleWriter<'a> {
+impl<'a> MethodModuleWriter<'a> {
     pub fn new(
         class: &'a specs::Class,
         method: &'a specs::ClassMethod,
@@ -163,7 +85,7 @@ impl<'a> ModuleWriter<'a> {
             .map(|f| !f.is_reserved() && !f.ty().is_copy())
             .any(|is_copy| is_copy);
 
-        ModuleWriter {
+        MethodModuleWriter {
             class: class,
             method: method,
             struct_name: method.name().to_pascal_case(),
@@ -171,17 +93,6 @@ impl<'a> ModuleWriter<'a> {
             has_lifetimes: has_lifetimes,
             generic_types: generic_types,
         }
-    }
-
-    pub fn write_to<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        try!(self.write_struct(writer));
-        try!(self.write_inherent_impl(writer));
-        try!(self.write_amqp0_payload_impl(writer));
-        // try!(self.write_nom_bytes_impl(writer));
-
-        Ok(())
     }
 
     pub fn write_struct<W>(&self, writer: &mut W) -> io::Result<()>
@@ -371,72 +282,4 @@ impl<'a> ModuleWriter<'a> {
 
         Ok(())
     }
-
-
-    pub fn write_nom_bytes_impl<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        let parts: Vec<Part> = {
-            let mut num_flags = 0;
-            let parts: Vec<Part> = Vec::new();
-            self.fields.iter()
-                .fold(parts, |mut parts, field| {
-                    let part_needs_adding = if let Domain::Bit = *field.ty() {
-                        let needs_adding = parts.last_mut()
-                            .map(|flag| !flag.add_field(field))
-                            .unwrap_or(true);
-
-                        if needs_adding {
-                            num_flags += 1;
-                        }
-                        needs_adding
-                    }
-                    else {
-                        true
-                    };
-
-                    if part_needs_adding {
-                        if let Domain::Bit = *field.ty() {
-                            assert_ne!(0, num_flags);
-                        }
-                        parts.push(Part::from_field(field, num_flags))
-                    }
-                    parts
-                })
-        };
-
-        let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
-
-        try!(writeln!(writer, "use nom::IResult;"));
-        try!(writeln!(writer, "use nom::{{be_u8, be_u16, be_u32, be_u64}};\n"));
-        try!(writeln!(writer, "impl<'a> ::amqp0::nom::NomBytes<'a> for {}{} {{", self.struct_name, lifetimes));
-        try!(writeln!(writer, "fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>"));
-        try!(writeln!(writer, "    where P: ::amqp0::nom::ParserPool"));
-        try!(writeln!(writer, "{{"));
-        try!(writeln!(writer, "do_parse!(input, "));
-
-        for part in &parts {
-            let nom_parser = part.nom_parser();
-            if let Some(name) = part.capture_name() {
-                try!(writeln!(writer, "{}: {} >>", name, nom_parser));
-            }
-            else {
-                try!(writeln!(writer, "{} >>", nom_parser));
-            }
-        }
-
-        let arguments = parts.iter()
-            .flat_map(|p| p.arg_names())
-            .collect::<Vec<_>>()
-            .join(", ");
-
-        try!(writeln!(writer, "({}::new({}))", self.struct_name, arguments));
-
-        try!(writeln!(writer, ")")); // do_parse!
-        try!(writeln!(writer, "}}")); // fn nom_bytes
-        try!(writeln!(writer, "}}")); // impl NomBytes
-
-        Ok(())
-    }
-
 }
