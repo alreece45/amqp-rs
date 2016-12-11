@@ -239,11 +239,12 @@ impl<'a> ModuleWriter<'a> {
 
         // generic arguments: <A, B, C>
         if !self.generic_types.is_empty() {
-            let arguments = self.generic_types.values()
-                .cloned()
+            let generics = self.fields.iter()
+                .filter_map(|f| self.generic_types.get(f.name()))
+                .map(|s| s.as_str())
                 .collect::<Vec<_>>()
                 .join(", ");
-            try!(write!(writer, "<{}>", arguments));
+            try!(write!(writer, "<{}>", generics));
         }
 
         let arguments = self.fields

@@ -219,7 +219,7 @@ pub mod basic {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Consume<'a> {
-        pub fn new<Q, A, C>(queue: Q,
+        pub fn new<Q, C, A>(queue: Q,
                             consumer_tag: C,
                             no_local: bool,
                             no_ack: bool,
@@ -488,7 +488,7 @@ pub mod basic {
         routing_key: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Deliver<'a> {
-        pub fn new<E, C, R>(consumer_tag: C,
+        pub fn new<C, E, R>(consumer_tag: C,
                             delivery_tag: u64,
                             redelivered: bool,
                             exchange: E,
@@ -1085,7 +1085,7 @@ pub mod connection {
         locales: ::std::borrow::Cow<'a, [u8]>,
     }
     impl<'a> Start<'a> {
-        pub fn new<M, L, S>(version_major: u8,
+        pub fn new<S, M, L>(version_major: u8,
                             version_minor: u8,
                             server_properties: S,
                             mechanisms: M,
@@ -1144,7 +1144,7 @@ pub mod connection {
         locale: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> StartOk<'a> {
-        pub fn new<R, C, M, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
+        pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
             where C: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
                   M: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, [u8]>>,
@@ -1525,7 +1525,7 @@ pub mod exchange {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Declare<'a> {
-        pub fn new<T, E, A>(exchange: E,
+        pub fn new<E, T, A>(exchange: E,
                             ty: T,
                             passive: bool,
                             durable: bool,
@@ -1687,7 +1687,7 @@ pub mod exchange {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Bind<'a> {
-        pub fn new<S, R, D, A>(destination: D,
+        pub fn new<D, S, R, A>(destination: D,
                                source: S,
                                routing_key: R,
                                no_wait: bool,
@@ -1774,7 +1774,7 @@ pub mod exchange {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Unbind<'a> {
-        pub fn new<A, R, S, D>(destination: D,
+        pub fn new<D, S, R, A>(destination: D,
                                source: S,
                                routing_key: R,
                                no_wait: bool,
@@ -1867,7 +1867,7 @@ pub mod queue {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Declare<'a> {
-        pub fn new<A, Q>(queue: Q,
+        pub fn new<Q, A>(queue: Q,
                          passive: bool,
                          durable: bool,
                          exclusive: bool,
@@ -1979,7 +1979,7 @@ pub mod queue {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Bind<'a> {
-        pub fn new<E, Q, R, A>(queue: Q,
+        pub fn new<Q, E, R, A>(queue: Q,
                                exchange: E,
                                routing_key: R,
                                no_wait: bool,
@@ -2065,7 +2065,7 @@ pub mod queue {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Unbind<'a> {
-        pub fn new<E, R, A, Q>(queue: Q, exchange: E, routing_key: R, arguments: A) -> Self
+        pub fn new<Q, E, R, A>(queue: Q, exchange: E, routing_key: R, arguments: A) -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,

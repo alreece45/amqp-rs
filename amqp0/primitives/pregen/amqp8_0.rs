@@ -351,7 +351,7 @@ pub mod basic {
         nowait: bool,
     }
     impl<'a> Consume<'a> {
-        pub fn new<C, Q>(ticket: u16,
+        pub fn new<Q, C>(ticket: u16,
                          queue: Q,
                          consumer_tag: C,
                          no_local: bool,
@@ -578,7 +578,7 @@ pub mod basic {
         routing_key: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Return<'a> {
-        pub fn new<R, R0, E>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
+        pub fn new<R, E, R0>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R0: Into<::std::borrow::Cow<'a, str>>
@@ -629,7 +629,7 @@ pub mod basic {
         routing_key: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Deliver<'a> {
-        pub fn new<R, E, C>(consumer_tag: C,
+        pub fn new<C, E, R>(consumer_tag: C,
                             delivery_tag: u64,
                             redelivered: bool,
                             exchange: E,
@@ -732,7 +732,7 @@ pub mod basic {
         message_count: u32,
     }
     impl<'a> GetOk<'a> {
-        pub fn new<R, E>(delivery_tag: u64,
+        pub fn new<E, R>(delivery_tag: u64,
                          redelivered: bool,
                          exchange: E,
                          routing_key: R,
@@ -1146,7 +1146,7 @@ pub mod connection {
         locales: ::std::borrow::Cow<'a, [u8]>,
     }
     impl<'a> Start<'a> {
-        pub fn new<S, L, M>(version_major: u8,
+        pub fn new<S, M, L>(version_major: u8,
                             version_minor: u8,
                             server_properties: S,
                             mechanisms: M,
@@ -1205,7 +1205,7 @@ pub mod connection {
         locale: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> StartOk<'a> {
-        pub fn new<L, M, C, R>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
+        pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
             where C: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
                   M: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, [u8]>>,
@@ -1399,7 +1399,7 @@ pub mod connection {
         insist: bool,
     }
     impl<'a> Open<'a> {
-        pub fn new<C, V>(virtual_host: V, capabilities: C, insist: bool) -> Self
+        pub fn new<V, C>(virtual_host: V, capabilities: C, insist: bool) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>
         {
@@ -1694,7 +1694,7 @@ pub mod exchange {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Declare<'a> {
-        pub fn new<E, A, T>(ticket: u16,
+        pub fn new<E, T, A>(ticket: u16,
                             exchange: E,
                             ty: T,
                             passive: bool,
@@ -2229,7 +2229,7 @@ pub mod file {
         identifier: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Publish<'a> {
-        pub fn new<E, I, R>(ticket: u16,
+        pub fn new<E, R, I>(ticket: u16,
                             exchange: E,
                             routing_key: R,
                             mandatory: bool,
@@ -2345,7 +2345,7 @@ pub mod file {
         identifier: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Deliver<'a> {
-        pub fn new<C, E, I, R>(consumer_tag: C,
+        pub fn new<C, E, R, I>(consumer_tag: C,
                                delivery_tag: u64,
                                redelivered: bool,
                                exchange: E,
@@ -2608,7 +2608,7 @@ pub mod queue {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Bind<'a> {
-        pub fn new<Q, A, E, R>(ticket: u16,
+        pub fn new<Q, E, R, A>(ticket: u16,
                                queue: Q,
                                exchange: E,
                                routing_key: R,
@@ -2948,7 +2948,7 @@ pub mod stream {
         nowait: bool,
     }
     impl<'a> Consume<'a> {
-        pub fn new<C, Q>(ticket: u16,
+        pub fn new<Q, C>(ticket: u16,
                          queue: Q,
                          consumer_tag: C,
                          no_local: bool,
@@ -3112,7 +3112,7 @@ pub mod stream {
         immediate: bool,
     }
     impl<'a> Publish<'a> {
-        pub fn new<R, E>(ticket: u16,
+        pub fn new<E, R>(ticket: u16,
                          exchange: E,
                          routing_key: R,
                          mandatory: bool,
@@ -3170,7 +3170,7 @@ pub mod stream {
         routing_key: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Return<'a> {
-        pub fn new<E, R0, R>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
+        pub fn new<R, E, R0>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R0: Into<::std::borrow::Cow<'a, str>>
@@ -3220,7 +3220,7 @@ pub mod stream {
         queue: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Deliver<'a> {
-        pub fn new<Q, E, C>(consumer_tag: C, delivery_tag: u64, exchange: E, queue: Q) -> Self
+        pub fn new<C, E, Q>(consumer_tag: C, delivery_tag: u64, exchange: E, queue: Q) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   Q: Into<::std::borrow::Cow<'a, str>>
@@ -3354,7 +3354,7 @@ pub mod test {
         operation: u8,
     }
     impl<'a> String<'a> {
-        pub fn new<S0, S>(string_1: S, string_2: S0, operation: u8) -> Self
+        pub fn new<S, S0>(string_1: S, string_2: S0, operation: u8) -> Self
             where S: Into<::std::borrow::Cow<'a, str>>,
                   S0: Into<::std::borrow::Cow<'a, [u8]>>
         {

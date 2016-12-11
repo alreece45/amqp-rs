@@ -377,7 +377,7 @@ pub mod basic {
         immediate: bool,
     }
     impl<'a> Publish<'a> {
-        pub fn new<R, E>(exchange: E, routing_key: R, mandatory: bool, immediate: bool) -> Self
+        pub fn new<E, R>(exchange: E, routing_key: R, mandatory: bool, immediate: bool) -> Self
             where E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>
         {
@@ -426,7 +426,7 @@ pub mod basic {
         routing_key: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Return<'a> {
-        pub fn new<R0, E, R>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
+        pub fn new<R, E, R0>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R0: Into<::std::borrow::Cow<'a, str>>
@@ -477,7 +477,7 @@ pub mod basic {
         routing_key: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> Deliver<'a> {
-        pub fn new<E, R, C>(consumer_tag: C,
+        pub fn new<C, E, R>(consumer_tag: C,
                             delivery_tag: u64,
                             redelivered: bool,
                             exchange: E,
@@ -1525,7 +1525,7 @@ pub mod queue {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Declare<'a> {
-        pub fn new<A, Q>(queue: Q,
+        pub fn new<Q, A>(queue: Q,
                          passive: bool,
                          durable: bool,
                          exclusive: bool,
@@ -1637,7 +1637,7 @@ pub mod queue {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Bind<'a> {
-        pub fn new<Q, A, E, R>(queue: Q,
+        pub fn new<Q, E, R, A>(queue: Q,
                                exchange: E,
                                routing_key: R,
                                no_wait: bool,
@@ -1723,7 +1723,7 @@ pub mod queue {
         arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
     }
     impl<'a> Unbind<'a> {
-        pub fn new<Q, A, R, E>(queue: Q, exchange: E, routing_key: R, arguments: A) -> Self
+        pub fn new<Q, E, R, A>(queue: Q, exchange: E, routing_key: R, arguments: A) -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
