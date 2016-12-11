@@ -1,7 +1,7 @@
 [package]
 name = "amqp0-primalgen"
 authors = ["Alexander Reece <github@reece45.com>"]
-version = "0.0.2"
+version = "0.0.3"
 
 [features]
 default = []

@@ -1,6 +1,6 @@
 [package]
 name = "amqp0-specs"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
