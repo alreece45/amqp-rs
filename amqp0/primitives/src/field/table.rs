@@ -17,10 +17,13 @@ pub struct Table<'a> {
     values: HashMap<Cow<'a, str>, Value<'a>>,
 }
 
-impl<'a> Table<'a> {
+impl Table<'static> {
     pub fn new() -> Self {
         Self::from_hashmap(HashMap::new())
     }
+}
+
+impl<'a> Table<'a> {
 
     pub fn from_hashmap(hashmap: HashMap<Cow<'a, str>, Value<'a>>) -> Self {
         Table {
@@ -32,9 +35,9 @@ impl<'a> Table<'a> {
         Self::from_hashmap(HashMap::with_capacity(cap))
     }
 
-    pub fn to_owned(self) -> Table<'static> {
+    pub fn into_static(self) -> Table<'static> {
         let hashmap = self.values.into_iter()
-            .map(|(k, v)| { (k.into_owned().into(), v.to_owned().into()) })
+            .map(|(k, v)| { (k.into_owned().into(), v.into_static()) })
             .collect();
 
         Table::from_hashmap(hashmap)
@@ -51,6 +54,12 @@ impl<'a> Table<'a> {
         self.values.iter()
             .map(|(k, v)| k.len() + v.amqp_size())
             .sum()
+    }
+}
+
+impl Default for Table<'static> {
+    fn default() -> Self {
+        Table::new()
     }
 }
 

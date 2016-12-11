@@ -15,10 +15,13 @@ pub struct List<'a> {
     values: Vec<Value<'a>>,
 }
 
-impl<'a> List<'a> {
+impl List<'static> {
     pub fn new() -> Self {
         Self::from_vec(Vec::new())
     }
+}
+
+impl<'a> List<'a> {
 
     pub fn from_vec(values: Vec<Value<'a>>) -> Self {
         List {
@@ -30,9 +33,9 @@ impl<'a> List<'a> {
         Self::from_vec(Vec::with_capacity(cap))
     }
 
-    pub fn to_owned(self) -> List<'static> {
+    pub fn into_static(self) -> List<'static> {
         List::from_vec(self.values.into_iter()
-            .map(|v| v.to_owned())
+            .map(|v| v.into_static())
             .collect())
     }
 
@@ -63,24 +66,8 @@ impl<'a> DerefMut for List<'a> {
     }
 }
 
-/*
-impl<'a> ToOwned for List<'a> {
-    type Owned = ListBuf;
-    fn to_owned(&self) -> Self::Owned {
-        self.iter()
+impl Default for List<'static> {
+    fn default() -> Self {
+        List::new()
     }
 }
-
-impl<'a> From<List<'a>> for Cow<'a, List<'a>> {
-    fn from(list: List) -> Self {
-        Cow::Borrowed(list)
-    }
-}
-
-impl From<ListBuf> for Cow<'static, List<'static>> {
-    fn from(list: ListBuf) -> Self {
-        Cow::Owned(list)
-    }
-}
-*/
-

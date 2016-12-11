@@ -5,20 +5,15 @@
 // <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
-//!
-//! Basic "field" that essentially represents dynamic-types in the AMQP protocol.
-//!
-//! There are two main types to represent "field values": Val and Value. Val is unsized (without
-//! ownership or heap allocations) and one is Sized/Owned -- much like the difference between
-//! str/String, Path/PathBuf, Cstr/CStr, and OsStr/OsString.
-//!
 
 use std::borrow::Cow;
 use std::time::{SystemTime, UNIX_EPOCH};
 use super::MAX_SHORTSTR_LEN;
 use super::{Table, List};
 
-/// Value is the "owned" version of Val
+///
+/// Basic "field" that essentially represents dynamic-types in the AMQP protocol.
+///
 #[derive(Debug, PartialEq, Clone)]
 pub enum Value<'a> {
     Void,
@@ -86,7 +81,7 @@ impl<'a> Value<'a> {
         }
     }
 
-    pub fn to_owned(self) -> Value<'static> {
+    pub fn into_static(self) -> Value<'static> {
         match self {
             Value::Bool(val)           => Value::Bool(val),
             Value::I8(val)             => Value::I8(val),
@@ -103,8 +98,8 @@ impl<'a> Value<'a> {
             Value::Decimal(s, b)       => Value::Decimal(s, b),
             Value::ShortString(string) => Value::ShortString(Cow::Owned(string.into_owned())),
             Value::LongString(bytes)   => Value::LongString(Cow::Owned(bytes.into_owned())),
-            Value::List(list)          => Value::List(list.to_owned()),
-            Value::Table(table)        => Value::Table(table.to_owned()),
+            Value::List(list)          => Value::List(list.into_static()),
+            Value::Table(table)        => Value::Table(table.into_static()),
             Value::Void                => Value::Void,
         }
     }

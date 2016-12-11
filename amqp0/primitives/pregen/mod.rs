@@ -29,7 +29,7 @@ pub const FRAME_HEARTBEAT: u8 = 8;
 // within a single protocol
 //
 // Classes are currently only considered common if they are used in more than one
-// spec. This behavior *may* change in the future as more specs are added.
+// primalgen.spec. This behavior *may* change in the future as more specs are added.
 //
 pub const CLASS_CONNECTION: u16 = 10;
 pub const CLASS_CHANNEL: u16 = 20;
@@ -51,7 +51,7 @@ pub const CLASS_TEST: u16 = 120;
 // Methods are only considered common when:
 //
 //   * The index value is consistent across all of the specs
-//   * The method is used in more than one spec
+//   * The method is used in more than one primalgen.spec
 //
 // This may change in the future-- in that case, methods *may* be removed, or
 // one of the requirements may be relaxed.

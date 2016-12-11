@@ -6,6 +6,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+#![cfg_attr(feature="clippy", feature(plugin))]
+#![cfg_attr(feature="clippy", plugin(clippy))]
+#![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
+
 #[cfg(not(feature = "amqp0-build-primitives"))]
 include!(concat!("../pregen/mod.rs"));
 #[cfg(feature = "amqp0-build-primitives")]
@@ -24,5 +28,9 @@ pub trait Payload {
     fn method_id(&self) -> u16;
     fn len(&self) -> usize;
     fn write_to<W: io::Write>(&self, &mut W) -> io::Result<()>;
+
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
