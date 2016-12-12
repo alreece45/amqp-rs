@@ -95,6 +95,16 @@ impl<'a> MethodModuleWriter<'a> {
         }
     }
 
+    #[doc(hidden)]
+    pub fn struct_name(&self) -> &str {
+        &*self.struct_name
+    }
+
+    #[doc(hidden)]
+    pub fn has_lifetimes(&self) -> bool {
+        self.has_lifetimes
+    }
+
     pub fn write_struct<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

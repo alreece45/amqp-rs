@@ -41,31 +41,35 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
 
         try!(writeln!(writer, "\n// Class Modules"));
         for class in self.spec.classes().values() {
-            try!(writeln!(writer, "pub mod {} {{", class.name().to_camel_case()));
+            let module_name = class.name().to_snake_case();
+            try!(writeln!(writer, "pub mod {} {{", module_name));
 
             let property_writer = PropertiesStructWriter::new(class, &self.domain_mapper);
             try!(property_writer.write_to(writer));
 
-            for method in class.methods() {
-                let method_writer = MethodModuleWriter::new(class, method, &self.domain_mapper);
+            let method_writers = class.methods().iter()
+                .map(|method| MethodModuleWriter::new(class, method, &self.domain_mapper))
+                .collect::<Vec<_>>();
+
+            for method_writer in &method_writers {
                 try!(method_writer.write_rust_to(writer));
             }
-            try!(writeln!(writer, "}}"));
-        }
 
-        /*
-        try!(writeln!(writer, "fn parse(class: u8, method: u8, bytes: &[u8]) -> u8 {{"));
-        try!(writeln!(writer, "match (class, method) {{"));
-        for class in self.primalgen.spec.classes().values() {
-            for method in class.methods() {
-                try!(writeln!(writer, "({}, {}) => {}::{}", class.index(), method.index()));
+            let enum_items = method_writers.iter()
+                .map(|w| (w.struct_name().to_owned(), w.has_lifetimes()))
+                .collect::<Vec<_>>();
+
+            let has_lifetimes = enum_items.iter().any(|&(_, has_lifetimes)| has_lifetimes);
+            let lifetimes = if has_lifetimes { "<'a>" } else {""};
+
+            try!(writeln!(writer, "pub enum Method{} {{", lifetimes));
+            for (name, has_lifetimes) in enum_items {
+                let lifetimes = if has_lifetimes { "<'a>" } else {""};
+                try!(writeln!(writer, "{0}({0}{1}),", name, lifetimes));
             }
+            try!(writeln!(writer, "}} // enum Method\n"));
+            try!(writeln!(writer, "}} // mod {}\n", module_name));
         }
-        try!(writeln!(writer, "}}"));
-        try!(writeln!(writer, "}}"));
-        */
-
-        //try!(writeln!(writer, "}}")); // primalgen.spec mod
 
         try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
         try!(writeln!(writer, "pub struct {};", self.struct_name));
