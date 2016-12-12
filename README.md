@@ -1,5 +1,7 @@
 #amqp-rs
 
+[![Build Status](https://travis-ci.org/alreece45/amqp-rs.svg?branch=master)](https://travis-ci.org/alreece45/amqp-rs)
+
 Various modules for AMQP.
 
 This library does not yet interact with clients or servers.
