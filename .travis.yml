@@ -17,11 +17,11 @@ env:
   - TEST_DIR=amqp0/specgen
   - TEST_DIR=amqp0/codegen
   # Build
-  - TEST_DIR=amqp0/specs FEATURES='amqp-build-specs"
-  - TEST_DIR=amqp0/primitives FEATURES='amqp-build-primitives"
-  - TEST_DIR=amqp0/parser-nom FEATURES='amqp-build-parser"
+  - TEST_DIR=amqp0/specs FEATURES='amqp0-build-specs"
+  - TEST_DIR=amqp0/primitives FEATURES='amqp0-build-primitives"
+  - TEST_DIR=amqp0/parser-nom FEATURES='amqp0-build-parser"
   # Pregen
-  - TEST_DIR=amqp0/primitives FEATURES='amqp-pregen-primitives"
-  - TEST_DIR=amqp0/parser-nom FEATURES='amqp-pregen-parser"
+  - TEST_DIR=amqp0/primitives FEATURES='amqp0-pregen-primitives"
+  - TEST_DIR=amqp0/parser-nom FEATURES='amqp0-pregen-parser"
 
 script: cd $TEST_DIR && cargo test --features=" $FEATURES"
