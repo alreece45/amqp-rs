@@ -1,1 +1,0 @@
-initSidebarItems({"constant":[["CLASS_BASIC",""],["CLASS_CHANNEL",""],["CLASS_CONNECTION",""],["CLASS_EXCHANGE",""],["CLASS_QUEUE",""],["CLASS_TX",""]],"mod":[["basic",""],["channel",""],["connection",""],["exchange",""],["queue",""],["transaction",""]]});

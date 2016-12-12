@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `amqp9_0` mod in crate `amqp0_primitives`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, amqp9_0">
+
+    <title>amqp0_primitives::amqp9_0 - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>amqp0_primitives</a></p><script>window.sidebarCurrent = {name: 'amqp9_0', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>amqp0_primitives</a>::<wbr><a class='mod' href=''>amqp9_0</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1553' class='srclink' href='../../src/amqp0_primitives/up/pregen/amqp9_0.rs.html#8-4344' title='goto source code'>[src]</a></span></h1>
+<h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='access/index.html'
+                                  title='amqp0_primitives::amqp9_0::access'>access</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='basic/index.html'
+                                  title='amqp0_primitives::amqp9_0::basic'>basic</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='channel/index.html'
+                                  title='amqp0_primitives::amqp9_0::channel'>channel</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='connection/index.html'
+                                  title='amqp0_primitives::amqp9_0::connection'>connection</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='dtx/index.html'
+                                  title='amqp0_primitives::amqp9_0::dtx'>dtx</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='exchange/index.html'
+                                  title='amqp0_primitives::amqp9_0::exchange'>exchange</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='file/index.html'
+                                  title='amqp0_primitives::amqp9_0::file'>file</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='message/index.html'
+                                  title='amqp0_primitives::amqp9_0::message'>message</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='queue/index.html'
+                                  title='amqp0_primitives::amqp9_0::queue'>queue</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='stream/index.html'
+                                  title='amqp0_primitives::amqp9_0::stream'>stream</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='tunnel/index.html'
+                                  title='amqp0_primitives::amqp9_0::tunnel'>tunnel</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='tx/index.html'
+                                  title='amqp0_primitives::amqp9_0::tx'>tx</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Amqp9_0.html'
+                                  title='amqp0_primitives::amqp9_0::Amqp9_0'>Amqp9_0</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_ACCESS.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_ACCESS'>CLASS_ACCESS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_BASIC.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_BASIC'>CLASS_BASIC</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_CHANNEL.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_CHANNEL'>CLASS_CHANNEL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_CONNECTION.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_CONNECTION'>CLASS_CONNECTION</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_DTX.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_DTX'>CLASS_DTX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_EXCHANGE.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_EXCHANGE'>CLASS_EXCHANGE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_FILE.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_FILE'>CLASS_FILE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_MESSAGE.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_MESSAGE'>CLASS_MESSAGE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_QUEUE.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_QUEUE'>CLASS_QUEUE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_STREAM.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_STREAM'>CLASS_STREAM</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_TUNNEL.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_TUNNEL'>CLASS_TUNNEL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.CLASS_TX.html'
+                                  title='amqp0_primitives::amqp9_0::CLASS_TX'>CLASS_TX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_ACCESS_REQUEST.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_ACCESS_REQUEST'>METHOD_ACCESS_REQUEST</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_ACCESS_REQUEST_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_ACCESS_REQUEST_OK'>METHOD_ACCESS_REQUEST_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_ACK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_ACK'>METHOD_BASIC_ACK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_CANCEL.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_CANCEL'>METHOD_BASIC_CANCEL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_CANCEL_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_CANCEL_OK'>METHOD_BASIC_CANCEL_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_CONSUME.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_CONSUME'>METHOD_BASIC_CONSUME</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_CONSUME_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_CONSUME_OK'>METHOD_BASIC_CONSUME_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_DELIVER.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_DELIVER'>METHOD_BASIC_DELIVER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_GET.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_GET'>METHOD_BASIC_GET</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_GET_EMPTY.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_GET_EMPTY'>METHOD_BASIC_GET_EMPTY</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_GET_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_GET_OK'>METHOD_BASIC_GET_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_PUBLISH.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_PUBLISH'>METHOD_BASIC_PUBLISH</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_QOS.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_QOS'>METHOD_BASIC_QOS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_QOS_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_QOS_OK'>METHOD_BASIC_QOS_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_RECOVER.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_RECOVER'>METHOD_BASIC_RECOVER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_REJECT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_REJECT'>METHOD_BASIC_REJECT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_BASIC_RETURN.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_BASIC_RETURN'>METHOD_BASIC_RETURN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_CLOSE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_CLOSE'>METHOD_CHANNEL_CLOSE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_CLOSE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_CLOSE_OK'>METHOD_CHANNEL_CLOSE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_FLOW.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_FLOW'>METHOD_CHANNEL_FLOW</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_FLOW_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_FLOW_OK'>METHOD_CHANNEL_FLOW_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_OK'>METHOD_CHANNEL_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_OPEN.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_OPEN'>METHOD_CHANNEL_OPEN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_OPEN_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_OPEN_OK'>METHOD_CHANNEL_OPEN_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_PING.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_PING'>METHOD_CHANNEL_PING</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_PONG.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_PONG'>METHOD_CHANNEL_PONG</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CHANNEL_RESUME.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CHANNEL_RESUME'>METHOD_CHANNEL_RESUME</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_CLOSE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_CLOSE'>METHOD_CONNECTION_CLOSE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_CLOSE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_CLOSE_OK'>METHOD_CONNECTION_CLOSE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_OPEN.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_OPEN'>METHOD_CONNECTION_OPEN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_OPEN_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_OPEN_OK'>METHOD_CONNECTION_OPEN_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_REDIRECT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_REDIRECT'>METHOD_CONNECTION_REDIRECT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_SECURE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_SECURE'>METHOD_CONNECTION_SECURE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_SECURE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_SECURE_OK'>METHOD_CONNECTION_SECURE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_START.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_START'>METHOD_CONNECTION_START</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_START_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_START_OK'>METHOD_CONNECTION_START_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_TUNE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_TUNE'>METHOD_CONNECTION_TUNE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_CONNECTION_TUNE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_CONNECTION_TUNE_OK'>METHOD_CONNECTION_TUNE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_DTX_SELECT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_DTX_SELECT'>METHOD_DTX_SELECT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_DTX_SELECT_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_DTX_SELECT_OK'>METHOD_DTX_SELECT_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_DTX_START.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_DTX_START'>METHOD_DTX_START</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_DTX_START_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_DTX_START_OK'>METHOD_DTX_START_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_EXCHANGE_DECLARE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_EXCHANGE_DECLARE'>METHOD_EXCHANGE_DECLARE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_EXCHANGE_DECLARE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_EXCHANGE_DECLARE_OK'>METHOD_EXCHANGE_DECLARE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_EXCHANGE_DELETE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_EXCHANGE_DELETE'>METHOD_EXCHANGE_DELETE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_EXCHANGE_DELETE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_EXCHANGE_DELETE_OK'>METHOD_EXCHANGE_DELETE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_ACK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_ACK'>METHOD_FILE_ACK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_CANCEL.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_CANCEL'>METHOD_FILE_CANCEL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_CANCEL_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_CANCEL_OK'>METHOD_FILE_CANCEL_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_CONSUME.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_CONSUME'>METHOD_FILE_CONSUME</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_CONSUME_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_CONSUME_OK'>METHOD_FILE_CONSUME_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_DELIVER.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_DELIVER'>METHOD_FILE_DELIVER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_OPEN.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_OPEN'>METHOD_FILE_OPEN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_OPEN_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_OPEN_OK'>METHOD_FILE_OPEN_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_PUBLISH.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_PUBLISH'>METHOD_FILE_PUBLISH</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_QOS.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_QOS'>METHOD_FILE_QOS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_QOS_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_QOS_OK'>METHOD_FILE_QOS_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_REJECT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_REJECT'>METHOD_FILE_REJECT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_RETURN.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_RETURN'>METHOD_FILE_RETURN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_FILE_STAGE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_FILE_STAGE'>METHOD_FILE_STAGE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_APPEND.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_APPEND'>METHOD_MESSAGE_APPEND</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_CANCEL.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_CANCEL'>METHOD_MESSAGE_CANCEL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_CHECKPOINT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_CHECKPOINT'>METHOD_MESSAGE_CHECKPOINT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_CLOSE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_CLOSE'>METHOD_MESSAGE_CLOSE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_CONSUME.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_CONSUME'>METHOD_MESSAGE_CONSUME</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_EMPTY.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_EMPTY'>METHOD_MESSAGE_EMPTY</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_GET.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_GET'>METHOD_MESSAGE_GET</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_OFFSET.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_OFFSET'>METHOD_MESSAGE_OFFSET</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_OK'>METHOD_MESSAGE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_OPEN.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_OPEN'>METHOD_MESSAGE_OPEN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_QOS.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_QOS'>METHOD_MESSAGE_QOS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_RECOVER.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_RECOVER'>METHOD_MESSAGE_RECOVER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_REJECT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_REJECT'>METHOD_MESSAGE_REJECT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_RESUME.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_RESUME'>METHOD_MESSAGE_RESUME</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_MESSAGE_TRANSFER.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_MESSAGE_TRANSFER'>METHOD_MESSAGE_TRANSFER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_BIND.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_BIND'>METHOD_QUEUE_BIND</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_BIND_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_BIND_OK'>METHOD_QUEUE_BIND_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_DECLARE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_DECLARE'>METHOD_QUEUE_DECLARE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_DECLARE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_DECLARE_OK'>METHOD_QUEUE_DECLARE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_DELETE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_DELETE'>METHOD_QUEUE_DELETE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_DELETE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_DELETE_OK'>METHOD_QUEUE_DELETE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_PURGE.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_PURGE'>METHOD_QUEUE_PURGE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_PURGE_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_PURGE_OK'>METHOD_QUEUE_PURGE_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_UNBIND.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_UNBIND'>METHOD_QUEUE_UNBIND</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_QUEUE_UNBIND_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_QUEUE_UNBIND_OK'>METHOD_QUEUE_UNBIND_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_CANCEL.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_CANCEL'>METHOD_STREAM_CANCEL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_CANCEL_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_CANCEL_OK'>METHOD_STREAM_CANCEL_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_CONSUME.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_CONSUME'>METHOD_STREAM_CONSUME</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_CONSUME_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_CONSUME_OK'>METHOD_STREAM_CONSUME_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_DELIVER.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_DELIVER'>METHOD_STREAM_DELIVER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_PUBLISH.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_PUBLISH'>METHOD_STREAM_PUBLISH</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_QOS.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_QOS'>METHOD_STREAM_QOS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_QOS_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_QOS_OK'>METHOD_STREAM_QOS_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_STREAM_RETURN.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_STREAM_RETURN'>METHOD_STREAM_RETURN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_TUNNEL_REQUEST.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_TUNNEL_REQUEST'>METHOD_TUNNEL_REQUEST</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_TX_COMMIT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_TX_COMMIT'>METHOD_TX_COMMIT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_TX_COMMIT_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_TX_COMMIT_OK'>METHOD_TX_COMMIT_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_TX_ROLLBACK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_TX_ROLLBACK'>METHOD_TX_ROLLBACK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_TX_ROLLBACK_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_TX_ROLLBACK_OK'>METHOD_TX_ROLLBACK_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_TX_SELECT.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_TX_SELECT'>METHOD_TX_SELECT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.METHOD_TX_SELECT_OK.html'
+                                  title='amqp0_primitives::amqp9_0::METHOD_TX_SELECT_OK'>METHOD_TX_SELECT_OK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "amqp0_primitives";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Payload` trait in crate `amqp0_primitives`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Payload">
+
+    <title>amqp0_primitives::Payload - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>amqp0_primitives</a></p><script>window.sidebarCurrent = {name: 'Payload', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>amqp0_primitives</a>::<wbr><a class='trait' href=''>Payload</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-153' class='srclink' href='../src/amqp0_primitives/lib.rs.html#26-35' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Payload {
+    fn <a href='#tymethod.class_id' class='fnname'>class_id</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>;
+    fn <a href='#tymethod.method_id' class='fnname'>method_id</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>;
+    fn <a href='#tymethod.len' class='fnname'>len</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
+    fn <a href='#tymethod.write_to' class='fnname'>write_to</a>&lt;W:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/io/trait.Write.html' title='std::io::Write'>Write</a>&gt;(&amp;self, &amp;mut W) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+
+    fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a> { ... }
+}</pre>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.class_id' class='method stab '><span id='class_id.v' class='invisible'><code>fn <a href='#tymethod.class_id' class='fnname'>class_id</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></span></h3><h3 id='tymethod.method_id' class='method stab '><span id='method_id.v' class='invisible'><code>fn <a href='#tymethod.method_id' class='fnname'>method_id</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></span></h3><h3 id='tymethod.len' class='method stab '><span id='len.v' class='invisible'><code>fn <a href='#tymethod.len' class='fnname'>len</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h3><h3 id='tymethod.write_to' class='method stab '><span id='write_to.v' class='invisible'><code>fn <a href='#tymethod.write_to' class='fnname'>write_to</a>&lt;W:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/io/trait.Write.html' title='std::io::Write'>Write</a>&gt;(&amp;self, &amp;mut W) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h3></div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.is_empty' class='method stab '><span id='is_empty.v' class='invisible'><code>fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h3></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Qos.html' title='amqp0_primitives::amqp9_1::basic::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.QosOk.html' title='amqp0_primitives::amqp9_1::basic::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Consume.html' title='amqp0_primitives::amqp9_1::basic::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.ConsumeOk.html' title='amqp0_primitives::amqp9_1::basic::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Cancel.html' title='amqp0_primitives::amqp9_1::basic::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.CancelOk.html' title='amqp0_primitives::amqp9_1::basic::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Publish.html' title='amqp0_primitives::amqp9_1::basic::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Return.html' title='amqp0_primitives::amqp9_1::basic::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Deliver.html' title='amqp0_primitives::amqp9_1::basic::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Get.html' title='amqp0_primitives::amqp9_1::basic::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.GetOk.html' title='amqp0_primitives::amqp9_1::basic::GetOk'>GetOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.GetEmpty.html' title='amqp0_primitives::amqp9_1::basic::GetEmpty'>GetEmpty</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Ack.html' title='amqp0_primitives::amqp9_1::basic::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Reject.html' title='amqp0_primitives::amqp9_1::basic::Reject'>Reject</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.RecoverAsync.html' title='amqp0_primitives::amqp9_1::basic::RecoverAsync'>RecoverAsync</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.Recover.html' title='amqp0_primitives::amqp9_1::basic::Recover'>Recover</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/basic/struct.RecoverOk.html' title='amqp0_primitives::amqp9_1::basic::RecoverOk'>RecoverOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/channel/struct.Open.html' title='amqp0_primitives::amqp9_1::channel::Open'>Open</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/channel/struct.OpenOk.html' title='amqp0_primitives::amqp9_1::channel::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/channel/struct.Flow.html' title='amqp0_primitives::amqp9_1::channel::Flow'>Flow</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/channel/struct.FlowOk.html' title='amqp0_primitives::amqp9_1::channel::FlowOk'>FlowOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/channel/struct.Close.html' title='amqp0_primitives::amqp9_1::channel::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/channel/struct.CloseOk.html' title='amqp0_primitives::amqp9_1::channel::CloseOk'>CloseOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.Start.html' title='amqp0_primitives::amqp9_1::connection::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.StartOk.html' title='amqp0_primitives::amqp9_1::connection::StartOk'>StartOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.Secure.html' title='amqp0_primitives::amqp9_1::connection::Secure'>Secure</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.SecureOk.html' title='amqp0_primitives::amqp9_1::connection::SecureOk'>SecureOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.Tune.html' title='amqp0_primitives::amqp9_1::connection::Tune'>Tune</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.TuneOk.html' title='amqp0_primitives::amqp9_1::connection::TuneOk'>TuneOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.Open.html' title='amqp0_primitives::amqp9_1::connection::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.OpenOk.html' title='amqp0_primitives::amqp9_1::connection::OpenOk'>OpenOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.Close.html' title='amqp0_primitives::amqp9_1::connection::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/connection/struct.CloseOk.html' title='amqp0_primitives::amqp9_1::connection::CloseOk'>CloseOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/exchange/struct.Declare.html' title='amqp0_primitives::amqp9_1::exchange::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/exchange/struct.DeclareOk.html' title='amqp0_primitives::amqp9_1::exchange::DeclareOk'>DeclareOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/exchange/struct.Delete.html' title='amqp0_primitives::amqp9_1::exchange::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/exchange/struct.DeleteOk.html' title='amqp0_primitives::amqp9_1::exchange::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.Declare.html' title='amqp0_primitives::amqp9_1::queue::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.DeclareOk.html' title='amqp0_primitives::amqp9_1::queue::DeclareOk'>DeclareOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.Bind.html' title='amqp0_primitives::amqp9_1::queue::Bind'>Bind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.BindOk.html' title='amqp0_primitives::amqp9_1::queue::BindOk'>BindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.Unbind.html' title='amqp0_primitives::amqp9_1::queue::Unbind'>Unbind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.UnbindOk.html' title='amqp0_primitives::amqp9_1::queue::UnbindOk'>UnbindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.Purge.html' title='amqp0_primitives::amqp9_1::queue::Purge'>Purge</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.PurgeOk.html' title='amqp0_primitives::amqp9_1::queue::PurgeOk'>PurgeOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.Delete.html' title='amqp0_primitives::amqp9_1::queue::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/queue/struct.DeleteOk.html' title='amqp0_primitives::amqp9_1::queue::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/tx/struct.Select.html' title='amqp0_primitives::amqp9_1::tx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/tx/struct.SelectOk.html' title='amqp0_primitives::amqp9_1::tx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/tx/struct.Commit.html' title='amqp0_primitives::amqp9_1::tx::Commit'>Commit</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/tx/struct.CommitOk.html' title='amqp0_primitives::amqp9_1::tx::CommitOk'>CommitOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/tx/struct.Rollback.html' title='amqp0_primitives::amqp9_1::tx::Rollback'>Rollback</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_1/tx/struct.RollbackOk.html' title='amqp0_primitives::amqp9_1::tx::RollbackOk'>RollbackOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/access/struct.Request.html' title='amqp0_primitives::amqp9_0::access::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/access/struct.RequestOk.html' title='amqp0_primitives::amqp9_0::access::RequestOk'>RequestOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Qos.html' title='amqp0_primitives::amqp9_0::basic::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.QosOk.html' title='amqp0_primitives::amqp9_0::basic::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Consume.html' title='amqp0_primitives::amqp9_0::basic::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.ConsumeOk.html' title='amqp0_primitives::amqp9_0::basic::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Cancel.html' title='amqp0_primitives::amqp9_0::basic::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.CancelOk.html' title='amqp0_primitives::amqp9_0::basic::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Publish.html' title='amqp0_primitives::amqp9_0::basic::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Return.html' title='amqp0_primitives::amqp9_0::basic::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Deliver.html' title='amqp0_primitives::amqp9_0::basic::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Get.html' title='amqp0_primitives::amqp9_0::basic::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.GetOk.html' title='amqp0_primitives::amqp9_0::basic::GetOk'>GetOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.GetEmpty.html' title='amqp0_primitives::amqp9_0::basic::GetEmpty'>GetEmpty</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Ack.html' title='amqp0_primitives::amqp9_0::basic::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Reject.html' title='amqp0_primitives::amqp9_0::basic::Reject'>Reject</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/basic/struct.Recover.html' title='amqp0_primitives::amqp9_0::basic::Recover'>Recover</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.Open.html' title='amqp0_primitives::amqp9_0::channel::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.OpenOk.html' title='amqp0_primitives::amqp9_0::channel::OpenOk'>OpenOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.Flow.html' title='amqp0_primitives::amqp9_0::channel::Flow'>Flow</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.FlowOk.html' title='amqp0_primitives::amqp9_0::channel::FlowOk'>FlowOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.Close.html' title='amqp0_primitives::amqp9_0::channel::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.CloseOk.html' title='amqp0_primitives::amqp9_0::channel::CloseOk'>CloseOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.Resume.html' title='amqp0_primitives::amqp9_0::channel::Resume'>Resume</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.Ping.html' title='amqp0_primitives::amqp9_0::channel::Ping'>Ping</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.Pong.html' title='amqp0_primitives::amqp9_0::channel::Pong'>Pong</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/channel/struct.Ok.html' title='amqp0_primitives::amqp9_0::channel::Ok'>Ok</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.Start.html' title='amqp0_primitives::amqp9_0::connection::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.StartOk.html' title='amqp0_primitives::amqp9_0::connection::StartOk'>StartOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.Secure.html' title='amqp0_primitives::amqp9_0::connection::Secure'>Secure</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.SecureOk.html' title='amqp0_primitives::amqp9_0::connection::SecureOk'>SecureOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.Tune.html' title='amqp0_primitives::amqp9_0::connection::Tune'>Tune</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.TuneOk.html' title='amqp0_primitives::amqp9_0::connection::TuneOk'>TuneOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.Open.html' title='amqp0_primitives::amqp9_0::connection::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.OpenOk.html' title='amqp0_primitives::amqp9_0::connection::OpenOk'>OpenOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.Redirect.html' title='amqp0_primitives::amqp9_0::connection::Redirect'>Redirect</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.Close.html' title='amqp0_primitives::amqp9_0::connection::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/connection/struct.CloseOk.html' title='amqp0_primitives::amqp9_0::connection::CloseOk'>CloseOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/dtx/struct.Select.html' title='amqp0_primitives::amqp9_0::dtx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/dtx/struct.SelectOk.html' title='amqp0_primitives::amqp9_0::dtx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/dtx/struct.Start.html' title='amqp0_primitives::amqp9_0::dtx::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/dtx/struct.StartOk.html' title='amqp0_primitives::amqp9_0::dtx::StartOk'>StartOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/exchange/struct.Declare.html' title='amqp0_primitives::amqp9_0::exchange::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/exchange/struct.DeclareOk.html' title='amqp0_primitives::amqp9_0::exchange::DeclareOk'>DeclareOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/exchange/struct.Delete.html' title='amqp0_primitives::amqp9_0::exchange::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/exchange/struct.DeleteOk.html' title='amqp0_primitives::amqp9_0::exchange::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Qos.html' title='amqp0_primitives::amqp9_0::file::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.QosOk.html' title='amqp0_primitives::amqp9_0::file::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Consume.html' title='amqp0_primitives::amqp9_0::file::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.ConsumeOk.html' title='amqp0_primitives::amqp9_0::file::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Cancel.html' title='amqp0_primitives::amqp9_0::file::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.CancelOk.html' title='amqp0_primitives::amqp9_0::file::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Open.html' title='amqp0_primitives::amqp9_0::file::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.OpenOk.html' title='amqp0_primitives::amqp9_0::file::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Stage.html' title='amqp0_primitives::amqp9_0::file::Stage'>Stage</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Publish.html' title='amqp0_primitives::amqp9_0::file::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Return.html' title='amqp0_primitives::amqp9_0::file::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Deliver.html' title='amqp0_primitives::amqp9_0::file::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Ack.html' title='amqp0_primitives::amqp9_0::file::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/file/struct.Reject.html' title='amqp0_primitives::amqp9_0::file::Reject'>Reject</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Transfer.html' title='amqp0_primitives::amqp9_0::message::Transfer'>Transfer</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Consume.html' title='amqp0_primitives::amqp9_0::message::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Cancel.html' title='amqp0_primitives::amqp9_0::message::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Get.html' title='amqp0_primitives::amqp9_0::message::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Recover.html' title='amqp0_primitives::amqp9_0::message::Recover'>Recover</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Open.html' title='amqp0_primitives::amqp9_0::message::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Close.html' title='amqp0_primitives::amqp9_0::message::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Append.html' title='amqp0_primitives::amqp9_0::message::Append'>Append</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Checkpoint.html' title='amqp0_primitives::amqp9_0::message::Checkpoint'>Checkpoint</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Resume.html' title='amqp0_primitives::amqp9_0::message::Resume'>Resume</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Qos.html' title='amqp0_primitives::amqp9_0::message::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Ok.html' title='amqp0_primitives::amqp9_0::message::Ok'>Ok</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Empty.html' title='amqp0_primitives::amqp9_0::message::Empty'>Empty</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Reject.html' title='amqp0_primitives::amqp9_0::message::Reject'>Reject</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/message/struct.Offset.html' title='amqp0_primitives::amqp9_0::message::Offset'>Offset</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.Declare.html' title='amqp0_primitives::amqp9_0::queue::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.DeclareOk.html' title='amqp0_primitives::amqp9_0::queue::DeclareOk'>DeclareOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.Bind.html' title='amqp0_primitives::amqp9_0::queue::Bind'>Bind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.BindOk.html' title='amqp0_primitives::amqp9_0::queue::BindOk'>BindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.Unbind.html' title='amqp0_primitives::amqp9_0::queue::Unbind'>Unbind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.UnbindOk.html' title='amqp0_primitives::amqp9_0::queue::UnbindOk'>UnbindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.Purge.html' title='amqp0_primitives::amqp9_0::queue::Purge'>Purge</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.PurgeOk.html' title='amqp0_primitives::amqp9_0::queue::PurgeOk'>PurgeOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.Delete.html' title='amqp0_primitives::amqp9_0::queue::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/queue/struct.DeleteOk.html' title='amqp0_primitives::amqp9_0::queue::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.Qos.html' title='amqp0_primitives::amqp9_0::stream::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.QosOk.html' title='amqp0_primitives::amqp9_0::stream::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.Consume.html' title='amqp0_primitives::amqp9_0::stream::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.ConsumeOk.html' title='amqp0_primitives::amqp9_0::stream::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.Cancel.html' title='amqp0_primitives::amqp9_0::stream::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.CancelOk.html' title='amqp0_primitives::amqp9_0::stream::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.Publish.html' title='amqp0_primitives::amqp9_0::stream::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.Return.html' title='amqp0_primitives::amqp9_0::stream::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/stream/struct.Deliver.html' title='amqp0_primitives::amqp9_0::stream::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/tunnel/struct.Request.html' title='amqp0_primitives::amqp9_0::tunnel::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/tx/struct.Select.html' title='amqp0_primitives::amqp9_0::tx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/tx/struct.SelectOk.html' title='amqp0_primitives::amqp9_0::tx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/tx/struct.Commit.html' title='amqp0_primitives::amqp9_0::tx::Commit'>Commit</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/tx/struct.CommitOk.html' title='amqp0_primitives::amqp9_0::tx::CommitOk'>CommitOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/tx/struct.Rollback.html' title='amqp0_primitives::amqp9_0::tx::Rollback'>Rollback</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp9_0/tx/struct.RollbackOk.html' title='amqp0_primitives::amqp9_0::tx::RollbackOk'>RollbackOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/access/struct.Request.html' title='amqp0_primitives::amqp8_0::access::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/access/struct.RequestOk.html' title='amqp0_primitives::amqp8_0::access::RequestOk'>RequestOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Qos.html' title='amqp0_primitives::amqp8_0::basic::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.QosOk.html' title='amqp0_primitives::amqp8_0::basic::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Consume.html' title='amqp0_primitives::amqp8_0::basic::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.ConsumeOk.html' title='amqp0_primitives::amqp8_0::basic::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Cancel.html' title='amqp0_primitives::amqp8_0::basic::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.CancelOk.html' title='amqp0_primitives::amqp8_0::basic::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Publish.html' title='amqp0_primitives::amqp8_0::basic::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Return.html' title='amqp0_primitives::amqp8_0::basic::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Deliver.html' title='amqp0_primitives::amqp8_0::basic::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Get.html' title='amqp0_primitives::amqp8_0::basic::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.GetOk.html' title='amqp0_primitives::amqp8_0::basic::GetOk'>GetOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.GetEmpty.html' title='amqp0_primitives::amqp8_0::basic::GetEmpty'>GetEmpty</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Ack.html' title='amqp0_primitives::amqp8_0::basic::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Reject.html' title='amqp0_primitives::amqp8_0::basic::Reject'>Reject</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/basic/struct.Recover.html' title='amqp0_primitives::amqp8_0::basic::Recover'>Recover</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/channel/struct.Open.html' title='amqp0_primitives::amqp8_0::channel::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/channel/struct.OpenOk.html' title='amqp0_primitives::amqp8_0::channel::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/channel/struct.Flow.html' title='amqp0_primitives::amqp8_0::channel::Flow'>Flow</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/channel/struct.FlowOk.html' title='amqp0_primitives::amqp8_0::channel::FlowOk'>FlowOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/channel/struct.Alert.html' title='amqp0_primitives::amqp8_0::channel::Alert'>Alert</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/channel/struct.Close.html' title='amqp0_primitives::amqp8_0::channel::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/channel/struct.CloseOk.html' title='amqp0_primitives::amqp8_0::channel::CloseOk'>CloseOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.Start.html' title='amqp0_primitives::amqp8_0::connection::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.StartOk.html' title='amqp0_primitives::amqp8_0::connection::StartOk'>StartOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.Secure.html' title='amqp0_primitives::amqp8_0::connection::Secure'>Secure</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.SecureOk.html' title='amqp0_primitives::amqp8_0::connection::SecureOk'>SecureOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.Tune.html' title='amqp0_primitives::amqp8_0::connection::Tune'>Tune</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.TuneOk.html' title='amqp0_primitives::amqp8_0::connection::TuneOk'>TuneOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.Open.html' title='amqp0_primitives::amqp8_0::connection::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.OpenOk.html' title='amqp0_primitives::amqp8_0::connection::OpenOk'>OpenOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.Redirect.html' title='amqp0_primitives::amqp8_0::connection::Redirect'>Redirect</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.Close.html' title='amqp0_primitives::amqp8_0::connection::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/connection/struct.CloseOk.html' title='amqp0_primitives::amqp8_0::connection::CloseOk'>CloseOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/dtx/struct.Select.html' title='amqp0_primitives::amqp8_0::dtx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/dtx/struct.SelectOk.html' title='amqp0_primitives::amqp8_0::dtx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/dtx/struct.Start.html' title='amqp0_primitives::amqp8_0::dtx::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/dtx/struct.StartOk.html' title='amqp0_primitives::amqp8_0::dtx::StartOk'>StartOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/exchange/struct.Declare.html' title='amqp0_primitives::amqp8_0::exchange::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/exchange/struct.DeclareOk.html' title='amqp0_primitives::amqp8_0::exchange::DeclareOk'>DeclareOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/exchange/struct.Delete.html' title='amqp0_primitives::amqp8_0::exchange::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/exchange/struct.DeleteOk.html' title='amqp0_primitives::amqp8_0::exchange::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Qos.html' title='amqp0_primitives::amqp8_0::file::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.QosOk.html' title='amqp0_primitives::amqp8_0::file::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Consume.html' title='amqp0_primitives::amqp8_0::file::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.ConsumeOk.html' title='amqp0_primitives::amqp8_0::file::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Cancel.html' title='amqp0_primitives::amqp8_0::file::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.CancelOk.html' title='amqp0_primitives::amqp8_0::file::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Open.html' title='amqp0_primitives::amqp8_0::file::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.OpenOk.html' title='amqp0_primitives::amqp8_0::file::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Stage.html' title='amqp0_primitives::amqp8_0::file::Stage'>Stage</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Publish.html' title='amqp0_primitives::amqp8_0::file::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Return.html' title='amqp0_primitives::amqp8_0::file::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Deliver.html' title='amqp0_primitives::amqp8_0::file::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Ack.html' title='amqp0_primitives::amqp8_0::file::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/file/struct.Reject.html' title='amqp0_primitives::amqp8_0::file::Reject'>Reject</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.Declare.html' title='amqp0_primitives::amqp8_0::queue::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.DeclareOk.html' title='amqp0_primitives::amqp8_0::queue::DeclareOk'>DeclareOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.Bind.html' title='amqp0_primitives::amqp8_0::queue::Bind'>Bind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.BindOk.html' title='amqp0_primitives::amqp8_0::queue::BindOk'>BindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.Purge.html' title='amqp0_primitives::amqp8_0::queue::Purge'>Purge</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.PurgeOk.html' title='amqp0_primitives::amqp8_0::queue::PurgeOk'>PurgeOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.Delete.html' title='amqp0_primitives::amqp8_0::queue::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/queue/struct.DeleteOk.html' title='amqp0_primitives::amqp8_0::queue::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.Qos.html' title='amqp0_primitives::amqp8_0::stream::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.QosOk.html' title='amqp0_primitives::amqp8_0::stream::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.Consume.html' title='amqp0_primitives::amqp8_0::stream::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.ConsumeOk.html' title='amqp0_primitives::amqp8_0::stream::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.Cancel.html' title='amqp0_primitives::amqp8_0::stream::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.CancelOk.html' title='amqp0_primitives::amqp8_0::stream::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.Publish.html' title='amqp0_primitives::amqp8_0::stream::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.Return.html' title='amqp0_primitives::amqp8_0::stream::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/stream/struct.Deliver.html' title='amqp0_primitives::amqp8_0::stream::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.Integer.html' title='amqp0_primitives::amqp8_0::test::Integer'>Integer</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.IntegerOk.html' title='amqp0_primitives::amqp8_0::test::IntegerOk'>IntegerOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.String.html' title='amqp0_primitives::amqp8_0::test::String'>String</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.StringOk.html' title='amqp0_primitives::amqp8_0::test::StringOk'>StringOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.Table.html' title='amqp0_primitives::amqp8_0::test::Table'>Table</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.TableOk.html' title='amqp0_primitives::amqp8_0::test::TableOk'>TableOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.Content.html' title='amqp0_primitives::amqp8_0::test::Content'>Content</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/test/struct.ContentOk.html' title='amqp0_primitives::amqp8_0::test::ContentOk'>ContentOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/tunnel/struct.Request.html' title='amqp0_primitives::amqp8_0::tunnel::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/tx/struct.Select.html' title='amqp0_primitives::amqp8_0::tx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/tx/struct.SelectOk.html' title='amqp0_primitives::amqp8_0::tx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/tx/struct.Commit.html' title='amqp0_primitives::amqp8_0::tx::Commit'>Commit</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/tx/struct.CommitOk.html' title='amqp0_primitives::amqp8_0::tx::CommitOk'>CommitOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/tx/struct.Rollback.html' title='amqp0_primitives::amqp8_0::tx::Rollback'>Rollback</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/amqp8_0/tx/struct.RollbackOk.html' title='amqp0_primitives::amqp8_0::tx::RollbackOk'>RollbackOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Qos.html' title='amqp0_primitives::rabbitmq9_1::basic::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.QosOk.html' title='amqp0_primitives::rabbitmq9_1::basic::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Consume.html' title='amqp0_primitives::rabbitmq9_1::basic::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.ConsumeOk.html' title='amqp0_primitives::rabbitmq9_1::basic::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Cancel.html' title='amqp0_primitives::rabbitmq9_1::basic::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.CancelOk.html' title='amqp0_primitives::rabbitmq9_1::basic::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Publish.html' title='amqp0_primitives::rabbitmq9_1::basic::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Return.html' title='amqp0_primitives::rabbitmq9_1::basic::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Deliver.html' title='amqp0_primitives::rabbitmq9_1::basic::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Get.html' title='amqp0_primitives::rabbitmq9_1::basic::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.GetOk.html' title='amqp0_primitives::rabbitmq9_1::basic::GetOk'>GetOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.GetEmpty.html' title='amqp0_primitives::rabbitmq9_1::basic::GetEmpty'>GetEmpty</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Ack.html' title='amqp0_primitives::rabbitmq9_1::basic::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Reject.html' title='amqp0_primitives::rabbitmq9_1::basic::Reject'>Reject</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.RecoverAsync.html' title='amqp0_primitives::rabbitmq9_1::basic::RecoverAsync'>RecoverAsync</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Recover.html' title='amqp0_primitives::rabbitmq9_1::basic::Recover'>Recover</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.RecoverOk.html' title='amqp0_primitives::rabbitmq9_1::basic::RecoverOk'>RecoverOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/basic/struct.Nack.html' title='amqp0_primitives::rabbitmq9_1::basic::Nack'>Nack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/channel/struct.Open.html' title='amqp0_primitives::rabbitmq9_1::channel::Open'>Open</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/channel/struct.OpenOk.html' title='amqp0_primitives::rabbitmq9_1::channel::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/channel/struct.Flow.html' title='amqp0_primitives::rabbitmq9_1::channel::Flow'>Flow</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/channel/struct.FlowOk.html' title='amqp0_primitives::rabbitmq9_1::channel::FlowOk'>FlowOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/channel/struct.Close.html' title='amqp0_primitives::rabbitmq9_1::channel::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/channel/struct.CloseOk.html' title='amqp0_primitives::rabbitmq9_1::channel::CloseOk'>CloseOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/confirm/struct.Select.html' title='amqp0_primitives::rabbitmq9_1::confirm::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/confirm/struct.SelectOk.html' title='amqp0_primitives::rabbitmq9_1::confirm::SelectOk'>SelectOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.Start.html' title='amqp0_primitives::rabbitmq9_1::connection::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.StartOk.html' title='amqp0_primitives::rabbitmq9_1::connection::StartOk'>StartOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.Secure.html' title='amqp0_primitives::rabbitmq9_1::connection::Secure'>Secure</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.SecureOk.html' title='amqp0_primitives::rabbitmq9_1::connection::SecureOk'>SecureOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.Tune.html' title='amqp0_primitives::rabbitmq9_1::connection::Tune'>Tune</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.TuneOk.html' title='amqp0_primitives::rabbitmq9_1::connection::TuneOk'>TuneOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.Open.html' title='amqp0_primitives::rabbitmq9_1::connection::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.OpenOk.html' title='amqp0_primitives::rabbitmq9_1::connection::OpenOk'>OpenOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.Close.html' title='amqp0_primitives::rabbitmq9_1::connection::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.CloseOk.html' title='amqp0_primitives::rabbitmq9_1::connection::CloseOk'>CloseOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.Blocked.html' title='amqp0_primitives::rabbitmq9_1::connection::Blocked'>Blocked</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/connection/struct.Unblocked.html' title='amqp0_primitives::rabbitmq9_1::connection::Unblocked'>Unblocked</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.Declare.html' title='amqp0_primitives::rabbitmq9_1::exchange::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.DeclareOk.html' title='amqp0_primitives::rabbitmq9_1::exchange::DeclareOk'>DeclareOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.Delete.html' title='amqp0_primitives::rabbitmq9_1::exchange::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.DeleteOk.html' title='amqp0_primitives::rabbitmq9_1::exchange::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.Bind.html' title='amqp0_primitives::rabbitmq9_1::exchange::Bind'>Bind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.BindOk.html' title='amqp0_primitives::rabbitmq9_1::exchange::BindOk'>BindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.Unbind.html' title='amqp0_primitives::rabbitmq9_1::exchange::Unbind'>Unbind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/exchange/struct.UnbindOk.html' title='amqp0_primitives::rabbitmq9_1::exchange::UnbindOk'>UnbindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.Declare.html' title='amqp0_primitives::rabbitmq9_1::queue::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.DeclareOk.html' title='amqp0_primitives::rabbitmq9_1::queue::DeclareOk'>DeclareOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.Bind.html' title='amqp0_primitives::rabbitmq9_1::queue::Bind'>Bind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.BindOk.html' title='amqp0_primitives::rabbitmq9_1::queue::BindOk'>BindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.Unbind.html' title='amqp0_primitives::rabbitmq9_1::queue::Unbind'>Unbind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.UnbindOk.html' title='amqp0_primitives::rabbitmq9_1::queue::UnbindOk'>UnbindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.Purge.html' title='amqp0_primitives::rabbitmq9_1::queue::Purge'>Purge</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.PurgeOk.html' title='amqp0_primitives::rabbitmq9_1::queue::PurgeOk'>PurgeOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.Delete.html' title='amqp0_primitives::rabbitmq9_1::queue::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/queue/struct.DeleteOk.html' title='amqp0_primitives::rabbitmq9_1::queue::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/tx/struct.Select.html' title='amqp0_primitives::rabbitmq9_1::tx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/tx/struct.SelectOk.html' title='amqp0_primitives::rabbitmq9_1::tx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/tx/struct.Commit.html' title='amqp0_primitives::rabbitmq9_1::tx::Commit'>Commit</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/tx/struct.CommitOk.html' title='amqp0_primitives::rabbitmq9_1::tx::CommitOk'>CommitOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/tx/struct.Rollback.html' title='amqp0_primitives::rabbitmq9_1::tx::Rollback'>Rollback</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/rabbitmq9_1/tx/struct.RollbackOk.html' title='amqp0_primitives::rabbitmq9_1::tx::RollbackOk'>RollbackOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/access/struct.Request.html' title='amqp0_primitives::qpid9_0::access::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/access/struct.RequestOk.html' title='amqp0_primitives::qpid9_0::access::RequestOk'>RequestOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Qos.html' title='amqp0_primitives::qpid9_0::basic::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.QosOk.html' title='amqp0_primitives::qpid9_0::basic::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Consume.html' title='amqp0_primitives::qpid9_0::basic::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.ConsumeOk.html' title='amqp0_primitives::qpid9_0::basic::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Cancel.html' title='amqp0_primitives::qpid9_0::basic::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.CancelOk.html' title='amqp0_primitives::qpid9_0::basic::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Publish.html' title='amqp0_primitives::qpid9_0::basic::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Return.html' title='amqp0_primitives::qpid9_0::basic::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Deliver.html' title='amqp0_primitives::qpid9_0::basic::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Get.html' title='amqp0_primitives::qpid9_0::basic::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.GetOk.html' title='amqp0_primitives::qpid9_0::basic::GetOk'>GetOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.GetEmpty.html' title='amqp0_primitives::qpid9_0::basic::GetEmpty'>GetEmpty</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Ack.html' title='amqp0_primitives::qpid9_0::basic::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Reject.html' title='amqp0_primitives::qpid9_0::basic::Reject'>Reject</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.Recover.html' title='amqp0_primitives::qpid9_0::basic::Recover'>Recover</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.RecoverSync.html' title='amqp0_primitives::qpid9_0::basic::RecoverSync'>RecoverSync</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/basic/struct.RecoverSyncOk.html' title='amqp0_primitives::qpid9_0::basic::RecoverSyncOk'>RecoverSyncOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.Open.html' title='amqp0_primitives::qpid9_0::channel::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.OpenOk.html' title='amqp0_primitives::qpid9_0::channel::OpenOk'>OpenOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.Flow.html' title='amqp0_primitives::qpid9_0::channel::Flow'>Flow</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.FlowOk.html' title='amqp0_primitives::qpid9_0::channel::FlowOk'>FlowOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.Close.html' title='amqp0_primitives::qpid9_0::channel::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.CloseOk.html' title='amqp0_primitives::qpid9_0::channel::CloseOk'>CloseOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.Resume.html' title='amqp0_primitives::qpid9_0::channel::Resume'>Resume</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.Ping.html' title='amqp0_primitives::qpid9_0::channel::Ping'>Ping</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.Pong.html' title='amqp0_primitives::qpid9_0::channel::Pong'>Pong</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/channel/struct.Ok.html' title='amqp0_primitives::qpid9_0::channel::Ok'>Ok</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.Start.html' title='amqp0_primitives::qpid9_0::connection::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.StartOk.html' title='amqp0_primitives::qpid9_0::connection::StartOk'>StartOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.Secure.html' title='amqp0_primitives::qpid9_0::connection::Secure'>Secure</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.SecureOk.html' title='amqp0_primitives::qpid9_0::connection::SecureOk'>SecureOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.Tune.html' title='amqp0_primitives::qpid9_0::connection::Tune'>Tune</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.TuneOk.html' title='amqp0_primitives::qpid9_0::connection::TuneOk'>TuneOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.Open.html' title='amqp0_primitives::qpid9_0::connection::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.OpenOk.html' title='amqp0_primitives::qpid9_0::connection::OpenOk'>OpenOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.Redirect.html' title='amqp0_primitives::qpid9_0::connection::Redirect'>Redirect</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.Close.html' title='amqp0_primitives::qpid9_0::connection::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/connection/struct.CloseOk.html' title='amqp0_primitives::qpid9_0::connection::CloseOk'>CloseOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/dtx/struct.Select.html' title='amqp0_primitives::qpid9_0::dtx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/dtx/struct.SelectOk.html' title='amqp0_primitives::qpid9_0::dtx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/dtx/struct.Start.html' title='amqp0_primitives::qpid9_0::dtx::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/dtx/struct.StartOk.html' title='amqp0_primitives::qpid9_0::dtx::StartOk'>StartOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/exchange/struct.Declare.html' title='amqp0_primitives::qpid9_0::exchange::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/exchange/struct.DeclareOk.html' title='amqp0_primitives::qpid9_0::exchange::DeclareOk'>DeclareOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/exchange/struct.Delete.html' title='amqp0_primitives::qpid9_0::exchange::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/exchange/struct.DeleteOk.html' title='amqp0_primitives::qpid9_0::exchange::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/exchange/struct.Bound.html' title='amqp0_primitives::qpid9_0::exchange::Bound'>Bound</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/exchange/struct.BoundOk.html' title='amqp0_primitives::qpid9_0::exchange::BoundOk'>BoundOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Qos.html' title='amqp0_primitives::qpid9_0::file::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.QosOk.html' title='amqp0_primitives::qpid9_0::file::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Consume.html' title='amqp0_primitives::qpid9_0::file::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.ConsumeOk.html' title='amqp0_primitives::qpid9_0::file::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Cancel.html' title='amqp0_primitives::qpid9_0::file::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.CancelOk.html' title='amqp0_primitives::qpid9_0::file::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Open.html' title='amqp0_primitives::qpid9_0::file::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.OpenOk.html' title='amqp0_primitives::qpid9_0::file::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Stage.html' title='amqp0_primitives::qpid9_0::file::Stage'>Stage</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Publish.html' title='amqp0_primitives::qpid9_0::file::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Return.html' title='amqp0_primitives::qpid9_0::file::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Deliver.html' title='amqp0_primitives::qpid9_0::file::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Ack.html' title='amqp0_primitives::qpid9_0::file::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/file/struct.Reject.html' title='amqp0_primitives::qpid9_0::file::Reject'>Reject</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Transfer.html' title='amqp0_primitives::qpid9_0::message::Transfer'>Transfer</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Consume.html' title='amqp0_primitives::qpid9_0::message::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Cancel.html' title='amqp0_primitives::qpid9_0::message::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Get.html' title='amqp0_primitives::qpid9_0::message::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Recover.html' title='amqp0_primitives::qpid9_0::message::Recover'>Recover</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Open.html' title='amqp0_primitives::qpid9_0::message::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Close.html' title='amqp0_primitives::qpid9_0::message::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Append.html' title='amqp0_primitives::qpid9_0::message::Append'>Append</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Checkpoint.html' title='amqp0_primitives::qpid9_0::message::Checkpoint'>Checkpoint</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Resume.html' title='amqp0_primitives::qpid9_0::message::Resume'>Resume</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Qos.html' title='amqp0_primitives::qpid9_0::message::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Ok.html' title='amqp0_primitives::qpid9_0::message::Ok'>Ok</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Empty.html' title='amqp0_primitives::qpid9_0::message::Empty'>Empty</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Reject.html' title='amqp0_primitives::qpid9_0::message::Reject'>Reject</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/message/struct.Offset.html' title='amqp0_primitives::qpid9_0::message::Offset'>Offset</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.Declare.html' title='amqp0_primitives::qpid9_0::queue::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.DeclareOk.html' title='amqp0_primitives::qpid9_0::queue::DeclareOk'>DeclareOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.Bind.html' title='amqp0_primitives::qpid9_0::queue::Bind'>Bind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.BindOk.html' title='amqp0_primitives::qpid9_0::queue::BindOk'>BindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.Unbind.html' title='amqp0_primitives::qpid9_0::queue::Unbind'>Unbind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.UnbindOk.html' title='amqp0_primitives::qpid9_0::queue::UnbindOk'>UnbindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.Purge.html' title='amqp0_primitives::qpid9_0::queue::Purge'>Purge</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.PurgeOk.html' title='amqp0_primitives::qpid9_0::queue::PurgeOk'>PurgeOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.Delete.html' title='amqp0_primitives::qpid9_0::queue::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/queue/struct.DeleteOk.html' title='amqp0_primitives::qpid9_0::queue::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.Qos.html' title='amqp0_primitives::qpid9_0::stream::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.QosOk.html' title='amqp0_primitives::qpid9_0::stream::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.Consume.html' title='amqp0_primitives::qpid9_0::stream::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.ConsumeOk.html' title='amqp0_primitives::qpid9_0::stream::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.Cancel.html' title='amqp0_primitives::qpid9_0::stream::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.CancelOk.html' title='amqp0_primitives::qpid9_0::stream::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.Publish.html' title='amqp0_primitives::qpid9_0::stream::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.Return.html' title='amqp0_primitives::qpid9_0::stream::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/stream/struct.Deliver.html' title='amqp0_primitives::qpid9_0::stream::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/tunnel/struct.Request.html' title='amqp0_primitives::qpid9_0::tunnel::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/tx/struct.Select.html' title='amqp0_primitives::qpid9_0::tx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/tx/struct.SelectOk.html' title='amqp0_primitives::qpid9_0::tx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/tx/struct.Commit.html' title='amqp0_primitives::qpid9_0::tx::Commit'>Commit</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/tx/struct.CommitOk.html' title='amqp0_primitives::qpid9_0::tx::CommitOk'>CommitOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/tx/struct.Rollback.html' title='amqp0_primitives::qpid9_0::tx::Rollback'>Rollback</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid9_0/tx/struct.RollbackOk.html' title='amqp0_primitives::qpid9_0::tx::RollbackOk'>RollbackOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/access/struct.Request.html' title='amqp0_primitives::qpid8_0::access::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/access/struct.RequestOk.html' title='amqp0_primitives::qpid8_0::access::RequestOk'>RequestOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Qos.html' title='amqp0_primitives::qpid8_0::basic::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.QosOk.html' title='amqp0_primitives::qpid8_0::basic::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Consume.html' title='amqp0_primitives::qpid8_0::basic::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.ConsumeOk.html' title='amqp0_primitives::qpid8_0::basic::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Cancel.html' title='amqp0_primitives::qpid8_0::basic::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.CancelOk.html' title='amqp0_primitives::qpid8_0::basic::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Publish.html' title='amqp0_primitives::qpid8_0::basic::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Return.html' title='amqp0_primitives::qpid8_0::basic::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Deliver.html' title='amqp0_primitives::qpid8_0::basic::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Get.html' title='amqp0_primitives::qpid8_0::basic::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.GetOk.html' title='amqp0_primitives::qpid8_0::basic::GetOk'>GetOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.GetEmpty.html' title='amqp0_primitives::qpid8_0::basic::GetEmpty'>GetEmpty</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Ack.html' title='amqp0_primitives::qpid8_0::basic::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Reject.html' title='amqp0_primitives::qpid8_0::basic::Reject'>Reject</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.Recover.html' title='amqp0_primitives::qpid8_0::basic::Recover'>Recover</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/basic/struct.RecoverOk.html' title='amqp0_primitives::qpid8_0::basic::RecoverOk'>RecoverOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/channel/struct.Open.html' title='amqp0_primitives::qpid8_0::channel::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/channel/struct.OpenOk.html' title='amqp0_primitives::qpid8_0::channel::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/channel/struct.Flow.html' title='amqp0_primitives::qpid8_0::channel::Flow'>Flow</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/channel/struct.FlowOk.html' title='amqp0_primitives::qpid8_0::channel::FlowOk'>FlowOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/channel/struct.Alert.html' title='amqp0_primitives::qpid8_0::channel::Alert'>Alert</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/channel/struct.Close.html' title='amqp0_primitives::qpid8_0::channel::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/channel/struct.CloseOk.html' title='amqp0_primitives::qpid8_0::channel::CloseOk'>CloseOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.Start.html' title='amqp0_primitives::qpid8_0::connection::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.StartOk.html' title='amqp0_primitives::qpid8_0::connection::StartOk'>StartOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.Secure.html' title='amqp0_primitives::qpid8_0::connection::Secure'>Secure</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.SecureOk.html' title='amqp0_primitives::qpid8_0::connection::SecureOk'>SecureOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.Tune.html' title='amqp0_primitives::qpid8_0::connection::Tune'>Tune</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.TuneOk.html' title='amqp0_primitives::qpid8_0::connection::TuneOk'>TuneOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.Open.html' title='amqp0_primitives::qpid8_0::connection::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.OpenOk.html' title='amqp0_primitives::qpid8_0::connection::OpenOk'>OpenOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.Redirect.html' title='amqp0_primitives::qpid8_0::connection::Redirect'>Redirect</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.Close.html' title='amqp0_primitives::qpid8_0::connection::Close'>Close</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/connection/struct.CloseOk.html' title='amqp0_primitives::qpid8_0::connection::CloseOk'>CloseOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/dtx/struct.Select.html' title='amqp0_primitives::qpid8_0::dtx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/dtx/struct.SelectOk.html' title='amqp0_primitives::qpid8_0::dtx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/dtx/struct.Start.html' title='amqp0_primitives::qpid8_0::dtx::Start'>Start</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/dtx/struct.StartOk.html' title='amqp0_primitives::qpid8_0::dtx::StartOk'>StartOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/exchange/struct.Declare.html' title='amqp0_primitives::qpid8_0::exchange::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/exchange/struct.DeclareOk.html' title='amqp0_primitives::qpid8_0::exchange::DeclareOk'>DeclareOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/exchange/struct.Delete.html' title='amqp0_primitives::qpid8_0::exchange::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/exchange/struct.DeleteOk.html' title='amqp0_primitives::qpid8_0::exchange::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/exchange/struct.Bound.html' title='amqp0_primitives::qpid8_0::exchange::Bound'>Bound</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/exchange/struct.BoundOk.html' title='amqp0_primitives::qpid8_0::exchange::BoundOk'>BoundOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Qos.html' title='amqp0_primitives::qpid8_0::file::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.QosOk.html' title='amqp0_primitives::qpid8_0::file::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Consume.html' title='amqp0_primitives::qpid8_0::file::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.ConsumeOk.html' title='amqp0_primitives::qpid8_0::file::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Cancel.html' title='amqp0_primitives::qpid8_0::file::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.CancelOk.html' title='amqp0_primitives::qpid8_0::file::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Open.html' title='amqp0_primitives::qpid8_0::file::Open'>Open</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.OpenOk.html' title='amqp0_primitives::qpid8_0::file::OpenOk'>OpenOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Stage.html' title='amqp0_primitives::qpid8_0::file::Stage'>Stage</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Publish.html' title='amqp0_primitives::qpid8_0::file::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Return.html' title='amqp0_primitives::qpid8_0::file::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Deliver.html' title='amqp0_primitives::qpid8_0::file::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Ack.html' title='amqp0_primitives::qpid8_0::file::Ack'>Ack</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/file/struct.Reject.html' title='amqp0_primitives::qpid8_0::file::Reject'>Reject</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.Declare.html' title='amqp0_primitives::qpid8_0::queue::Declare'>Declare</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.DeclareOk.html' title='amqp0_primitives::qpid8_0::queue::DeclareOk'>DeclareOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.Bind.html' title='amqp0_primitives::qpid8_0::queue::Bind'>Bind</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.BindOk.html' title='amqp0_primitives::qpid8_0::queue::BindOk'>BindOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.Purge.html' title='amqp0_primitives::qpid8_0::queue::Purge'>Purge</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.PurgeOk.html' title='amqp0_primitives::qpid8_0::queue::PurgeOk'>PurgeOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.Delete.html' title='amqp0_primitives::qpid8_0::queue::Delete'>Delete</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/queue/struct.DeleteOk.html' title='amqp0_primitives::qpid8_0::queue::DeleteOk'>DeleteOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.Qos.html' title='amqp0_primitives::qpid8_0::stream::Qos'>Qos</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.QosOk.html' title='amqp0_primitives::qpid8_0::stream::QosOk'>QosOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.Consume.html' title='amqp0_primitives::qpid8_0::stream::Consume'>Consume</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.ConsumeOk.html' title='amqp0_primitives::qpid8_0::stream::ConsumeOk'>ConsumeOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.Cancel.html' title='amqp0_primitives::qpid8_0::stream::Cancel'>Cancel</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.CancelOk.html' title='amqp0_primitives::qpid8_0::stream::CancelOk'>CancelOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.Publish.html' title='amqp0_primitives::qpid8_0::stream::Publish'>Publish</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.Return.html' title='amqp0_primitives::qpid8_0::stream::Return'>Return</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/stream/struct.Deliver.html' title='amqp0_primitives::qpid8_0::stream::Deliver'>Deliver</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.Integer.html' title='amqp0_primitives::qpid8_0::test::Integer'>Integer</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.IntegerOk.html' title='amqp0_primitives::qpid8_0::test::IntegerOk'>IntegerOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.String.html' title='amqp0_primitives::qpid8_0::test::String'>String</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.StringOk.html' title='amqp0_primitives::qpid8_0::test::StringOk'>StringOk</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.Table.html' title='amqp0_primitives::qpid8_0::test::Table'>Table</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.TableOk.html' title='amqp0_primitives::qpid8_0::test::TableOk'>TableOk</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.Content.html' title='amqp0_primitives::qpid8_0::test::Content'>Content</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/test/struct.ContentOk.html' title='amqp0_primitives::qpid8_0::test::ContentOk'>ContentOk</a></code></li>
+<li><code>impl&lt;'a&gt; Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/tunnel/struct.Request.html' title='amqp0_primitives::qpid8_0::tunnel::Request'>Request</a>&lt;'a&gt;</code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/tx/struct.Select.html' title='amqp0_primitives::qpid8_0::tx::Select'>Select</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/tx/struct.SelectOk.html' title='amqp0_primitives::qpid8_0::tx::SelectOk'>SelectOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/tx/struct.Commit.html' title='amqp0_primitives::qpid8_0::tx::Commit'>Commit</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/tx/struct.CommitOk.html' title='amqp0_primitives::qpid8_0::tx::CommitOk'>CommitOk</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/tx/struct.Rollback.html' title='amqp0_primitives::qpid8_0::tx::Rollback'>Rollback</a></code></li>
+<li><code>impl Payload for <a class='struct' href='../amqp0_primitives/qpid8_0/tx/struct.RollbackOk.html' title='amqp0_primitives::qpid8_0::tx::RollbackOk'>RollbackOk</a></code></li>
+</ul><script type="text/javascript" async
+                         src="../implementors/amqp0_primitives/trait.Payload.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "amqp0_primitives";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

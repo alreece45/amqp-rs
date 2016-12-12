@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["NoParserPool","Creates objects as needed (no pools, no configuration, no attributes)"]],"trait":[["ParserPool","Creates the objects that may be needed for parsing"]]});

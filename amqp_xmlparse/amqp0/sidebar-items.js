@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["ParseError",""],["Parser",""],["VoidParser",""]],"fn":[["parse",""]],"struct":[["Class",""],["Constant",""],["Domain",""],["Field",""],["Method",""],["Protocol",""]]});

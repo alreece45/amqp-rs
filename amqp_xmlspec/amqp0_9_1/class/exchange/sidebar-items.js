@@ -1,1 +1,0 @@
-initSidebarItems({"constant":[["METHOD_DECLARE",""],["METHOD_DECLARE_OK",""],["METHOD_DELETE",""],["METHOD_DELETE_OK",""]],"struct":[["DeclareMethod",""],["DeclareOk",""],["DeleteMethod",""],["DeleteOk",""]]});
