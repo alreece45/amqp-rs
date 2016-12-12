@@ -9,6 +9,8 @@
 use std::collections::BTreeMap;
 use std::io;
 use inflections::Inflect;
+
+use CodeGenerator;
 use specs::Constant;
 
 pub struct FrameEnumWriter<'a> {
@@ -21,8 +23,10 @@ impl<'a> FrameEnumWriter<'a> {
             frame_types: frame_types,
         }
     }
+}
 
-    pub fn write_to<W>(&self, writer: &mut W) -> io::Result<()>
+impl<'a> CodeGenerator for FrameEnumWriter<'a> {
+    fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
         if self.frame_types.is_empty() {

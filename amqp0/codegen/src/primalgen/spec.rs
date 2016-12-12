@@ -14,7 +14,7 @@ use specs::Spec;
 use CodeGenerator;
 use common::spec_mod_name;
 use common::domain::DomainMapper;
-use super::{MethodModuleWriter, PropertiesStructWriter};
+use super::{FrameEnumWriter, MethodModuleWriter, PropertiesStructWriter};
 
 pub struct SpecModuleWriter<'a> {
     struct_name: String,
@@ -35,6 +35,9 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
 
         try!(self.write_class_constants(writer));
         try!(self.write_method_constants(writer));
+
+        let frame_writer = FrameEnumWriter::new(self.spec.frame_types());
+        try!(frame_writer.write_rust_to(writer));
 
         try!(writeln!(writer, "\n// Class Modules"));
         for class in self.spec.classes().values() {
