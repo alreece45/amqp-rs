@@ -33,7 +33,7 @@ impl<'a> CodeGenerator for FrameEnumWriter<'a> {
             return Ok(())
         }
 
-        try!(writeln!(writer, "enum Frame {{"));
+        try!(writeln!(writer, "pub enum Frame {{"));
         for frame_type in self.frame_types.keys() {
             let name_start = if frame_type.starts_with("frame-") { 6 } else { 0 };
             let pascal_case = (&frame_type[name_start..]).to_pascal_case();
