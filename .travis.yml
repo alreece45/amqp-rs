@@ -1,0 +1,17 @@
+language: rust
+rust:
+  - stable
+  - beta
+  - nightly
+matrix:
+  allow_failures:
+    - rust: nightly
+
+env:
+  - TEST_DIR=amqp0/specgen
+  - TEST_DIR=amqp0/specs
+  - TEST_DIR=amqp0/codegen
+  - TEST_DIR=amqp0/primitives
+  - TEST_DIR=amqp0/parser-nom
+
+script: cd $TEST_DIR && cargo test
