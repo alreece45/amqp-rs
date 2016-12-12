@@ -1,12 +1,18 @@
 #amqp-rs
 
-AMQP [specification parser](https://alreece45.github.io/amqp-rs/amqp_xmlparse/index.html),
-[code generation](https://alreece45.github.io/amqp-rs/amqp_xmlgen/index.html), and
-[generated spec](https://alreece45.github.io/amqp-rs/amqp_xmlspec/index.html) crates.
+Various modules for AMQP.
 
 This library does not yet interact with clients or servers.
 
-Still in early stages: experimental and under development.
+Still in early stages: **experimental** and under development.
+
+| Crate | Description | Docs |
+| --- | --- | --- |
+amqp0-primitives | Basic structures for sending and receiving AMQP messages | [Docs](https://alreece45.github.io/amqp-rs/amqp0_primitives/index.html)
+amqp0-parser-nom | Nom parsing to AMQP primitives | [Docs](https://alreece45.github.io/amqp-rs/amqp0_parser_nom/index.html)
+amqp0-specs      | API for accessing spec information (methods, fields, etc) | [Docs](https://alreece45.github.io/amqp-rs/amqp0_specs/index.html)
+amqp0-specgen    | Code to parse the AMQP specifications and create amqp0-specs |
+amqp0-codegen    | Code Generation for other crates (primitives, parsers, etc) |
 
 ## License
 
