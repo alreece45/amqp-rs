@@ -125,9 +125,9 @@ impl Domain {
             Domain::Short => "be_u16",
             Domain::Long => "be_u32",
             Domain::LongLong | Domain::Timestamp => "be_u64",
-            Domain::ShortString => "call!(::nom::shortstr)",
-            Domain::LongString => "call!(::nom::longstr)",
-            Domain::Table => "call!(::field::Table::nom_bytes)",
+            Domain::ShortString => "call!(::common::shortstr)",
+            Domain::LongString => "call!(::common::longstr)",
+            Domain::Table => "apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool)",
             //AmqpType::Content => "::amqp0::value::Content::from_bytes",
             Domain::Content => "length_bytes!(be_u32)",
         }

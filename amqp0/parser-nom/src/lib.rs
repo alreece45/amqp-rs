@@ -10,6 +10,11 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
+#[cfg(not(feature = "amqp0-build-parser"))]
+include!(concat!("../pregen/mod.rs"));
+#[cfg(feature = "amqp0-build-parser")]
+include!(concat!(env!("OUT_DIR"), "/mod.rs"));
+
 #[macro_use]
 extern crate nom;
 extern crate amqp0_primitives as primitives;
@@ -18,6 +23,7 @@ extern crate amqp0_primitives as primitives;
 extern crate lifeguard;
 
 mod common;
+mod field;
 
 pub mod pool;
 

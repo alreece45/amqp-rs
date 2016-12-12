@@ -2,10 +2,13 @@
 name = "amqp0-parser-nom"
 version = "0.0.1"
 authors = ["Alexander Reece <github@reece45.com>"]
-# build = "build.rs"
+build = "build.rs"
 
 [features]
 default = ["lifeguard"]
+amqp0-build-parser = ["amqp0-codegen", "amqp0-specs"]
+amqp0-pregen-parser = ["amqp0-build-parser", "rustfmt"]
+rustfmt = ["amqp0-codegen/rustfmt"]
 
 [dependencies]
 nom = "2.0.0"
@@ -13,8 +16,16 @@ nom = "2.0.0"
 [dependencies.amqp0-primitives]
 path = "../primitives"
 
+[dependencies.clippy]
+version = "*"
+optional = true
+
 [dependencies.lifeguard]
 version = "0.5.2"
+optional = true
+
+[build-dependencies.amqp0-codegen]
+path = "../codegen"
 optional = true
 
 [build-dependencies.amqp0-specs]
@@ -23,8 +34,4 @@ optional = true
 
 [build-dependencies.clippy]
 version = "*"
-optional = true
-
-[build-dependencies.rustfmt]
-version = "0.6.2"
 optional = true

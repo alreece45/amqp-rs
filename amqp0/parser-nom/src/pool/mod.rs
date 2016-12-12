@@ -9,6 +9,7 @@
 #[cfg(not(feature = "lifeguard"))]
 mod lifeguard;
 
+use std::borrow::Cow;
 use std::collections::HashMap;
 use primitives::field::Value;
 
@@ -21,7 +22,7 @@ use primitives::field::Value;
 /// on the needed capacity.
 pub trait ParserPool {
     /// Given a capacity, returns a Table
-    fn new_table_hashmap(&mut self, usize) -> HashMap<&'static str, &'static str>;
+    fn new_table_hashmap(&mut self, usize) -> HashMap<Cow<'static, str>, Value<'static>>;
 
     /// Given the bytes for a table, returns a Vec to accept table entries
     /// Most likely to be used to assemble a table
@@ -40,7 +41,7 @@ pub trait ParserPool {
 pub struct NoParserPool;
 
 impl ParserPool for NoParserPool {
-    fn new_table_hashmap(&mut self, cap: usize) -> HashMap<&'static str, &'static str> {
+    fn new_table_hashmap(&mut self, cap: usize) -> HashMap<Cow<'static, str>, Value<'static>> {
         HashMap::with_capacity(cap)
     }
     fn new_values_vec(&mut self, _: &[u8]) -> Vec<Value<'static>> {

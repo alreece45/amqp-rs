@@ -17,6 +17,7 @@ extern crate inflections;
 extern crate rustfmt;
 
 pub mod primalgen;
+pub mod parsergen;
 
 mod common;
 

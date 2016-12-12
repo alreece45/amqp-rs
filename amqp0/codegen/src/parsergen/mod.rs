@@ -6,9 +6,16 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-mod nom;
+pub mod nom;
 
-pub use self::nom::WriteNomImplementation;
+use std::borrow::Cow;
+use std::mem;
+use specs::ClassMethodField;
+
+use common;
+use common::domain::Domain;
+
+type Field<'a> = common::Field<'a, ClassMethodField>;
 
 ///
 /// The values for multiple fields can be packed into one byte.
@@ -23,25 +30,25 @@ enum FieldChunk<'a> {
 }
 
 impl<'a> FieldChunk<'a> {
-    pub fn from_field(field: &'a Field, flag_num: u8) -> Self {
+    pub fn from_field(field: &'a Field<'a>, flag_num: u8) -> Self {
         if field.is_reserved() {
             match *field.ty() {
-                Domain::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], None),
-                _ => Part::Field(field.ty().nom_parser(), None),
+                Domain::Bit => FieldChunk::Flags(flag_num, vec![!field.is_reserved()], None),
+                _ => FieldChunk::Field(field.ty().nom_parser(), None),
             }
         }
         else {
             let name = field.var_name();
             match *field.ty() {
-                Domain::Bit => Part::Flags(flag_num, vec![!field.is_reserved()], Some(name.into())),
-                _ => Part::Field(field.ty().nom_parser(), Some(name)),
+                Domain::Bit => FieldChunk::Flags(flag_num, vec![!field.is_reserved()], Some(name.into())),
+                _ => FieldChunk::Field(field.ty().nom_parser(), Some(name)),
             }
         }
     }
 
-    pub fn add_field(&mut self, field: &'a Field) -> bool {
+    pub fn add_field(&mut self, field: &'a Field<'a>) -> bool {
         match *self {
-            Part::Flags(flag_num, ref mut bits, ref mut name) if bits.len() <= 8 => {
+            FieldChunk::Flags(flag_num, ref mut bits, ref mut name) if bits.len() <= 8 => {
                 bits.push(!field.is_reserved());
 
                 if bits.len() > 1 {
@@ -57,15 +64,15 @@ impl<'a> FieldChunk<'a> {
 
     pub fn capture_name(&self) -> Option<&str> {
         match *self {
-            Part::Flags(_, _, ref name) => name.as_ref().map(|n| n.as_ref()),
-            Part::Field(_, name) => name,
+            FieldChunk::Flags(_, _, ref name) => name.as_ref().map(|n| n.as_ref()),
+            FieldChunk::Field(_, name) => name,
         }
     }
 
     pub fn arg_names(&self) -> Vec<Cow<str>> {
         match *self {
-            Part::Field(_, Some(name)) => vec![(*name).into()],
-            Part::Flags(_, ref bits, Some(ref name)) => {
+            FieldChunk::Field(_, Some(name)) => vec![(*name).into()],
+            FieldChunk::Flags(_, ref bits, Some(ref name)) => {
                 if bits.len() > 1 {
                     bits.iter()
                         .filter(|f| **f)
@@ -82,10 +89,10 @@ impl<'a> FieldChunk<'a> {
     }
 
     pub fn nom_parser(&self) -> Cow<'a, str> {
-        const BOOL_MAPPER: &'static str = "call!(::amqp0::nom::bool_bit)";
+        const BOOL_MAPPER: &'static str = "call!(::common::bool_bit)";
         match *self {
-            Part::Field(parser, _) => parser.into(),
-            Part::Flags(_, ref bits, _) => {
+            FieldChunk::Field(parser, _) => parser.into(),
+            FieldChunk::Flags(_, ref bits, _) => {
                 if bits.len()> 1 {
                     let collectors = bits.iter()
                         .map(|_| BOOL_MAPPER)

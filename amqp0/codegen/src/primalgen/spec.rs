@@ -12,6 +12,7 @@ use inflections::Inflect;
 use specs::Spec;
 
 use CodeGenerator;
+use common::spec_mod_name;
 use common::domain::DomainMapper;
 use super::{MethodModuleWriter, PropertiesStructWriter};
 
@@ -78,7 +79,7 @@ impl<'a> SpecModuleWriter<'a> {
             (version.minor(), version.revision())
         };
         let struct_name = format!("{}{}_{}", spec.name().to_pascal_case(), minor, revision);
-        let mod_name = format!("{}{}_{}", spec.name().to_snake_case(), minor, revision);
+        let mod_name = spec_mod_name(spec);
 
         SpecModuleWriter {
             struct_name: struct_name,
