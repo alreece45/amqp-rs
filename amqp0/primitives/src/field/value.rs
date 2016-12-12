@@ -198,7 +198,7 @@ impl<'a> From<Cow<'a, str>> for Value<'a> {
 #[cfg(test)]
 mod tests {
     use std::borrow::Cow;
-    use super::{Value, List, Table};
+    use field::{Value, List, Table};
 
     macro_rules! test_from_primitive {
         ($name:ident, $from:ty, $to:expr, $value:expr) => {
