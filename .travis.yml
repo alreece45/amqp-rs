@@ -3,15 +3,24 @@ rust:
   - stable
   - beta
   - nightly
+
 matrix:
   allow_failures:
     - rust: nightly
 
 env:
-  - TEST_DIR=amqp0/specgen
   - TEST_DIR=amqp0/specs
-  - TEST_DIR=amqp0/codegen
   - TEST_DIR=amqp0/primitives
   - TEST_DIR=amqp0/parser-nom
+  # Generation crates
+  - TEST_DIR=amqp0/specgen
+  - TEST_DIR=amqp0/codegen
+  # Build
+  - TEST_DIR=amqp0/specs FEATURES='amqp-build-specs"
+  - TEST_DIR=amqp0/primitives FEATURES='amqp-build-primitives"
+  - TEST_DIR=amqp0/parser-nom FEATURES='amqp-build-parser"
+  # Pregen
+  - TEST_DIR=amqp0/primitives FEATURES='amqp-pregen-primitives"
+  - TEST_DIR=amqp0/parser-nom FEATURES='amqp-pregen-parser"
 
-script: cd $TEST_DIR && cargo test
+script: cd $TEST_DIR && cargo test --features="clippy $FEATURES"
