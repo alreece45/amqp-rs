@@ -235,7 +235,7 @@ pub mod basic {
     pub struct Properties<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         delivery_mode: Option<u8>,
         priority: Option<u8>,
         correlation_id: Option<::std::borrow::Cow<'a, str>>,
@@ -257,7 +257,7 @@ pub mod basic {
             self.content_encoding.as_ref().map(|v| &**v)
         }
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn delivery_mode(&self) -> Option<u8> {
             self.delivery_mode
@@ -362,7 +362,7 @@ pub mod basic {
         no_ack: bool,
         exclusive: bool,
         nowait: bool,
-        filter: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        filter: ::field::Table<'a>,
     }
     impl<'a> Consume<'a> {
         pub fn new<Q, C, F>(ticket: u16,
@@ -376,7 +376,7 @@ pub mod basic {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  F: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  F: Into<::field::Table<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -411,7 +411,7 @@ pub mod basic {
             self.nowait
         }
         pub fn filter(&self) -> &::field::Table<'a> {
-            &*self.filter
+            &self.filter
         }
     }
     impl<'a> ::Payload for Consume<'a> {
@@ -1223,7 +1223,7 @@ pub mod connection {
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
-        server_properties: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        server_properties: ::field::Table<'a>,
         mechanisms: ::std::borrow::Cow<'a, [u8]>,
         locales: ::std::borrow::Cow<'a, [u8]>,
     }
@@ -1234,7 +1234,7 @@ pub mod connection {
                             mechanisms: M,
                             locales: L)
                             -> Self
-            where S: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+            where S: Into<::field::Table<'a>>,
                   M: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, [u8]>>
         {
@@ -1253,7 +1253,7 @@ pub mod connection {
             self.version_minor
         }
         pub fn server_properties(&self) -> &::field::Table<'a> {
-            &*self.server_properties
+            &self.server_properties
         }
         pub fn mechanisms(&self) -> &[u8] {
             &*self.mechanisms
@@ -1281,14 +1281,14 @@ pub mod connection {
         }
     }
     pub struct StartOk<'a> {
-        client_properties: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        client_properties: ::field::Table<'a>,
         mechanism: ::std::borrow::Cow<'a, str>,
         response: ::std::borrow::Cow<'a, [u8]>,
         locale: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> StartOk<'a> {
         pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
-            where C: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+            where C: Into<::field::Table<'a>>,
                   M: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, str>>
@@ -1301,7 +1301,7 @@ pub mod connection {
             }
         }
         pub fn client_properties(&self) -> &::field::Table<'a> {
-            &*self.client_properties
+            &self.client_properties
         }
         pub fn mechanism(&self) -> &str {
             &*self.mechanism
@@ -1773,7 +1773,7 @@ pub mod exchange {
         auto_delete: bool,
         internal: bool,
         nowait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Declare<'a> {
         pub fn new<E, T, A>(ticket: u16,
@@ -1788,7 +1788,7 @@ pub mod exchange {
                             -> Self
             where E: Into<::std::borrow::Cow<'a, str>>,
                   T: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Declare {
                 ticket: ticket,
@@ -1827,7 +1827,7 @@ pub mod exchange {
             self.nowait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Declare<'a> {
@@ -1945,7 +1945,7 @@ pub mod file {
     pub struct Properties<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         priority: Option<u8>,
         reply_to: Option<::std::borrow::Cow<'a, str>>,
         message_id: Option<::std::borrow::Cow<'a, str>>,
@@ -1962,7 +1962,7 @@ pub mod file {
             self.content_encoding.as_ref().map(|v| &**v)
         }
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn priority(&self) -> Option<u8> {
             self.priority
@@ -2052,7 +2052,7 @@ pub mod file {
         no_ack: bool,
         exclusive: bool,
         nowait: bool,
-        filter: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        filter: ::field::Table<'a>,
     }
     impl<'a> Consume<'a> {
         pub fn new<Q, C, F>(ticket: u16,
@@ -2066,7 +2066,7 @@ pub mod file {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  F: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  F: Into<::field::Table<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -2101,7 +2101,7 @@ pub mod file {
             self.nowait
         }
         pub fn filter(&self) -> &::field::Table<'a> {
-            &*self.filter
+            &self.filter
         }
     }
     impl<'a> ::Payload for Consume<'a> {
@@ -2589,7 +2589,7 @@ pub mod message {
         app_id: ::std::borrow::Cow<'a, str>,
         transaction_id: ::std::borrow::Cow<'a, str>,
         security_token: ::std::borrow::Cow<'a, [u8]>,
-        application_headers: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        application_headers: ::field::Table<'a>,
         body: ::std::borrow::Cow<'a, [u8]>,
     }
     impl<'a> Transfer<'a> {
@@ -2628,7 +2628,7 @@ pub mod message {
                   A: Into<::std::borrow::Cow<'a, str>>,
                   T: Into<::std::borrow::Cow<'a, str>>,
                   S: Into<::std::borrow::Cow<'a, [u8]>>,
-                  A0: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+                  A0: Into<::field::Table<'a>>,
                   B: Into<::std::borrow::Cow<'a, [u8]>>
         {
             Transfer {
@@ -2717,7 +2717,7 @@ pub mod message {
             &*self.security_token
         }
         pub fn application_headers(&self) -> &::field::Table<'a> {
-            &*self.application_headers
+            &self.application_headers
         }
         pub fn body(&self) -> &[u8] {
             &*self.body
@@ -2762,7 +2762,7 @@ pub mod message {
         no_local: bool,
         no_ack: bool,
         exclusive: bool,
-        filter: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        filter: ::field::Table<'a>,
     }
     impl<'a> Consume<'a> {
         pub fn new<Q, D, F>(ticket: u16,
@@ -2775,7 +2775,7 @@ pub mod message {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   D: Into<::std::borrow::Cow<'a, str>>,
-                  F: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  F: Into<::field::Table<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -2806,7 +2806,7 @@ pub mod message {
             self.exclusive
         }
         pub fn filter(&self) -> &::field::Table<'a> {
-            &*self.filter
+            &self.filter
         }
     }
     impl<'a> ::Payload for Consume<'a> {
@@ -3273,7 +3273,7 @@ pub mod queue {
         exclusive: bool,
         auto_delete: bool,
         nowait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Declare<'a> {
         pub fn new<Q, A>(ticket: u16,
@@ -3286,7 +3286,7 @@ pub mod queue {
                          arguments: A)
                          -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Declare {
                 ticket: ticket,
@@ -3321,7 +3321,7 @@ pub mod queue {
             self.nowait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Declare<'a> {
@@ -3391,7 +3391,7 @@ pub mod queue {
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         nowait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Bind<'a> {
         pub fn new<Q, E, R, A>(ticket: u16,
@@ -3404,7 +3404,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Bind {
                 ticket: ticket,
@@ -3431,7 +3431,7 @@ pub mod queue {
             self.nowait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Bind<'a> {
@@ -3483,7 +3483,7 @@ pub mod queue {
         queue: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Unbind<'a> {
         pub fn new<Q, E, R, A>(ticket: u16,
@@ -3495,7 +3495,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Unbind {
                 ticket: ticket,
@@ -3518,7 +3518,7 @@ pub mod queue {
             &*self.routing_key
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Unbind<'a> {
@@ -3720,7 +3720,7 @@ pub mod stream {
     pub struct Properties<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         priority: Option<u8>,
         timestamp: Option<u64>,
     }
@@ -3733,7 +3733,7 @@ pub mod stream {
             self.content_encoding.as_ref().map(|v| &**v)
         }
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn priority(&self) -> Option<u8> {
             self.priority
@@ -3819,7 +3819,7 @@ pub mod stream {
         no_local: bool,
         exclusive: bool,
         nowait: bool,
-        filter: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        filter: ::field::Table<'a>,
     }
     impl<'a> Consume<'a> {
         pub fn new<Q, C, F>(ticket: u16,
@@ -3832,7 +3832,7 @@ pub mod stream {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  F: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  F: Into<::field::Table<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -3863,7 +3863,7 @@ pub mod stream {
             self.nowait
         }
         pub fn filter(&self) -> &::field::Table<'a> {
-            &*self.filter
+            &self.filter
         }
     }
     impl<'a> ::Payload for Consume<'a> {
@@ -4146,7 +4146,7 @@ pub mod stream {
 }
 pub mod tunnel {
     pub struct Properties<'a> {
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         proxy_name: Option<::std::borrow::Cow<'a, str>>,
         data_name: Option<::std::borrow::Cow<'a, str>>,
         durable: Option<u8>,
@@ -4155,7 +4155,7 @@ pub mod tunnel {
 
     impl<'a> Properties<'a> {
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn proxy_name(&self) -> Option<&str> {
             self.proxy_name.as_ref().map(|v| &**v)
@@ -4171,16 +4171,16 @@ pub mod tunnel {
         }
     }
     pub struct Request<'a> {
-        meta_data: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        meta_data: ::field::Table<'a>,
     }
     impl<'a> Request<'a> {
         pub fn new<M>(meta_data: M) -> Self
-            where M: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+            where M: Into<::field::Table<'a>>
         {
             Request { meta_data: meta_data.into() }
         }
         pub fn meta_data(&self) -> &::field::Table<'a> {
-            &*self.meta_data
+            &self.meta_data
         }
     }
     impl<'a> ::Payload for Request<'a> {

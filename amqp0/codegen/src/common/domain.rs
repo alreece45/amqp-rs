@@ -71,6 +71,14 @@ impl Domain {
             _ => false,
         }
     }
+
+    pub fn is_owned(&self) -> bool {
+        match (self.is_copy(), self) {
+            (false, &Domain::Table) => true,
+            _ => false,
+        }
+    }
+
     pub fn borrowed_type(&self) -> &'static str {
         match *self {
             Domain::ShortString => "str",
@@ -128,11 +136,11 @@ impl Domain {
     pub fn cow_definition<S>(&self, lifetime: S) -> Cow<'static, str>
         where S: AsRef<str>
     {
-        if self.is_copy() {
+        if self.is_copy() || self.is_owned() {
             Cow::Borrowed(self.borrowed_type())
         }
-            else {
-                format!("::std::borrow::Cow<'{}, {}>", lifetime.as_ref(), self.borrowed_type()).into()
-            }
+        else {
+            format!("::std::borrow::Cow<'{}, {}>", lifetime.as_ref(), self.borrowed_type()).into()
+        }
     }
 }

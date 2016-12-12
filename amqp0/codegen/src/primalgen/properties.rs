@@ -92,11 +92,10 @@ impl<'a> PropertiesStructWriter<'a> {
             let borrow = if is_copy { "" } else { "&" };
             try!(writeln!(writer, "pub fn {}(&self) -> Option<{}{}> {{", field.var_name(), borrow, ty));
 
-            if is_copy {
-                try!(writeln!(writer, "self.{}", field.var_name()));
-            }
-            else {
-                try!(writeln!(writer, "self.{}.as_ref().map(|v| &**v)", field.var_name()));
+            match (is_copy, field.ty().is_owned()) {
+                (true, _) => try!(writeln!(writer, "self.{}", field.var_name())),
+                (_, true) => try!(writeln!(writer, "self.{}.as_ref()", field.var_name())),
+                _ => try!(writeln!(writer, "self.{}.as_ref().map(|v| &**v)", field.var_name())),
             }
 
             try!(writeln!(writer, "}}"));

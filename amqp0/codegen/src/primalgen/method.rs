@@ -112,11 +112,11 @@ impl<'a> MethodModuleWriter<'a> {
             }
 
             try!(write!(writer, "{}: ", field.var_name()));
-            if field.ty().is_copy() {
+            if field.ty().is_copy() || field.ty().is_owned() {
                 try!(writeln!(writer, "{},", field.ty().owned_type()));
             }
             else {
-                try!(writeln!(writer, "::std::borrow::Cow<'a, {}>,", field.ty().borrowed_type()));
+                try!(writeln!(writer, "{},", field.ty().cow_definition("a")));
             }
         }
         try!(writeln!(writer, "}}"));
@@ -179,8 +179,8 @@ impl<'a> MethodModuleWriter<'a> {
             try!(write!(writer, "\n where "));
             for field in &self.fields {
                 if let Some(label) = self.generic_types.get(field.name()) {
-                    let ty = field.ty().borrowed_type();
-                    try!(writeln!(writer, "{}: Into<::std::borrow::Cow<'a, {}>>,", label, ty));
+                    let ty = field.ty().cow_definition("a");
+                    try!(writeln!(writer, "{}: Into<{}>,", label, ty));
                 }
             }
         }
@@ -224,7 +224,11 @@ impl<'a> MethodModuleWriter<'a> {
             let borrow = if is_copy { "" } else { "&" };
             try!(writeln!(writer, "pub fn {}(&self) -> {}{} {{", field.var_name(), borrow, ty));
 
-            let borrow = if is_copy { "" } else { "&*" };
+            let borrow = match (is_copy, field.ty().is_owned()) {
+                (true, _) => "",
+                (_, true) => "&",
+                _ => "&*",
+            };
             try!(writeln!(writer, "{}self.{}", borrow, field.var_name()));
             try!(writeln!(writer, "}}"));
         }

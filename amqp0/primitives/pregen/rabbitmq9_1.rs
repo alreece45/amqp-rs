@@ -91,7 +91,7 @@ pub mod basic {
     pub struct Properties<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         delivery_mode: Option<u8>,
         priority: Option<u8>,
         correlation_id: Option<::std::borrow::Cow<'a, str>>,
@@ -113,7 +113,7 @@ pub mod basic {
             self.content_encoding.as_ref().map(|v| &**v)
         }
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn delivery_mode(&self) -> Option<u8> {
             self.delivery_mode
@@ -217,7 +217,7 @@ pub mod basic {
         no_ack: bool,
         exclusive: bool,
         no_wait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Consume<'a> {
         pub fn new<Q, C, A>(queue: Q,
@@ -230,7 +230,7 @@ pub mod basic {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Consume {
                 queue: queue.into(),
@@ -261,7 +261,7 @@ pub mod basic {
             self.no_wait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Consume<'a> {
@@ -1081,7 +1081,7 @@ pub mod connection {
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
-        server_properties: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        server_properties: ::field::Table<'a>,
         mechanisms: ::std::borrow::Cow<'a, [u8]>,
         locales: ::std::borrow::Cow<'a, [u8]>,
     }
@@ -1092,7 +1092,7 @@ pub mod connection {
                             mechanisms: M,
                             locales: L)
                             -> Self
-            where S: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+            where S: Into<::field::Table<'a>>,
                   M: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, [u8]>>
         {
@@ -1111,7 +1111,7 @@ pub mod connection {
             self.version_minor
         }
         pub fn server_properties(&self) -> &::field::Table<'a> {
-            &*self.server_properties
+            &self.server_properties
         }
         pub fn mechanisms(&self) -> &[u8] {
             &*self.mechanisms
@@ -1139,14 +1139,14 @@ pub mod connection {
         }
     }
     pub struct StartOk<'a> {
-        client_properties: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        client_properties: ::field::Table<'a>,
         mechanism: ::std::borrow::Cow<'a, str>,
         response: ::std::borrow::Cow<'a, [u8]>,
         locale: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> StartOk<'a> {
         pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
-            where C: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+            where C: Into<::field::Table<'a>>,
                   M: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, str>>
@@ -1159,7 +1159,7 @@ pub mod connection {
             }
         }
         pub fn client_properties(&self) -> &::field::Table<'a> {
-            &*self.client_properties
+            &self.client_properties
         }
         pub fn mechanism(&self) -> &str {
             &*self.mechanism
@@ -1523,7 +1523,7 @@ pub mod exchange {
         auto_delete: bool,
         internal: bool,
         no_wait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Declare<'a> {
         pub fn new<E, T, A>(exchange: E,
@@ -1537,7 +1537,7 @@ pub mod exchange {
                             -> Self
             where E: Into<::std::borrow::Cow<'a, str>>,
                   T: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Declare {
                 exchange: exchange.into(),
@@ -1572,7 +1572,7 @@ pub mod exchange {
             self.no_wait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Declare<'a> {
@@ -1685,7 +1685,7 @@ pub mod exchange {
         source: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         no_wait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Bind<'a> {
         pub fn new<D, S, R, A>(destination: D,
@@ -1697,7 +1697,7 @@ pub mod exchange {
             where D: Into<::std::borrow::Cow<'a, str>>,
                   S: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Bind {
                 destination: destination.into(),
@@ -1720,7 +1720,7 @@ pub mod exchange {
             self.no_wait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Bind<'a> {
@@ -1772,7 +1772,7 @@ pub mod exchange {
         source: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         no_wait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Unbind<'a> {
         pub fn new<D, S, R, A>(destination: D,
@@ -1784,7 +1784,7 @@ pub mod exchange {
             where D: Into<::std::borrow::Cow<'a, str>>,
                   S: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Unbind {
                 destination: destination.into(),
@@ -1807,7 +1807,7 @@ pub mod exchange {
             self.no_wait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Unbind<'a> {
@@ -1865,7 +1865,7 @@ pub mod queue {
         exclusive: bool,
         auto_delete: bool,
         no_wait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Declare<'a> {
         pub fn new<Q, A>(queue: Q,
@@ -1877,7 +1877,7 @@ pub mod queue {
                          arguments: A)
                          -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Declare {
                 queue: queue.into(),
@@ -1908,7 +1908,7 @@ pub mod queue {
             self.no_wait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Declare<'a> {
@@ -1977,7 +1977,7 @@ pub mod queue {
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         no_wait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Bind<'a> {
         pub fn new<Q, E, R, A>(queue: Q,
@@ -1989,7 +1989,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Bind {
                 queue: queue.into(),
@@ -2012,7 +2012,7 @@ pub mod queue {
             self.no_wait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Bind<'a> {
@@ -2063,14 +2063,14 @@ pub mod queue {
         queue: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Unbind<'a> {
         pub fn new<Q, E, R, A>(queue: Q, exchange: E, routing_key: R, arguments: A) -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Unbind {
                 queue: queue.into(),
@@ -2089,7 +2089,7 @@ pub mod queue {
             &*self.routing_key
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Unbind<'a> {

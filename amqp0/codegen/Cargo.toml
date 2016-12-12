@@ -1,7 +1,7 @@
 [package]
 name = "amqp0-codegen"
 authors = ["Alexander Reece <github@reece45.com>"]
-version = "0.0.3"
+version = "0.0.4"
 
 [features]
 default = []

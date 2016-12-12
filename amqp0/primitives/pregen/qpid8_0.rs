@@ -226,7 +226,7 @@ pub mod basic {
     pub struct Properties<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         delivery_mode: Option<u8>,
         priority: Option<u8>,
         correlation_id: Option<::std::borrow::Cow<'a, str>>,
@@ -248,7 +248,7 @@ pub mod basic {
             self.content_encoding.as_ref().map(|v| &**v)
         }
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn delivery_mode(&self) -> Option<u8> {
             self.delivery_mode
@@ -353,7 +353,7 @@ pub mod basic {
         no_ack: bool,
         exclusive: bool,
         nowait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Consume<'a> {
         pub fn new<Q, C, A>(ticket: u16,
@@ -367,7 +367,7 @@ pub mod basic {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -402,7 +402,7 @@ pub mod basic {
             self.nowait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Consume<'a> {
@@ -1056,12 +1056,12 @@ pub mod channel {
     pub struct Alert<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
-        details: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        details: ::field::Table<'a>,
     }
     impl<'a> Alert<'a> {
         pub fn new<R, D>(reply_code: u16, reply_text: R, details: D) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
-                  D: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  D: Into<::field::Table<'a>>
         {
             Alert {
                 reply_code: reply_code,
@@ -1076,7 +1076,7 @@ pub mod channel {
             &*self.reply_text
         }
         pub fn details(&self) -> &::field::Table<'a> {
-            &*self.details
+            &self.details
         }
     }
     impl<'a> ::Payload for Alert<'a> {
@@ -1174,7 +1174,7 @@ pub mod connection {
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
-        server_properties: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        server_properties: ::field::Table<'a>,
         mechanisms: ::std::borrow::Cow<'a, [u8]>,
         locales: ::std::borrow::Cow<'a, [u8]>,
     }
@@ -1185,7 +1185,7 @@ pub mod connection {
                             mechanisms: M,
                             locales: L)
                             -> Self
-            where S: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+            where S: Into<::field::Table<'a>>,
                   M: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, [u8]>>
         {
@@ -1204,7 +1204,7 @@ pub mod connection {
             self.version_minor
         }
         pub fn server_properties(&self) -> &::field::Table<'a> {
-            &*self.server_properties
+            &self.server_properties
         }
         pub fn mechanisms(&self) -> &[u8] {
             &*self.mechanisms
@@ -1232,14 +1232,14 @@ pub mod connection {
         }
     }
     pub struct StartOk<'a> {
-        client_properties: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        client_properties: ::field::Table<'a>,
         mechanism: ::std::borrow::Cow<'a, str>,
         response: ::std::borrow::Cow<'a, [u8]>,
         locale: ::std::borrow::Cow<'a, str>,
     }
     impl<'a> StartOk<'a> {
         pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
-            where C: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+            where C: Into<::field::Table<'a>>,
                   M: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, str>>
@@ -1252,7 +1252,7 @@ pub mod connection {
             }
         }
         pub fn client_properties(&self) -> &::field::Table<'a> {
-            &*self.client_properties
+            &self.client_properties
         }
         pub fn mechanism(&self) -> &str {
             &*self.mechanism
@@ -1724,7 +1724,7 @@ pub mod exchange {
         auto_delete: bool,
         internal: bool,
         nowait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Declare<'a> {
         pub fn new<E, T, A>(ticket: u16,
@@ -1739,7 +1739,7 @@ pub mod exchange {
                             -> Self
             where E: Into<::std::borrow::Cow<'a, str>>,
                   T: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Declare {
                 ticket: ticket,
@@ -1778,7 +1778,7 @@ pub mod exchange {
             self.nowait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Declare<'a> {
@@ -1979,7 +1979,7 @@ pub mod file {
     pub struct Properties<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         priority: Option<u8>,
         reply_to: Option<::std::borrow::Cow<'a, str>>,
         message_id: Option<::std::borrow::Cow<'a, str>>,
@@ -1996,7 +1996,7 @@ pub mod file {
             self.content_encoding.as_ref().map(|v| &**v)
         }
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn priority(&self) -> Option<u8> {
             self.priority
@@ -2603,7 +2603,7 @@ pub mod queue {
         exclusive: bool,
         auto_delete: bool,
         nowait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Declare<'a> {
         pub fn new<Q, A>(ticket: u16,
@@ -2616,7 +2616,7 @@ pub mod queue {
                          arguments: A)
                          -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Declare {
                 ticket: ticket,
@@ -2651,7 +2651,7 @@ pub mod queue {
             self.nowait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Declare<'a> {
@@ -2721,7 +2721,7 @@ pub mod queue {
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         nowait: bool,
-        arguments: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        arguments: ::field::Table<'a>,
     }
     impl<'a> Bind<'a> {
         pub fn new<Q, E, R, A>(ticket: u16,
@@ -2734,7 +2734,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+                  A: Into<::field::Table<'a>>
         {
             Bind {
                 ticket: ticket,
@@ -2761,7 +2761,7 @@ pub mod queue {
             self.nowait
         }
         pub fn arguments(&self) -> &::field::Table<'a> {
-            &*self.arguments
+            &self.arguments
         }
     }
     impl<'a> ::Payload for Bind<'a> {
@@ -2963,7 +2963,7 @@ pub mod stream {
     pub struct Properties<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         priority: Option<u8>,
         timestamp: Option<u64>,
     }
@@ -2976,7 +2976,7 @@ pub mod stream {
             self.content_encoding.as_ref().map(|v| &**v)
         }
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn priority(&self) -> Option<u8> {
             self.priority
@@ -3540,13 +3540,13 @@ pub mod test {
         }
     }
     pub struct Table<'a> {
-        table: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        table: ::field::Table<'a>,
         integer_op: u8,
         string_op: u8,
     }
     impl<'a> Table<'a> {
         pub fn new<T>(table: T, integer_op: u8, string_op: u8) -> Self
-            where T: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+            where T: Into<::field::Table<'a>>
         {
             Table {
                 table: table.into(),
@@ -3555,7 +3555,7 @@ pub mod test {
             }
         }
         pub fn table(&self) -> &::field::Table<'a> {
-            &*self.table
+            &self.table
         }
         pub fn integer_op(&self) -> u8 {
             self.integer_op
@@ -3672,7 +3672,7 @@ pub mod test {
 }
 pub mod tunnel {
     pub struct Properties<'a> {
-        headers: Option<::std::borrow::Cow<'a, ::field::Table<'a>>>,
+        headers: Option<::field::Table<'a>>,
         proxy_name: Option<::std::borrow::Cow<'a, str>>,
         data_name: Option<::std::borrow::Cow<'a, str>>,
         durable: Option<u8>,
@@ -3681,7 +3681,7 @@ pub mod tunnel {
 
     impl<'a> Properties<'a> {
         pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref().map(|v| &**v)
+            self.headers.as_ref()
         }
         pub fn proxy_name(&self) -> Option<&str> {
             self.proxy_name.as_ref().map(|v| &**v)
@@ -3697,16 +3697,16 @@ pub mod tunnel {
         }
     }
     pub struct Request<'a> {
-        meta_data: ::std::borrow::Cow<'a, ::field::Table<'a>>,
+        meta_data: ::field::Table<'a>,
     }
     impl<'a> Request<'a> {
         pub fn new<M>(meta_data: M) -> Self
-            where M: Into<::std::borrow::Cow<'a, ::field::Table<'a>>>
+            where M: Into<::field::Table<'a>>
         {
             Request { meta_data: meta_data.into() }
         }
         pub fn meta_data(&self) -> &::field::Table<'a> {
-            &*self.meta_data
+            &self.meta_data
         }
     }
     impl<'a> ::Payload for Request<'a> {
