@@ -96,8 +96,8 @@ impl<'a> HeaderStructWriter<'a> {
 
             let ty = field.ty().borrowed_type();
             try!(match (field.ty().is_copy(), field.ty().is_owned()) {
-                (true, _) => writeln!(writer, "Option<{}>,", ty),
-                (_, true) => writeln!(writer, "Option<&{}>,", ty),
+                (true, _) => writeln!(writer, "Option< {} >,", ty),
+                (_, true) => writeln!(writer, "Option< &{} >,", ty),
                 _ => writeln!(writer, "Option< Cow<{}> >,", ty)
             });
         }
