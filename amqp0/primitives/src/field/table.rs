@@ -12,6 +12,49 @@ use std::ops::{Deref, DerefMut};
 
 use super::Value;
 
+pub type TableEntry<'a> = (Cow<'a, str>, Value<'a>);
+
+pub struct TableEntries<'a> {
+    entries: Cow<'a, [TableEntry<'a>]>,
+}
+
+impl<'a> TableEntries<'a> {
+    pub fn from_entries<T>(entries: T) -> Self
+        where T: Into<Cow<'a, [TableEntry<'a>]>>
+    {
+        TableEntries {
+            entries: entries.into()
+        }
+    }
+
+    pub fn amqp_size(&self) -> usize {
+        self.entries.iter()
+            .map(|&(ref k, ref v)| k.len() + v.amqp_size())
+            .sum()
+    }
+
+    pub fn to_hashmap(&self) -> HashMap<Cow<'a, str>, Value<'a>> {
+        self.entries.iter().cloned().collect()
+    }
+
+    pub fn to_table(&self) -> Table<'a> {
+        Table::from_hashmap(self.to_hashmap())
+    }
+}
+
+impl<'a> Deref for TableEntries<'a> {
+    type Target = [TableEntry<'a>];
+    fn deref(&self) -> &Self::Target {
+        &*self.entries
+    }
+}
+
+impl<'a> DerefMut for TableEntries<'a> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.entries.to_mut()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Table<'a> {
     values: HashMap<Cow<'a, str>, Value<'a>>,
@@ -24,7 +67,6 @@ impl Table<'static> {
 }
 
 impl<'a> Table<'a> {
-
     pub fn from_hashmap(hashmap: HashMap<Cow<'a, str>, Value<'a>>) -> Self {
         Table {
             values: hashmap

@@ -96,7 +96,7 @@ pub mod basic {
     pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::field::Table<'a>>,
+        headers: Option<::field::TableEntries<'a>>,
         delivery_mode: Option<u8>,
         priority: Option<u8>,
         correlation_id: Option<::std::borrow::Cow<'a, str>>,
@@ -114,14 +114,14 @@ pub mod basic {
         impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
-(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
-(delivery_mode, delivery_mode_mut, set_delivery_mode, take_delivery_mode) -> Option<u8>,
-(priority, priority_mut, set_priority, take_priority) -> Option<u8>,
+(headers, headers_mut, set_headers, take_headers) -> Option< &::field::TableEntries<'a> >,
+(delivery_mode, delivery_mode_mut, set_delivery_mode, take_delivery_mode) -> Option< u8 >,
+(priority, priority_mut, set_priority, take_priority) -> Option< u8 >,
 (correlation_id, correlation_id_mut, set_correlation_id, take_correlation_id) -> Option< Cow<str> >,
 (reply_to, reply_to_mut, set_reply_to, take_reply_to) -> Option< Cow<str> >,
 (expiration, expiration_mut, set_expiration, take_expiration) -> Option< Cow<str> >,
 (message_id, message_id_mut, set_message_id, take_message_id) -> Option< Cow<str> >,
-(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
+(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option< u64 >,
 (ty, ty_mut, set_ty, take_ty) -> Option< Cow<str> >,
 (user_id, user_id_mut, set_user_id, take_user_id) -> Option< Cow<str> >,
 (app_id, app_id_mut, set_app_id, take_app_id) -> Option< Cow<str> >,
@@ -199,7 +199,7 @@ pub mod basic {
         no_ack: bool,
         exclusive: bool,
         no_wait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Consume<'a>
 
     impl<'a> Consume<'a> {
@@ -213,7 +213,7 @@ pub mod basic {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Consume {
                 queue: queue.into(),
@@ -232,7 +232,7 @@ pub mod basic {
 (no_ack, set_no_ack) -> bool,
 (exclusive, set_exclusive) -> bool,
 (no_wait, set_no_wait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Consume<'a>
 
@@ -1014,7 +1014,7 @@ pub mod connection {
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
-        server_properties: ::field::Table<'a>,
+        server_properties: ::field::TableEntries<'a>,
         mechanisms: ::std::borrow::Cow<'a, [u8]>,
         locales: ::std::borrow::Cow<'a, [u8]>,
     } // struct Start<'a>
@@ -1026,7 +1026,7 @@ pub mod connection {
                             mechanisms: M,
                             locales: L)
                             -> Self
-            where S: Into<::field::Table<'a>>,
+            where S: Into<::field::TableEntries<'a>>,
                   M: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, [u8]>>
         {
@@ -1041,7 +1041,7 @@ pub mod connection {
         impl_properties! {
 (version_major, set_version_major) -> u8,
 (version_minor, set_version_minor) -> u8,
-(server_properties, server_properties_mut, set_server_properties) -> &::field::Table<'a>,
+(server_properties, server_properties_mut, set_server_properties) -> &::field::TableEntries<'a>,
 (mechanisms, mechanisms_mut, set_mechanisms) -> Cow<[u8]>,
 (locales, locales_mut, set_locales) -> Cow<[u8]>,
 } // impl_properties
@@ -1067,7 +1067,7 @@ pub mod connection {
     } // impl<'a> ::Payload for Start<'a>
 
     pub struct StartOk<'a> {
-        client_properties: ::field::Table<'a>,
+        client_properties: ::field::TableEntries<'a>,
         mechanism: ::std::borrow::Cow<'a, str>,
         response: ::std::borrow::Cow<'a, [u8]>,
         locale: ::std::borrow::Cow<'a, str>,
@@ -1075,7 +1075,7 @@ pub mod connection {
 
     impl<'a> StartOk<'a> {
         pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
-            where C: Into<::field::Table<'a>>,
+            where C: Into<::field::TableEntries<'a>>,
                   M: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, str>>
@@ -1088,7 +1088,7 @@ pub mod connection {
             } // StartOk
         } // fn new()
         impl_properties! {
-(client_properties, client_properties_mut, set_client_properties) -> &::field::Table<'a>,
+(client_properties, client_properties_mut, set_client_properties) -> &::field::TableEntries<'a>,
 (mechanism, mechanism_mut, set_mechanism) -> Cow<str>,
 (response, response_mut, set_response) -> Cow<[u8]>,
 (locale, locale_mut, set_locale) -> Cow<str>,
@@ -1418,7 +1418,7 @@ pub mod exchange {
         passive: bool,
         durable: bool,
         no_wait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Declare<'a>
 
     impl<'a> Declare<'a> {
@@ -1431,7 +1431,7 @@ pub mod exchange {
                             -> Self
             where E: Into<::std::borrow::Cow<'a, str>>,
                   T: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Declare {
                 exchange: exchange.into(),
@@ -1448,7 +1448,7 @@ pub mod exchange {
 (passive, set_passive) -> bool,
 (durable, set_durable) -> bool,
 (no_wait, set_no_wait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Declare<'a>
 
@@ -1582,7 +1582,7 @@ pub mod queue {
         exclusive: bool,
         auto_delete: bool,
         no_wait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Declare<'a>
 
     impl<'a> Declare<'a> {
@@ -1595,7 +1595,7 @@ pub mod queue {
                          arguments: A)
                          -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Declare {
                 queue: queue.into(),
@@ -1614,7 +1614,7 @@ pub mod queue {
 (exclusive, set_exclusive) -> bool,
 (auto_delete, set_auto_delete) -> bool,
 (no_wait, set_no_wait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Declare<'a>
 
@@ -1684,7 +1684,7 @@ pub mod queue {
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         no_wait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Bind<'a>
 
     impl<'a> Bind<'a> {
@@ -1697,7 +1697,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Bind {
                 queue: queue.into(),
@@ -1712,7 +1712,7 @@ pub mod queue {
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 (no_wait, set_no_wait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Bind<'a>
 
@@ -1768,7 +1768,7 @@ pub mod queue {
         queue: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Unbind<'a>
 
     impl<'a> Unbind<'a> {
@@ -1776,7 +1776,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Unbind {
                 queue: queue.into(),
@@ -1789,7 +1789,7 @@ pub mod queue {
 (queue, queue_mut, set_queue) -> Cow<str>,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Unbind<'a>
 

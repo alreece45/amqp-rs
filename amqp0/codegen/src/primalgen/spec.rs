@@ -144,7 +144,6 @@ impl<'a> SpecModuleWriter<'a> {
     pub fn write_method_enum<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-
         Ok(())
     }
 

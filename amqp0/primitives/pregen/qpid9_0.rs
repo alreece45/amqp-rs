@@ -267,7 +267,7 @@ pub mod basic {
     pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::field::Table<'a>>,
+        headers: Option<::field::TableEntries<'a>>,
         delivery_mode: Option<u8>,
         priority: Option<u8>,
         correlation_id: Option<::std::borrow::Cow<'a, str>>,
@@ -285,14 +285,14 @@ pub mod basic {
         impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
-(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
-(delivery_mode, delivery_mode_mut, set_delivery_mode, take_delivery_mode) -> Option<u8>,
-(priority, priority_mut, set_priority, take_priority) -> Option<u8>,
+(headers, headers_mut, set_headers, take_headers) -> Option< &::field::TableEntries<'a> >,
+(delivery_mode, delivery_mode_mut, set_delivery_mode, take_delivery_mode) -> Option< u8 >,
+(priority, priority_mut, set_priority, take_priority) -> Option< u8 >,
 (correlation_id, correlation_id_mut, set_correlation_id, take_correlation_id) -> Option< Cow<str> >,
 (reply_to, reply_to_mut, set_reply_to, take_reply_to) -> Option< Cow<str> >,
 (expiration, expiration_mut, set_expiration, take_expiration) -> Option< Cow<str> >,
 (message_id, message_id_mut, set_message_id, take_message_id) -> Option< Cow<str> >,
-(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
+(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option< u64 >,
 (ty, ty_mut, set_ty, take_ty) -> Option< Cow<str> >,
 (user_id, user_id_mut, set_user_id, take_user_id) -> Option< Cow<str> >,
 (app_id, app_id_mut, set_app_id, take_app_id) -> Option< Cow<str> >,
@@ -371,7 +371,7 @@ pub mod basic {
         no_ack: bool,
         exclusive: bool,
         nowait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Consume<'a>
 
     impl<'a> Consume<'a> {
@@ -386,7 +386,7 @@ pub mod basic {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -407,7 +407,7 @@ pub mod basic {
 (no_ack, set_no_ack) -> bool,
 (exclusive, set_exclusive) -> bool,
 (nowait, set_nowait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Consume<'a>
 
@@ -1331,7 +1331,7 @@ pub mod connection {
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
-        server_properties: ::field::Table<'a>,
+        server_properties: ::field::TableEntries<'a>,
         mechanisms: ::std::borrow::Cow<'a, [u8]>,
         locales: ::std::borrow::Cow<'a, [u8]>,
     } // struct Start<'a>
@@ -1343,7 +1343,7 @@ pub mod connection {
                             mechanisms: M,
                             locales: L)
                             -> Self
-            where S: Into<::field::Table<'a>>,
+            where S: Into<::field::TableEntries<'a>>,
                   M: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, [u8]>>
         {
@@ -1358,7 +1358,7 @@ pub mod connection {
         impl_properties! {
 (version_major, set_version_major) -> u8,
 (version_minor, set_version_minor) -> u8,
-(server_properties, server_properties_mut, set_server_properties) -> &::field::Table<'a>,
+(server_properties, server_properties_mut, set_server_properties) -> &::field::TableEntries<'a>,
 (mechanisms, mechanisms_mut, set_mechanisms) -> Cow<[u8]>,
 (locales, locales_mut, set_locales) -> Cow<[u8]>,
 } // impl_properties
@@ -1384,7 +1384,7 @@ pub mod connection {
     } // impl<'a> ::Payload for Start<'a>
 
     pub struct StartOk<'a> {
-        client_properties: ::field::Table<'a>,
+        client_properties: ::field::TableEntries<'a>,
         mechanism: ::std::borrow::Cow<'a, str>,
         response: ::std::borrow::Cow<'a, [u8]>,
         locale: ::std::borrow::Cow<'a, str>,
@@ -1392,7 +1392,7 @@ pub mod connection {
 
     impl<'a> StartOk<'a> {
         pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
-            where C: Into<::field::Table<'a>>,
+            where C: Into<::field::TableEntries<'a>>,
                   M: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, [u8]>>,
                   L: Into<::std::borrow::Cow<'a, str>>
@@ -1405,7 +1405,7 @@ pub mod connection {
             } // StartOk
         } // fn new()
         impl_properties! {
-(client_properties, client_properties_mut, set_client_properties) -> &::field::Table<'a>,
+(client_properties, client_properties_mut, set_client_properties) -> &::field::TableEntries<'a>,
 (mechanism, mechanism_mut, set_mechanism) -> Cow<str>,
 (response, response_mut, set_response) -> Cow<[u8]>,
 (locale, locale_mut, set_locale) -> Cow<str>,
@@ -1915,7 +1915,7 @@ pub mod exchange {
         auto_delete: bool,
         internal: bool,
         nowait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Declare<'a>
 
     impl<'a> Declare<'a> {
@@ -1931,7 +1931,7 @@ pub mod exchange {
                             -> Self
             where E: Into<::std::borrow::Cow<'a, str>>,
                   T: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Declare {
                 ticket: ticket,
@@ -1954,7 +1954,7 @@ pub mod exchange {
 (auto_delete, set_auto_delete) -> bool,
 (internal, set_internal) -> bool,
 (nowait, set_nowait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Declare<'a>
 
@@ -2170,7 +2170,7 @@ pub mod file {
     pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::field::Table<'a>>,
+        headers: Option<::field::TableEntries<'a>>,
         priority: Option<u8>,
         reply_to: Option<::std::borrow::Cow<'a, str>>,
         message_id: Option<::std::borrow::Cow<'a, str>>,
@@ -2183,12 +2183,12 @@ pub mod file {
         impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
-(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
-(priority, priority_mut, set_priority, take_priority) -> Option<u8>,
+(headers, headers_mut, set_headers, take_headers) -> Option< &::field::TableEntries<'a> >,
+(priority, priority_mut, set_priority, take_priority) -> Option< u8 >,
 (reply_to, reply_to_mut, set_reply_to, take_reply_to) -> Option< Cow<str> >,
 (message_id, message_id_mut, set_message_id, take_message_id) -> Option< Cow<str> >,
 (filename, filename_mut, set_filename, take_filename) -> Option< Cow<str> >,
-(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
+(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option< u64 >,
 (cluster_id, cluster_id_mut, set_cluster_id, take_cluster_id) -> Option< Cow<str> >,
 } // impl_properties
     } // impl Headers
@@ -2264,7 +2264,7 @@ pub mod file {
         no_ack: bool,
         exclusive: bool,
         nowait: bool,
-        filter: ::field::Table<'a>,
+        filter: ::field::TableEntries<'a>,
     } // struct Consume<'a>
 
     impl<'a> Consume<'a> {
@@ -2279,7 +2279,7 @@ pub mod file {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  F: Into<::field::Table<'a>>
+                  F: Into<::field::TableEntries<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -2300,7 +2300,7 @@ pub mod file {
 (no_ack, set_no_ack) -> bool,
 (exclusive, set_exclusive) -> bool,
 (nowait, set_nowait) -> bool,
-(filter, filter_mut, set_filter) -> &::field::Table<'a>,
+(filter, filter_mut, set_filter) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Consume<'a>
 
@@ -2807,7 +2807,7 @@ pub mod message {
         app_id: ::std::borrow::Cow<'a, str>,
         transaction_id: ::std::borrow::Cow<'a, str>,
         security_token: ::std::borrow::Cow<'a, [u8]>,
-        application_headers: ::field::Table<'a>,
+        application_headers: ::field::TableEntries<'a>,
         body: ::std::borrow::Cow<'a, [u8]>,
     } // struct Transfer<'a>
 
@@ -2847,7 +2847,7 @@ pub mod message {
                   A: Into<::std::borrow::Cow<'a, str>>,
                   T: Into<::std::borrow::Cow<'a, str>>,
                   S: Into<::std::borrow::Cow<'a, [u8]>>,
-                  A0: Into<::field::Table<'a>>,
+                  A0: Into<::field::TableEntries<'a>>,
                   B: Into<::std::borrow::Cow<'a, [u8]>>
         {
             Transfer {
@@ -2896,7 +2896,7 @@ pub mod message {
 (app_id, app_id_mut, set_app_id) -> Cow<str>,
 (transaction_id, transaction_id_mut, set_transaction_id) -> Cow<str>,
 (security_token, security_token_mut, set_security_token) -> Cow<[u8]>,
-(application_headers, application_headers_mut, set_application_headers) -> &::field::Table<'a>,
+(application_headers, application_headers_mut, set_application_headers) -> &::field::TableEntries<'a>,
 (body, body_mut, set_body) -> Cow<[u8]>,
 } // impl_properties
     } // impl<'a> Transfer<'a>
@@ -2941,7 +2941,7 @@ pub mod message {
         no_local: bool,
         no_ack: bool,
         exclusive: bool,
-        filter: ::field::Table<'a>,
+        filter: ::field::TableEntries<'a>,
     } // struct Consume<'a>
 
     impl<'a> Consume<'a> {
@@ -2955,7 +2955,7 @@ pub mod message {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   D: Into<::std::borrow::Cow<'a, str>>,
-                  F: Into<::field::Table<'a>>
+                  F: Into<::field::TableEntries<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -2974,7 +2974,7 @@ pub mod message {
 (no_local, set_no_local) -> bool,
 (no_ack, set_no_ack) -> bool,
 (exclusive, set_exclusive) -> bool,
-(filter, filter_mut, set_filter) -> &::field::Table<'a>,
+(filter, filter_mut, set_filter) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Consume<'a>
 
@@ -3483,7 +3483,7 @@ pub mod queue {
         exclusive: bool,
         auto_delete: bool,
         nowait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Declare<'a>
 
     impl<'a> Declare<'a> {
@@ -3497,7 +3497,7 @@ pub mod queue {
                          arguments: A)
                          -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Declare {
                 ticket: ticket,
@@ -3518,7 +3518,7 @@ pub mod queue {
 (exclusive, set_exclusive) -> bool,
 (auto_delete, set_auto_delete) -> bool,
 (nowait, set_nowait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Declare<'a>
 
@@ -3589,7 +3589,7 @@ pub mod queue {
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         nowait: bool,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Bind<'a>
 
     impl<'a> Bind<'a> {
@@ -3603,7 +3603,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Bind {
                 ticket: ticket,
@@ -3620,7 +3620,7 @@ pub mod queue {
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 (nowait, set_nowait) -> bool,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Bind<'a>
 
@@ -3677,7 +3677,7 @@ pub mod queue {
         queue: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-        arguments: ::field::Table<'a>,
+        arguments: ::field::TableEntries<'a>,
     } // struct Unbind<'a>
 
     impl<'a> Unbind<'a> {
@@ -3690,7 +3690,7 @@ pub mod queue {
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   E: Into<::std::borrow::Cow<'a, str>>,
                   R: Into<::std::borrow::Cow<'a, str>>,
-                  A: Into<::field::Table<'a>>
+                  A: Into<::field::TableEntries<'a>>
         {
             Unbind {
                 ticket: ticket,
@@ -3705,7 +3705,7 @@ pub mod queue {
 (queue, queue_mut, set_queue) -> Cow<str>,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
-(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+(arguments, arguments_mut, set_arguments) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Unbind<'a>
 
@@ -3926,7 +3926,7 @@ pub mod stream {
     pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
-        headers: Option<::field::Table<'a>>,
+        headers: Option<::field::TableEntries<'a>>,
         priority: Option<u8>,
         timestamp: Option<u64>,
     } // struct Header
@@ -3935,9 +3935,9 @@ pub mod stream {
         impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
-(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
-(priority, priority_mut, set_priority, take_priority) -> Option<u8>,
-(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
+(headers, headers_mut, set_headers, take_headers) -> Option< &::field::TableEntries<'a> >,
+(priority, priority_mut, set_priority, take_priority) -> Option< u8 >,
+(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option< u64 >,
 } // impl_properties
     } // impl Headers
 
@@ -4018,7 +4018,7 @@ pub mod stream {
         no_local: bool,
         exclusive: bool,
         nowait: bool,
-        filter: ::field::Table<'a>,
+        filter: ::field::TableEntries<'a>,
     } // struct Consume<'a>
 
     impl<'a> Consume<'a> {
@@ -4032,7 +4032,7 @@ pub mod stream {
                             -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>,
                   C: Into<::std::borrow::Cow<'a, str>>,
-                  F: Into<::field::Table<'a>>
+                  F: Into<::field::TableEntries<'a>>
         {
             Consume {
                 ticket: ticket,
@@ -4051,7 +4051,7 @@ pub mod stream {
 (no_local, set_no_local) -> bool,
 (exclusive, set_exclusive) -> bool,
 (nowait, set_nowait) -> bool,
-(filter, filter_mut, set_filter) -> &::field::Table<'a>,
+(filter, filter_mut, set_filter) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Consume<'a>
 
@@ -4345,7 +4345,7 @@ pub mod stream {
 
 pub mod tunnel {
     pub struct Header<'a> {
-        headers: Option<::field::Table<'a>>,
+        headers: Option<::field::TableEntries<'a>>,
         proxy_name: Option<::std::borrow::Cow<'a, str>>,
         data_name: Option<::std::borrow::Cow<'a, str>>,
         durable: Option<u8>,
@@ -4354,26 +4354,26 @@ pub mod tunnel {
 
     impl<'a> Header<'a> {
         impl_properties! {
-(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
+(headers, headers_mut, set_headers, take_headers) -> Option< &::field::TableEntries<'a> >,
 (proxy_name, proxy_name_mut, set_proxy_name, take_proxy_name) -> Option< Cow<str> >,
 (data_name, data_name_mut, set_data_name, take_data_name) -> Option< Cow<str> >,
-(durable, durable_mut, set_durable, take_durable) -> Option<u8>,
-(broadcast, broadcast_mut, set_broadcast, take_broadcast) -> Option<u8>,
+(durable, durable_mut, set_durable, take_durable) -> Option< u8 >,
+(broadcast, broadcast_mut, set_broadcast, take_broadcast) -> Option< u8 >,
 } // impl_properties
     } // impl Headers
 
     pub struct Request<'a> {
-        meta_data: ::field::Table<'a>,
+        meta_data: ::field::TableEntries<'a>,
     } // struct Request<'a>
 
     impl<'a> Request<'a> {
         pub fn new<M>(meta_data: M) -> Self
-            where M: Into<::field::Table<'a>>
+            where M: Into<::field::TableEntries<'a>>
         {
             Request { meta_data: meta_data.into() } // Request
         } // fn new()
         impl_properties! {
-(meta_data, meta_data_mut, set_meta_data) -> &::field::Table<'a>,
+(meta_data, meta_data_mut, set_meta_data) -> &::field::TableEntries<'a>,
 } // impl_properties
     } // impl<'a> Request<'a>
 

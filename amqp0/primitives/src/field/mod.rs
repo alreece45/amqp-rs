@@ -27,5 +27,5 @@ mod list;
 mod table;
 
 pub use self::list::List;
-pub use self::table::Table;
+pub use self::table::{Table, TableEntry, TableEntries};
 pub use self::value::Value;

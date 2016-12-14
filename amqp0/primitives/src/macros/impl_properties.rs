@@ -119,6 +119,15 @@ macro_rules! impl_properties {
         impl_properties!($($rest)*);
     };
 
+    // Option<Cow<[_]>> (automatically notes that owned type is Vec<_>
+    (($property:ident, $mutator:ident, $setter:ident, $take:ident) -> Option< Cow<[$ty:ty]> >) => {
+        impl_properties!(($property, $mutator -> Vec<$ty>, $setter, $take) -> Option< Cow<[$ty]> >);
+    };
+    (($property:ident, $mutator:ident, $setter:ident, $take:ident) -> Option< Cow<[$ty:ty]> >, $($rest:tt)*) => {
+        impl_properties!(($property, $mutator -> Vec<$ty>, $setter, $take) -> Option< Cow<[$ty]> >);
+        impl_properties!($($rest)*);
+    };
+
     // Option<Cow<str>> (automatically notes that owned type is String
     (($property:ident, $mutator:ident, $setter:ident, $take:ident) -> Option< Cow<str> >) => {
         impl_properties!(($property, $mutator -> ::std::string::String, $setter, $take) -> Option< Cow<str> >);
@@ -155,6 +164,15 @@ macro_rules! impl_properties {
     };
     (($property:ident, $mutator:ident -> $owned:ty, $setter:ident) -> Cow<$ty:ty>, $($rest:tt)*) => {
         impl_properties!(($property, $mutator -> $owned, $setter) -> Cow<$ty>);
+        impl_properties!($($rest)*);
+    };
+
+    // Cow<[_]> (automatically notes that owned type is Vec<_>
+    (($property:ident, $mutator:ident, $setter:ident) -> Cow<[$ty:ty]>) => {
+        impl_properties!(($property, $mutator -> Vec<$ty>, $setter) -> Cow<[$ty]>);
+    };
+    (($property:ident, $mutator:ident, $setter:ident) -> Cow<[$ty:ty]>, $($rest:tt)*) => {
+        impl_properties!(($property, $mutator -> Vec<$ty>, $setter) -> Cow<[$ty]>);
         impl_properties!($($rest)*);
     };
 

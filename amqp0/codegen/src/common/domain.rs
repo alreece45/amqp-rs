@@ -83,6 +83,7 @@ impl Domain {
         match *self {
             Domain::ShortString => "str",
             Domain::LongString | Domain::Content => "[u8]",
+            Domain::Table => "::field::TableEntries<'a>",
             _ => self.owned_type(),
         }
     }
@@ -95,8 +96,8 @@ impl Domain {
             Domain::LongLong | Domain::Timestamp => "u64",
             Domain::ShortString => "String",
             Domain::LongString => "Vec<u8>",
-            Domain::Table => "::field::Table<'a>",
-            Domain::Content => "::field::List<'a>",
+            Domain::Table => "::field::TableEntries<'a>",
+            Domain::Content => "Vec< ::field::Value >",
         }
     }
 
