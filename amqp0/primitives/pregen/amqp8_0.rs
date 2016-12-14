@@ -3878,5 +3878,6 @@ pub enum Method<'a> {
 } // enum Method
 
 #[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Amqp8_0;
 impl ::Spec for Amqp8_0 {}

@@ -2544,5 +2544,6 @@ pub enum Method<'a> {
 } // enum Method
 
 #[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Rabbitmq9_1;
 impl ::Spec for Rabbitmq9_1 {}

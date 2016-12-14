@@ -101,6 +101,7 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
         try!(writeln!(writer, "}} // enum Method"));
 
         try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
+        try!(writeln!(writer, "\n#[derive(Debug, Clone, PartialEq)]"));
         try!(writeln!(writer, "pub struct {};", self.struct_name));
         try!(writeln!(writer, "impl ::Spec for {} {{}}\n", self.struct_name));
 

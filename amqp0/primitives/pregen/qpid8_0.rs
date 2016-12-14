@@ -3997,5 +3997,6 @@ pub enum Method<'a> {
 } // enum Method
 
 #[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Qpid8_0;
 impl ::Spec for Qpid8_0 {}
