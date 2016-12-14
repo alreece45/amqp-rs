@@ -9,7 +9,7 @@
 use std::borrow::Cow;
 use std::time::{SystemTime, UNIX_EPOCH};
 use super::MAX_SHORTSTR_LEN;
-use super::{Table, List};
+use super::{TableEntries, List};
 
 ///
 /// Basic "field" that essentially represents dynamic-types in the AMQP protocol.
@@ -38,7 +38,7 @@ pub enum Value<'a> {
     Timestamp(u64),
 
     List(List<'a>),
-    Table(Table<'a>),
+    Table(TableEntries<'a>),
 }
 
 impl<'a> Value<'a> {
@@ -99,15 +99,15 @@ impl<'a> Value<'a> {
             Value::ShortString(string) => Value::ShortString(Cow::Owned(string.into_owned())),
             Value::LongString(bytes)   => Value::LongString(Cow::Owned(bytes.into_owned())),
             Value::List(list)          => Value::List(list.into_static()),
-            Value::Table(table)        => Value::Table(table.into_static()),
+            Value::Table(entries)      => Value::Table(entries.into_static()),
             Value::Void                => Value::Void,
         }
     }
 }
 
-impl<'a> From<Table<'a>> for Value<'a> {
-    fn from(table: Table<'a>) -> Self {
-        Value::Table(table)
+impl<'a> From<TableEntries<'a>> for Value<'a> {
+    fn from(entries: TableEntries<'a>) -> Self {
+        Value::Table(entries)
     }
 }
 
@@ -198,7 +198,7 @@ impl<'a> From<Cow<'a, str>> for Value<'a> {
 #[cfg(test)]
 mod tests {
     use std::borrow::Cow;
-    use field::{Value, List, Table};
+    use field::{Value, List, TableEntries};
 
     macro_rules! test_from_primitive {
         ($name:ident, $from:ty, $to:expr, $value:expr) => {
@@ -275,8 +275,8 @@ mod tests {
     }
 
     #[test]
-    fn test_from_table() {
-        let value: Value = Table::new().into();
+    fn test_from_table_entries() {
+        let value: Value = TableEntries::new().into();
         match value {
             Value::Table(_) => (),
             v => panic!("expected table value, got {:?}", v),

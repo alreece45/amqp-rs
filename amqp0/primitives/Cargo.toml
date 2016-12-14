@@ -1,6 +1,6 @@
 [package]
 name = "amqp0-primitives"
-version = "0.0.5"
+version = "0.0.6"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
