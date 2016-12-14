@@ -85,7 +85,7 @@ impl<'a> CodeGenerator for MethodModuleWriter<'a> {
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
         let uses_pool = self.fields.iter().any(|f| f.ty().is_owned());
 
-        try!(write!(writer, "\
+        try!(write!(writer, "\n\
     impl<'a> ::NomBytes<'a> for ::primitives::{}::{}{} {{\n\
         fn nom_bytes<'b, P>(input: &'a [u8], {}: &'b mut P) -> IResult<&'a [u8], Self>\n\
             where P: ::pool::ParserPool\n\
@@ -116,9 +116,9 @@ impl<'a> CodeGenerator for MethodModuleWriter<'a> {
 
         try!(writeln!(writer, "(::primitives::{}::{}::new({}))", self.module, struct_name, arguments));
 
-        try!(writeln!(writer, ")")); // do_parse!
-        try!(writeln!(writer, "}}")); // fn nom_bytes
-        try!(writeln!(writer, "}}")); // impl NomBytes
+        try!(writeln!(writer, ") // do_parse!"));
+        try!(writeln!(writer, "}} // fn nom_bytes"));
+        try!(writeln!(writer, "}} // impl NomBytes"));
 
         Ok(())
     }

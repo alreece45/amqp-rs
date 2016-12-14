@@ -32,7 +32,7 @@ mod amqp0 {
     use std::fs;
     use std::path::{Path, PathBuf};
 
-    use codegen::{self, Builder, CodeWriter};
+    use codegen::{Builder, CodeWriter};
     use codegen::parsergen::nom::{SpecsModuleWriter, SpecModuleWriter};
     use specs::specs as amqp0_specs;
 

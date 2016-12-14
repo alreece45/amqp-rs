@@ -33,13 +33,12 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
         try!(writeln!(writer, "\nuse nom::{{IResult, be_u8, be_u16, be_u32, be_u64}};\n"));
 
         for class in self.spec.classes().values() {
-            try!(writeln!(writer, "// {} Class", class.name()));
+            try!(write!(writer, "// {} Class", class.name()));
             for method in class.methods() {
                 let mod_name = format!("{}::{}", self.mod_name, class.name().to_snake_case());
                 let method_writer = MethodModuleWriter::new(&mod_name, method, &self.domain_mapper);
                 try!(method_writer.write_rust_to(writer));
             }
-            try!(writeln!(writer, ""));
         }
 
         Ok(())
