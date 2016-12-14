@@ -128,7 +128,7 @@ impl Domain {
             Domain::LongLong | Domain::Timestamp => "be_u64",
             Domain::ShortString => "call!(::common::shortstr)",
             Domain::LongString => "call!(::common::longstr)",
-            Domain::Table => "apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool)",
+            Domain::Table => "apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool)",
             //AmqpType::Content => "::amqp0::value::Content::from_bytes",
             Domain::Content => "length_bytes!(be_u32)",
         }

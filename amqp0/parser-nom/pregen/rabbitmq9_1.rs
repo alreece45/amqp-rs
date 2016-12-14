@@ -46,7 +46,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::rabbitmq9_1::basic::Consume::new(queue, consumer_tag, flag1.0, flag1.1, flag1.2, flag1.3, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -338,7 +338,7 @@ where P: ::pool::ParserPool
 do_parse!(input,
 version_major: be_u8 >>
 version_minor: be_u8 >>
-server_properties: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+server_properties: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 mechanisms: call!(::common::longstr) >>
 locales: call!(::common::longstr) >>
 (::primitives::rabbitmq9_1::connection::Start::new(version_major, version_minor, server_properties, mechanisms, locales))
@@ -351,7 +351,7 @@ fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
 do_parse!(input,
-client_properties: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+client_properties: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 mechanism: call!(::common::shortstr) >>
 response: call!(::common::longstr) >>
 locale: call!(::common::shortstr) >>
@@ -492,7 +492,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::rabbitmq9_1::exchange::Declare::new(exchange, ty, flag1.0, flag1.1, flag1.2, flag1.3, flag1.4, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -544,7 +544,7 @@ destination: call!(::common::shortstr) >>
 source: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 no_wait: bits!(call!(::common::bool_bit)) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::rabbitmq9_1::exchange::Bind::new(destination, source, routing_key, no_wait, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -570,7 +570,7 @@ destination: call!(::common::shortstr) >>
 source: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 no_wait: bits!(call!(::common::bool_bit)) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::rabbitmq9_1::exchange::Unbind::new(destination, source, routing_key, no_wait, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -600,7 +600,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::rabbitmq9_1::queue::Declare::new(queue, flag1.0, flag1.1, flag1.2, flag1.3, flag1.4, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -629,7 +629,7 @@ queue: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 no_wait: bits!(call!(::common::bool_bit)) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::rabbitmq9_1::queue::Bind::new(queue, exchange, routing_key, no_wait, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -654,7 +654,7 @@ be_u16 >>
 queue: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::rabbitmq9_1::queue::Unbind::new(queue, exchange, routing_key, arguments))
 ) // do_parse!
 } // fn nom_bytes

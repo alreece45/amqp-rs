@@ -6,17 +6,16 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::mem;
+use std::borrow::Cow;
+
 use nom::{IResult, be_u32};
-use primitives::field::{Table, Value};
+use primitives::field::{TableEntries, TableEntry, Value};
 
 use common::shortstr;
 use pool::ParserPool;
 use NomBytes;
 
-type TableEntry<'a> = (&'a str, Value<'a>);
-
-impl<'a> NomBytes<'a> for Table<'a> {
+impl<'a> NomBytes<'a> for TableEntries<'a> {
     fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
         where P: ParserPool
     {
@@ -24,11 +23,15 @@ impl<'a> NomBytes<'a> for Table<'a> {
         let (_, bytes) = try_parse!(input, peek!(length_bytes!(value!(num_bytes))));
 
         #[ignore(unused_variables)]
-        let (rem, mut entries) = try_parse!(input,
-            length_value!(value!(num_bytes),
+        map!(input,
+            length_value!(
+                value!(num_bytes),
                 terminated!(
                     fold_many0!(
-                        tuple!(shortstr, apply!(Value::nom_bytes, pool)),
+                        tuple!(
+                            map!(shortstr, |s| Cow::Borrowed(s)),
+                            apply!(Value::nom_bytes, pool)
+                        ),
                         pool.new_table_entries_vec(bytes),
                         |mut entries: Vec<TableEntry<'a>>, entry: TableEntry<'a>| {
                             entries.push(entry);
@@ -37,19 +40,8 @@ impl<'a> NomBytes<'a> for Table<'a> {
                     ),
                     eof!()
                 )
-            )
-        );
-
-        let hashmap = pool.new_table_hashmap(entries.len());
-        let mut table = Table::from_hashmap(hashmap);
-        for (k, v) in entries.drain(..) {
-            table.insert(k, v);
-        }
-
-        // Vec is now empty, discard the lifetimes and return it to the pool
-        let entries = unsafe { mem::transmute(entries) };
-        pool.return_table_entries_vec(entries);
-
-        IResult::Done(rem, table)
+            ),
+            |entries| TableEntries::from_entries(entries)
+        )
     }
 }

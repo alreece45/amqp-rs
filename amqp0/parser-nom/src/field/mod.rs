@@ -319,7 +319,9 @@ mod test {
             value => panic!("Expected table with keys set to value, got {:?}", value)
         };
 
-        assert_eq!(table.get("key"), Some(&Value::ShortString(Cow::Borrowed("value"))));
+        let expected_key = Cow::Borrowed("key");
+        let expected_value = Value::ShortString(Cow::Borrowed("value"));
+        assert_eq!(table.get(0), Some(&(expected_key, expected_value)));
     }
 
     #[test]
@@ -328,17 +330,19 @@ mod test {
         let bytes = b"F\x00\x00\x00\x1E\x01aV\x01bV\x01cV\x01dV\x01eV\x01fs\x0Bhello world";
         let value = parse_done_value_with_length_offset!(bytes, 22);
 
-        let list = match value {
+        let table = match value {
             Value::Table(ref table) if table.len() == 6 => table,
             value => panic!("Expected Table with 6 elements, got {:?}", value)
         };
 
-        assert_eq!(list.get("a"), Some(&Value::Void));
-        assert_eq!(list.get("b"), Some(&Value::Void));
-        assert_eq!(list.get("b"), Some(&Value::Void));
-        assert_eq!(list.get("d"), Some(&Value::Void));
-        assert_eq!(list.get("e"), Some(&Value::Void));
-        assert_eq!(list.get("f"), Some(&Value::ShortString(Cow::Borrowed("hello world"))));
+        assert_eq!(table.get(0), Some(&(Cow::Borrowed("a"), Value::Void)));
+        assert_eq!(table.get(1), Some(&(Cow::Borrowed("b"), Value::Void)));
+        assert_eq!(table.get(2), Some(&(Cow::Borrowed("c"), Value::Void)));
+        assert_eq!(table.get(3), Some(&(Cow::Borrowed("d"), Value::Void)));
+        assert_eq!(table.get(4), Some(&(Cow::Borrowed("e"), Value::Void)));
+
+        let expected_value = Cow::Borrowed("hello world");
+        assert_eq!(table.get(5), Some(&(Cow::Borrowed("f"), Value::ShortString(expected_value))));
     }
 
     /// The table is a bit more complicated than the list

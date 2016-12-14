@@ -75,7 +75,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-filter: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+filter: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::basic::Consume::new(ticket, queue, consumer_tag, flag1.0, flag1.1, flag1.2, flag1.3, filter))
 ) // do_parse!
 } // fn nom_bytes
@@ -351,7 +351,7 @@ where P: ::pool::ParserPool
 do_parse!(input,
 version_major: be_u8 >>
 version_minor: be_u8 >>
-server_properties: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+server_properties: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 mechanisms: call!(::common::longstr) >>
 locales: call!(::common::longstr) >>
 (::primitives::amqp9_0::connection::Start::new(version_major, version_minor, server_properties, mechanisms, locales))
@@ -364,7 +364,7 @@ fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
 do_parse!(input,
-client_properties: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+client_properties: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 mechanism: call!(::common::shortstr) >>
 response: call!(::common::longstr) >>
 locale: call!(::common::shortstr) >>
@@ -537,7 +537,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::exchange::Declare::new(ticket, exchange, ty, flag1.0, flag1.1, flag1.2, flag1.3, flag1.4, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -616,7 +616,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-filter: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+filter: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::file::Consume::new(ticket, queue, consumer_tag, flag1.0, flag1.1, flag1.2, flag1.3, filter))
 ) // do_parse!
 } // fn nom_bytes
@@ -788,7 +788,7 @@ user_id: call!(::common::shortstr) >>
 app_id: call!(::common::shortstr) >>
 transaction_id: call!(::common::shortstr) >>
 security_token: call!(::common::longstr) >>
-application_headers: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+application_headers: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 body: length_bytes!(be_u32) >>
 (::primitives::amqp9_0::message::Transfer::new(ticket, destination, flag1.0, flag1.1, ttl, priority, timestamp, delivery_mode, expiration, exchange, routing_key, message_id, correlation_id, reply_to, content_type, content_encoding, user_id, app_id, transaction_id, security_token, application_headers, body))
 ) // do_parse!
@@ -808,7 +808,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-filter: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+filter: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::message::Consume::new(ticket, queue, destination, flag1.0, flag1.1, flag1.2, filter))
 ) // do_parse!
 } // fn nom_bytes
@@ -978,7 +978,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::queue::Declare::new(ticket, queue, flag1.0, flag1.1, flag1.2, flag1.3, flag1.4, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -1007,7 +1007,7 @@ queue: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 nowait: bits!(call!(::common::bool_bit)) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::queue::Bind::new(ticket, queue, exchange, routing_key, nowait, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -1032,7 +1032,7 @@ ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
-arguments: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+arguments: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::queue::Unbind::new(ticket, queue, exchange, routing_key, arguments))
 ) // do_parse!
 } // fn nom_bytes
@@ -1137,7 +1137,7 @@ call!(::common::bool_bit),
 call!(::common::bool_bit),
 call!(::common::bool_bit)
 )) >>
-filter: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+filter: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::stream::Consume::new(ticket, queue, consumer_tag, flag1.0, flag1.1, flag1.2, filter))
 ) // do_parse!
 } // fn nom_bytes
@@ -1227,7 +1227,7 @@ fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
 do_parse!(input,
-meta_data: apply!(<::primitives::field::Table as ::NomBytes>::nom_bytes, pool) >>
+meta_data: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::amqp9_0::tunnel::Request::new(meta_data))
 ) // do_parse!
 } // fn nom_bytes

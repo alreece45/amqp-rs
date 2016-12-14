@@ -12,7 +12,7 @@ use nom::{be_f32, be_f64};
 use nom::{be_u8, be_u16, be_u32, be_u64};
 use nom::{be_i8, be_i16, be_i32, be_i64};
 use nom::IResult;
-use primitives::field::{List, Table, Value};
+use primitives::field::{List, TableEntries, Value};
 
 use common::{longstr, shortstr};
 use pool::ParserPool;
@@ -41,7 +41,7 @@ impl<'a> NomBytes<'a> for Value<'a> {
             b"D" => map!(tuple!(be_u8, be_u32), |(scale, value): (u8, u32)| Value::Decimal(scale, value)) |
             b"T" => map!(be_u64, Value::Timestamp) |
             b"V" => value!(Value::Void) |
-            b"F" => map!(call!(Table::nom_bytes, pool), Value::Table) |
+            b"F" => map!(call!(TableEntries::nom_bytes, pool), Value::Table) |
             b"A" => map!(call!(List::nom_bytes, pool), Value::List)
         )
     }
