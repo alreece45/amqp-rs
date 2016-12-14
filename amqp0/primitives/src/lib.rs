@@ -10,10 +10,14 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
+#[macro_use]
+mod macros;
+
 #[cfg(not(feature = "amqp0-build-primitives"))]
 include!(concat!("../pregen/mod.rs"));
 #[cfg(feature = "amqp0-build-primitives")]
 include!(concat!(env!("OUT_DIR"), "/mod.rs"));
+
 
 pub mod field;
 

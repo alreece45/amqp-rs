@@ -14,12 +14,12 @@ use common::domain::{Domain, DomainMapper};
 
 type Field<'a> = common::Field<'a, ClassField>;
 
-pub struct PropertiesStructWriter<'a> {
+pub struct HeadersStructWriter<'a> {
     fields: Vec<Field<'a>>,
     has_lifetimes: bool,
 }
 
-impl<'a> PropertiesStructWriter<'a> {
+impl<'a> HeadersStructWriter<'a> {
     pub fn new(class: &'a Class,domain_mapper: &DomainMapper) -> Self {
         let fields = class.fields().iter()
             .map(|field| {
@@ -32,7 +32,7 @@ impl<'a> PropertiesStructWriter<'a> {
             .map(|f| !f.ty().is_copy())
             .any(|is_copy| is_copy);
 
-        PropertiesStructWriter {
+        HeadersStructWriter {
             fields: fields,
             has_lifetimes: has_lifetimes,
         }
@@ -53,13 +53,13 @@ impl<'a> PropertiesStructWriter<'a> {
         where W: io::Write
     {
         if self.fields.is_empty() {
-            try!(writeln!(writer, "pub struct Properties;"));
+            try!(writeln!(writer, "pub struct Headers;"));
             return Ok(());
         }
 
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "pub struct Properties{} {{", lifetimes));
+        try!(writeln!(writer, "pub struct Headers{} {{", lifetimes));
         for field in &self.fields {
             try!(writeln!(writer, "{}: Option<{}>,", field.var_name(), field.ty().cow_definition("a")));
         }
@@ -70,9 +70,13 @@ impl<'a> PropertiesStructWriter<'a> {
     pub fn write_inherent_impl<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
+        if self.fields.is_empty() {
+            return Ok(());
+        }
+
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "impl{} Properties{} {{", lifetimes, lifetimes));
+        try!(writeln!(writer, "impl{} Headers{} {{", lifetimes, lifetimes));
         try!(self.write_getters(writer));
         try!(writeln!(writer, "}}"));
 
@@ -86,20 +90,18 @@ impl<'a> PropertiesStructWriter<'a> {
             return Ok(());
         }
 
+        try!(writeln!(writer, "impl_properties! {{"));
         for field in &self.fields {
-            let is_copy = field.ty().is_copy();
+            try!(write!(writer, "({0}, {0}_mut, set_{0}, take_{0}) -> ", field.var_name()));
+
             let ty = field.ty().borrowed_type();
-            let borrow = if is_copy { "" } else { "&" };
-            try!(writeln!(writer, "pub fn {}(&self) -> Option<{}{}> {{", field.var_name(), borrow, ty));
-
-            match (is_copy, field.ty().is_owned()) {
-                (true, _) => try!(writeln!(writer, "self.{}", field.var_name())),
-                (_, true) => try!(writeln!(writer, "self.{}.as_ref()", field.var_name())),
-                _ => try!(writeln!(writer, "self.{}.as_ref().map(|v| &**v)", field.var_name())),
-            }
-
-            try!(writeln!(writer, "}}"));
+            try!(match (field.ty().is_copy(), field.ty().is_owned()) {
+                (true, _) => writeln!(writer, "Option<{}>,", ty),
+                (_, true) => writeln!(writer, "Option<&{}>,", ty),
+                _ => writeln!(writer, "Option< Cow<{}> >,", ty)
+            });
         }
+        try!(writeln!(writer, "}} // impl_properties"));
 
         Ok(())
     }

@@ -44,8 +44,8 @@ pub const CLASS_CONFIRM: u16 = 85;
 pub const CLASS_TX: u16 = 90;
 pub const CLASS_DTX: u16 = 100;
 pub const CLASS_TUNNEL: u16 = 110;
-pub const CLASS_MESSAGE: u16 = 120;
 pub const CLASS_TEST: u16 = 120;
+pub const CLASS_MESSAGE: u16 = 120;
 
 // Index values for methods common among the different specs
 //

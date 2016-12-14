@@ -225,23 +225,20 @@ impl<'a> MethodModuleWriter<'a> {
             return Ok(());
         }
 
+        try!(writeln!(writer, "impl_properties! {{"));
         for field in &self.fields {
             if field.is_reserved() {
                 continue;
             }
-            let is_copy = field.ty().is_copy();
+            let name = field.var_name();
             let ty = field.ty().borrowed_type();
-            let borrow = if is_copy { "" } else { "&" };
-            try!(writeln!(writer, "pub fn {}(&self) -> {}{} {{", field.var_name(), borrow, ty));
-
-            let borrow = match (is_copy, field.ty().is_owned()) {
-                (true, _) => "",
-                (_, true) => "&",
-                _ => "&*",
-            };
-            try!(writeln!(writer, "{}self.{}", borrow, field.var_name()));
-            try!(writeln!(writer, "}}"));
+            try!(match (field.ty().is_copy(), field.ty().is_owned()) {
+                (true, _) => writeln!(writer, "({0}, set_{0}) -> {1},", name, ty),
+                (_, true) => writeln!(writer, "({0}, {0}_mut, set_{0}) -> &{1},", name, ty),
+                _ => writeln!(writer, "({0}, {0}_mut, set_{0}) -> Cow<{1}>,", name, ty)
+            });
         }
+        try!(writeln!(writer, "}} // impl_properties"));
 
         Ok(())
     }

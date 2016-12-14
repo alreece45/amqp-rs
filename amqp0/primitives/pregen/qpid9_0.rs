@@ -139,10 +139,35 @@ pub const METHOD_TX_COMMIT_OK: u16 = 21;
 pub const METHOD_TX_ROLLBACK: u16 = 30;
 pub const METHOD_TX_ROLLBACK_OK: u16 = 31;
 
+pub enum Header<'a> {
+    Access,
+    Basic(basic::Headers<'a>),
+    Channel,
+    Connection,
+    Dtx,
+    Exchange,
+    File(file::Headers<'a>),
+    Message,
+    Queue,
+    Stream(stream::Headers<'a>),
+    Tunnel(tunnel::Headers<'a>),
+    Tx,
+} // enum Header
+
+pub enum Frame<'a> {
+    Body(&'a [u8]),
+    Header(Header<'a>),
+    Heartbeat,
+    Method(Method<'a>),
+    OobBody(&'a [u8]),
+    OobHeader(Header<'a>),
+    OobMethod(Method<'a>),
+    Trace,
+} // enum Frame
+
 // Class Modules
 pub mod access {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Request<'a> {
         realm: ::std::borrow::Cow<'a, str>,
         exclusive: bool,
@@ -170,24 +195,14 @@ pub mod access {
                 read: read,
             }
         }
-        pub fn realm(&self) -> &str {
-            &*self.realm
-        }
-        pub fn exclusive(&self) -> bool {
-            self.exclusive
-        }
-        pub fn passive(&self) -> bool {
-            self.passive
-        }
-        pub fn active(&self) -> bool {
-            self.active
-        }
-        pub fn write(&self) -> bool {
-            self.write
-        }
-        pub fn read(&self) -> bool {
-            self.read
-        }
+        impl_properties! {
+(realm, realm_mut, set_realm) -> Cow<str>,
+(exclusive, set_exclusive) -> bool,
+(passive, set_passive) -> bool,
+(active, set_active) -> bool,
+(write, set_write) -> bool,
+(read, set_read) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Request<'a> {
         fn class_id(&self) -> u16 {
@@ -214,9 +229,9 @@ pub mod access {
         pub fn new(ticket: u16) -> Self {
             RequestOk { ticket: ticket }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+} // impl_properties
     }
     impl ::Payload for RequestOk {
         fn class_id(&self) -> u16 {
@@ -234,9 +249,15 @@ pub mod access {
             2
         }
     }
-}
+    pub enum Method<'a> {
+        Request(Request<'a>),
+        RequestOk(RequestOk),
+    } // enum Method
+
+} // mod access
+
 pub mod basic {
-    pub struct Properties<'a> {
+    pub struct Headers<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
         headers: Option<::field::Table<'a>>,
@@ -253,49 +274,23 @@ pub mod basic {
         cluster_id: Option<::std::borrow::Cow<'a, str>>,
     }
 
-    impl<'a> Properties<'a> {
-        pub fn content_type(&self) -> Option<&str> {
-            self.content_type.as_ref().map(|v| &**v)
-        }
-        pub fn content_encoding(&self) -> Option<&str> {
-            self.content_encoding.as_ref().map(|v| &**v)
-        }
-        pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref()
-        }
-        pub fn delivery_mode(&self) -> Option<u8> {
-            self.delivery_mode
-        }
-        pub fn priority(&self) -> Option<u8> {
-            self.priority
-        }
-        pub fn correlation_id(&self) -> Option<&str> {
-            self.correlation_id.as_ref().map(|v| &**v)
-        }
-        pub fn reply_to(&self) -> Option<&str> {
-            self.reply_to.as_ref().map(|v| &**v)
-        }
-        pub fn expiration(&self) -> Option<&str> {
-            self.expiration.as_ref().map(|v| &**v)
-        }
-        pub fn message_id(&self) -> Option<&str> {
-            self.message_id.as_ref().map(|v| &**v)
-        }
-        pub fn timestamp(&self) -> Option<u64> {
-            self.timestamp
-        }
-        pub fn ty(&self) -> Option<&str> {
-            self.ty.as_ref().map(|v| &**v)
-        }
-        pub fn user_id(&self) -> Option<&str> {
-            self.user_id.as_ref().map(|v| &**v)
-        }
-        pub fn app_id(&self) -> Option<&str> {
-            self.app_id.as_ref().map(|v| &**v)
-        }
-        pub fn cluster_id(&self) -> Option<&str> {
-            self.cluster_id.as_ref().map(|v| &**v)
-        }
+    impl<'a> Headers<'a> {
+        impl_properties! {
+(content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
+(content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
+(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
+(delivery_mode, delivery_mode_mut, set_delivery_mode, take_delivery_mode) -> Option<u8>,
+(priority, priority_mut, set_priority, take_priority) -> Option<u8>,
+(correlation_id, correlation_id_mut, set_correlation_id, take_correlation_id) -> Option< Cow<str> >,
+(reply_to, reply_to_mut, set_reply_to, take_reply_to) -> Option< Cow<str> >,
+(expiration, expiration_mut, set_expiration, take_expiration) -> Option< Cow<str> >,
+(message_id, message_id_mut, set_message_id, take_message_id) -> Option< Cow<str> >,
+(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
+(ty, ty_mut, set_ty, take_ty) -> Option< Cow<str> >,
+(user_id, user_id_mut, set_user_id, take_user_id) -> Option< Cow<str> >,
+(app_id, app_id_mut, set_app_id, take_app_id) -> Option< Cow<str> >,
+(cluster_id, cluster_id_mut, set_cluster_id, take_cluster_id) -> Option< Cow<str> >,
+} // impl_properties
     }
     pub struct Qos {
         prefetch_size: u32,
@@ -310,15 +305,11 @@ pub mod basic {
                 global: global,
             }
         }
-        pub fn prefetch_size(&self) -> u32 {
-            self.prefetch_size
-        }
-        pub fn prefetch_count(&self) -> u16 {
-            self.prefetch_count
-        }
-        pub fn global(&self) -> bool {
-            self.global
-        }
+        impl_properties! {
+(prefetch_size, set_prefetch_size) -> u32,
+(prefetch_count, set_prefetch_count) -> u16,
+(global, set_global) -> bool,
+} // impl_properties
     }
     impl ::Payload for Qos {
         fn class_id(&self) -> u16 {
@@ -393,30 +384,16 @@ pub mod basic {
                 arguments: arguments.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn no_local(&self) -> bool {
-            self.no_local
-        }
-        pub fn no_ack(&self) -> bool {
-            self.no_ack
-        }
-        pub fn exclusive(&self) -> bool {
-            self.exclusive
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
-        pub fn arguments(&self) -> &::field::Table<'a> {
-            &self.arguments
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(no_local, set_no_local) -> bool,
+(no_ack, set_no_ack) -> bool,
+(exclusive, set_exclusive) -> bool,
+(nowait, set_nowait) -> bool,
+(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Consume<'a> {
         fn class_id(&self) -> u16 {
@@ -445,9 +422,9 @@ pub mod basic {
         {
             ConsumeOk { consumer_tag: consumer_tag.into() }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
@@ -480,12 +457,10 @@ pub mod basic {
                 nowait: nowait,
             }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(nowait, set_nowait) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Cancel<'a> {
         fn class_id(&self) -> u16 {
@@ -514,9 +489,9 @@ pub mod basic {
         {
             CancelOk { consumer_tag: consumer_tag.into() }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
@@ -561,21 +536,13 @@ pub mod basic {
                 immediate: immediate,
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn mandatory(&self) -> bool {
-            self.mandatory
-        }
-        pub fn immediate(&self) -> bool {
-            self.immediate
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(mandatory, set_mandatory) -> bool,
+(immediate, set_immediate) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Publish<'a> {
         fn class_id(&self) -> u16 {
@@ -614,18 +581,12 @@ pub mod basic {
                 routing_key: routing_key.into(),
             }
         }
-        pub fn reply_code(&self) -> u16 {
-            self.reply_code
-        }
-        pub fn reply_text(&self) -> &str {
-            &*self.reply_text
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
+        impl_properties! {
+(reply_code, set_reply_code) -> u16,
+(reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Return<'a> {
         fn class_id(&self) -> u16 {
@@ -671,21 +632,13 @@ pub mod basic {
                 routing_key: routing_key.into(),
             }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn redelivered(&self) -> bool {
-            self.redelivered
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(delivery_tag, set_delivery_tag) -> u64,
+(redelivered, set_redelivered) -> bool,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Deliver<'a> {
         fn class_id(&self) -> u16 {
@@ -720,15 +673,11 @@ pub mod basic {
                 no_ack: no_ack,
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn no_ack(&self) -> bool {
-            self.no_ack
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(no_ack, set_no_ack) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Get<'a> {
         fn class_id(&self) -> u16 {
@@ -773,21 +722,13 @@ pub mod basic {
                 message_count: message_count,
             }
         }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn redelivered(&self) -> bool {
-            self.redelivered
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn message_count(&self) -> u32 {
-            self.message_count
-        }
+        impl_properties! {
+(delivery_tag, set_delivery_tag) -> u64,
+(redelivered, set_redelivered) -> bool,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(message_count, set_message_count) -> u32,
+} // impl_properties
     }
     impl<'a> ::Payload for GetOk<'a> {
         fn class_id(&self) -> u16 {
@@ -816,9 +757,9 @@ pub mod basic {
         {
             GetEmpty { cluster_id: cluster_id.into() }
         }
-        pub fn cluster_id(&self) -> &str {
-            &*self.cluster_id
-        }
+        impl_properties! {
+(cluster_id, cluster_id_mut, set_cluster_id) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for GetEmpty<'a> {
         fn class_id(&self) -> u16 {
@@ -849,12 +790,10 @@ pub mod basic {
                 multiple: multiple,
             }
         }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn multiple(&self) -> bool {
-            self.multiple
-        }
+        impl_properties! {
+(delivery_tag, set_delivery_tag) -> u64,
+(multiple, set_multiple) -> bool,
+} // impl_properties
     }
     impl ::Payload for Ack {
         fn class_id(&self) -> u16 {
@@ -883,12 +822,10 @@ pub mod basic {
                 requeue: requeue,
             }
         }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn requeue(&self) -> bool {
-            self.requeue
-        }
+        impl_properties! {
+(delivery_tag, set_delivery_tag) -> u64,
+(requeue, set_requeue) -> bool,
+} // impl_properties
     }
     impl ::Payload for Reject {
         fn class_id(&self) -> u16 {
@@ -913,9 +850,9 @@ pub mod basic {
         pub fn new(requeue: bool) -> Self {
             Recover { requeue: requeue }
         }
-        pub fn requeue(&self) -> bool {
-            self.requeue
-        }
+        impl_properties! {
+(requeue, set_requeue) -> bool,
+} // impl_properties
     }
     impl ::Payload for Recover {
         fn class_id(&self) -> u16 {
@@ -940,9 +877,9 @@ pub mod basic {
         pub fn new(requeue: bool) -> Self {
             RecoverSync { requeue: requeue }
         }
-        pub fn requeue(&self) -> bool {
-            self.requeue
-        }
+        impl_properties! {
+(requeue, set_requeue) -> bool,
+} // impl_properties
     }
     impl ::Payload for RecoverSync {
         fn class_id(&self) -> u16 {
@@ -982,10 +919,30 @@ pub mod basic {
             0
         }
     }
-}
+    pub enum Method<'a> {
+        Qos(Qos),
+        QosOk(QosOk),
+        Consume(Consume<'a>),
+        ConsumeOk(ConsumeOk<'a>),
+        Cancel(Cancel<'a>),
+        CancelOk(CancelOk<'a>),
+        Publish(Publish<'a>),
+        Return(Return<'a>),
+        Deliver(Deliver<'a>),
+        Get(Get<'a>),
+        GetOk(GetOk<'a>),
+        GetEmpty(GetEmpty<'a>),
+        Ack(Ack),
+        Reject(Reject),
+        Recover(Recover),
+        RecoverSync(RecoverSync),
+        RecoverSyncOk(RecoverSyncOk),
+    } // enum Method
+
+} // mod basic
+
 pub mod channel {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Open<'a> {
         out_of_band: ::std::borrow::Cow<'a, str>,
     }
@@ -995,9 +952,9 @@ pub mod channel {
         {
             Open { out_of_band: out_of_band.into() }
         }
-        pub fn out_of_band(&self) -> &str {
-            &*self.out_of_band
-        }
+        impl_properties! {
+(out_of_band, out_of_band_mut, set_out_of_band) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Open<'a> {
         fn class_id(&self) -> u16 {
@@ -1026,9 +983,9 @@ pub mod channel {
         {
             OpenOk { channel_id: channel_id.into() }
         }
-        pub fn channel_id(&self) -> &[u8] {
-            &*self.channel_id
-        }
+        impl_properties! {
+(channel_id, channel_id_mut, set_channel_id) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for OpenOk<'a> {
         fn class_id(&self) -> u16 {
@@ -1055,9 +1012,9 @@ pub mod channel {
         pub fn new(active: bool) -> Self {
             Flow { active: active }
         }
-        pub fn active(&self) -> bool {
-            self.active
-        }
+        impl_properties! {
+(active, set_active) -> bool,
+} // impl_properties
     }
     impl ::Payload for Flow {
         fn class_id(&self) -> u16 {
@@ -1082,9 +1039,9 @@ pub mod channel {
         pub fn new(active: bool) -> Self {
             FlowOk { active: active }
         }
-        pub fn active(&self) -> bool {
-            self.active
-        }
+        impl_properties! {
+(active, set_active) -> bool,
+} // impl_properties
     }
     impl ::Payload for FlowOk {
         fn class_id(&self) -> u16 {
@@ -1119,18 +1076,12 @@ pub mod channel {
                 method_id: method_id,
             }
         }
-        pub fn reply_code(&self) -> u16 {
-            self.reply_code
-        }
-        pub fn reply_text(&self) -> &str {
-            &*self.reply_text
-        }
-        pub fn class_id(&self) -> u16 {
-            self.class_id
-        }
-        pub fn method_id(&self) -> u16 {
-            self.method_id
-        }
+        impl_properties! {
+(reply_code, set_reply_code) -> u16,
+(reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
+(class_id, set_class_id) -> u16,
+(method_id, set_method_id) -> u16,
+} // impl_properties
     }
     impl<'a> ::Payload for Close<'a> {
         fn class_id(&self) -> u16 {
@@ -1181,9 +1132,9 @@ pub mod channel {
         {
             Resume { channel_id: channel_id.into() }
         }
-        pub fn channel_id(&self) -> &[u8] {
-            &*self.channel_id
-        }
+        impl_properties! {
+(channel_id, channel_id_mut, set_channel_id) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for Resume<'a> {
         fn class_id(&self) -> u16 {
@@ -1269,10 +1220,23 @@ pub mod channel {
             0
         }
     }
-}
+    pub enum Method<'a> {
+        Open(Open<'a>),
+        OpenOk(OpenOk<'a>),
+        Flow(Flow),
+        FlowOk(FlowOk),
+        Close(Close<'a>),
+        CloseOk(CloseOk),
+        Resume(Resume<'a>),
+        Ping(Ping),
+        Pong(Pong),
+        Ok(Ok),
+    } // enum Method
+
+} // mod channel
+
 pub mod connection {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
@@ -1299,21 +1263,13 @@ pub mod connection {
                 locales: locales.into(),
             }
         }
-        pub fn version_major(&self) -> u8 {
-            self.version_major
-        }
-        pub fn version_minor(&self) -> u8 {
-            self.version_minor
-        }
-        pub fn server_properties(&self) -> &::field::Table<'a> {
-            &self.server_properties
-        }
-        pub fn mechanisms(&self) -> &[u8] {
-            &*self.mechanisms
-        }
-        pub fn locales(&self) -> &[u8] {
-            &*self.locales
-        }
+        impl_properties! {
+(version_major, set_version_major) -> u8,
+(version_minor, set_version_minor) -> u8,
+(server_properties, server_properties_mut, set_server_properties) -> &::field::Table<'a>,
+(mechanisms, mechanisms_mut, set_mechanisms) -> Cow<[u8]>,
+(locales, locales_mut, set_locales) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for Start<'a> {
         fn class_id(&self) -> u16 {
@@ -1353,18 +1309,12 @@ pub mod connection {
                 locale: locale.into(),
             }
         }
-        pub fn client_properties(&self) -> &::field::Table<'a> {
-            &self.client_properties
-        }
-        pub fn mechanism(&self) -> &str {
-            &*self.mechanism
-        }
-        pub fn response(&self) -> &[u8] {
-            &*self.response
-        }
-        pub fn locale(&self) -> &str {
-            &*self.locale
-        }
+        impl_properties! {
+(client_properties, client_properties_mut, set_client_properties) -> &::field::Table<'a>,
+(mechanism, mechanism_mut, set_mechanism) -> Cow<str>,
+(response, response_mut, set_response) -> Cow<[u8]>,
+(locale, locale_mut, set_locale) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for StartOk<'a> {
         fn class_id(&self) -> u16 {
@@ -1397,9 +1347,9 @@ pub mod connection {
         {
             Secure { challenge: challenge.into() }
         }
-        pub fn challenge(&self) -> &[u8] {
-            &*self.challenge
-        }
+        impl_properties! {
+(challenge, challenge_mut, set_challenge) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for Secure<'a> {
         fn class_id(&self) -> u16 {
@@ -1428,9 +1378,9 @@ pub mod connection {
         {
             SecureOk { response: response.into() }
         }
-        pub fn response(&self) -> &[u8] {
-            &*self.response
-        }
+        impl_properties! {
+(response, response_mut, set_response) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for SecureOk<'a> {
         fn class_id(&self) -> u16 {
@@ -1463,15 +1413,11 @@ pub mod connection {
                 heartbeat: heartbeat,
             }
         }
-        pub fn channel_max(&self) -> u16 {
-            self.channel_max
-        }
-        pub fn frame_max(&self) -> u32 {
-            self.frame_max
-        }
-        pub fn heartbeat(&self) -> u16 {
-            self.heartbeat
-        }
+        impl_properties! {
+(channel_max, set_channel_max) -> u16,
+(frame_max, set_frame_max) -> u32,
+(heartbeat, set_heartbeat) -> u16,
+} // impl_properties
     }
     impl ::Payload for Tune {
         fn class_id(&self) -> u16 {
@@ -1502,15 +1448,11 @@ pub mod connection {
                 heartbeat: heartbeat,
             }
         }
-        pub fn channel_max(&self) -> u16 {
-            self.channel_max
-        }
-        pub fn frame_max(&self) -> u32 {
-            self.frame_max
-        }
-        pub fn heartbeat(&self) -> u16 {
-            self.heartbeat
-        }
+        impl_properties! {
+(channel_max, set_channel_max) -> u16,
+(frame_max, set_frame_max) -> u32,
+(heartbeat, set_heartbeat) -> u16,
+} // impl_properties
     }
     impl ::Payload for TuneOk {
         fn class_id(&self) -> u16 {
@@ -1544,15 +1486,11 @@ pub mod connection {
                 insist: insist,
             }
         }
-        pub fn virtual_host(&self) -> &str {
-            &*self.virtual_host
-        }
-        pub fn capabilities(&self) -> &str {
-            &*self.capabilities
-        }
-        pub fn insist(&self) -> bool {
-            self.insist
-        }
+        impl_properties! {
+(virtual_host, virtual_host_mut, set_virtual_host) -> Cow<str>,
+(capabilities, capabilities_mut, set_capabilities) -> Cow<str>,
+(insist, set_insist) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Open<'a> {
         fn class_id(&self) -> u16 {
@@ -1581,9 +1519,9 @@ pub mod connection {
         {
             OpenOk { known_hosts: known_hosts.into() }
         }
-        pub fn known_hosts(&self) -> &str {
-            &*self.known_hosts
-        }
+        impl_properties! {
+(known_hosts, known_hosts_mut, set_known_hosts) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for OpenOk<'a> {
         fn class_id(&self) -> u16 {
@@ -1617,12 +1555,10 @@ pub mod connection {
                 known_hosts: known_hosts.into(),
             }
         }
-        pub fn host(&self) -> &str {
-            &*self.host
-        }
-        pub fn known_hosts(&self) -> &str {
-            &*self.known_hosts
-        }
+        impl_properties! {
+(host, host_mut, set_host) -> Cow<str>,
+(known_hosts, known_hosts_mut, set_known_hosts) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Redirect<'a> {
         fn class_id(&self) -> u16 {
@@ -1659,18 +1595,12 @@ pub mod connection {
                 method_id: method_id,
             }
         }
-        pub fn reply_code(&self) -> u16 {
-            self.reply_code
-        }
-        pub fn reply_text(&self) -> &str {
-            &*self.reply_text
-        }
-        pub fn class_id(&self) -> u16 {
-            self.class_id
-        }
-        pub fn method_id(&self) -> u16 {
-            self.method_id
-        }
+        impl_properties! {
+(reply_code, set_reply_code) -> u16,
+(reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
+(class_id, set_class_id) -> u16,
+(method_id, set_method_id) -> u16,
+} // impl_properties
     }
     impl<'a> ::Payload for Close<'a> {
         fn class_id(&self) -> u16 {
@@ -1712,10 +1642,24 @@ pub mod connection {
             0
         }
     }
-}
+    pub enum Method<'a> {
+        Start(Start<'a>),
+        StartOk(StartOk<'a>),
+        Secure(Secure<'a>),
+        SecureOk(SecureOk<'a>),
+        Tune(Tune),
+        TuneOk(TuneOk),
+        Open(Open<'a>),
+        OpenOk(OpenOk<'a>),
+        Redirect(Redirect<'a>),
+        Close(Close<'a>),
+        CloseOk(CloseOk),
+    } // enum Method
+
+} // mod connection
+
 pub mod dtx {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Select;
     impl Select {
         pub fn new() -> Self {
@@ -1769,9 +1713,9 @@ pub mod dtx {
         {
             Start { dtx_identifier: dtx_identifier.into() }
         }
-        pub fn dtx_identifier(&self) -> &str {
-            &*self.dtx_identifier
-        }
+        impl_properties! {
+(dtx_identifier, dtx_identifier_mut, set_dtx_identifier) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Start<'a> {
         fn class_id(&self) -> u16 {
@@ -1813,10 +1757,17 @@ pub mod dtx {
             0
         }
     }
-}
+    pub enum Method<'a> {
+        Select(Select),
+        SelectOk(SelectOk),
+        Start(Start<'a>),
+        StartOk(StartOk),
+    } // enum Method
+
+} // mod dtx
+
 pub mod exchange {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Declare<'a> {
         ticket: u16,
         exchange: ::std::borrow::Cow<'a, str>,
@@ -1855,33 +1806,17 @@ pub mod exchange {
                 arguments: arguments.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn ty(&self) -> &str {
-            &*self.ty
-        }
-        pub fn passive(&self) -> bool {
-            self.passive
-        }
-        pub fn durable(&self) -> bool {
-            self.durable
-        }
-        pub fn auto_delete(&self) -> bool {
-            self.auto_delete
-        }
-        pub fn internal(&self) -> bool {
-            self.internal
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
-        pub fn arguments(&self) -> &::field::Table<'a> {
-            &self.arguments
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(ty, ty_mut, set_ty) -> Cow<str>,
+(passive, set_passive) -> bool,
+(durable, set_durable) -> bool,
+(auto_delete, set_auto_delete) -> bool,
+(internal, set_internal) -> bool,
+(nowait, set_nowait) -> bool,
+(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Declare<'a> {
         fn class_id(&self) -> u16 {
@@ -1940,18 +1875,12 @@ pub mod exchange {
                 nowait: nowait,
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn if_unused(&self) -> bool {
-            self.if_unused
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(if_unused, set_if_unused) -> bool,
+(nowait, set_nowait) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Delete<'a> {
         fn class_id(&self) -> u16 {
@@ -2010,15 +1939,11 @@ pub mod exchange {
                 queue: queue.into(),
             }
         }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
+        impl_properties! {
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(queue, queue_mut, set_queue) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Bound<'a> {
         fn class_id(&self) -> u16 {
@@ -2051,12 +1976,10 @@ pub mod exchange {
                 reply_text: reply_text.into(),
             }
         }
-        pub fn reply_code(&self) -> u16 {
-            self.reply_code
-        }
-        pub fn reply_text(&self) -> &str {
-            &*self.reply_text
-        }
+        impl_properties! {
+(reply_code, set_reply_code) -> u16,
+(reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for BoundOk<'a> {
         fn class_id(&self) -> u16 {
@@ -2076,9 +1999,19 @@ pub mod exchange {
                 .sum()
         }
     }
-}
+    pub enum Method<'a> {
+        Declare(Declare<'a>),
+        DeclareOk(DeclareOk),
+        Delete(Delete<'a>),
+        DeleteOk(DeleteOk),
+        Bound(Bound<'a>),
+        BoundOk(BoundOk<'a>),
+    } // enum Method
+
+} // mod exchange
+
 pub mod file {
-    pub struct Properties<'a> {
+    pub struct Headers<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
         headers: Option<::field::Table<'a>>,
@@ -2090,34 +2023,18 @@ pub mod file {
         cluster_id: Option<::std::borrow::Cow<'a, str>>,
     }
 
-    impl<'a> Properties<'a> {
-        pub fn content_type(&self) -> Option<&str> {
-            self.content_type.as_ref().map(|v| &**v)
-        }
-        pub fn content_encoding(&self) -> Option<&str> {
-            self.content_encoding.as_ref().map(|v| &**v)
-        }
-        pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref()
-        }
-        pub fn priority(&self) -> Option<u8> {
-            self.priority
-        }
-        pub fn reply_to(&self) -> Option<&str> {
-            self.reply_to.as_ref().map(|v| &**v)
-        }
-        pub fn message_id(&self) -> Option<&str> {
-            self.message_id.as_ref().map(|v| &**v)
-        }
-        pub fn filename(&self) -> Option<&str> {
-            self.filename.as_ref().map(|v| &**v)
-        }
-        pub fn timestamp(&self) -> Option<u64> {
-            self.timestamp
-        }
-        pub fn cluster_id(&self) -> Option<&str> {
-            self.cluster_id.as_ref().map(|v| &**v)
-        }
+    impl<'a> Headers<'a> {
+        impl_properties! {
+(content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
+(content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
+(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
+(priority, priority_mut, set_priority, take_priority) -> Option<u8>,
+(reply_to, reply_to_mut, set_reply_to, take_reply_to) -> Option< Cow<str> >,
+(message_id, message_id_mut, set_message_id, take_message_id) -> Option< Cow<str> >,
+(filename, filename_mut, set_filename, take_filename) -> Option< Cow<str> >,
+(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
+(cluster_id, cluster_id_mut, set_cluster_id, take_cluster_id) -> Option< Cow<str> >,
+} // impl_properties
     }
     pub struct Qos {
         prefetch_size: u32,
@@ -2132,15 +2049,11 @@ pub mod file {
                 global: global,
             }
         }
-        pub fn prefetch_size(&self) -> u32 {
-            self.prefetch_size
-        }
-        pub fn prefetch_count(&self) -> u16 {
-            self.prefetch_count
-        }
-        pub fn global(&self) -> bool {
-            self.global
-        }
+        impl_properties! {
+(prefetch_size, set_prefetch_size) -> u32,
+(prefetch_count, set_prefetch_count) -> u16,
+(global, set_global) -> bool,
+} // impl_properties
     }
     impl ::Payload for Qos {
         fn class_id(&self) -> u16 {
@@ -2215,30 +2128,16 @@ pub mod file {
                 filter: filter.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn no_local(&self) -> bool {
-            self.no_local
-        }
-        pub fn no_ack(&self) -> bool {
-            self.no_ack
-        }
-        pub fn exclusive(&self) -> bool {
-            self.exclusive
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
-        pub fn filter(&self) -> &::field::Table<'a> {
-            &self.filter
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(no_local, set_no_local) -> bool,
+(no_ack, set_no_ack) -> bool,
+(exclusive, set_exclusive) -> bool,
+(nowait, set_nowait) -> bool,
+(filter, filter_mut, set_filter) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Consume<'a> {
         fn class_id(&self) -> u16 {
@@ -2267,9 +2166,9 @@ pub mod file {
         {
             ConsumeOk { consumer_tag: consumer_tag.into() }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
@@ -2302,12 +2201,10 @@ pub mod file {
                 nowait: nowait,
             }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(nowait, set_nowait) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Cancel<'a> {
         fn class_id(&self) -> u16 {
@@ -2336,9 +2233,9 @@ pub mod file {
         {
             CancelOk { consumer_tag: consumer_tag.into() }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
@@ -2371,12 +2268,10 @@ pub mod file {
                 content_size: content_size,
             }
         }
-        pub fn identifier(&self) -> &str {
-            &*self.identifier
-        }
-        pub fn content_size(&self) -> u64 {
-            self.content_size
-        }
+        impl_properties! {
+(identifier, identifier_mut, set_identifier) -> Cow<str>,
+(content_size, set_content_size) -> u64,
+} // impl_properties
     }
     impl<'a> ::Payload for Open<'a> {
         fn class_id(&self) -> u16 {
@@ -2403,9 +2298,9 @@ pub mod file {
         pub fn new(staged_size: u64) -> Self {
             OpenOk { staged_size: staged_size }
         }
-        pub fn staged_size(&self) -> u64 {
-            self.staged_size
-        }
+        impl_properties! {
+(staged_size, set_staged_size) -> u64,
+} // impl_properties
     }
     impl ::Payload for OpenOk {
         fn class_id(&self) -> u16 {
@@ -2474,24 +2369,14 @@ pub mod file {
                 identifier: identifier.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn mandatory(&self) -> bool {
-            self.mandatory
-        }
-        pub fn immediate(&self) -> bool {
-            self.immediate
-        }
-        pub fn identifier(&self) -> &str {
-            &*self.identifier
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(mandatory, set_mandatory) -> bool,
+(immediate, set_immediate) -> bool,
+(identifier, identifier_mut, set_identifier) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Publish<'a> {
         fn class_id(&self) -> u16 {
@@ -2530,18 +2415,12 @@ pub mod file {
                 routing_key: routing_key.into(),
             }
         }
-        pub fn reply_code(&self) -> u16 {
-            self.reply_code
-        }
-        pub fn reply_text(&self) -> &str {
-            &*self.reply_text
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
+        impl_properties! {
+(reply_code, set_reply_code) -> u16,
+(reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Return<'a> {
         fn class_id(&self) -> u16 {
@@ -2591,24 +2470,14 @@ pub mod file {
                 identifier: identifier.into(),
             }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn redelivered(&self) -> bool {
-            self.redelivered
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn identifier(&self) -> &str {
-            &*self.identifier
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(delivery_tag, set_delivery_tag) -> u64,
+(redelivered, set_redelivered) -> bool,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(identifier, identifier_mut, set_identifier) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Deliver<'a> {
         fn class_id(&self) -> u16 {
@@ -2643,12 +2512,10 @@ pub mod file {
                 multiple: multiple,
             }
         }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn multiple(&self) -> bool {
-            self.multiple
-        }
+        impl_properties! {
+(delivery_tag, set_delivery_tag) -> u64,
+(multiple, set_multiple) -> bool,
+} // impl_properties
     }
     impl ::Payload for Ack {
         fn class_id(&self) -> u16 {
@@ -2677,12 +2544,10 @@ pub mod file {
                 requeue: requeue,
             }
         }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn requeue(&self) -> bool {
-            self.requeue
-        }
+        impl_properties! {
+(delivery_tag, set_delivery_tag) -> u64,
+(requeue, set_requeue) -> bool,
+} // impl_properties
     }
     impl ::Payload for Reject {
         fn class_id(&self) -> u16 {
@@ -2700,10 +2565,27 @@ pub mod file {
             9
         }
     }
-}
+    pub enum Method<'a> {
+        Qos(Qos),
+        QosOk(QosOk),
+        Consume(Consume<'a>),
+        ConsumeOk(ConsumeOk<'a>),
+        Cancel(Cancel<'a>),
+        CancelOk(CancelOk<'a>),
+        Open(Open<'a>),
+        OpenOk(OpenOk),
+        Stage(Stage),
+        Publish(Publish<'a>),
+        Return(Return<'a>),
+        Deliver(Deliver<'a>),
+        Ack(Ack),
+        Reject(Reject),
+    } // enum Method
+
+} // mod file
+
 pub mod message {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Transfer<'a> {
         ticket: u16,
         destination: ::std::borrow::Cow<'a, str>,
@@ -2792,72 +2674,30 @@ pub mod message {
                 body: body.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn destination(&self) -> &str {
-            &*self.destination
-        }
-        pub fn redelivered(&self) -> bool {
-            self.redelivered
-        }
-        pub fn immediate(&self) -> bool {
-            self.immediate
-        }
-        pub fn ttl(&self) -> u64 {
-            self.ttl
-        }
-        pub fn priority(&self) -> u8 {
-            self.priority
-        }
-        pub fn timestamp(&self) -> u64 {
-            self.timestamp
-        }
-        pub fn delivery_mode(&self) -> u8 {
-            self.delivery_mode
-        }
-        pub fn expiration(&self) -> u64 {
-            self.expiration
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn message_id(&self) -> &str {
-            &*self.message_id
-        }
-        pub fn correlation_id(&self) -> &str {
-            &*self.correlation_id
-        }
-        pub fn reply_to(&self) -> &str {
-            &*self.reply_to
-        }
-        pub fn content_type(&self) -> &str {
-            &*self.content_type
-        }
-        pub fn content_encoding(&self) -> &str {
-            &*self.content_encoding
-        }
-        pub fn user_id(&self) -> &str {
-            &*self.user_id
-        }
-        pub fn app_id(&self) -> &str {
-            &*self.app_id
-        }
-        pub fn transaction_id(&self) -> &str {
-            &*self.transaction_id
-        }
-        pub fn security_token(&self) -> &[u8] {
-            &*self.security_token
-        }
-        pub fn application_headers(&self) -> &::field::Table<'a> {
-            &self.application_headers
-        }
-        pub fn body(&self) -> &[u8] {
-            &*self.body
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(destination, destination_mut, set_destination) -> Cow<str>,
+(redelivered, set_redelivered) -> bool,
+(immediate, set_immediate) -> bool,
+(ttl, set_ttl) -> u64,
+(priority, set_priority) -> u8,
+(timestamp, set_timestamp) -> u64,
+(delivery_mode, set_delivery_mode) -> u8,
+(expiration, set_expiration) -> u64,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(message_id, message_id_mut, set_message_id) -> Cow<str>,
+(correlation_id, correlation_id_mut, set_correlation_id) -> Cow<str>,
+(reply_to, reply_to_mut, set_reply_to) -> Cow<str>,
+(content_type, content_type_mut, set_content_type) -> Cow<str>,
+(content_encoding, content_encoding_mut, set_content_encoding) -> Cow<str>,
+(user_id, user_id_mut, set_user_id) -> Cow<str>,
+(app_id, app_id_mut, set_app_id) -> Cow<str>,
+(transaction_id, transaction_id_mut, set_transaction_id) -> Cow<str>,
+(security_token, security_token_mut, set_security_token) -> Cow<[u8]>,
+(application_headers, application_headers_mut, set_application_headers) -> &::field::Table<'a>,
+(body, body_mut, set_body) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for Transfer<'a> {
         fn class_id(&self) -> u16 {
@@ -2923,27 +2763,15 @@ pub mod message {
                 filter: filter.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn destination(&self) -> &str {
-            &*self.destination
-        }
-        pub fn no_local(&self) -> bool {
-            self.no_local
-        }
-        pub fn no_ack(&self) -> bool {
-            self.no_ack
-        }
-        pub fn exclusive(&self) -> bool {
-            self.exclusive
-        }
-        pub fn filter(&self) -> &::field::Table<'a> {
-            &self.filter
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(destination, destination_mut, set_destination) -> Cow<str>,
+(no_local, set_no_local) -> bool,
+(no_ack, set_no_ack) -> bool,
+(exclusive, set_exclusive) -> bool,
+(filter, filter_mut, set_filter) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Consume<'a> {
         fn class_id(&self) -> u16 {
@@ -2972,9 +2800,9 @@ pub mod message {
         {
             Cancel { destination: destination.into() }
         }
-        pub fn destination(&self) -> &str {
-            &*self.destination
-        }
+        impl_properties! {
+(destination, destination_mut, set_destination) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Cancel<'a> {
         fn class_id(&self) -> u16 {
@@ -3012,18 +2840,12 @@ pub mod message {
                 no_ack: no_ack,
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn destination(&self) -> &str {
-            &*self.destination
-        }
-        pub fn no_ack(&self) -> bool {
-            self.no_ack
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(destination, destination_mut, set_destination) -> Cow<str>,
+(no_ack, set_no_ack) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Get<'a> {
         fn class_id(&self) -> u16 {
@@ -3050,9 +2872,9 @@ pub mod message {
         pub fn new(requeue: bool) -> Self {
             Recover { requeue: requeue }
         }
-        pub fn requeue(&self) -> bool {
-            self.requeue
-        }
+        impl_properties! {
+(requeue, set_requeue) -> bool,
+} // impl_properties
     }
     impl ::Payload for Recover {
         fn class_id(&self) -> u16 {
@@ -3079,9 +2901,9 @@ pub mod message {
         {
             Open { reference: reference.into() }
         }
-        pub fn reference(&self) -> &[u8] {
-            &*self.reference
-        }
+        impl_properties! {
+(reference, reference_mut, set_reference) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for Open<'a> {
         fn class_id(&self) -> u16 {
@@ -3110,9 +2932,9 @@ pub mod message {
         {
             Close { reference: reference.into() }
         }
-        pub fn reference(&self) -> &[u8] {
-            &*self.reference
-        }
+        impl_properties! {
+(reference, reference_mut, set_reference) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for Close<'a> {
         fn class_id(&self) -> u16 {
@@ -3146,12 +2968,10 @@ pub mod message {
                 bytes: bytes.into(),
             }
         }
-        pub fn reference(&self) -> &[u8] {
-            &*self.reference
-        }
-        pub fn bytes(&self) -> &[u8] {
-            &*self.bytes
-        }
+        impl_properties! {
+(reference, reference_mut, set_reference) -> Cow<[u8]>,
+(bytes, bytes_mut, set_bytes) -> Cow<[u8]>,
+} // impl_properties
     }
     impl<'a> ::Payload for Append<'a> {
         fn class_id(&self) -> u16 {
@@ -3185,12 +3005,10 @@ pub mod message {
                 identifier: identifier.into(),
             }
         }
-        pub fn reference(&self) -> &[u8] {
-            &*self.reference
-        }
-        pub fn identifier(&self) -> &str {
-            &*self.identifier
-        }
+        impl_properties! {
+(reference, reference_mut, set_reference) -> Cow<[u8]>,
+(identifier, identifier_mut, set_identifier) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Checkpoint<'a> {
         fn class_id(&self) -> u16 {
@@ -3224,12 +3042,10 @@ pub mod message {
                 identifier: identifier.into(),
             }
         }
-        pub fn reference(&self) -> &[u8] {
-            &*self.reference
-        }
-        pub fn identifier(&self) -> &str {
-            &*self.identifier
-        }
+        impl_properties! {
+(reference, reference_mut, set_reference) -> Cow<[u8]>,
+(identifier, identifier_mut, set_identifier) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Resume<'a> {
         fn class_id(&self) -> u16 {
@@ -3262,15 +3078,11 @@ pub mod message {
                 global: global,
             }
         }
-        pub fn prefetch_size(&self) -> u32 {
-            self.prefetch_size
-        }
-        pub fn prefetch_count(&self) -> u16 {
-            self.prefetch_count
-        }
-        pub fn global(&self) -> bool {
-            self.global
-        }
+        impl_properties! {
+(prefetch_size, set_prefetch_size) -> u32,
+(prefetch_count, set_prefetch_count) -> u16,
+(global, set_global) -> bool,
+} // impl_properties
     }
     impl ::Payload for Qos {
         fn class_id(&self) -> u16 {
@@ -3345,12 +3157,10 @@ pub mod message {
                 text: text.into(),
             }
         }
-        pub fn code(&self) -> u16 {
-            self.code
-        }
-        pub fn text(&self) -> &str {
-            &*self.text
-        }
+        impl_properties! {
+(code, set_code) -> u16,
+(text, text_mut, set_text) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Reject<'a> {
         fn class_id(&self) -> u16 {
@@ -3377,9 +3187,9 @@ pub mod message {
         pub fn new(value: u64) -> Self {
             Offset { value: value }
         }
-        pub fn value(&self) -> u64 {
-            self.value
-        }
+        impl_properties! {
+(value, set_value) -> u64,
+} // impl_properties
     }
     impl ::Payload for Offset {
         fn class_id(&self) -> u16 {
@@ -3397,10 +3207,28 @@ pub mod message {
             8
         }
     }
-}
+    pub enum Method<'a> {
+        Transfer(Transfer<'a>),
+        Consume(Consume<'a>),
+        Cancel(Cancel<'a>),
+        Get(Get<'a>),
+        Recover(Recover),
+        Open(Open<'a>),
+        Close(Close<'a>),
+        Append(Append<'a>),
+        Checkpoint(Checkpoint<'a>),
+        Resume(Resume<'a>),
+        Qos(Qos),
+        Ok(Ok),
+        Empty(Empty),
+        Reject(Reject<'a>),
+        Offset(Offset),
+    } // enum Method
+
+} // mod message
+
 pub mod queue {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Declare<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
@@ -3435,30 +3263,16 @@ pub mod queue {
                 arguments: arguments.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn passive(&self) -> bool {
-            self.passive
-        }
-        pub fn durable(&self) -> bool {
-            self.durable
-        }
-        pub fn exclusive(&self) -> bool {
-            self.exclusive
-        }
-        pub fn auto_delete(&self) -> bool {
-            self.auto_delete
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
-        pub fn arguments(&self) -> &::field::Table<'a> {
-            &self.arguments
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(passive, set_passive) -> bool,
+(durable, set_durable) -> bool,
+(exclusive, set_exclusive) -> bool,
+(auto_delete, set_auto_delete) -> bool,
+(nowait, set_nowait) -> bool,
+(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Declare<'a> {
         fn class_id(&self) -> u16 {
@@ -3493,15 +3307,11 @@ pub mod queue {
                 consumer_count: consumer_count,
             }
         }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn message_count(&self) -> u32 {
-            self.message_count
-        }
-        pub fn consumer_count(&self) -> u32 {
-            self.consumer_count
-        }
+        impl_properties! {
+(queue, queue_mut, set_queue) -> Cow<str>,
+(message_count, set_message_count) -> u32,
+(consumer_count, set_consumer_count) -> u32,
+} // impl_properties
     }
     impl<'a> ::Payload for DeclareOk<'a> {
         fn class_id(&self) -> u16 {
@@ -3551,24 +3361,14 @@ pub mod queue {
                 arguments: arguments.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
-        pub fn arguments(&self) -> &::field::Table<'a> {
-            &self.arguments
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(nowait, set_nowait) -> bool,
+(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Bind<'a> {
         fn class_id(&self) -> u16 {
@@ -3641,21 +3441,13 @@ pub mod queue {
                 arguments: arguments.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn arguments(&self) -> &::field::Table<'a> {
-            &self.arguments
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Unbind<'a> {
         fn class_id(&self) -> u16 {
@@ -3716,15 +3508,11 @@ pub mod queue {
                 nowait: nowait,
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(nowait, set_nowait) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Purge<'a> {
         fn class_id(&self) -> u16 {
@@ -3751,9 +3539,9 @@ pub mod queue {
         pub fn new(message_count: u32) -> Self {
             PurgeOk { message_count: message_count }
         }
-        pub fn message_count(&self) -> u32 {
-            self.message_count
-        }
+        impl_properties! {
+(message_count, set_message_count) -> u32,
+} // impl_properties
     }
     impl ::Payload for PurgeOk {
         fn class_id(&self) -> u16 {
@@ -3790,21 +3578,13 @@ pub mod queue {
                 nowait: nowait,
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn if_unused(&self) -> bool {
-            self.if_unused
-        }
-        pub fn if_empty(&self) -> bool {
-            self.if_empty
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(if_unused, set_if_unused) -> bool,
+(if_empty, set_if_empty) -> bool,
+(nowait, set_nowait) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Delete<'a> {
         fn class_id(&self) -> u16 {
@@ -3831,9 +3611,9 @@ pub mod queue {
         pub fn new(message_count: u32) -> Self {
             DeleteOk { message_count: message_count }
         }
-        pub fn message_count(&self) -> u32 {
-            self.message_count
-        }
+        impl_properties! {
+(message_count, set_message_count) -> u32,
+} // impl_properties
     }
     impl ::Payload for DeleteOk {
         fn class_id(&self) -> u16 {
@@ -3851,9 +3631,23 @@ pub mod queue {
             4
         }
     }
-}
+    pub enum Method<'a> {
+        Declare(Declare<'a>),
+        DeclareOk(DeclareOk<'a>),
+        Bind(Bind<'a>),
+        BindOk(BindOk),
+        Unbind(Unbind<'a>),
+        UnbindOk(UnbindOk),
+        Purge(Purge<'a>),
+        PurgeOk(PurgeOk),
+        Delete(Delete<'a>),
+        DeleteOk(DeleteOk),
+    } // enum Method
+
+} // mod queue
+
 pub mod stream {
-    pub struct Properties<'a> {
+    pub struct Headers<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
         headers: Option<::field::Table<'a>>,
@@ -3861,22 +3655,14 @@ pub mod stream {
         timestamp: Option<u64>,
     }
 
-    impl<'a> Properties<'a> {
-        pub fn content_type(&self) -> Option<&str> {
-            self.content_type.as_ref().map(|v| &**v)
-        }
-        pub fn content_encoding(&self) -> Option<&str> {
-            self.content_encoding.as_ref().map(|v| &**v)
-        }
-        pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref()
-        }
-        pub fn priority(&self) -> Option<u8> {
-            self.priority
-        }
-        pub fn timestamp(&self) -> Option<u64> {
-            self.timestamp
-        }
+    impl<'a> Headers<'a> {
+        impl_properties! {
+(content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
+(content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
+(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
+(priority, priority_mut, set_priority, take_priority) -> Option<u8>,
+(timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
+} // impl_properties
     }
     pub struct Qos {
         prefetch_size: u32,
@@ -3897,18 +3683,12 @@ pub mod stream {
                 global: global,
             }
         }
-        pub fn prefetch_size(&self) -> u32 {
-            self.prefetch_size
-        }
-        pub fn prefetch_count(&self) -> u16 {
-            self.prefetch_count
-        }
-        pub fn consume_rate(&self) -> u32 {
-            self.consume_rate
-        }
-        pub fn global(&self) -> bool {
-            self.global
-        }
+        impl_properties! {
+(prefetch_size, set_prefetch_size) -> u32,
+(prefetch_count, set_prefetch_count) -> u16,
+(consume_rate, set_consume_rate) -> u32,
+(global, set_global) -> bool,
+} // impl_properties
     }
     impl ::Payload for Qos {
         fn class_id(&self) -> u16 {
@@ -3980,27 +3760,15 @@ pub mod stream {
                 filter: filter.into(),
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn no_local(&self) -> bool {
-            self.no_local
-        }
-        pub fn exclusive(&self) -> bool {
-            self.exclusive
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
-        pub fn filter(&self) -> &::field::Table<'a> {
-            &self.filter
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(queue, queue_mut, set_queue) -> Cow<str>,
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(no_local, set_no_local) -> bool,
+(exclusive, set_exclusive) -> bool,
+(nowait, set_nowait) -> bool,
+(filter, filter_mut, set_filter) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Consume<'a> {
         fn class_id(&self) -> u16 {
@@ -4029,9 +3797,9 @@ pub mod stream {
         {
             ConsumeOk { consumer_tag: consumer_tag.into() }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
@@ -4064,12 +3832,10 @@ pub mod stream {
                 nowait: nowait,
             }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn nowait(&self) -> bool {
-            self.nowait
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(nowait, set_nowait) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Cancel<'a> {
         fn class_id(&self) -> u16 {
@@ -4098,9 +3864,9 @@ pub mod stream {
         {
             CancelOk { consumer_tag: consumer_tag.into() }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
@@ -4145,21 +3911,13 @@ pub mod stream {
                 immediate: immediate,
             }
         }
-        pub fn ticket(&self) -> u16 {
-            self.ticket
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
-        pub fn mandatory(&self) -> bool {
-            self.mandatory
-        }
-        pub fn immediate(&self) -> bool {
-            self.immediate
-        }
+        impl_properties! {
+(ticket, set_ticket) -> u16,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+(mandatory, set_mandatory) -> bool,
+(immediate, set_immediate) -> bool,
+} // impl_properties
     }
     impl<'a> ::Payload for Publish<'a> {
         fn class_id(&self) -> u16 {
@@ -4198,18 +3956,12 @@ pub mod stream {
                 routing_key: routing_key.into(),
             }
         }
-        pub fn reply_code(&self) -> u16 {
-            self.reply_code
-        }
-        pub fn reply_text(&self) -> &str {
-            &*self.reply_text
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn routing_key(&self) -> &str {
-            &*self.routing_key
-        }
+        impl_properties! {
+(reply_code, set_reply_code) -> u16,
+(reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Return<'a> {
         fn class_id(&self) -> u16 {
@@ -4248,18 +4000,12 @@ pub mod stream {
                 queue: queue.into(),
             }
         }
-        pub fn consumer_tag(&self) -> &str {
-            &*self.consumer_tag
-        }
-        pub fn delivery_tag(&self) -> u64 {
-            self.delivery_tag
-        }
-        pub fn exchange(&self) -> &str {
-            &*self.exchange
-        }
-        pub fn queue(&self) -> &str {
-            &*self.queue
-        }
+        impl_properties! {
+(consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
+(delivery_tag, set_delivery_tag) -> u64,
+(exchange, exchange_mut, set_exchange) -> Cow<str>,
+(queue, queue_mut, set_queue) -> Cow<str>,
+} // impl_properties
     }
     impl<'a> ::Payload for Deliver<'a> {
         fn class_id(&self) -> u16 {
@@ -4279,9 +4025,22 @@ pub mod stream {
                 .sum()
         }
     }
-}
+    pub enum Method<'a> {
+        Qos(Qos),
+        QosOk(QosOk),
+        Consume(Consume<'a>),
+        ConsumeOk(ConsumeOk<'a>),
+        Cancel(Cancel<'a>),
+        CancelOk(CancelOk<'a>),
+        Publish(Publish<'a>),
+        Return(Return<'a>),
+        Deliver(Deliver<'a>),
+    } // enum Method
+
+} // mod stream
+
 pub mod tunnel {
-    pub struct Properties<'a> {
+    pub struct Headers<'a> {
         headers: Option<::field::Table<'a>>,
         proxy_name: Option<::std::borrow::Cow<'a, str>>,
         data_name: Option<::std::borrow::Cow<'a, str>>,
@@ -4289,22 +4048,14 @@ pub mod tunnel {
         broadcast: Option<u8>,
     }
 
-    impl<'a> Properties<'a> {
-        pub fn headers(&self) -> Option<&::field::Table<'a>> {
-            self.headers.as_ref()
-        }
-        pub fn proxy_name(&self) -> Option<&str> {
-            self.proxy_name.as_ref().map(|v| &**v)
-        }
-        pub fn data_name(&self) -> Option<&str> {
-            self.data_name.as_ref().map(|v| &**v)
-        }
-        pub fn durable(&self) -> Option<u8> {
-            self.durable
-        }
-        pub fn broadcast(&self) -> Option<u8> {
-            self.broadcast
-        }
+    impl<'a> Headers<'a> {
+        impl_properties! {
+(headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
+(proxy_name, proxy_name_mut, set_proxy_name, take_proxy_name) -> Option< Cow<str> >,
+(data_name, data_name_mut, set_data_name, take_data_name) -> Option< Cow<str> >,
+(durable, durable_mut, set_durable, take_durable) -> Option<u8>,
+(broadcast, broadcast_mut, set_broadcast, take_broadcast) -> Option<u8>,
+} // impl_properties
     }
     pub struct Request<'a> {
         meta_data: ::field::Table<'a>,
@@ -4315,9 +4066,9 @@ pub mod tunnel {
         {
             Request { meta_data: meta_data.into() }
         }
-        pub fn meta_data(&self) -> &::field::Table<'a> {
-            &self.meta_data
-        }
+        impl_properties! {
+(meta_data, meta_data_mut, set_meta_data) -> &::field::Table<'a>,
+} // impl_properties
     }
     impl<'a> ::Payload for Request<'a> {
         fn class_id(&self) -> u16 {
@@ -4337,10 +4088,14 @@ pub mod tunnel {
                 .sum()
         }
     }
-}
+    pub enum Method<'a> {
+        Request(Request<'a>),
+    } // enum Method
+
+} // mod tunnel
+
 pub mod tx {
-    pub struct Properties;
-    impl Properties {}
+    pub struct Headers;
     pub struct Select;
     impl Select {
         pub fn new() -> Self {
@@ -4473,7 +4228,46 @@ pub mod tx {
             0
         }
     }
-}
+    pub enum Method {
+        Select(Select),
+        SelectOk(SelectOk),
+        Commit(Commit),
+        CommitOk(CommitOk),
+        Rollback(Rollback),
+        RollbackOk(RollbackOk),
+    } // enum Method
+
+} // mod tx
+
+
+// Class methods
+type AccessMethod<'a> = access::Method<'a>;
+type BasicMethod<'a> = basic::Method<'a>;
+type ChannelMethod<'a> = channel::Method<'a>;
+type ConnectionMethod<'a> = connection::Method<'a>;
+type DtxMethod<'a> = dtx::Method<'a>;
+type ExchangeMethod<'a> = exchange::Method<'a>;
+type FileMethod<'a> = file::Method<'a>;
+type MessageMethod<'a> = message::Method<'a>;
+type QueueMethod<'a> = queue::Method<'a>;
+type StreamMethod<'a> = stream::Method<'a>;
+type TunnelMethod<'a> = tunnel::Method<'a>;
+type TxMethod = tx::Method;
+
+pub enum Method<'a> {
+    Access(AccessMethod<'a>),
+    Basic(BasicMethod<'a>),
+    Channel(ChannelMethod<'a>),
+    Connection(ConnectionMethod<'a>),
+    Dtx(DtxMethod<'a>),
+    Exchange(ExchangeMethod<'a>),
+    File(FileMethod<'a>),
+    Message(MessageMethod<'a>),
+    Queue(QueueMethod<'a>),
+    Stream(StreamMethod<'a>),
+    Tunnel(TunnelMethod<'a>),
+    Tx(TxMethod),
+} // enum Method
 
 #[allow(non_camel_case_types)]
 pub struct Qpid9_0;

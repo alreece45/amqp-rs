@@ -6,12 +6,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-mod method;
-mod headers;
-mod spec;
-mod specs;
+#[macro_use]
+mod impl_properties;
 
-pub use self::method::MethodModuleWriter;
-pub use self::headers::HeadersStructWriter;
-pub use self::spec::SpecModuleWriter;
-pub use self::specs::SpecsModuleWriter;
+#[cfg(test)]
+mod tests;
