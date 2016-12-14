@@ -1,6 +1,6 @@
 [package]
 name = "amqp0-parser-nom"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
