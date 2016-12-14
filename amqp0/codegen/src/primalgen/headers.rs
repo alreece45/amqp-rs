@@ -14,12 +14,12 @@ use common::domain::{Domain, DomainMapper};
 
 type Field<'a> = common::Field<'a, ClassField>;
 
-pub struct HeadersStructWriter<'a> {
+pub struct HeaderStructWriter<'a> {
     fields: Vec<Field<'a>>,
     has_lifetimes: bool,
 }
 
-impl<'a> HeadersStructWriter<'a> {
+impl<'a> HeaderStructWriter<'a> {
     pub fn new(class: &'a Class,domain_mapper: &DomainMapper) -> Self {
         let fields = class.fields().iter()
             .map(|field| {
@@ -32,7 +32,7 @@ impl<'a> HeadersStructWriter<'a> {
             .map(|f| !f.ty().is_copy())
             .any(|is_copy| is_copy);
 
-        HeadersStructWriter {
+        HeaderStructWriter {
             fields: fields,
             has_lifetimes: has_lifetimes,
         }
@@ -53,17 +53,17 @@ impl<'a> HeadersStructWriter<'a> {
         where W: io::Write
     {
         if self.fields.is_empty() {
-            try!(writeln!(writer, "pub struct Headers;"));
+            try!(writeln!(writer, "pub struct Header;"));
             return Ok(());
         }
 
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "pub struct Headers{} {{", lifetimes));
+        try!(writeln!(writer, "pub struct Header{} {{", lifetimes));
         for field in &self.fields {
             try!(writeln!(writer, "{}: Option<{}>,", field.var_name(), field.ty().cow_definition("a")));
         }
-        try!(writeln!(writer, "}}\n"));
+        try!(writeln!(writer, "}} // struct Header"));
         Ok(())
     }
 
@@ -76,9 +76,9 @@ impl<'a> HeadersStructWriter<'a> {
 
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "impl{} Headers{} {{", lifetimes, lifetimes));
+        try!(writeln!(writer, "\nimpl{0} Header{0} {{", lifetimes));
         try!(self.write_getters(writer));
-        try!(writeln!(writer, "}}"));
+        try!(writeln!(writer, "}} // impl Headers"));
 
         Ok(())
     }

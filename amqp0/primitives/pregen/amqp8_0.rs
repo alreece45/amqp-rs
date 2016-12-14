@@ -125,16 +125,16 @@ pub const METHOD_TX_ROLLBACK_OK: u16 = 31;
 
 pub enum Header<'a> {
     Access,
-    Basic(basic::Headers<'a>),
+    Basic(basic::Header<'a>),
     Channel,
     Connection,
     Dtx,
     Exchange,
-    File(file::Headers<'a>),
+    File(file::Header<'a>),
     Queue,
-    Stream(stream::Headers<'a>),
+    Stream(stream::Header<'a>),
     Test,
-    Tunnel(tunnel::Headers<'a>),
+    Tunnel(tunnel::Header<'a>),
     Tx,
 } // enum Header
 
@@ -151,7 +151,8 @@ pub enum Frame<'a> {
 
 // Class Modules
 pub mod access {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Request<'a> {
         realm: ::std::borrow::Cow<'a, str>,
         exclusive: bool,
@@ -159,7 +160,8 @@ pub mod access {
         active: bool,
         write: bool,
         read: bool,
-    }
+    } // struct Request<'a>
+
     impl<'a> Request<'a> {
         pub fn new<R>(realm: R,
                       exclusive: bool,
@@ -177,8 +179,8 @@ pub mod access {
                 active: active,
                 write: write,
                 read: read,
-            }
-        }
+            } // Request
+        } // fn new()
         impl_properties! {
 (realm, realm_mut, set_realm) -> Cow<str>,
 (exclusive, set_exclusive) -> bool,
@@ -187,52 +189,57 @@ pub mod access {
 (write, set_write) -> bool,
 (read, set_read) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Request<'a>
+
     impl<'a> ::Payload for Request<'a> {
         fn class_id(&self) -> u16 {
             30
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.realm.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Request<'a>
+
     pub struct RequestOk {
         ticket: u16,
-    }
+    } // struct RequestOk
+
     impl RequestOk {
         pub fn new(ticket: u16) -> Self {
-            RequestOk { ticket: ticket }
-        }
+            RequestOk { ticket: ticket } // RequestOk
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 } // impl_properties
-    }
+    } // impl RequestOk
+
     impl ::Payload for RequestOk {
         fn class_id(&self) -> u16 {
             30
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             2
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for RequestOk
+
     pub enum Method<'a> {
         Request(Request<'a>),
         RequestOk(RequestOk),
@@ -241,7 +248,7 @@ pub mod access {
 } // mod access
 
 pub mod basic {
-    pub struct Headers<'a> {
+    pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
         headers: Option<::field::Table<'a>>,
@@ -256,9 +263,9 @@ pub mod basic {
         user_id: Option<::std::borrow::Cow<'a, str>>,
         app_id: Option<::std::borrow::Cow<'a, str>>,
         cluster_id: Option<::std::borrow::Cow<'a, str>>,
-    }
+    } // struct Header
 
-    impl<'a> Headers<'a> {
+    impl<'a> Header<'a> {
         impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
@@ -275,64 +282,71 @@ pub mod basic {
 (app_id, app_id_mut, set_app_id, take_app_id) -> Option< Cow<str> >,
 (cluster_id, cluster_id_mut, set_cluster_id, take_cluster_id) -> Option< Cow<str> >,
 } // impl_properties
-    }
+    } // impl Headers
+
     pub struct Qos {
         prefetch_size: u32,
         prefetch_count: u16,
         global: bool,
-    }
+    } // struct Qos
+
     impl Qos {
         pub fn new(prefetch_size: u32, prefetch_count: u16, global: bool) -> Self {
             Qos {
                 prefetch_size: prefetch_size,
                 prefetch_count: prefetch_count,
                 global: global,
-            }
-        }
+            } // Qos
+        } // fn new()
         impl_properties! {
 (prefetch_size, set_prefetch_size) -> u32,
 (prefetch_count, set_prefetch_count) -> u16,
 (global, set_global) -> bool,
 } // impl_properties
-    }
+    } // impl Qos
+
     impl ::Payload for Qos {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             7
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Qos
+
     pub struct QosOk;
+
     impl QosOk {
         pub fn new() -> Self {
             QosOk
-        }
-    }
+        } // fn new()
+    } // impl QosOk
+
     impl ::Payload for QosOk {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for QosOk
+
     pub struct Consume<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
@@ -341,7 +355,8 @@ pub mod basic {
         no_ack: bool,
         exclusive: bool,
         nowait: bool,
-    }
+    } // struct Consume<'a>
+
     impl<'a> Consume<'a> {
         pub fn new<Q, C>(ticket: u16,
                          queue: Q,
@@ -362,8 +377,8 @@ pub mod basic {
                 no_ack: no_ack,
                 exclusive: exclusive,
                 nowait: nowait,
-            }
-        }
+            } // Consume
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
@@ -373,60 +388,66 @@ pub mod basic {
 (exclusive, set_exclusive) -> bool,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Consume<'a>
+
     impl<'a> ::Payload for Consume<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.queue.len(), self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Consume<'a>
+
     pub struct ConsumeOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct ConsumeOk<'a>
+
     impl<'a> ConsumeOk<'a> {
         pub fn new<C>(consumer_tag: C) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
         {
-            ConsumeOk { consumer_tag: consumer_tag.into() }
-        }
+            ConsumeOk { consumer_tag: consumer_tag.into() } // ConsumeOk
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> ConsumeOk<'a>
+
     impl<'a> ::Payload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for ConsumeOk<'a>
+
     pub struct Cancel<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         nowait: bool,
-    }
+    } // struct Cancel<'a>
+
     impl<'a> Cancel<'a> {
         pub fn new<C>(consumer_tag: C, nowait: bool) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
@@ -434,69 +455,75 @@ pub mod basic {
             Cancel {
                 consumer_tag: consumer_tag.into(),
                 nowait: nowait,
-            }
-        }
+            } // Cancel
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Cancel<'a>
+
     impl<'a> ::Payload for Cancel<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Cancel<'a>
+
     pub struct CancelOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct CancelOk<'a>
+
     impl<'a> CancelOk<'a> {
         pub fn new<C>(consumer_tag: C) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
         {
-            CancelOk { consumer_tag: consumer_tag.into() }
-        }
+            CancelOk { consumer_tag: consumer_tag.into() } // CancelOk
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> CancelOk<'a>
+
     impl<'a> ::Payload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             31
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for CancelOk<'a>
+
     pub struct Publish<'a> {
         ticket: u16,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         mandatory: bool,
         immediate: bool,
-    }
+    } // struct Publish<'a>
+
     impl<'a> Publish<'a> {
         pub fn new<E, R>(ticket: u16,
                          exchange: E,
@@ -513,8 +540,8 @@ pub mod basic {
                 routing_key: routing_key.into(),
                 mandatory: mandatory,
                 immediate: immediate,
-            }
-        }
+            } // Publish
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
@@ -522,31 +549,34 @@ pub mod basic {
 (mandatory, set_mandatory) -> bool,
 (immediate, set_immediate) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Publish<'a>
+
     impl<'a> ::Payload for Publish<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             40
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Publish<'a>
+
     pub struct Return<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Return<'a>
+
     impl<'a> Return<'a> {
         pub fn new<R, E, R0>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
@@ -558,40 +588,43 @@ pub mod basic {
                 reply_text: reply_text.into(),
                 exchange: exchange.into(),
                 routing_key: routing_key.into(),
-            }
-        }
+            } // Return
+        } // fn new()
         impl_properties! {
 (reply_code, set_reply_code) -> u16,
 (reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Return<'a>
+
     impl<'a> ::Payload for Return<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             50
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.reply_text.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Return<'a>
+
     pub struct Deliver<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         delivery_tag: u64,
         redelivered: bool,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Deliver<'a>
+
     impl<'a> Deliver<'a> {
         pub fn new<C, E, R>(consumer_tag: C,
                             delivery_tag: u64,
@@ -609,8 +642,8 @@ pub mod basic {
                 redelivered: redelivered,
                 exchange: exchange.into(),
                 routing_key: routing_key.into(),
-            }
-        }
+            } // Deliver
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 (delivery_tag, set_delivery_tag) -> u64,
@@ -618,30 +651,33 @@ pub mod basic {
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Deliver<'a>
+
     impl<'a> ::Payload for Deliver<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             60
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [12, self.consumer_tag.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Deliver<'a>
+
     pub struct Get<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
         no_ack: bool,
-    }
+    } // struct Get<'a>
+
     impl<'a> Get<'a> {
         pub fn new<Q>(ticket: u16, queue: Q, no_ack: bool) -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>
@@ -650,39 +686,42 @@ pub mod basic {
                 ticket: ticket,
                 queue: queue.into(),
                 no_ack: no_ack,
-            }
-        }
+            } // Get
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
 (no_ack, set_no_ack) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Get<'a>
+
     impl<'a> ::Payload for Get<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             70
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [4, self.queue.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Get<'a>
+
     pub struct GetOk<'a> {
         delivery_tag: u64,
         redelivered: bool,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         message_count: u32,
-    }
+    } // struct GetOk<'a>
+
     impl<'a> GetOk<'a> {
         pub fn new<E, R>(delivery_tag: u64,
                          redelivered: bool,
@@ -699,8 +738,8 @@ pub mod basic {
                 exchange: exchange.into(),
                 routing_key: routing_key.into(),
                 message_count: message_count,
-            }
-        }
+            } // GetOk
+        } // fn new()
         impl_properties! {
 (delivery_tag, set_delivery_tag) -> u64,
 (redelivered, set_redelivered) -> bool,
@@ -708,147 +747,161 @@ pub mod basic {
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 (message_count, set_message_count) -> u32,
 } // impl_properties
-    }
+    } // impl<'a> GetOk<'a>
+
     impl<'a> ::Payload for GetOk<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             71
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [15, self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for GetOk<'a>
+
     pub struct GetEmpty<'a> {
         cluster_id: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct GetEmpty<'a>
+
     impl<'a> GetEmpty<'a> {
         pub fn new<C>(cluster_id: C) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
         {
-            GetEmpty { cluster_id: cluster_id.into() }
-        }
+            GetEmpty { cluster_id: cluster_id.into() } // GetEmpty
+        } // fn new()
         impl_properties! {
 (cluster_id, cluster_id_mut, set_cluster_id) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> GetEmpty<'a>
+
     impl<'a> ::Payload for GetEmpty<'a> {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             72
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.cluster_id.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for GetEmpty<'a>
+
     pub struct Ack {
         delivery_tag: u64,
         multiple: bool,
-    }
+    } // struct Ack
+
     impl Ack {
         pub fn new(delivery_tag: u64, multiple: bool) -> Self {
             Ack {
                 delivery_tag: delivery_tag,
                 multiple: multiple,
-            }
-        }
+            } // Ack
+        } // fn new()
         impl_properties! {
 (delivery_tag, set_delivery_tag) -> u64,
 (multiple, set_multiple) -> bool,
 } // impl_properties
-    }
+    } // impl Ack
+
     impl ::Payload for Ack {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             80
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             9
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Ack
+
     pub struct Reject {
         delivery_tag: u64,
         requeue: bool,
-    }
+    } // struct Reject
+
     impl Reject {
         pub fn new(delivery_tag: u64, requeue: bool) -> Self {
             Reject {
                 delivery_tag: delivery_tag,
                 requeue: requeue,
-            }
-        }
+            } // Reject
+        } // fn new()
         impl_properties! {
 (delivery_tag, set_delivery_tag) -> u64,
 (requeue, set_requeue) -> bool,
 } // impl_properties
-    }
+    } // impl Reject
+
     impl ::Payload for Reject {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             90
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             9
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Reject
+
     pub struct Recover {
         requeue: bool,
-    }
+    } // struct Recover
+
     impl Recover {
         pub fn new(requeue: bool) -> Self {
-            Recover { requeue: requeue }
-        }
+            Recover { requeue: requeue } // Recover
+        } // fn new()
         impl_properties! {
 (requeue, set_requeue) -> bool,
 } // impl_properties
-    }
+    } // impl Recover
+
     impl ::Payload for Recover {
         fn class_id(&self) -> u16 {
             60
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             100
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             1
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Recover
+
     pub enum Method<'a> {
         Qos(Qos),
         QosOk(QosOk),
@@ -870,119 +923,133 @@ pub mod basic {
 } // mod basic
 
 pub mod channel {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Open<'a> {
         out_of_band: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Open<'a>
+
     impl<'a> Open<'a> {
         pub fn new<O>(out_of_band: O) -> Self
             where O: Into<::std::borrow::Cow<'a, str>>
         {
-            Open { out_of_band: out_of_band.into() }
-        }
+            Open { out_of_band: out_of_band.into() } // Open
+        } // fn new()
         impl_properties! {
 (out_of_band, out_of_band_mut, set_out_of_band) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Open<'a>
+
     impl<'a> ::Payload for Open<'a> {
         fn class_id(&self) -> u16 {
             20
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.out_of_band.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Open<'a>
+
     pub struct OpenOk;
+
     impl OpenOk {
         pub fn new() -> Self {
             OpenOk
-        }
-    }
+        } // fn new()
+    } // impl OpenOk
+
     impl ::Payload for OpenOk {
         fn class_id(&self) -> u16 {
             20
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for OpenOk
+
     pub struct Flow {
         active: bool,
-    }
+    } // struct Flow
+
     impl Flow {
         pub fn new(active: bool) -> Self {
-            Flow { active: active }
-        }
+            Flow { active: active } // Flow
+        } // fn new()
         impl_properties! {
 (active, set_active) -> bool,
 } // impl_properties
-    }
+    } // impl Flow
+
     impl ::Payload for Flow {
         fn class_id(&self) -> u16 {
             20
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             1
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Flow
+
     pub struct FlowOk {
         active: bool,
-    }
+    } // struct FlowOk
+
     impl FlowOk {
         pub fn new(active: bool) -> Self {
-            FlowOk { active: active }
-        }
+            FlowOk { active: active } // FlowOk
+        } // fn new()
         impl_properties! {
 (active, set_active) -> bool,
 } // impl_properties
-    }
+    } // impl FlowOk
+
     impl ::Payload for FlowOk {
         fn class_id(&self) -> u16 {
             20
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             1
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for FlowOk
+
     pub struct Alert<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
         details: ::field::Table<'a>,
-    }
+    } // struct Alert<'a>
+
     impl<'a> Alert<'a> {
         pub fn new<R, D>(reply_code: u16, reply_text: R, details: D) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
@@ -992,38 +1059,41 @@ pub mod channel {
                 reply_code: reply_code,
                 reply_text: reply_text.into(),
                 details: details.into(),
-            }
-        }
+            } // Alert
+        } // fn new()
         impl_properties! {
 (reply_code, set_reply_code) -> u16,
 (reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
 (details, details_mut, set_details) -> &::field::Table<'a>,
 } // impl_properties
-    }
+    } // impl<'a> Alert<'a>
+
     impl<'a> ::Payload for Alert<'a> {
         fn class_id(&self) -> u16 {
             20
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [3, self.reply_text.len(), self.details.amqp_size()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Alert<'a>
+
     pub struct Close<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
         class_id: u16,
         method_id: u16,
-    }
+    } // struct Close<'a>
+
     impl<'a> Close<'a> {
         pub fn new<R>(reply_code: u16, reply_text: R, class_id: u16, method_id: u16) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>
@@ -1033,55 +1103,60 @@ pub mod channel {
                 reply_text: reply_text.into(),
                 class_id: class_id,
                 method_id: method_id,
-            }
-        }
+            } // Close
+        } // fn new()
         impl_properties! {
 (reply_code, set_reply_code) -> u16,
 (reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
 (class_id, set_class_id) -> u16,
 (method_id, set_method_id) -> u16,
 } // impl_properties
-    }
+    } // impl<'a> Close<'a>
+
     impl<'a> ::Payload for Close<'a> {
         fn class_id(&self) -> u16 {
             20
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             40
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [7, self.reply_text.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Close<'a>
+
     pub struct CloseOk;
+
     impl CloseOk {
         pub fn new() -> Self {
             CloseOk
-        }
-    }
+        } // fn new()
+    } // impl CloseOk
+
     impl ::Payload for CloseOk {
         fn class_id(&self) -> u16 {
             20
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             41
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for CloseOk
+
     pub enum Method<'a> {
         Open(Open<'a>),
         OpenOk(OpenOk),
@@ -1095,14 +1170,16 @@ pub mod channel {
 } // mod channel
 
 pub mod connection {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
         server_properties: ::field::Table<'a>,
         mechanisms: ::std::borrow::Cow<'a, [u8]>,
         locales: ::std::borrow::Cow<'a, [u8]>,
-    }
+    } // struct Start<'a>
+
     impl<'a> Start<'a> {
         pub fn new<S, M, L>(version_major: u8,
                             version_minor: u8,
@@ -1120,8 +1197,8 @@ pub mod connection {
                 server_properties: server_properties.into(),
                 mechanisms: mechanisms.into(),
                 locales: locales.into(),
-            }
-        }
+            } // Start
+        } // fn new()
         impl_properties! {
 (version_major, set_version_major) -> u8,
 (version_minor, set_version_minor) -> u8,
@@ -1129,31 +1206,34 @@ pub mod connection {
 (mechanisms, mechanisms_mut, set_mechanisms) -> Cow<[u8]>,
 (locales, locales_mut, set_locales) -> Cow<[u8]>,
 } // impl_properties
-    }
+    } // impl<'a> Start<'a>
+
     impl<'a> ::Payload for Start<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [6, self.server_properties.amqp_size(), self.mechanisms.len(), self.locales.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Start<'a>
+
     pub struct StartOk<'a> {
         client_properties: ::field::Table<'a>,
         mechanism: ::std::borrow::Cow<'a, str>,
         response: ::std::borrow::Cow<'a, [u8]>,
         locale: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct StartOk<'a>
+
     impl<'a> StartOk<'a> {
         pub fn new<C, M, R, L>(client_properties: C, mechanism: M, response: R, locale: L) -> Self
             where C: Into<::field::Table<'a>>,
@@ -1166,27 +1246,28 @@ pub mod connection {
                 mechanism: mechanism.into(),
                 response: response.into(),
                 locale: locale.into(),
-            }
-        }
+            } // StartOk
+        } // fn new()
         impl_properties! {
 (client_properties, client_properties_mut, set_client_properties) -> &::field::Table<'a>,
 (mechanism, mechanism_mut, set_mechanism) -> Cow<str>,
 (response, response_mut, set_response) -> Cow<[u8]>,
 (locale, locale_mut, set_locale) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> StartOk<'a>
+
     impl<'a> ::Payload for StartOk<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [4,
              self.client_properties.amqp_size(),
@@ -1195,145 +1276,159 @@ pub mod connection {
              self.locale.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for StartOk<'a>
+
     pub struct Secure<'a> {
         challenge: ::std::borrow::Cow<'a, [u8]>,
-    }
+    } // struct Secure<'a>
+
     impl<'a> Secure<'a> {
         pub fn new<C>(challenge: C) -> Self
             where C: Into<::std::borrow::Cow<'a, [u8]>>
         {
-            Secure { challenge: challenge.into() }
-        }
+            Secure { challenge: challenge.into() } // Secure
+        } // fn new()
         impl_properties! {
 (challenge, challenge_mut, set_challenge) -> Cow<[u8]>,
 } // impl_properties
-    }
+    } // impl<'a> Secure<'a>
+
     impl<'a> ::Payload for Secure<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.challenge.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Secure<'a>
+
     pub struct SecureOk<'a> {
         response: ::std::borrow::Cow<'a, [u8]>,
-    }
+    } // struct SecureOk<'a>
+
     impl<'a> SecureOk<'a> {
         pub fn new<R>(response: R) -> Self
             where R: Into<::std::borrow::Cow<'a, [u8]>>
         {
-            SecureOk { response: response.into() }
-        }
+            SecureOk { response: response.into() } // SecureOk
+        } // fn new()
         impl_properties! {
 (response, response_mut, set_response) -> Cow<[u8]>,
 } // impl_properties
-    }
+    } // impl<'a> SecureOk<'a>
+
     impl<'a> ::Payload for SecureOk<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.response.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for SecureOk<'a>
+
     pub struct Tune {
         channel_max: u16,
         frame_max: u32,
         heartbeat: u16,
-    }
+    } // struct Tune
+
     impl Tune {
         pub fn new(channel_max: u16, frame_max: u32, heartbeat: u16) -> Self {
             Tune {
                 channel_max: channel_max,
                 frame_max: frame_max,
                 heartbeat: heartbeat,
-            }
-        }
+            } // Tune
+        } // fn new()
         impl_properties! {
 (channel_max, set_channel_max) -> u16,
 (frame_max, set_frame_max) -> u32,
 (heartbeat, set_heartbeat) -> u16,
 } // impl_properties
-    }
+    } // impl Tune
+
     impl ::Payload for Tune {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             8
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Tune
+
     pub struct TuneOk {
         channel_max: u16,
         frame_max: u32,
         heartbeat: u16,
-    }
+    } // struct TuneOk
+
     impl TuneOk {
         pub fn new(channel_max: u16, frame_max: u32, heartbeat: u16) -> Self {
             TuneOk {
                 channel_max: channel_max,
                 frame_max: frame_max,
                 heartbeat: heartbeat,
-            }
-        }
+            } // TuneOk
+        } // fn new()
         impl_properties! {
 (channel_max, set_channel_max) -> u16,
 (frame_max, set_frame_max) -> u32,
 (heartbeat, set_heartbeat) -> u16,
 } // impl_properties
-    }
+    } // impl TuneOk
+
     impl ::Payload for TuneOk {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             31
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             8
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for TuneOk
+
     pub struct Open<'a> {
         virtual_host: ::std::borrow::Cow<'a, str>,
         capabilities: ::std::borrow::Cow<'a, str>,
         insist: bool,
-    }
+    } // struct Open<'a>
+
     impl<'a> Open<'a> {
         pub fn new<V, C>(virtual_host: V, capabilities: C, insist: bool) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>,
@@ -1343,67 +1438,73 @@ pub mod connection {
                 virtual_host: virtual_host.into(),
                 capabilities: capabilities.into(),
                 insist: insist,
-            }
-        }
+            } // Open
+        } // fn new()
         impl_properties! {
 (virtual_host, virtual_host_mut, set_virtual_host) -> Cow<str>,
 (capabilities, capabilities_mut, set_capabilities) -> Cow<str>,
 (insist, set_insist) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Open<'a>
+
     impl<'a> ::Payload for Open<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             40
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [3, self.virtual_host.len(), self.capabilities.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Open<'a>
+
     pub struct OpenOk<'a> {
         known_hosts: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct OpenOk<'a>
+
     impl<'a> OpenOk<'a> {
         pub fn new<K>(known_hosts: K) -> Self
             where K: Into<::std::borrow::Cow<'a, str>>
         {
-            OpenOk { known_hosts: known_hosts.into() }
-        }
+            OpenOk { known_hosts: known_hosts.into() } // OpenOk
+        } // fn new()
         impl_properties! {
 (known_hosts, known_hosts_mut, set_known_hosts) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> OpenOk<'a>
+
     impl<'a> ::Payload for OpenOk<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             41
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.known_hosts.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for OpenOk<'a>
+
     pub struct Redirect<'a> {
         host: ::std::borrow::Cow<'a, str>,
         known_hosts: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Redirect<'a>
+
     impl<'a> Redirect<'a> {
         pub fn new<H, K>(host: H, known_hosts: K) -> Self
             where H: Into<::std::borrow::Cow<'a, str>>,
@@ -1412,37 +1513,40 @@ pub mod connection {
             Redirect {
                 host: host.into(),
                 known_hosts: known_hosts.into(),
-            }
-        }
+            } // Redirect
+        } // fn new()
         impl_properties! {
 (host, host_mut, set_host) -> Cow<str>,
 (known_hosts, known_hosts_mut, set_known_hosts) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Redirect<'a>
+
     impl<'a> ::Payload for Redirect<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             50
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.host.len(), self.known_hosts.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Redirect<'a>
+
     pub struct Close<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
         class_id: u16,
         method_id: u16,
-    }
+    } // struct Close<'a>
+
     impl<'a> Close<'a> {
         pub fn new<R>(reply_code: u16, reply_text: R, class_id: u16, method_id: u16) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>
@@ -1452,55 +1556,60 @@ pub mod connection {
                 reply_text: reply_text.into(),
                 class_id: class_id,
                 method_id: method_id,
-            }
-        }
+            } // Close
+        } // fn new()
         impl_properties! {
 (reply_code, set_reply_code) -> u16,
 (reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
 (class_id, set_class_id) -> u16,
 (method_id, set_method_id) -> u16,
 } // impl_properties
-    }
+    } // impl<'a> Close<'a>
+
     impl<'a> ::Payload for Close<'a> {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             60
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [7, self.reply_text.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Close<'a>
+
     pub struct CloseOk;
+
     impl CloseOk {
         pub fn new() -> Self {
             CloseOk
-        }
-    }
+        } // fn new()
+    } // impl CloseOk
+
     impl ::Payload for CloseOk {
         fn class_id(&self) -> u16 {
             10
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             61
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for CloseOk
+
     pub enum Method<'a> {
         Start(Start<'a>),
         StartOk(StartOk<'a>),
@@ -1518,104 +1627,117 @@ pub mod connection {
 } // mod connection
 
 pub mod dtx {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Select;
+
     impl Select {
         pub fn new() -> Self {
             Select
-        }
-    }
+        } // fn new()
+    } // impl Select
+
     impl ::Payload for Select {
         fn class_id(&self) -> u16 {
             100
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Select
+
     pub struct SelectOk;
+
     impl SelectOk {
         pub fn new() -> Self {
             SelectOk
-        }
-    }
+        } // fn new()
+    } // impl SelectOk
+
     impl ::Payload for SelectOk {
         fn class_id(&self) -> u16 {
             100
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for SelectOk
+
     pub struct Start<'a> {
         dtx_identifier: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Start<'a>
+
     impl<'a> Start<'a> {
         pub fn new<D>(dtx_identifier: D) -> Self
             where D: Into<::std::borrow::Cow<'a, str>>
         {
-            Start { dtx_identifier: dtx_identifier.into() }
-        }
+            Start { dtx_identifier: dtx_identifier.into() } // Start
+        } // fn new()
         impl_properties! {
 (dtx_identifier, dtx_identifier_mut, set_dtx_identifier) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Start<'a>
+
     impl<'a> ::Payload for Start<'a> {
         fn class_id(&self) -> u16 {
             100
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.dtx_identifier.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Start<'a>
+
     pub struct StartOk;
+
     impl StartOk {
         pub fn new() -> Self {
             StartOk
-        }
-    }
+        } // fn new()
+    } // impl StartOk
+
     impl ::Payload for StartOk {
         fn class_id(&self) -> u16 {
             100
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for StartOk
+
     pub enum Method<'a> {
         Select(Select),
         SelectOk(SelectOk),
@@ -1626,7 +1748,8 @@ pub mod dtx {
 } // mod dtx
 
 pub mod exchange {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Declare<'a> {
         ticket: u16,
         exchange: ::std::borrow::Cow<'a, str>,
@@ -1637,7 +1760,8 @@ pub mod exchange {
         internal: bool,
         nowait: bool,
         arguments: ::field::Table<'a>,
-    }
+    } // struct Declare<'a>
+
     impl<'a> Declare<'a> {
         pub fn new<E, T, A>(ticket: u16,
                             exchange: E,
@@ -1663,8 +1787,8 @@ pub mod exchange {
                 internal: internal,
                 nowait: nowait,
                 arguments: arguments.into(),
-            }
-        }
+            } // Declare
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
@@ -1676,53 +1800,59 @@ pub mod exchange {
 (nowait, set_nowait) -> bool,
 (arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
 } // impl_properties
-    }
+    } // impl<'a> Declare<'a>
+
     impl<'a> ::Payload for Declare<'a> {
         fn class_id(&self) -> u16 {
             40
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.exchange.len(), self.ty.len(), self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Declare<'a>
+
     pub struct DeclareOk;
+
     impl DeclareOk {
         pub fn new() -> Self {
             DeclareOk
-        }
-    }
+        } // fn new()
+    } // impl DeclareOk
+
     impl ::Payload for DeclareOk {
         fn class_id(&self) -> u16 {
             40
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for DeclareOk
+
     pub struct Delete<'a> {
         ticket: u16,
         exchange: ::std::borrow::Cow<'a, str>,
         if_unused: bool,
         nowait: bool,
-    }
+    } // struct Delete<'a>
+
     impl<'a> Delete<'a> {
         pub fn new<E>(ticket: u16, exchange: E, if_unused: bool, nowait: bool) -> Self
             where E: Into<::std::borrow::Cow<'a, str>>
@@ -1732,55 +1862,60 @@ pub mod exchange {
                 exchange: exchange.into(),
                 if_unused: if_unused,
                 nowait: nowait,
-            }
-        }
+            } // Delete
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (if_unused, set_if_unused) -> bool,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Delete<'a>
+
     impl<'a> ::Payload for Delete<'a> {
         fn class_id(&self) -> u16 {
             40
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [4, self.exchange.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Delete<'a>
+
     pub struct DeleteOk;
+
     impl DeleteOk {
         pub fn new() -> Self {
             DeleteOk
-        }
-    }
+        } // fn new()
+    } // impl DeleteOk
+
     impl ::Payload for DeleteOk {
         fn class_id(&self) -> u16 {
             40
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for DeleteOk
+
     pub enum Method<'a> {
         Declare(Declare<'a>),
         DeclareOk(DeclareOk),
@@ -1791,7 +1926,7 @@ pub mod exchange {
 } // mod exchange
 
 pub mod file {
-    pub struct Headers<'a> {
+    pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
         headers: Option<::field::Table<'a>>,
@@ -1801,9 +1936,9 @@ pub mod file {
         filename: Option<::std::borrow::Cow<'a, str>>,
         timestamp: Option<u64>,
         cluster_id: Option<::std::borrow::Cow<'a, str>>,
-    }
+    } // struct Header
 
-    impl<'a> Headers<'a> {
+    impl<'a> Header<'a> {
         impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
@@ -1815,64 +1950,71 @@ pub mod file {
 (timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
 (cluster_id, cluster_id_mut, set_cluster_id, take_cluster_id) -> Option< Cow<str> >,
 } // impl_properties
-    }
+    } // impl Headers
+
     pub struct Qos {
         prefetch_size: u32,
         prefetch_count: u16,
         global: bool,
-    }
+    } // struct Qos
+
     impl Qos {
         pub fn new(prefetch_size: u32, prefetch_count: u16, global: bool) -> Self {
             Qos {
                 prefetch_size: prefetch_size,
                 prefetch_count: prefetch_count,
                 global: global,
-            }
-        }
+            } // Qos
+        } // fn new()
         impl_properties! {
 (prefetch_size, set_prefetch_size) -> u32,
 (prefetch_count, set_prefetch_count) -> u16,
 (global, set_global) -> bool,
 } // impl_properties
-    }
+    } // impl Qos
+
     impl ::Payload for Qos {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             7
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Qos
+
     pub struct QosOk;
+
     impl QosOk {
         pub fn new() -> Self {
             QosOk
-        }
-    }
+        } // fn new()
+    } // impl QosOk
+
     impl ::Payload for QosOk {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for QosOk
+
     pub struct Consume<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
@@ -1881,7 +2023,8 @@ pub mod file {
         no_ack: bool,
         exclusive: bool,
         nowait: bool,
-    }
+    } // struct Consume<'a>
+
     impl<'a> Consume<'a> {
         pub fn new<Q, C>(ticket: u16,
                          queue: Q,
@@ -1902,8 +2045,8 @@ pub mod file {
                 no_ack: no_ack,
                 exclusive: exclusive,
                 nowait: nowait,
-            }
-        }
+            } // Consume
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
@@ -1913,60 +2056,66 @@ pub mod file {
 (exclusive, set_exclusive) -> bool,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Consume<'a>
+
     impl<'a> ::Payload for Consume<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.queue.len(), self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Consume<'a>
+
     pub struct ConsumeOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct ConsumeOk<'a>
+
     impl<'a> ConsumeOk<'a> {
         pub fn new<C>(consumer_tag: C) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
         {
-            ConsumeOk { consumer_tag: consumer_tag.into() }
-        }
+            ConsumeOk { consumer_tag: consumer_tag.into() } // ConsumeOk
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> ConsumeOk<'a>
+
     impl<'a> ::Payload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for ConsumeOk<'a>
+
     pub struct Cancel<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         nowait: bool,
-    }
+    } // struct Cancel<'a>
+
     impl<'a> Cancel<'a> {
         pub fn new<C>(consumer_tag: C, nowait: bool) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
@@ -1974,66 +2123,72 @@ pub mod file {
             Cancel {
                 consumer_tag: consumer_tag.into(),
                 nowait: nowait,
-            }
-        }
+            } // Cancel
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Cancel<'a>
+
     impl<'a> ::Payload for Cancel<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Cancel<'a>
+
     pub struct CancelOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct CancelOk<'a>
+
     impl<'a> CancelOk<'a> {
         pub fn new<C>(consumer_tag: C) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
         {
-            CancelOk { consumer_tag: consumer_tag.into() }
-        }
+            CancelOk { consumer_tag: consumer_tag.into() } // CancelOk
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> CancelOk<'a>
+
     impl<'a> ::Payload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             31
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for CancelOk<'a>
+
     pub struct Open<'a> {
         identifier: ::std::borrow::Cow<'a, str>,
         content_size: u64,
-    }
+    } // struct Open<'a>
+
     impl<'a> Open<'a> {
         pub fn new<I>(identifier: I, content_size: u64) -> Self
             where I: Into<::std::borrow::Cow<'a, str>>
@@ -2041,80 +2196,88 @@ pub mod file {
             Open {
                 identifier: identifier.into(),
                 content_size: content_size,
-            }
-        }
+            } // Open
+        } // fn new()
         impl_properties! {
 (identifier, identifier_mut, set_identifier) -> Cow<str>,
 (content_size, set_content_size) -> u64,
 } // impl_properties
-    }
+    } // impl<'a> Open<'a>
+
     impl<'a> ::Payload for Open<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             40
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [9, self.identifier.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Open<'a>
+
     pub struct OpenOk {
         staged_size: u64,
-    }
+    } // struct OpenOk
+
     impl OpenOk {
         pub fn new(staged_size: u64) -> Self {
-            OpenOk { staged_size: staged_size }
-        }
+            OpenOk { staged_size: staged_size } // OpenOk
+        } // fn new()
         impl_properties! {
 (staged_size, set_staged_size) -> u64,
 } // impl_properties
-    }
+    } // impl OpenOk
+
     impl ::Payload for OpenOk {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             41
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             8
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for OpenOk
+
     pub struct Stage;
+
     impl Stage {
         pub fn new() -> Self {
             Stage
-        }
-    }
+        } // fn new()
+    } // impl Stage
+
     impl ::Payload for Stage {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             50
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Stage
+
     pub struct Publish<'a> {
         ticket: u16,
         exchange: ::std::borrow::Cow<'a, str>,
@@ -2122,7 +2285,8 @@ pub mod file {
         mandatory: bool,
         immediate: bool,
         identifier: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Publish<'a>
+
     impl<'a> Publish<'a> {
         pub fn new<E, R, I>(ticket: u16,
                             exchange: E,
@@ -2142,8 +2306,8 @@ pub mod file {
                 mandatory: mandatory,
                 immediate: immediate,
                 identifier: identifier.into(),
-            }
-        }
+            } // Publish
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
@@ -2152,31 +2316,34 @@ pub mod file {
 (immediate, set_immediate) -> bool,
 (identifier, identifier_mut, set_identifier) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Publish<'a>
+
     impl<'a> ::Payload for Publish<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             60
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [6, self.exchange.len(), self.routing_key.len(), self.identifier.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Publish<'a>
+
     pub struct Return<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Return<'a>
+
     impl<'a> Return<'a> {
         pub fn new<R, E, R0>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
@@ -2188,33 +2355,35 @@ pub mod file {
                 reply_text: reply_text.into(),
                 exchange: exchange.into(),
                 routing_key: routing_key.into(),
-            }
-        }
+            } // Return
+        } // fn new()
         impl_properties! {
 (reply_code, set_reply_code) -> u16,
 (reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Return<'a>
+
     impl<'a> ::Payload for Return<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             70
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.reply_text.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Return<'a>
+
     pub struct Deliver<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         delivery_tag: u64,
@@ -2222,7 +2391,8 @@ pub mod file {
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         identifier: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Deliver<'a>
+
     impl<'a> Deliver<'a> {
         pub fn new<C, E, R, I>(consumer_tag: C,
                                delivery_tag: u64,
@@ -2243,8 +2413,8 @@ pub mod file {
                 exchange: exchange.into(),
                 routing_key: routing_key.into(),
                 identifier: identifier.into(),
-            }
-        }
+            } // Deliver
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 (delivery_tag, set_delivery_tag) -> u64,
@@ -2253,19 +2423,20 @@ pub mod file {
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 (identifier, identifier_mut, set_identifier) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Deliver<'a>
+
     impl<'a> ::Payload for Deliver<'a> {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             80
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [13,
              self.consumer_tag.len(),
@@ -2274,72 +2445,79 @@ pub mod file {
              self.identifier.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Deliver<'a>
+
     pub struct Ack {
         delivery_tag: u64,
         multiple: bool,
-    }
+    } // struct Ack
+
     impl Ack {
         pub fn new(delivery_tag: u64, multiple: bool) -> Self {
             Ack {
                 delivery_tag: delivery_tag,
                 multiple: multiple,
-            }
-        }
+            } // Ack
+        } // fn new()
         impl_properties! {
 (delivery_tag, set_delivery_tag) -> u64,
 (multiple, set_multiple) -> bool,
 } // impl_properties
-    }
+    } // impl Ack
+
     impl ::Payload for Ack {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             90
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             9
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Ack
+
     pub struct Reject {
         delivery_tag: u64,
         requeue: bool,
-    }
+    } // struct Reject
+
     impl Reject {
         pub fn new(delivery_tag: u64, requeue: bool) -> Self {
             Reject {
                 delivery_tag: delivery_tag,
                 requeue: requeue,
-            }
-        }
+            } // Reject
+        } // fn new()
         impl_properties! {
 (delivery_tag, set_delivery_tag) -> u64,
 (requeue, set_requeue) -> bool,
 } // impl_properties
-    }
+    } // impl Reject
+
     impl ::Payload for Reject {
         fn class_id(&self) -> u16 {
             70
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             100
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             9
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Reject
+
     pub enum Method<'a> {
         Qos(Qos),
         QosOk(QosOk),
@@ -2360,7 +2538,8 @@ pub mod file {
 } // mod file
 
 pub mod queue {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Declare<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
@@ -2370,7 +2549,8 @@ pub mod queue {
         auto_delete: bool,
         nowait: bool,
         arguments: ::field::Table<'a>,
-    }
+    } // struct Declare<'a>
+
     impl<'a> Declare<'a> {
         pub fn new<Q, A>(ticket: u16,
                          queue: Q,
@@ -2393,8 +2573,8 @@ pub mod queue {
                 auto_delete: auto_delete,
                 nowait: nowait,
                 arguments: arguments.into(),
-            }
-        }
+            } // Declare
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
@@ -2405,30 +2585,33 @@ pub mod queue {
 (nowait, set_nowait) -> bool,
 (arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
 } // impl_properties
-    }
+    } // impl<'a> Declare<'a>
+
     impl<'a> ::Payload for Declare<'a> {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [4, self.queue.len(), self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Declare<'a>
+
     pub struct DeclareOk<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         message_count: u32,
         consumer_count: u32,
-    }
+    } // struct DeclareOk<'a>
+
     impl<'a> DeclareOk<'a> {
         pub fn new<Q>(queue: Q, message_count: u32, consumer_count: u32) -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>
@@ -2437,32 +2620,34 @@ pub mod queue {
                 queue: queue.into(),
                 message_count: message_count,
                 consumer_count: consumer_count,
-            }
-        }
+            } // DeclareOk
+        } // fn new()
         impl_properties! {
 (queue, queue_mut, set_queue) -> Cow<str>,
 (message_count, set_message_count) -> u32,
 (consumer_count, set_consumer_count) -> u32,
 } // impl_properties
-    }
+    } // impl<'a> DeclareOk<'a>
+
     impl<'a> ::Payload for DeclareOk<'a> {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [9, self.queue.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for DeclareOk<'a>
+
     pub struct Bind<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
@@ -2470,7 +2655,8 @@ pub mod queue {
         routing_key: ::std::borrow::Cow<'a, str>,
         nowait: bool,
         arguments: ::field::Table<'a>,
-    }
+    } // struct Bind<'a>
+
     impl<'a> Bind<'a> {
         pub fn new<Q, E, R, A>(ticket: u16,
                                queue: Q,
@@ -2491,8 +2677,8 @@ pub mod queue {
                 routing_key: routing_key.into(),
                 nowait: nowait,
                 arguments: arguments.into(),
-            }
-        }
+            } // Bind
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
@@ -2501,19 +2687,20 @@ pub mod queue {
 (nowait, set_nowait) -> bool,
 (arguments, arguments_mut, set_arguments) -> &::field::Table<'a>,
 } // impl_properties
-    }
+    } // impl<'a> Bind<'a>
+
     impl<'a> ::Payload for Bind<'a> {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [6,
              self.queue.len(),
@@ -2522,35 +2709,40 @@ pub mod queue {
              self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Bind<'a>
+
     pub struct BindOk;
+
     impl BindOk {
         pub fn new() -> Self {
             BindOk
-        }
-    }
+        } // fn new()
+    } // impl BindOk
+
     impl ::Payload for BindOk {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for BindOk
+
     pub struct Purge<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
         nowait: bool,
-    }
+    } // struct Purge<'a>
+
     impl<'a> Purge<'a> {
         pub fn new<Q>(ticket: u16, queue: Q, nowait: bool) -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>
@@ -2559,66 +2751,72 @@ pub mod queue {
                 ticket: ticket,
                 queue: queue.into(),
                 nowait: nowait,
-            }
-        }
+            } // Purge
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Purge<'a>
+
     impl<'a> ::Payload for Purge<'a> {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [4, self.queue.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Purge<'a>
+
     pub struct PurgeOk {
         message_count: u32,
-    }
+    } // struct PurgeOk
+
     impl PurgeOk {
         pub fn new(message_count: u32) -> Self {
-            PurgeOk { message_count: message_count }
-        }
+            PurgeOk { message_count: message_count } // PurgeOk
+        } // fn new()
         impl_properties! {
 (message_count, set_message_count) -> u32,
 } // impl_properties
-    }
+    } // impl PurgeOk
+
     impl ::Payload for PurgeOk {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             31
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             4
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for PurgeOk
+
     pub struct Delete<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
         if_unused: bool,
         if_empty: bool,
         nowait: bool,
-    }
+    } // struct Delete<'a>
+
     impl<'a> Delete<'a> {
         pub fn new<Q>(ticket: u16, queue: Q, if_unused: bool, if_empty: bool, nowait: bool) -> Self
             where Q: Into<::std::borrow::Cow<'a, str>>
@@ -2629,8 +2827,8 @@ pub mod queue {
                 if_unused: if_unused,
                 if_empty: if_empty,
                 nowait: nowait,
-            }
-        }
+            } // Delete
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
@@ -2638,52 +2836,57 @@ pub mod queue {
 (if_empty, set_if_empty) -> bool,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Delete<'a>
+
     impl<'a> ::Payload for Delete<'a> {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             40
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [4, self.queue.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Delete<'a>
+
     pub struct DeleteOk {
         message_count: u32,
-    }
+    } // struct DeleteOk
+
     impl DeleteOk {
         pub fn new(message_count: u32) -> Self {
-            DeleteOk { message_count: message_count }
-        }
+            DeleteOk { message_count: message_count } // DeleteOk
+        } // fn new()
         impl_properties! {
 (message_count, set_message_count) -> u32,
 } // impl_properties
-    }
+    } // impl DeleteOk
+
     impl ::Payload for DeleteOk {
         fn class_id(&self) -> u16 {
             50
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             41
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             4
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for DeleteOk
+
     pub enum Method<'a> {
         Declare(Declare<'a>),
         DeclareOk(DeclareOk<'a>),
@@ -2698,15 +2901,15 @@ pub mod queue {
 } // mod queue
 
 pub mod stream {
-    pub struct Headers<'a> {
+    pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
         headers: Option<::field::Table<'a>>,
         priority: Option<u8>,
         timestamp: Option<u64>,
-    }
+    } // struct Header
 
-    impl<'a> Headers<'a> {
+    impl<'a> Header<'a> {
         impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
@@ -2714,13 +2917,15 @@ pub mod stream {
 (priority, priority_mut, set_priority, take_priority) -> Option<u8>,
 (timestamp, timestamp_mut, set_timestamp, take_timestamp) -> Option<u64>,
 } // impl_properties
-    }
+    } // impl Headers
+
     pub struct Qos {
         prefetch_size: u32,
         prefetch_count: u16,
         consume_rate: u32,
         global: bool,
-    }
+    } // struct Qos
+
     impl Qos {
         pub fn new(prefetch_size: u32,
                    prefetch_count: u16,
@@ -2732,53 +2937,58 @@ pub mod stream {
                 prefetch_count: prefetch_count,
                 consume_rate: consume_rate,
                 global: global,
-            }
-        }
+            } // Qos
+        } // fn new()
         impl_properties! {
 (prefetch_size, set_prefetch_size) -> u32,
 (prefetch_count, set_prefetch_count) -> u16,
 (consume_rate, set_consume_rate) -> u32,
 (global, set_global) -> bool,
 } // impl_properties
-    }
+    } // impl Qos
+
     impl ::Payload for Qos {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             11
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Qos
+
     pub struct QosOk;
+
     impl QosOk {
         pub fn new() -> Self {
             QosOk
-        }
-    }
+        } // fn new()
+    } // impl QosOk
+
     impl ::Payload for QosOk {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for QosOk
+
     pub struct Consume<'a> {
         ticket: u16,
         queue: ::std::borrow::Cow<'a, str>,
@@ -2786,7 +2996,8 @@ pub mod stream {
         no_local: bool,
         exclusive: bool,
         nowait: bool,
-    }
+    } // struct Consume<'a>
+
     impl<'a> Consume<'a> {
         pub fn new<Q, C>(ticket: u16,
                          queue: Q,
@@ -2805,8 +3016,8 @@ pub mod stream {
                 no_local: no_local,
                 exclusive: exclusive,
                 nowait: nowait,
-            }
-        }
+            } // Consume
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (queue, queue_mut, set_queue) -> Cow<str>,
@@ -2815,60 +3026,66 @@ pub mod stream {
 (exclusive, set_exclusive) -> bool,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Consume<'a>
+
     impl<'a> ::Payload for Consume<'a> {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.queue.len(), self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Consume<'a>
+
     pub struct ConsumeOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct ConsumeOk<'a>
+
     impl<'a> ConsumeOk<'a> {
         pub fn new<C>(consumer_tag: C) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
         {
-            ConsumeOk { consumer_tag: consumer_tag.into() }
-        }
+            ConsumeOk { consumer_tag: consumer_tag.into() } // ConsumeOk
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> ConsumeOk<'a>
+
     impl<'a> ::Payload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for ConsumeOk<'a>
+
     pub struct Cancel<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         nowait: bool,
-    }
+    } // struct Cancel<'a>
+
     impl<'a> Cancel<'a> {
         pub fn new<C>(consumer_tag: C, nowait: bool) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
@@ -2876,69 +3093,75 @@ pub mod stream {
             Cancel {
                 consumer_tag: consumer_tag.into(),
                 nowait: nowait,
-            }
-        }
+            } // Cancel
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 (nowait, set_nowait) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Cancel<'a>
+
     impl<'a> ::Payload for Cancel<'a> {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Cancel<'a>
+
     pub struct CancelOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct CancelOk<'a>
+
     impl<'a> CancelOk<'a> {
         pub fn new<C>(consumer_tag: C) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>
         {
-            CancelOk { consumer_tag: consumer_tag.into() }
-        }
+            CancelOk { consumer_tag: consumer_tag.into() } // CancelOk
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> CancelOk<'a>
+
     impl<'a> ::Payload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             31
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for CancelOk<'a>
+
     pub struct Publish<'a> {
         ticket: u16,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
         mandatory: bool,
         immediate: bool,
-    }
+    } // struct Publish<'a>
+
     impl<'a> Publish<'a> {
         pub fn new<E, R>(ticket: u16,
                          exchange: E,
@@ -2955,8 +3178,8 @@ pub mod stream {
                 routing_key: routing_key.into(),
                 mandatory: mandatory,
                 immediate: immediate,
-            }
-        }
+            } // Publish
+        } // fn new()
         impl_properties! {
 (ticket, set_ticket) -> u16,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
@@ -2964,31 +3187,34 @@ pub mod stream {
 (mandatory, set_mandatory) -> bool,
 (immediate, set_immediate) -> bool,
 } // impl_properties
-    }
+    } // impl<'a> Publish<'a>
+
     impl<'a> ::Payload for Publish<'a> {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             40
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Publish<'a>
+
     pub struct Return<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Return<'a>
+
     impl<'a> Return<'a> {
         pub fn new<R, E, R0>(reply_code: u16, reply_text: R, exchange: E, routing_key: R0) -> Self
             where R: Into<::std::borrow::Cow<'a, str>>,
@@ -3000,39 +3226,42 @@ pub mod stream {
                 reply_text: reply_text.into(),
                 exchange: exchange.into(),
                 routing_key: routing_key.into(),
-            }
-        }
+            } // Return
+        } // fn new()
         impl_properties! {
 (reply_code, set_reply_code) -> u16,
 (reply_text, reply_text_mut, set_reply_text) -> Cow<str>,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (routing_key, routing_key_mut, set_routing_key) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Return<'a>
+
     impl<'a> ::Payload for Return<'a> {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             50
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [5, self.reply_text.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Return<'a>
+
     pub struct Deliver<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         delivery_tag: u64,
         exchange: ::std::borrow::Cow<'a, str>,
         queue: ::std::borrow::Cow<'a, str>,
-    }
+    } // struct Deliver<'a>
+
     impl<'a> Deliver<'a> {
         pub fn new<C, E, Q>(consumer_tag: C, delivery_tag: u64, exchange: E, queue: Q) -> Self
             where C: Into<::std::borrow::Cow<'a, str>>,
@@ -3044,33 +3273,35 @@ pub mod stream {
                 delivery_tag: delivery_tag,
                 exchange: exchange.into(),
                 queue: queue.into(),
-            }
-        }
+            } // Deliver
+        } // fn new()
         impl_properties! {
 (consumer_tag, consumer_tag_mut, set_consumer_tag) -> Cow<str>,
 (delivery_tag, set_delivery_tag) -> u64,
 (exchange, exchange_mut, set_exchange) -> Cow<str>,
 (queue, queue_mut, set_queue) -> Cow<str>,
 } // impl_properties
-    }
+    } // impl<'a> Deliver<'a>
+
     impl<'a> ::Payload for Deliver<'a> {
         fn class_id(&self) -> u16 {
             80
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             60
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [11, self.consumer_tag.len(), self.exchange.len(), self.queue.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Deliver<'a>
+
     pub enum Method<'a> {
         Qos(Qos),
         QosOk(QosOk),
@@ -3086,14 +3317,16 @@ pub mod stream {
 } // mod stream
 
 pub mod test {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Integer {
         integer_1: u8,
         integer_2: u16,
         integer_3: u32,
         integer_4: u64,
         operation: u8,
-    }
+    } // struct Integer
+
     impl Integer {
         pub fn new(integer_1: u8,
                    integer_2: u16,
@@ -3107,8 +3340,8 @@ pub mod test {
                 integer_3: integer_3,
                 integer_4: integer_4,
                 operation: operation,
-            }
-        }
+            } // Integer
+        } // fn new()
         impl_properties! {
 (integer_1, set_integer_1) -> u8,
 (integer_2, set_integer_2) -> u16,
@@ -3116,55 +3349,61 @@ pub mod test {
 (integer_4, set_integer_4) -> u64,
 (operation, set_operation) -> u8,
 } // impl_properties
-    }
+    } // impl Integer
+
     impl ::Payload for Integer {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             16
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Integer
+
     pub struct IntegerOk {
         result: u64,
-    }
+    } // struct IntegerOk
+
     impl IntegerOk {
         pub fn new(result: u64) -> Self {
-            IntegerOk { result: result }
-        }
+            IntegerOk { result: result } // IntegerOk
+        } // fn new()
         impl_properties! {
 (result, set_result) -> u64,
 } // impl_properties
-    }
+    } // impl IntegerOk
+
     impl ::Payload for IntegerOk {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             8
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for IntegerOk
+
     pub struct String<'a> {
         string_1: ::std::borrow::Cow<'a, str>,
         string_2: ::std::borrow::Cow<'a, [u8]>,
         operation: u8,
-    }
+    } // struct String<'a>
+
     impl<'a> String<'a> {
         pub fn new<S, S0>(string_1: S, string_2: S0, operation: u8) -> Self
             where S: Into<::std::borrow::Cow<'a, str>>,
@@ -3174,68 +3413,74 @@ pub mod test {
                 string_1: string_1.into(),
                 string_2: string_2.into(),
                 operation: operation,
-            }
-        }
+            } // String
+        } // fn new()
         impl_properties! {
 (string_1, string_1_mut, set_string_1) -> Cow<str>,
 (string_2, string_2_mut, set_string_2) -> Cow<[u8]>,
 (operation, set_operation) -> u8,
 } // impl_properties
-    }
+    } // impl<'a> String<'a>
+
     impl<'a> ::Payload for String<'a> {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [4, self.string_1.len(), self.string_2.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for String<'a>
+
     pub struct StringOk<'a> {
         result: ::std::borrow::Cow<'a, [u8]>,
-    }
+    } // struct StringOk<'a>
+
     impl<'a> StringOk<'a> {
         pub fn new<R>(result: R) -> Self
             where R: Into<::std::borrow::Cow<'a, [u8]>>
         {
-            StringOk { result: result.into() }
-        }
+            StringOk { result: result.into() } // StringOk
+        } // fn new()
         impl_properties! {
 (result, result_mut, set_result) -> Cow<[u8]>,
 } // impl_properties
-    }
+    } // impl<'a> StringOk<'a>
+
     impl<'a> ::Payload for StringOk<'a> {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.result.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for StringOk<'a>
+
     pub struct Table<'a> {
         table: ::field::Table<'a>,
         integer_op: u8,
         string_op: u8,
-    }
+    } // struct Table<'a>
+
     impl<'a> Table<'a> {
         pub fn new<T>(table: T, integer_op: u8, string_op: u8) -> Self
             where T: Into<::field::Table<'a>>
@@ -3244,36 +3489,39 @@ pub mod test {
                 table: table.into(),
                 integer_op: integer_op,
                 string_op: string_op,
-            }
-        }
+            } // Table
+        } // fn new()
         impl_properties! {
 (table, table_mut, set_table) -> &::field::Table<'a>,
 (integer_op, set_integer_op) -> u8,
 (string_op, set_string_op) -> u8,
 } // impl_properties
-    }
+    } // impl<'a> Table<'a>
+
     impl<'a> ::Payload for Table<'a> {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [2, self.table.amqp_size()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Table<'a>
+
     pub struct TableOk<'a> {
         integer_result: u64,
         string_result: ::std::borrow::Cow<'a, [u8]>,
-    }
+    } // struct TableOk<'a>
+
     impl<'a> TableOk<'a> {
         pub fn new<S>(integer_result: u64, string_result: S) -> Self
             where S: Into<::std::borrow::Cow<'a, [u8]>>
@@ -3281,80 +3529,88 @@ pub mod test {
             TableOk {
                 integer_result: integer_result,
                 string_result: string_result.into(),
-            }
-        }
+            } // TableOk
+        } // fn new()
         impl_properties! {
 (integer_result, set_integer_result) -> u64,
 (string_result, string_result_mut, set_string_result) -> Cow<[u8]>,
 } // impl_properties
-    }
+    } // impl<'a> TableOk<'a>
+
     impl<'a> ::Payload for TableOk<'a> {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             31
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [10, self.string_result.len()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for TableOk<'a>
+
     pub struct Content;
+
     impl Content {
         pub fn new() -> Self {
             Content
-        }
-    }
+        } // fn new()
+    } // impl Content
+
     impl ::Payload for Content {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             40
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Content
+
     pub struct ContentOk {
         content_checksum: u32,
-    }
+    } // struct ContentOk
+
     impl ContentOk {
         pub fn new(content_checksum: u32) -> Self {
-            ContentOk { content_checksum: content_checksum }
-        }
+            ContentOk { content_checksum: content_checksum } // ContentOk
+        } // fn new()
         impl_properties! {
 (content_checksum, set_content_checksum) -> u32,
 } // impl_properties
-    }
+    } // impl ContentOk
+
     impl ::Payload for ContentOk {
         fn class_id(&self) -> u16 {
             120
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             41
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             4
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for ContentOk
+
     pub enum Method<'a> {
         Integer(Integer),
         IntegerOk(IntegerOk),
@@ -3369,15 +3625,15 @@ pub mod test {
 } // mod test
 
 pub mod tunnel {
-    pub struct Headers<'a> {
+    pub struct Header<'a> {
         headers: Option<::field::Table<'a>>,
         proxy_name: Option<::std::borrow::Cow<'a, str>>,
         data_name: Option<::std::borrow::Cow<'a, str>>,
         durable: Option<u8>,
         broadcast: Option<u8>,
-    }
+    } // struct Header
 
-    impl<'a> Headers<'a> {
+    impl<'a> Header<'a> {
         impl_properties! {
 (headers, headers_mut, set_headers, take_headers) -> Option<&::field::Table<'a>>,
 (proxy_name, proxy_name_mut, set_proxy_name, take_proxy_name) -> Option< Cow<str> >,
@@ -3385,38 +3641,42 @@ pub mod tunnel {
 (durable, durable_mut, set_durable, take_durable) -> Option<u8>,
 (broadcast, broadcast_mut, set_broadcast, take_broadcast) -> Option<u8>,
 } // impl_properties
-    }
+    } // impl Headers
+
     pub struct Request<'a> {
         meta_data: ::field::Table<'a>,
-    }
+    } // struct Request<'a>
+
     impl<'a> Request<'a> {
         pub fn new<M>(meta_data: M) -> Self
             where M: Into<::field::Table<'a>>
         {
-            Request { meta_data: meta_data.into() }
-        }
+            Request { meta_data: meta_data.into() } // Request
+        } // fn new()
         impl_properties! {
 (meta_data, meta_data_mut, set_meta_data) -> &::field::Table<'a>,
 } // impl_properties
-    }
+    } // impl<'a> Request<'a>
+
     impl<'a> ::Payload for Request<'a> {
         fn class_id(&self) -> u16 {
             110
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             [0, self.meta_data.amqp_size()]
                 .iter()
                 .sum()
-        }
-    }
+        } // fn len()
+    } // impl<'a> ::Payload for Request<'a>
+
     pub enum Method<'a> {
         Request(Request<'a>),
     } // enum Method
@@ -3424,139 +3684,158 @@ pub mod tunnel {
 } // mod tunnel
 
 pub mod tx {
-    pub struct Headers;
+    pub struct Header;
+
     pub struct Select;
+
     impl Select {
         pub fn new() -> Self {
             Select
-        }
-    }
+        } // fn new()
+    } // impl Select
+
     impl ::Payload for Select {
         fn class_id(&self) -> u16 {
             90
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             10
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Select
+
     pub struct SelectOk;
+
     impl SelectOk {
         pub fn new() -> Self {
             SelectOk
-        }
-    }
+        } // fn new()
+    } // impl SelectOk
+
     impl ::Payload for SelectOk {
         fn class_id(&self) -> u16 {
             90
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             11
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for SelectOk
+
     pub struct Commit;
+
     impl Commit {
         pub fn new() -> Self {
             Commit
-        }
-    }
+        } // fn new()
+    } // impl Commit
+
     impl ::Payload for Commit {
         fn class_id(&self) -> u16 {
             90
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             20
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Commit
+
     pub struct CommitOk;
+
     impl CommitOk {
         pub fn new() -> Self {
             CommitOk
-        }
-    }
+        } // fn new()
+    } // impl CommitOk
+
     impl ::Payload for CommitOk {
         fn class_id(&self) -> u16 {
             90
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             21
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for CommitOk
+
     pub struct Rollback;
+
     impl Rollback {
         pub fn new() -> Self {
             Rollback
-        }
-    }
+        } // fn new()
+    } // impl Rollback
+
     impl ::Payload for Rollback {
         fn class_id(&self) -> u16 {
             90
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             30
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for Rollback
+
     pub struct RollbackOk;
+
     impl RollbackOk {
         pub fn new() -> Self {
             RollbackOk
-        }
-    }
+        } // fn new()
+    } // impl RollbackOk
+
     impl ::Payload for RollbackOk {
         fn class_id(&self) -> u16 {
             90
-        }
+        } // fn class_id()
         fn method_id(&self) -> u16 {
             31
-        }
+        } // fn method_id()
         fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
             where W: ::std::io::Write
         {
             ::std::result::Result::Ok(())
-        }
+        } // fn write_to()
         fn len(&self) -> usize {
             0
-        }
-    }
+        } // fn len()
+    } // impl ::Payload for RollbackOk
+
     pub enum Method {
         Select(Select),
         SelectOk(SelectOk),

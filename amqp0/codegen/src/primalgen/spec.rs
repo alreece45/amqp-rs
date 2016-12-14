@@ -14,7 +14,7 @@ use specs::Spec;
 use CodeGenerator;
 use common::spec_mod_name;
 use common::domain::DomainMapper;
-use super::{MethodModuleWriter, HeadersStructWriter};
+use super::{MethodModuleWriter, HeaderStructWriter};
 
 pub struct SpecModuleWriter<'a> {
     struct_name: String,
@@ -46,7 +46,7 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
             let module_name = class.name().to_snake_case();
             try!(writeln!(writer, "pub mod {} {{", module_name));
 
-            let property_writer = HeadersStructWriter::new(class, &self.domain_mapper);
+            let property_writer = HeaderStructWriter::new(class, &self.domain_mapper);
             try!(property_writer.write_to(writer));
 
             let method_writers = class.methods().iter()
@@ -64,7 +64,7 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
             let has_lifetimes = methods.iter().any(|&(_, has_lifetimes)| has_lifetimes);
             let lifetimes = if has_lifetimes { "<'a>" } else {""};
 
-            try!(writeln!(writer, "pub enum Method{} {{", lifetimes));
+            try!(writeln!(writer, "\npub enum Method{} {{", lifetimes));
             for (name, has_lifetimes) in methods {
                 let lifetimes = if has_lifetimes { "<'a>" } else {""};
                 try!(writeln!(writer, "{0}({0}{1}),", name, lifetimes));
@@ -159,7 +159,7 @@ impl<'a> SpecModuleWriter<'a> {
             }
             else {
                 let snake_case = class.name().to_snake_case();
-                try!(writeln!(writer, "{}({}::Headers<'a>),", pascal_case, snake_case));
+                try!(writeln!(writer, "{}({}::Header<'a>),", pascal_case, snake_case));
             }
         }
         try!(writeln!(writer, "}} // enum Header"));

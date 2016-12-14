@@ -109,13 +109,13 @@ impl<'a> MethodModuleWriter<'a> {
         where W: io::Write
     {
         if self.fields.is_empty() {
-            try!(writeln!(writer, "pub struct {};", self.struct_name));
+            try!(writeln!(writer, "\npub struct {};", self.struct_name));
             return Ok(());
         }
 
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "pub struct {}{} {{", self.struct_name, lifetimes));
+        try!(writeln!(writer, "\npub struct {}{} {{", self.struct_name, lifetimes));
         for field in &self.fields {
             if field.is_reserved() {
                 continue
@@ -129,7 +129,7 @@ impl<'a> MethodModuleWriter<'a> {
                 try!(writeln!(writer, "{},", field.ty().cow_definition("a")));
             }
         }
-        try!(writeln!(writer, "}}"));
+        try!(writeln!(writer, "}} // struct {}{}", self.struct_name, lifetimes));
         Ok(())
     }
 
@@ -138,10 +138,10 @@ impl<'a> MethodModuleWriter<'a> {
     {
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "impl{} {}{} {{", lifetimes, self.struct_name, lifetimes));
+        try!(writeln!(writer, "\nimpl{1} {0}{1} {{", self.struct_name, lifetimes));
         try!(self.write_constructor(writer));
         try!(self.write_getters(writer));
-        try!(writeln!(writer, "}}"));
+        try!(writeln!(writer, "}} // impl{1} {0}{1}", self.struct_name, lifetimes));
 
         Ok(())
     }
@@ -152,7 +152,7 @@ impl<'a> MethodModuleWriter<'a> {
         if self.fields.is_empty() {
             try!(writeln!(writer, "pub fn new() -> Self {{"));
             try!(writeln!(writer, "{}", self.struct_name));
-            try!(writeln!(writer, "}}"));
+            try!(writeln!(writer, "}} // fn new()"));
             return Ok(());
         }
 
@@ -212,8 +212,8 @@ impl<'a> MethodModuleWriter<'a> {
                 try!(writeln!(writer, "{}: {},", name, name));
             }
         }
-        try!(writeln!(writer, "}}")); // struct creation
-        try!(writeln!(writer, "}}")); // constructor
+        try!(writeln!(writer, "}} // {}", self.struct_name)); // struct creation
+        try!(writeln!(writer, "}} // fn new()")); // constructor
 
         Ok(())
     }
@@ -248,19 +248,19 @@ impl<'a> MethodModuleWriter<'a> {
     {
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "impl{} ::Payload for {}{} {{", lifetimes, self.struct_name, lifetimes));
+        try!(writeln!(writer, "\nimpl{1} ::Payload for {0}{1} {{", self.struct_name, lifetimes));
 
         try!(writeln!(writer, "fn class_id(&self) -> u16 {{"));
         try!(writeln!(writer, "{}", self.class.index()));
-        try!(writeln!(writer, "}}"));
+        try!(writeln!(writer, "}} // fn class_id()"));
 
         try!(writeln!(writer, "fn method_id(&self) -> u16 {{"));
         try!(writeln!(writer, "{}", self.method.index()));
-        try!(writeln!(writer, "}}"));
+        try!(writeln!(writer, "}} // fn method_id()"));
 
         try!(writeln!(writer, "fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>"));
         try!(writeln!(writer, "where W: ::std::io::Write"));
-        try!(writeln!(writer, "{{\n::std::result::Result::Ok(())\n}}"));
+        try!(writeln!(writer, "{{\n::std::result::Result::Ok(())\n}} // fn write_to()"));
 
         let static_size_bits = self.fields.iter()
             .map(|field| field.ty().num_bits_fixed())
@@ -287,9 +287,9 @@ impl<'a> MethodModuleWriter<'a> {
         } else {
             try!(writeln!(writer, "{}", static_size));
         }
-        try!(writeln!(writer, "}}"));
+        try!(writeln!(writer, "}} // fn len()"));
 
-        try!(writeln!(writer, "}}"));
+        try!(writeln!(writer, "}} // impl{1} ::Payload for {0}{1}", self.struct_name, lifetimes));
 
         Ok(())
     }
