@@ -7,86 +7,118 @@
 // except according to those terms.
 
 ///
-/// Define getters and setters for a struct.
+/// Define getters and setters for a struct. Non-stable until lifetime support is added
+/// (currently only supports 'a)
 ///
-/// # FAQ
+/// Expects to be given the name of functions, and the return value, e.g:
 ///
-/// Error: "only traits may use parentheses" or "undefined or not in scope"
+/// `([list of function names`] -> ReturnType
 ///
-/// Ensure you are using commas
+/// The number of functions names needed varies, depending on the return type.
 ///
+/// * For copy types `(name|getter, setter) -> Ty`
+/// * Borrowed types require a mutator method: `(name|getter, mutator, setters) -> &Ty`
+/// * Cow types are detected, don't need a lifetime: `(...) -> Cow<SomeType>`
+/// * Option types may require spacing, and also require a taker name: `(name|getter, mutator, setters, taker) -> Option<&Ty>`
+/// * Option types that don't return a reference still require a mutator:  `(name|getter, mutator, setters, taker) -> Option<u8>`
+/// * Option may require spacing: `(...) -> Option< Cow<SomeType> >`
 ///
 /// # Examples
 ///
 /// By-value copy types (doesn't return a reference, no get_mut())
 ///
 /// ```
-/// struct TestCopy { val}
+/// #[macro_use]
+/// extern crate amqp0_primitives;
 ///
-/// impl TestCopy {
-///     impl_properties!(
+/// use std::borrow::Cow;
+///
+/// #[derive(Clone)]
+/// struct Member;
+///
+/// struct TestCopy<'a> {
+///     val: u8,
+///     option_val: Option<u8>,
+///     member: Member,
+///     option_member: Option<Member>,
+///     cow: Cow<'a, Member>,
+///     option_cow: Option<Cow<'a, Member>>,
+/// }
+///
+/// impl<'a> TestCopy<'a> {
+///     impl_properties! {
+///         // copy-values (no reference)
 ///         (val, set_val) -> u8,
-///     )
+///         // optional copy-values
+///         (option_val, mutate_option_val, set_option_val, take_option_val) -> Option<u8>,
+///         // reference
+///         (member, member_mut, set_member) -> &Member,
+///         // optional reference
+///         (option_member, option_member_mut, set_option_member, take_option_member) -> Option<&Member>,
+///         // Cow
+///         (cow, cow_mut, set_cow) -> Cow<Member>,
+///         // Optional Cow -- note the spacing around the `Option` <>
+///         (option_cow, option_cow_mut, set_option_cow, take_option_cow_mut) -> Option< Cow<Member> >
+///     }
 /// }
+///
+/// fn main() {}
 /// ```
 ///
-/// By-reference values (owned structs)
+/// # Cow notes
+///
+/// `Cow`s that return a different type for their mutable reference will need to make note on the
+/// mutator method. This is automatically done for `str and `slices` e.g:
+///
+/// Cow<str> and Cow<Vec<_>> are special cases -- mutable references are different and owned. They
+/// should be detected automatically, e.g:
 ///
 /// ```
-/// struct Member;
-/// struct TestRef { member: Member }
+/// #[macro_use]
+/// extern crate amqp0_primitives;
 ///
-/// impl TestRef {
-///     impl_properties!(
-///         (member, member_mut, set_member) -> &Member
-///     )
+/// use std::borrow::{Borrow, Cow};
+///
+/// struct Borrowed(u8);
+/// struct Owned(Borrowed);
+///
+/// impl Borrow<Borrowed> for Owned {
+///     fn borrow(&self) -> &Borrowed {
+///         &self.0
+///     }
 /// }
-/// ```
 ///
-/// By-reference `Option`s (owned options)
-///
-/// ```
-/// struct Member;
-/// struct TestRef { member: Option<Member> }
-///
-/// impl TestRef {
-///     impl_properties!(
-///         (member, member_mut, set_member) -> Option<&Member>
-///     )
+/// impl ToOwned for Borrowed {
+/// type Owned = Owned;
+///     fn to_owned(&self) -> Owned {
+///         Owned(Borrowed(self.0))
+///     }
 /// }
-/// ```
 ///
-/// `Cow`s (where ToOwned::Target == Self)
-/// ```
-/// #[derive(Clone)]
-/// struct Cloneable;
-/// struct TestRef { member: Cow<'a, Member> }
-///
-/// // currently only works with 'a
-/// impl TestRef<'a> {
-///     impl_properties!(
-///         (member, member_mut, set_member) -> Cow<Member>
-///     )
+/// struct TestCow<'a> {
+///     string: Cow<'a, str>,
+///     bytes: Cow<'a, [u8]>,
+///     borrow: Cow<'a, Borrowed>,
 /// }
-/// ```
 ///
-/// `Cow`s (where ToOwned::Target != Self)
-/// ```
-/// #[derive(Clone)]
-/// struct Cloneable;
-/// struct TestRef { member: Cow<'a, Member> }
-///
-/// // currently only works with 'a
-/// impl TestRef<'a> {
-///     impl_properties!(
-///         (member, member_mut -> Owned, set_member) -> Cow<Borrowed>
-///     )
+/// impl<'a> TestCow<'a> {
+///     impl_properties! {
+///         // strings and slices are automatically detected, no need to do -> String or -> Vec<_>
+///         (string, string_mut, set_string) -> Cow<str>,
+///         (bytes, bytes_mut, set_bytes) -> Cow<[u8]>,
+///         // other types require it to be set
+///         (borrow, borrow_mut -> Owned, set_borrow) -> Cow<Borrowed>
+///     }
 /// }
+///
+/// fn main() {}
 /// ```
 ///
-/// `Option<Cow<_>>`'s (add -> Owned if ToOwned::Target != Self
+/// # FAQ
 ///
+/// Error: "only traits may use parentheses" or "undefined or not in scope"
 ///
+/// Ensure you are using commas
 ///
 #[macro_export]
 macro_rules! impl_properties {
