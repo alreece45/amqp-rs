@@ -10,6 +10,7 @@ Still in early stages: **experimental** and under development.
 
 | Crate | Build | Description | Docs |
 | --- | --- | --- | --- |
+amqp0-client     | ![Build Status](https://badges.herokuapp.com/travis/alreece45/amqp-rs?env=TEST_DIR=amqp0/client&label=client) | Client for connecting, publishing, and consuming messages | [Docs](https://alreece45.github.io/amqp-rs/amqp0_client/index.html) |
 amqp0-primitives | ![Build Status](https://badges.herokuapp.com/travis/alreece45/amqp-rs?env=TEST_DIR=amqp0/primitives&label=primitives) | Basic structures for sending and receiving AMQP messages | [Docs](https://alreece45.github.io/amqp-rs/amqp0_primitives/index.html) |
 amqp0-parser-nom | ![Build Status](https://badges.herokuapp.com/travis/alreece45/amqp-rs?env=TEST_DIR=amqp0/parser-nom&label=parser-nom) | Nom parsing to AMQP primitives | [Docs](https://alreece45.github.io/amqp-rs/amqp0_parser_nom/index.html) |
 amqp0-specs      | ![Build Status](https://badges.herokuapp.com/travis/alreece45/amqp-rs?env=TEST_DIR=amqp0/specs&label=specs)| API for accessing spec information (methods, fields, etc) | [Docs](https://alreece45.github.io/amqp-rs/amqp0_specs/index.html) |
