@@ -1,0 +1,16 @@
+[package]
+name = "amqp-client0"
+version = "0.0.1"
+authors = ["Alexander Reece <github@reece45.com>"]
+
+[lib]
+name = "amqp_client0"
+
+[dependencies]
+url = "1.2.0"
+amqp0-primitives = { path = "../primitives" }
+amqp0-parser-nom = { path = "../parser-nom" }
+
+[build-dependencies.clippy]
+version = "*"
+optional = true
