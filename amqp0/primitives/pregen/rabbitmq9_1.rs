@@ -2546,4 +2546,8 @@ pub enum Method<'a> {
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq)]
 pub struct Rabbitmq9_1;
-impl ::Spec for Rabbitmq9_1 {}
+impl ::Spec for Rabbitmq9_1 {
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x09\x01"
+    } // fn protocol_header()
+} // impl Spec for Rabbitmq9_1

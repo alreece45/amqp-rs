@@ -103,7 +103,15 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
         try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
         try!(writeln!(writer, "\n#[derive(Debug, Clone, PartialEq)]"));
         try!(writeln!(writer, "pub struct {};", self.struct_name));
-        try!(writeln!(writer, "impl ::Spec for {} {{}}\n", self.struct_name));
+        try!(writeln!(writer, "impl ::Spec for {} {{", self.struct_name));
+
+        // protocol_header
+        try!(writeln!(writer, "fn protocol_header() -> &'static [u8] {{"));
+        let (minor, revision) = (self.spec.version().minor(), self.spec.version().revision  ());
+        try!(writeln!(writer, "b\"AMQP\\x00\\x00\\x{:02x}\\x{:02x}\"", minor, revision));
+        try!(writeln!(writer, "}} // fn protocol_header() "));
+
+        try!(writeln!(writer, "}} // impl Spec for {}", self.struct_name));
 
         Ok(())
     }

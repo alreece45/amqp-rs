@@ -24,7 +24,7 @@ pub mod field;
 use std::io;
 
 pub trait Spec {
-
+    fn protocol_header() -> &'static [u8];
 }
 
 pub trait Payload {

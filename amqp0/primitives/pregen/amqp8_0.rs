@@ -3880,4 +3880,8 @@ pub enum Method<'a> {
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq)]
 pub struct Amqp8_0;
-impl ::Spec for Amqp8_0 {}
+impl ::Spec for Amqp8_0 {
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x08\x00"
+    } // fn protocol_header()
+} // impl Spec for Amqp8_0
