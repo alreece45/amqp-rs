@@ -166,6 +166,47 @@ impl<'a> SpecModuleWriter<'a> {
         Ok(())
     }
 
+
+    fn write_spec_method_parser<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        try!(writeln!(writer, "\n\
+            impl<'a> ::NomBytes<'a> for ::primitives::{}::SpecMethod<'a> {{\n\
+                type Output = Self;\n\
+                fn nom_bytes<'pool, P>(input: &'a [u8], pool: &'pool mut P)  -> IResult<&'a [u8], Self>\n\
+                    where P: ::pool::ParserPool\n\
+                {{\n\
+                    switch!(input, be_u16,\n",
+            self.mod_name
+        ));
+
+        let mut has_parent = false;
+        for class in self.spec.classes().values() {
+            if has_parent {
+                try!(writeln!(writer, " | // map"))
+            }
+            else {
+                has_parent = true;
+            }
+
+            try!(write!(
+                writer,
+                "{0} => map!(\n\
+                    call!(<::primitives::{1}::{2}Method as ::NomBytes>::nom_bytes, pool),\n\
+                    ::primitives::{1}::SpecMethod::{2}\n\
+                )",
+                class.index(),
+                self.mod_name,
+                class.name().to_pascal_case(),
+            ));
+        }
+        try!(writeln!(writer, " // map!"));
+        try!(writeln!(writer, ") // switch!"));
+        try!(writeln!(writer, "}} // fn nom_bytes"));
+        try!(writeln!(writer, "}} // impl ::NomBytes for ::primitives::{}::SpecMethod<'a>", self.mod_name));
+
+        Ok(())
+    }
     fn write_class_method_parser<W>(&self, class: &Class, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
