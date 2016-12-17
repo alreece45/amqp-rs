@@ -21,7 +21,7 @@ include!(concat!(env!("OUT_DIR"), "/mod.rs"));
 pub mod field;
 
 pub trait Protocol<'a> {
-    type Frame;
+    type Frame: 'a;
 
     fn protocol_header() -> &'static [u8];
 }
