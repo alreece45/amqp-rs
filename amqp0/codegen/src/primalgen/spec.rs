@@ -63,7 +63,8 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
             let has_lifetimes = methods.iter().any(|&(_, has_lifetimes)| has_lifetimes);
             let lifetimes = if has_lifetimes { "<'a>" } else {""};
 
-            try!(writeln!(writer, "\npub enum ClassMethod{} {{", lifetimes));
+            try!(writeln!(writer, "\n#[derive(Debug)]"));
+            try!(writeln!(writer, "pub enum ClassMethod{} {{", lifetimes));
             for &(ref name, has_lifetimes) in &methods {
                 let lifetimes = if has_lifetimes { "<'a>" } else {""};
                 try!(writeln!(writer, "{0}({0}{1}),", name, lifetimes));
@@ -125,7 +126,8 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
             }
         }
 
-        try!(writeln!(writer, "\npub enum SpecMethod{} {{", lifetimes));
+        try!(writeln!(writer, "#[derive(Debug)]"));
+        try!(writeln!(writer, "pub enum SpecMethod{} {{", lifetimes));
         for &(ref pascal_case, _, has_lifetimes, has_methods) in &class_methods {
             if has_methods {
                 let lifetimes = if has_lifetimes { "<'a>" } else { "" };
@@ -224,7 +226,8 @@ impl<'a> SpecModuleWriter<'a> {
     pub fn write_header_enum<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(writeln!(writer, "\npub enum SpecHeader<'a> {{"));
+        try!(writeln!(writer, "\n#[derive(Debug)]"));
+        try!(writeln!(writer, "pub enum SpecHeader<'a> {{"));
         for class in self.spec.classes().values() {
             let pascal_case = class.name().to_pascal_case();
             if class.fields().is_empty() {
@@ -273,6 +276,7 @@ impl<'a> SpecModuleWriter<'a> {
 
         // struct Frame
         try!(writeln!(writer, "\n\
+                #[derive(Debug)]
                 pub struct Frame<'a> {{\n\
                     channel: u16,\n\
                     {}\
@@ -307,7 +311,8 @@ impl<'a> SpecModuleWriter<'a> {
         ));
 
         // struct FramePayload
-        try!(writeln!(writer, "\npub enum FramePayload<'a> {{"));
+        try!(writeln!(writer, "\n#[derive(Debug)]"));
+        try!(writeln!(writer, "pub enum FramePayload<'a> {{"));
         for frame_type in &frame_types {
             try!(match frame_type.as_str() {
                 "Method" | "OobMethod" => writeln!(writer, "{}(SpecMethod<'a>),", frame_type),

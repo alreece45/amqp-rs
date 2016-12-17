@@ -52,6 +52,7 @@ impl<'a> HeaderStructWriter<'a> {
     pub fn write_struct<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
+        try!(writeln!(writer, "#[derive(Debug)]"));
         if self.fields.is_empty() {
             try!(writeln!(writer, "pub struct Header;"));
             return Ok(());

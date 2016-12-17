@@ -75,6 +75,7 @@ pub const METHOD_TX_COMMIT_OK: u16 = 21;
 pub const METHOD_TX_ROLLBACK: u16 = 30;
 pub const METHOD_TX_ROLLBACK_OK: u16 = 31;
 
+#[derive(Debug)]
 pub enum SpecHeader<'a> {
     Basic(basic::Header<'a>),
     Channel,
@@ -84,6 +85,7 @@ pub enum SpecHeader<'a> {
     Tx,
 } // enum SpecHeader
 
+#[derive(Debug)]
 pub struct Frame<'a> {
     channel: u16,
     payload: FramePayload<'a>,
@@ -109,6 +111,7 @@ impl<'a> Frame<'a> {
 } // impl Frame<'a>
 
 
+#[derive(Debug)]
 pub enum FramePayload<'a> {
     Body(&'a [u8]),
     Header(SpecHeader<'a>),
@@ -128,6 +131,7 @@ impl<'a> ::ProtocolFramePayload<'a> for FramePayload<'a> {
 
 // Class Modules
 pub mod basic {
+    #[derive(Debug)]
     pub struct Header<'a> {
         content_type: Option<::std::borrow::Cow<'a, str>>,
         content_encoding: Option<::std::borrow::Cow<'a, str>>,
@@ -164,6 +168,7 @@ pub mod basic {
 } // impl_properties
     } // impl Headers
 
+    #[derive(Debug)]
     pub struct Qos {
         prefetch_size: u32,
         prefetch_count: u16,
@@ -197,6 +202,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Qos
 
+    #[derive(Debug)]
     pub struct QosOk;
 
     impl QosOk {
@@ -217,6 +223,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for QosOk
 
+    #[derive(Debug)]
     pub struct Consume<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -275,6 +282,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Consume
 
+    #[derive(Debug)]
     pub struct ConsumeOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
     } // struct ConsumeOk<'a>
@@ -304,6 +312,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for ConsumeOk
 
+    #[derive(Debug)]
     pub struct Cancel<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         no_wait: bool,
@@ -338,6 +347,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Cancel
 
+    #[derive(Debug)]
     pub struct CancelOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
     } // struct CancelOk<'a>
@@ -367,6 +377,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for CancelOk
 
+    #[derive(Debug)]
     pub struct Publish<'a> {
         exchange: ::std::borrow::Cow<'a, str>,
         routing_key: ::std::borrow::Cow<'a, str>,
@@ -408,6 +419,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Publish
 
+    #[derive(Debug)]
     pub struct Return<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
@@ -450,6 +462,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Return
 
+    #[derive(Debug)]
     pub struct Deliver<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
         delivery_tag: u64,
@@ -500,6 +513,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Deliver
 
+    #[derive(Debug)]
     pub struct Get<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         no_ack: bool,
@@ -534,6 +548,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Get
 
+    #[derive(Debug)]
     pub struct GetOk<'a> {
         delivery_tag: u64,
         redelivered: bool,
@@ -583,6 +598,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for GetOk
 
+    #[derive(Debug)]
     pub struct GetEmpty {
 } // struct GetEmpty
 
@@ -606,6 +622,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for GetEmpty
 
+    #[derive(Debug)]
     pub struct Ack {
         delivery_tag: u64,
         multiple: bool,
@@ -636,6 +653,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Ack
 
+    #[derive(Debug)]
     pub struct Reject {
         delivery_tag: u64,
         requeue: bool,
@@ -666,6 +684,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Reject
 
+    #[derive(Debug)]
     pub struct RecoverAsync {
         requeue: bool,
     } // struct RecoverAsync
@@ -691,6 +710,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for RecoverAsync
 
+    #[derive(Debug)]
     pub struct Recover {
         requeue: bool,
     } // struct Recover
@@ -716,6 +736,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for Recover
 
+    #[derive(Debug)]
     pub struct RecoverOk;
 
     impl RecoverOk {
@@ -736,6 +757,7 @@ pub mod basic {
         } // fn payload_size()
     } // impl ::Payload for RecoverOk
 
+    #[derive(Debug)]
     pub enum ClassMethod<'a> {
         Qos(Qos),
         QosOk(QosOk),
@@ -836,8 +858,10 @@ pub mod basic {
 } // mod basic
 
 pub mod channel {
+    #[derive(Debug)]
     pub struct Header;
 
+    #[derive(Debug)]
     pub struct Open {
 } // struct Open
 
@@ -861,6 +885,7 @@ pub mod channel {
         } // fn payload_size()
     } // impl ::Payload for Open
 
+    #[derive(Debug)]
     pub struct OpenOk {
 } // struct OpenOk
 
@@ -884,6 +909,7 @@ pub mod channel {
         } // fn payload_size()
     } // impl ::Payload for OpenOk
 
+    #[derive(Debug)]
     pub struct Flow {
         active: bool,
     } // struct Flow
@@ -909,6 +935,7 @@ pub mod channel {
         } // fn payload_size()
     } // impl ::Payload for Flow
 
+    #[derive(Debug)]
     pub struct FlowOk {
         active: bool,
     } // struct FlowOk
@@ -934,6 +961,7 @@ pub mod channel {
         } // fn payload_size()
     } // impl ::Payload for FlowOk
 
+    #[derive(Debug)]
     pub struct Close<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
@@ -974,6 +1002,7 @@ pub mod channel {
         } // fn payload_size()
     } // impl ::Payload for Close
 
+    #[derive(Debug)]
     pub struct CloseOk;
 
     impl CloseOk {
@@ -994,6 +1023,7 @@ pub mod channel {
         } // fn payload_size()
     } // impl ::Payload for CloseOk
 
+    #[derive(Debug)]
     pub enum ClassMethod<'a> {
         Open(Open),
         OpenOk(OpenOk),
@@ -1048,8 +1078,10 @@ pub mod channel {
 } // mod channel
 
 pub mod connection {
+    #[derive(Debug)]
     pub struct Header;
 
+    #[derive(Debug)]
     pub struct Start<'a> {
         version_major: u8,
         version_minor: u8,
@@ -1100,6 +1132,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for Start
 
+    #[derive(Debug)]
     pub struct StartOk<'a> {
         client_properties: ::field::TableEntries<'a>,
         mechanism: ::std::borrow::Cow<'a, str>,
@@ -1147,6 +1180,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for StartOk
 
+    #[derive(Debug)]
     pub struct Secure<'a> {
         challenge: ::std::borrow::Cow<'a, [u8]>,
     } // struct Secure<'a>
@@ -1176,6 +1210,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for Secure
 
+    #[derive(Debug)]
     pub struct SecureOk<'a> {
         response: ::std::borrow::Cow<'a, [u8]>,
     } // struct SecureOk<'a>
@@ -1205,6 +1240,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for SecureOk
 
+    #[derive(Debug)]
     pub struct Tune {
         channel_max: u16,
         frame_max: u32,
@@ -1238,6 +1274,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for Tune
 
+    #[derive(Debug)]
     pub struct TuneOk {
         channel_max: u16,
         frame_max: u32,
@@ -1271,6 +1308,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for TuneOk
 
+    #[derive(Debug)]
     pub struct Open<'a> {
         virtual_host: ::std::borrow::Cow<'a, str>,
     } // struct Open<'a>
@@ -1300,6 +1338,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for Open
 
+    #[derive(Debug)]
     pub struct OpenOk {
 } // struct OpenOk
 
@@ -1323,6 +1362,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for OpenOk
 
+    #[derive(Debug)]
     pub struct Close<'a> {
         reply_code: u16,
         reply_text: ::std::borrow::Cow<'a, str>,
@@ -1363,6 +1403,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for Close
 
+    #[derive(Debug)]
     pub struct CloseOk;
 
     impl CloseOk {
@@ -1383,6 +1424,7 @@ pub mod connection {
         } // fn payload_size()
     } // impl ::Payload for CloseOk
 
+    #[derive(Debug)]
     pub enum ClassMethod<'a> {
         Start(Start<'a>),
         StartOk(StartOk<'a>),
@@ -1453,8 +1495,10 @@ pub mod connection {
 } // mod connection
 
 pub mod exchange {
+    #[derive(Debug)]
     pub struct Header;
 
+    #[derive(Debug)]
     pub struct Declare<'a> {
         exchange: ::std::borrow::Cow<'a, str>,
         ty: ::std::borrow::Cow<'a, str>,
@@ -1509,6 +1553,7 @@ pub mod exchange {
         } // fn payload_size()
     } // impl ::Payload for Declare
 
+    #[derive(Debug)]
     pub struct DeclareOk;
 
     impl DeclareOk {
@@ -1529,6 +1574,7 @@ pub mod exchange {
         } // fn payload_size()
     } // impl ::Payload for DeclareOk
 
+    #[derive(Debug)]
     pub struct Delete<'a> {
         exchange: ::std::borrow::Cow<'a, str>,
         if_unused: bool,
@@ -1566,6 +1612,7 @@ pub mod exchange {
         } // fn payload_size()
     } // impl ::Payload for Delete
 
+    #[derive(Debug)]
     pub struct DeleteOk;
 
     impl DeleteOk {
@@ -1586,6 +1633,7 @@ pub mod exchange {
         } // fn payload_size()
     } // impl ::Payload for DeleteOk
 
+    #[derive(Debug)]
     pub enum ClassMethod<'a> {
         Declare(Declare<'a>),
         DeclareOk(DeclareOk),
@@ -1632,8 +1680,10 @@ pub mod exchange {
 } // mod exchange
 
 pub mod queue {
+    #[derive(Debug)]
     pub struct Header;
 
+    #[derive(Debug)]
     pub struct Declare<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         passive: bool,
@@ -1691,6 +1741,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for Declare
 
+    #[derive(Debug)]
     pub struct DeclareOk<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         message_count: u32,
@@ -1728,6 +1779,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for DeclareOk
 
+    #[derive(Debug)]
     pub struct Bind<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
@@ -1783,6 +1835,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for Bind
 
+    #[derive(Debug)]
     pub struct BindOk;
 
     impl BindOk {
@@ -1803,6 +1856,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for BindOk
 
+    #[derive(Debug)]
     pub struct Unbind<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         exchange: ::std::borrow::Cow<'a, str>,
@@ -1850,6 +1904,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for Unbind
 
+    #[derive(Debug)]
     pub struct UnbindOk;
 
     impl UnbindOk {
@@ -1870,6 +1925,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for UnbindOk
 
+    #[derive(Debug)]
     pub struct Purge<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         no_wait: bool,
@@ -1904,6 +1960,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for Purge
 
+    #[derive(Debug)]
     pub struct PurgeOk {
         message_count: u32,
     } // struct PurgeOk
@@ -1929,6 +1986,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for PurgeOk
 
+    #[derive(Debug)]
     pub struct Delete<'a> {
         queue: ::std::borrow::Cow<'a, str>,
         if_unused: bool,
@@ -1969,6 +2027,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for Delete
 
+    #[derive(Debug)]
     pub struct DeleteOk {
         message_count: u32,
     } // struct DeleteOk
@@ -1994,6 +2053,7 @@ pub mod queue {
         } // fn payload_size()
     } // impl ::Payload for DeleteOk
 
+    #[derive(Debug)]
     pub enum ClassMethod<'a> {
         Declare(Declare<'a>),
         DeclareOk(DeclareOk<'a>),
@@ -2064,8 +2124,10 @@ pub mod queue {
 } // mod queue
 
 pub mod tx {
+    #[derive(Debug)]
     pub struct Header;
 
+    #[derive(Debug)]
     pub struct Select;
 
     impl Select {
@@ -2086,6 +2148,7 @@ pub mod tx {
         } // fn payload_size()
     } // impl ::Payload for Select
 
+    #[derive(Debug)]
     pub struct SelectOk;
 
     impl SelectOk {
@@ -2106,6 +2169,7 @@ pub mod tx {
         } // fn payload_size()
     } // impl ::Payload for SelectOk
 
+    #[derive(Debug)]
     pub struct Commit;
 
     impl Commit {
@@ -2126,6 +2190,7 @@ pub mod tx {
         } // fn payload_size()
     } // impl ::Payload for Commit
 
+    #[derive(Debug)]
     pub struct CommitOk;
 
     impl CommitOk {
@@ -2146,6 +2211,7 @@ pub mod tx {
         } // fn payload_size()
     } // impl ::Payload for CommitOk
 
+    #[derive(Debug)]
     pub struct Rollback;
 
     impl Rollback {
@@ -2166,6 +2232,7 @@ pub mod tx {
         } // fn payload_size()
     } // impl ::Payload for Rollback
 
+    #[derive(Debug)]
     pub struct RollbackOk;
 
     impl RollbackOk {
@@ -2186,6 +2253,7 @@ pub mod tx {
         } // fn payload_size()
     } // impl ::Payload for RollbackOk
 
+    #[derive(Debug)]
     pub enum ClassMethod {
         Select(Select),
         SelectOk(SelectOk),
@@ -2257,7 +2325,7 @@ pub use self::connection::Header as ConnectionHeader;
 pub use self::exchange::Header as ExchangeHeader;
 pub use self::queue::Header as QueueHeader;
 pub use self::tx::Header as TxHeader;
-
+#[derive(Debug)]
 pub enum SpecMethod<'a> {
     Basic(BasicMethod<'a>),
     Channel(ChannelMethod<'a>),

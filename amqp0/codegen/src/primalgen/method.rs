@@ -108,14 +108,15 @@ impl<'a> MethodModuleWriter<'a> {
     pub fn write_struct<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
+        try!(writeln!(writer, "\n#[derive(Debug)]"));
         if self.fields.is_empty() {
-            try!(writeln!(writer, "\npub struct {};", self.struct_name));
+            try!(writeln!(writer, "pub struct {};", self.struct_name));
             return Ok(());
         }
 
         let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "\npub struct {}{} {{", self.struct_name, lifetimes));
+        try!(writeln!(writer, "pub struct {}{} {{", self.struct_name, lifetimes));
         for field in &self.fields {
             if field.is_reserved() {
                 continue
