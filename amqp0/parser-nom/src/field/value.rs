@@ -19,7 +19,7 @@ use pool::ParserPool;
 use NomBytes;
 
 impl<'a> NomBytes<'a> for Value<'a> {
-
+    type Output = Value<'a>;
     #[allow(unused_variables, cyclomatic_complexity)]
     fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
         where P: ParserPool

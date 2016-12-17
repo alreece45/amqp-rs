@@ -69,7 +69,8 @@ impl<'a> SpecModuleWriter<'a> {
     {
         try!(writeln!(writer, "\n\
             impl<'a> ::NomBytes<'a> for ::primitives::{}::Frame<'a> {{\n\
-                fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>\n\
+                type Output = Self;\n\
+                fn nom_bytes<'pool, P>(input: &'a [u8], pool: &'pool mut P)  -> IResult<&'a [u8], Self>\n\
                     where P: ::pool::ParserPool\n\
                 {{\n\
                     switch!(input, be_u8,\n",
@@ -160,7 +161,7 @@ impl<'a> SpecModuleWriter<'a> {
         try!(writeln!(writer, " // do_parse"));
         try!(writeln!(writer, ") // switch!"));
         try!(writeln!(writer, "}} // fn nom_bytes"));
-        try!(writeln!(writer, "}} // impl NomBytes<'a> for ::primitives::{}::Frame<'a>", self.mod_name));
+        try!(writeln!(writer, "}} // impl NomBytes for ::primitives::{}::Frame<'a>", self.mod_name));
 
         Ok(())
     }
@@ -179,7 +180,8 @@ impl<'a> SpecModuleWriter<'a> {
         let class_mod_name = class.name().to_snake_case();
         try!(writeln!(writer, "\n\
             impl<'a> ::NomBytes<'a> for ::primitives::{}::{}::ClassMethod{} {{\n\
-                fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>\n\
+                type Output = Self;\n\
+                fn nom_bytes<'pool, P>(input: &'a [u8], pool: &'pool mut P)  -> IResult<&'a [u8], Self>\n\
                     where P: ::pool::ParserPool\n\
                 {{\n\
                     switch!(input, be_u16,\n",
@@ -214,7 +216,7 @@ impl<'a> SpecModuleWriter<'a> {
         try!(writeln!(writer, "}} // fn nom_bytes"));
         try!(writeln!(
             writer,
-            "}} // impl ::NomBytes<'a> for ::primitives::{}::{}::SpecMethod<'a>",
+            "}} // impl ::NomBytes for ::primitives::{}::{}::SpecMethod<'a>",
             self.mod_name,
             class_mod_name
         ));

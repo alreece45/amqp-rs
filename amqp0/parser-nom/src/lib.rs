@@ -31,7 +31,7 @@ use nom::IResult;
 use pool::ParserPool;
 
 pub trait NomBytes<'a>: Sized {
+    type Output: 'a;
     fn nom_bytes<'b, P>(&'a [u8], &'b mut P) -> IResult<&'a [u8], Self>
-        where P: ParserPool,
-              Self: 'a;
+        where P: ParserPool;
 }

@@ -16,6 +16,7 @@ use pool::ParserPool;
 use NomBytes;
 
 impl<'a> NomBytes<'a> for TableEntries<'a> {
+    type Output = TableEntries<'a>;
     fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
         where P: ParserPool
     {

@@ -13,6 +13,7 @@ use pool::ParserPool;
 use NomBytes;
 
 impl<'a> NomBytes<'a> for List<'a> {
+    type Output = List<'a>;
     /// TODO: Return error if there is junk at the end
     fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
         where P: ParserPool

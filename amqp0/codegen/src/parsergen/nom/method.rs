@@ -87,6 +87,7 @@ impl<'a> CodeGenerator for MethodModuleWriter<'a> {
 
         try!(write!(writer, "\n\
     impl<'a> ::NomBytes<'a> for ::primitives::{}::{}{} {{\n\
+        type Output = Self;\n\
         fn nom_bytes<'b, P>(input: &'a [u8], {}: &'b mut P) -> IResult<&'a [u8], Self>\n\
             where P: ::pool::ParserPool\n\
         {{\n\
