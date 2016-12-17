@@ -36,6 +36,7 @@ impl<'a> CodeGenerator for SpecsModuleWriter<'a> {
         try!(self.write_frame_types(writer));
         try!(self.write_classes(writer));
         try!(self.write_methods(writer));
+        try!(self.write_specs(writer));
 
         Ok(())
     }
@@ -142,6 +143,52 @@ impl<'a> SpecsModuleWriter<'a> {
                 }
             }
             try!(writeln!(writer, ""));
+        }
+
+        Ok(())
+    }
+
+    pub fn write_specs<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        try!(writeln!(writer, "//"));
+        try!(writeln!(writer, "// Index values for methods common among the different specs"));
+        try!(writeln!(writer, "//"));
+        try!(writeln!(writer, "// Methods are only considered common when:"));
+        try!(writeln!(writer, "//"));
+        try!(writeln!(writer, "//   * The index value is consistent across all of the specs"));
+        try!(writeln!(writer, "//   * The method is used in more than one primalgen.spec"));
+        try!(writeln!(writer, "//"));
+        try!(writeln!(writer, "// This may change in the future-- in that case, methods *may* be removed, or"));
+        try!(writeln!(writer, "// one of the requirements may be relaxed."));
+        try!(writeln!(writer, "//"));
+
+        for spec in self.specs.iter() {
+            let (minor, revision) = {
+                let version = spec.version();
+                (version.minor(), version.revision())
+            };
+            let struct_name = format!("{}{}_{}", spec.name().to_pascal_case(), minor, revision);
+            let mod_name = spec_mod_name(spec);
+
+            try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
+            try!(writeln!(writer, "\n#[derive(Debug, Clone, PartialEq)]"));
+
+            try!(writeln!(writer, "pub struct {};", struct_name));
+
+            // impl Protocol
+            try!(writeln!(writer, "impl<'a> ::Protocol<'a> for {} {{", struct_name));
+
+            // Protocol::Frame
+            try!(writeln!(writer, "type Frame = {}::Frame<'a>;", mod_name));
+
+            // Protocol::protocol_header
+            try!(writeln!(writer, "fn protocol_header() -> &'static [u8] {{"));
+            let (minor, revision) = (spec.version().minor(), spec.version().revision());
+            try!(writeln!(writer, "b\"AMQP\\x00\\x00\\x{:02x}\\x{:02x}\"", minor, revision));
+            try!(writeln!(writer, "}} // fn protocol_header() "));
+
+            try!(writeln!(writer, "}} // impl ::Protocol<'a> for {}", struct_name));
         }
 
         Ok(())

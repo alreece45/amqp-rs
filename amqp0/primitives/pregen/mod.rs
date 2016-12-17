@@ -190,3 +190,74 @@ pub const METHOD_TX_COMMIT: u16 = 20;
 pub const METHOD_TX_COMMIT_OK: u16 = 21;
 pub const METHOD_TX_ROLLBACK: u16 = 30;
 pub const METHOD_TX_ROLLBACK_OK: u16 = 31;
+
+// Index values for methods common among the different specs
+//
+// Methods are only considered common when:
+//
+//   * The index value is consistent across all of the specs
+//   * The method is used in more than one primalgen.spec
+//
+// This may change in the future-- in that case, methods *may* be removed, or
+// one of the requirements may be relaxed.
+//
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct Amqp9_1;
+impl<'a> ::Protocol<'a> for Amqp9_1 {
+    type Frame = amqp9_1::Frame<'a>;
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x09\x01"
+    } // fn protocol_header()
+} // impl ::Protocol<'a> for Amqp9_1
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct Amqp9_0;
+impl<'a> ::Protocol<'a> for Amqp9_0 {
+    type Frame = amqp9_0::Frame<'a>;
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x09\x00"
+    } // fn protocol_header()
+} // impl ::Protocol<'a> for Amqp9_0
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct Amqp8_0;
+impl<'a> ::Protocol<'a> for Amqp8_0 {
+    type Frame = amqp8_0::Frame<'a>;
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x08\x00"
+    } // fn protocol_header()
+} // impl ::Protocol<'a> for Amqp8_0
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct Rabbitmq9_1;
+impl<'a> ::Protocol<'a> for Rabbitmq9_1 {
+    type Frame = rabbitmq9_1::Frame<'a>;
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x09\x01"
+    } // fn protocol_header()
+} // impl ::Protocol<'a> for Rabbitmq9_1
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct Qpid9_0;
+impl<'a> ::Protocol<'a> for Qpid9_0 {
+    type Frame = qpid9_0::Frame<'a>;
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x09\x00"
+    } // fn protocol_header()
+} // impl ::Protocol<'a> for Qpid9_0
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct Qpid8_0;
+impl<'a> ::Protocol<'a> for Qpid8_0 {
+    type Frame = qpid8_0::Frame<'a>;
+    fn protocol_header() -> &'static [u8] {
+        b"AMQP\x00\x00\x08\x00"
+    } // fn protocol_header()
+} // impl ::Protocol<'a> for Qpid8_0

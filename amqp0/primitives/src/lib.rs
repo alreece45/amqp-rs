@@ -18,23 +18,28 @@ include!(concat!("../pregen/mod.rs"));
 #[cfg(feature = "amqp0-build-primitives")]
 include!(concat!(env!("OUT_DIR"), "/mod.rs"));
 
-
 pub mod field;
 
-use std::io;
+pub trait Protocol<'a> {
+    type Frame;
 
-pub trait Spec {
     fn protocol_header() -> &'static [u8];
 }
 
-pub trait Payload {
+pub trait ProtocolFramePayload<'a> {
+    type Method: ProtocolMethod<'a>;
+
+    fn as_method(&self) -> Option<&Self::Method>;
+}
+
+pub trait ProtocolMethod<'a> {
+    type Start: ProtocolMethodPayload + 'a;
+    fn as_start(&self) -> Option<&Self::Start>;
+}
+
+pub trait ProtocolMethodPayload {
     fn class_id(&self) -> u16;
     fn method_id(&self) -> u16;
-    fn len(&self) -> usize;
-    fn write_to<W: io::Write>(&self, &mut W) -> io::Result<()>;
-
-    fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
+    fn payload_size(&self) -> usize;
 }
 

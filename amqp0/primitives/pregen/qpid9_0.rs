@@ -139,7 +139,7 @@ pub const METHOD_TX_COMMIT_OK: u16 = 21;
 pub const METHOD_TX_ROLLBACK: u16 = 30;
 pub const METHOD_TX_ROLLBACK_OK: u16 = 31;
 
-pub enum Header<'a> {
+pub enum SpecHeader<'a> {
     Access,
     Basic(basic::Header<'a>),
     Channel,
@@ -152,18 +152,53 @@ pub enum Header<'a> {
     Stream(stream::Header<'a>),
     Tunnel(tunnel::Header<'a>),
     Tx,
-} // enum Header
+} // enum SpecHeader
 
-pub enum Frame<'a> {
+pub struct Frame<'a> {
+    channel: u16,
+    payload: FramePayload<'a>,
+} // struct Frame
+
+impl<'a> Frame<'a> {
+    pub fn new<P>(channel: u16, payload: P) -> Self
+        where P: Into<FramePayload<'a>>
+    {
+        Frame {
+            channel: channel,
+            payload: payload.into(),
+        } // Frame
+    } // fn new()
+
+    pub fn channel(&self) -> u16 {
+        self.channel
+    } // fn channel()
+
+    pub fn payload(&self) -> &FramePayload<'a> {
+        &self.payload
+    } // fn payload()
+} // impl Frame<'a>
+
+
+pub enum FramePayload<'a> {
     Body(&'a [u8]),
-    Header(Header<'a>),
+    Header(SpecHeader<'a>),
     Heartbeat,
-    Method(Method<'a>),
+    Method(SpecMethod<'a>),
     OobBody(&'a [u8]),
-    OobHeader(Header<'a>),
-    OobMethod(Method<'a>),
-    Trace,
-} // enum Frame
+    OobHeader(SpecHeader<'a>),
+    OobMethod(SpecMethod<'a>),
+    Trace(&'a [u8]),
+} // enum FramePayload
+impl<'a> ::ProtocolFramePayload<'a> for FramePayload<'a> {
+    type Method = SpecMethod<'a>;
+    fn as_method(&self) -> Option<&SpecMethod<'a>> {
+        if let FramePayload::Method(ref method) = *self {
+            Some(method)
+        } else {
+            None
+        } // if
+    } // fn as_method()
+} // impl ::ProtocolFramePayload for FramePayload
 
 // Class Modules
 pub mod access {
@@ -207,24 +242,19 @@ pub mod access {
 } // impl_properties
     } // impl<'a> Request<'a>
 
-    impl<'a> ::Payload for Request<'a> {
+    impl<'a> ::ProtocolMethodPayload for Request<'a> {
         fn class_id(&self) -> u16 {
             30
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.realm.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Request<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Request
 
     pub struct RequestOk {
         ticket: u16,
@@ -239,27 +269,52 @@ pub mod access {
 } // impl_properties
     } // impl RequestOk
 
-    impl ::Payload for RequestOk {
+    impl ::ProtocolMethodPayload for RequestOk {
         fn class_id(&self) -> u16 {
             30
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             2
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for RequestOk
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Request(Request<'a>),
         RequestOk(RequestOk),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::RequestOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Request(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::RequestOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Request(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::RequestOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod access
 
@@ -321,21 +376,16 @@ pub mod basic {
 } // impl_properties
     } // impl Qos
 
-    impl ::Payload for Qos {
+    impl ::ProtocolMethodPayload for Qos {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             7
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Qos
 
     pub struct QosOk;
@@ -346,21 +396,16 @@ pub mod basic {
         } // fn new()
     } // impl QosOk
 
-    impl ::Payload for QosOk {
+    impl ::ProtocolMethodPayload for QosOk {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for QosOk
 
     pub struct Consume<'a> {
@@ -411,24 +456,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> Consume<'a>
 
-    impl<'a> ::Payload for Consume<'a> {
+    impl<'a> ::ProtocolMethodPayload for Consume<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.queue.len(), self.consumer_tag.len(), self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Consume<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Consume
 
     pub struct ConsumeOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -445,24 +485,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> ConsumeOk<'a>
 
-    impl<'a> ::Payload for ConsumeOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for ConsumeOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for ConsumeOk
 
     pub struct Cancel<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -484,24 +519,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> Cancel<'a>
 
-    impl<'a> ::Payload for Cancel<'a> {
+    impl<'a> ::ProtocolMethodPayload for Cancel<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             30
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Cancel<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Cancel
 
     pub struct CancelOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -518,24 +548,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> CancelOk<'a>
 
-    impl<'a> ::Payload for CancelOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             31
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for CancelOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for CancelOk
 
     pub struct Publish<'a> {
         ticket: u16,
@@ -572,24 +597,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> Publish<'a>
 
-    impl<'a> ::Payload for Publish<'a> {
+    impl<'a> ::ProtocolMethodPayload for Publish<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             40
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Publish<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Publish
 
     pub struct Return<'a> {
         reply_code: u16,
@@ -619,24 +639,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> Return<'a>
 
-    impl<'a> ::Payload for Return<'a> {
+    impl<'a> ::ProtocolMethodPayload for Return<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             50
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.reply_text.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Return<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Return
 
     pub struct Deliver<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -674,24 +689,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> Deliver<'a>
 
-    impl<'a> ::Payload for Deliver<'a> {
+    impl<'a> ::ProtocolMethodPayload for Deliver<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             60
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [12, self.consumer_tag.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Deliver<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Deliver
 
     pub struct Get<'a> {
         ticket: u16,
@@ -716,24 +726,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> Get<'a>
 
-    impl<'a> ::Payload for Get<'a> {
+    impl<'a> ::ProtocolMethodPayload for Get<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             70
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [4, self.queue.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Get<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Get
 
     pub struct GetOk<'a> {
         delivery_tag: u64,
@@ -770,24 +775,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> GetOk<'a>
 
-    impl<'a> ::Payload for GetOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for GetOk<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             71
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [15, self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for GetOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for GetOk
 
     pub struct GetEmpty<'a> {
         cluster_id: ::std::borrow::Cow<'a, str>,
@@ -804,24 +804,19 @@ pub mod basic {
 } // impl_properties
     } // impl<'a> GetEmpty<'a>
 
-    impl<'a> ::Payload for GetEmpty<'a> {
+    impl<'a> ::ProtocolMethodPayload for GetEmpty<'a> {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             72
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.cluster_id.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for GetEmpty<'a>
+        } // fn payload_size()
+    } // impl ::Payload for GetEmpty
 
     pub struct Ack {
         delivery_tag: u64,
@@ -841,21 +836,16 @@ pub mod basic {
 } // impl_properties
     } // impl Ack
 
-    impl ::Payload for Ack {
+    impl ::ProtocolMethodPayload for Ack {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             80
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             9
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Ack
 
     pub struct Reject {
@@ -876,21 +866,16 @@ pub mod basic {
 } // impl_properties
     } // impl Reject
 
-    impl ::Payload for Reject {
+    impl ::ProtocolMethodPayload for Reject {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             90
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             9
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Reject
 
     pub struct Recover {
@@ -906,21 +891,16 @@ pub mod basic {
 } // impl_properties
     } // impl Recover
 
-    impl ::Payload for Recover {
+    impl ::ProtocolMethodPayload for Recover {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             100
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             1
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Recover
 
     pub struct RecoverSync {
@@ -936,21 +916,16 @@ pub mod basic {
 } // impl_properties
     } // impl RecoverSync
 
-    impl ::Payload for RecoverSync {
+    impl ::ProtocolMethodPayload for RecoverSync {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             102
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             1
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for RecoverSync
 
     pub struct RecoverSyncOk;
@@ -961,24 +936,19 @@ pub mod basic {
         } // fn new()
     } // impl RecoverSyncOk
 
-    impl ::Payload for RecoverSyncOk {
+    impl ::ProtocolMethodPayload for RecoverSyncOk {
         fn class_id(&self) -> u16 {
             60
         } // fn class_id()
         fn method_id(&self) -> u16 {
             101
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for RecoverSyncOk
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Qos(Qos),
         QosOk(QosOk),
         Consume(Consume<'a>),
@@ -996,7 +966,88 @@ pub mod basic {
         Recover(Recover),
         RecoverSync(RecoverSync),
         RecoverSyncOk(RecoverSyncOk),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Get(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::GetOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::GetEmpty(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Recover(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::RecoverSync(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::RecoverSyncOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Get(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::GetOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::GetEmpty(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Recover(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::RecoverSync(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::RecoverSyncOk(ref method) => {
+                    ::ProtocolMethodPayload::method_id(method)
+                }
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Get(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::GetOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::GetEmpty(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Recover(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::RecoverSync(ref method) => {
+                    ::ProtocolMethodPayload::payload_size(method)
+                }
+                ClassMethod::RecoverSyncOk(ref method) => {
+                    ::ProtocolMethodPayload::payload_size(method)
+                }
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod basic
 
@@ -1018,24 +1069,19 @@ pub mod channel {
 } // impl_properties
     } // impl<'a> Open<'a>
 
-    impl<'a> ::Payload for Open<'a> {
+    impl<'a> ::ProtocolMethodPayload for Open<'a> {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.out_of_band.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Open<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Open
 
     pub struct OpenOk<'a> {
         channel_id: ::std::borrow::Cow<'a, [u8]>,
@@ -1052,24 +1098,19 @@ pub mod channel {
 } // impl_properties
     } // impl<'a> OpenOk<'a>
 
-    impl<'a> ::Payload for OpenOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for OpenOk<'a> {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.channel_id.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for OpenOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for OpenOk
 
     pub struct Flow {
         active: bool,
@@ -1084,21 +1125,16 @@ pub mod channel {
 } // impl_properties
     } // impl Flow
 
-    impl ::Payload for Flow {
+    impl ::ProtocolMethodPayload for Flow {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             1
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Flow
 
     pub struct FlowOk {
@@ -1114,21 +1150,16 @@ pub mod channel {
 } // impl_properties
     } // impl FlowOk
 
-    impl ::Payload for FlowOk {
+    impl ::ProtocolMethodPayload for FlowOk {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             1
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for FlowOk
 
     pub struct Close<'a> {
@@ -1157,24 +1188,19 @@ pub mod channel {
 } // impl_properties
     } // impl<'a> Close<'a>
 
-    impl<'a> ::Payload for Close<'a> {
+    impl<'a> ::ProtocolMethodPayload for Close<'a> {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             40
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [7, self.reply_text.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Close<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Close
 
     pub struct CloseOk;
 
@@ -1184,21 +1210,16 @@ pub mod channel {
         } // fn new()
     } // impl CloseOk
 
-    impl ::Payload for CloseOk {
+    impl ::ProtocolMethodPayload for CloseOk {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             41
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for CloseOk
 
     pub struct Resume<'a> {
@@ -1216,24 +1237,19 @@ pub mod channel {
 } // impl_properties
     } // impl<'a> Resume<'a>
 
-    impl<'a> ::Payload for Resume<'a> {
+    impl<'a> ::ProtocolMethodPayload for Resume<'a> {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             50
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.channel_id.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Resume<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Resume
 
     pub struct Ping;
 
@@ -1243,21 +1259,16 @@ pub mod channel {
         } // fn new()
     } // impl Ping
 
-    impl ::Payload for Ping {
+    impl ::ProtocolMethodPayload for Ping {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             60
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Ping
 
     pub struct Pong;
@@ -1268,21 +1279,16 @@ pub mod channel {
         } // fn new()
     } // impl Pong
 
-    impl ::Payload for Pong {
+    impl ::ProtocolMethodPayload for Pong {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             70
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Pong
 
     pub struct Ok;
@@ -1293,24 +1299,19 @@ pub mod channel {
         } // fn new()
     } // impl Ok
 
-    impl ::Payload for Ok {
+    impl ::ProtocolMethodPayload for Ok {
         fn class_id(&self) -> u16 {
             20
         } // fn class_id()
         fn method_id(&self) -> u16 {
             80
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Ok
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Open(Open<'a>),
         OpenOk(OpenOk<'a>),
         Flow(Flow),
@@ -1321,7 +1322,61 @@ pub mod channel {
         Ping(Ping),
         Pong(Pong),
         Ok(Ok),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Flow(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::FlowOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Resume(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Ping(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Pong(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Ok(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Flow(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::FlowOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Resume(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Ping(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Pong(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Ok(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Flow(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::FlowOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Resume(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Ping(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Pong(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Ok(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod channel
 
@@ -1364,24 +1419,19 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> Start<'a>
 
-    impl<'a> ::Payload for Start<'a> {
+    impl<'a> ::ProtocolMethodPayload for Start<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [6, self.server_properties.amqp_size(), self.mechanisms.len(), self.locales.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Start<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Start
 
     pub struct StartOk<'a> {
         client_properties: ::field::TableEntries<'a>,
@@ -1412,19 +1462,14 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> StartOk<'a>
 
-    impl<'a> ::Payload for StartOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for StartOk<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [4,
              self.client_properties.amqp_size(),
              self.mechanism.len(),
@@ -1432,8 +1477,8 @@ pub mod connection {
              self.locale.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for StartOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for StartOk
 
     pub struct Secure<'a> {
         challenge: ::std::borrow::Cow<'a, [u8]>,
@@ -1450,24 +1495,19 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> Secure<'a>
 
-    impl<'a> ::Payload for Secure<'a> {
+    impl<'a> ::ProtocolMethodPayload for Secure<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.challenge.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Secure<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Secure
 
     pub struct SecureOk<'a> {
         response: ::std::borrow::Cow<'a, [u8]>,
@@ -1484,24 +1524,19 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> SecureOk<'a>
 
-    impl<'a> ::Payload for SecureOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for SecureOk<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.response.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for SecureOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for SecureOk
 
     pub struct Tune {
         channel_max: u16,
@@ -1524,21 +1559,16 @@ pub mod connection {
 } // impl_properties
     } // impl Tune
 
-    impl ::Payload for Tune {
+    impl ::ProtocolMethodPayload for Tune {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             30
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             8
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Tune
 
     pub struct TuneOk {
@@ -1562,21 +1592,16 @@ pub mod connection {
 } // impl_properties
     } // impl TuneOk
 
-    impl ::Payload for TuneOk {
+    impl ::ProtocolMethodPayload for TuneOk {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             31
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             8
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for TuneOk
 
     pub struct Open<'a> {
@@ -1603,24 +1628,19 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> Open<'a>
 
-    impl<'a> ::Payload for Open<'a> {
+    impl<'a> ::ProtocolMethodPayload for Open<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             40
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [3, self.virtual_host.len(), self.capabilities.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Open<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Open
 
     pub struct OpenOk<'a> {
         known_hosts: ::std::borrow::Cow<'a, str>,
@@ -1637,24 +1657,19 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> OpenOk<'a>
 
-    impl<'a> ::Payload for OpenOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for OpenOk<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             41
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.known_hosts.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for OpenOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for OpenOk
 
     pub struct Redirect<'a> {
         host: ::std::borrow::Cow<'a, str>,
@@ -1677,24 +1692,19 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> Redirect<'a>
 
-    impl<'a> ::Payload for Redirect<'a> {
+    impl<'a> ::ProtocolMethodPayload for Redirect<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             42
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.host.len(), self.known_hosts.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Redirect<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Redirect
 
     pub struct Close<'a> {
         reply_code: u16,
@@ -1722,24 +1732,19 @@ pub mod connection {
 } // impl_properties
     } // impl<'a> Close<'a>
 
-    impl<'a> ::Payload for Close<'a> {
+    impl<'a> ::ProtocolMethodPayload for Close<'a> {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             50
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [7, self.reply_text.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Close<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Close
 
     pub struct CloseOk;
 
@@ -1749,24 +1754,19 @@ pub mod connection {
         } // fn new()
     } // impl CloseOk
 
-    impl ::Payload for CloseOk {
+    impl ::ProtocolMethodPayload for CloseOk {
         fn class_id(&self) -> u16 {
             10
         } // fn class_id()
         fn method_id(&self) -> u16 {
             51
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for CloseOk
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Start(Start<'a>),
         StartOk(StartOk<'a>),
         Secure(Secure<'a>),
@@ -1778,7 +1778,64 @@ pub mod connection {
         Redirect(Redirect<'a>),
         Close(Close<'a>),
         CloseOk(CloseOk),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Start(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Secure(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::SecureOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Tune(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::TuneOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Redirect(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Start(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Secure(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::SecureOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Tune(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::TuneOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Redirect(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Start(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Secure(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::SecureOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Tune(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::TuneOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Redirect(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod connection
 
@@ -1793,21 +1850,16 @@ pub mod dtx {
         } // fn new()
     } // impl Select
 
-    impl ::Payload for Select {
+    impl ::ProtocolMethodPayload for Select {
         fn class_id(&self) -> u16 {
             100
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Select
 
     pub struct SelectOk;
@@ -1818,21 +1870,16 @@ pub mod dtx {
         } // fn new()
     } // impl SelectOk
 
-    impl ::Payload for SelectOk {
+    impl ::ProtocolMethodPayload for SelectOk {
         fn class_id(&self) -> u16 {
             100
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for SelectOk
 
     pub struct Start<'a> {
@@ -1850,24 +1897,19 @@ pub mod dtx {
 } // impl_properties
     } // impl<'a> Start<'a>
 
-    impl<'a> ::Payload for Start<'a> {
+    impl<'a> ::ProtocolMethodPayload for Start<'a> {
         fn class_id(&self) -> u16 {
             100
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.dtx_identifier.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Start<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Start
 
     pub struct StartOk;
 
@@ -1877,29 +1919,60 @@ pub mod dtx {
         } // fn new()
     } // impl StartOk
 
-    impl ::Payload for StartOk {
+    impl ::ProtocolMethodPayload for StartOk {
         fn class_id(&self) -> u16 {
             100
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for StartOk
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Select(Select),
         SelectOk(SelectOk),
         Start(Start<'a>),
         StartOk(StartOk),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Start(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Select(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Start(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Select(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Start(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod dtx
 
@@ -1958,24 +2031,19 @@ pub mod exchange {
 } // impl_properties
     } // impl<'a> Declare<'a>
 
-    impl<'a> ::Payload for Declare<'a> {
+    impl<'a> ::ProtocolMethodPayload for Declare<'a> {
         fn class_id(&self) -> u16 {
             40
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.exchange.len(), self.ty.len(), self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Declare<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Declare
 
     pub struct DeclareOk;
 
@@ -1985,21 +2053,16 @@ pub mod exchange {
         } // fn new()
     } // impl DeclareOk
 
-    impl ::Payload for DeclareOk {
+    impl ::ProtocolMethodPayload for DeclareOk {
         fn class_id(&self) -> u16 {
             40
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for DeclareOk
 
     pub struct Delete<'a> {
@@ -2028,24 +2091,19 @@ pub mod exchange {
 } // impl_properties
     } // impl<'a> Delete<'a>
 
-    impl<'a> ::Payload for Delete<'a> {
+    impl<'a> ::ProtocolMethodPayload for Delete<'a> {
         fn class_id(&self) -> u16 {
             40
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [4, self.exchange.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Delete<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Delete
 
     pub struct DeleteOk;
 
@@ -2055,21 +2113,16 @@ pub mod exchange {
         } // fn new()
     } // impl DeleteOk
 
-    impl ::Payload for DeleteOk {
+    impl ::ProtocolMethodPayload for DeleteOk {
         fn class_id(&self) -> u16 {
             40
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for DeleteOk
 
     pub struct Bound<'a> {
@@ -2097,24 +2150,19 @@ pub mod exchange {
 } // impl_properties
     } // impl<'a> Bound<'a>
 
-    impl<'a> ::Payload for Bound<'a> {
+    impl<'a> ::ProtocolMethodPayload for Bound<'a> {
         fn class_id(&self) -> u16 {
             40
         } // fn class_id()
         fn method_id(&self) -> u16 {
             22
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [3, self.exchange.len(), self.routing_key.len(), self.queue.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Bound<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Bound
 
     pub struct BoundOk<'a> {
         reply_code: u16,
@@ -2136,33 +2184,70 @@ pub mod exchange {
 } // impl_properties
     } // impl<'a> BoundOk<'a>
 
-    impl<'a> ::Payload for BoundOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for BoundOk<'a> {
         fn class_id(&self) -> u16 {
             40
         } // fn class_id()
         fn method_id(&self) -> u16 {
             23
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [3, self.reply_text.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for BoundOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for BoundOk
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Declare(Declare<'a>),
         DeclareOk(DeclareOk),
         Delete(Delete<'a>),
         DeleteOk(DeleteOk),
         Bound(Bound<'a>),
         BoundOk(BoundOk<'a>),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Bound(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::BoundOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Bound(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::BoundOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Bound(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::BoundOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod exchange
 
@@ -2214,21 +2299,16 @@ pub mod file {
 } // impl_properties
     } // impl Qos
 
-    impl ::Payload for Qos {
+    impl ::ProtocolMethodPayload for Qos {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             7
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Qos
 
     pub struct QosOk;
@@ -2239,21 +2319,16 @@ pub mod file {
         } // fn new()
     } // impl QosOk
 
-    impl ::Payload for QosOk {
+    impl ::ProtocolMethodPayload for QosOk {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for QosOk
 
     pub struct Consume<'a> {
@@ -2304,24 +2379,19 @@ pub mod file {
 } // impl_properties
     } // impl<'a> Consume<'a>
 
-    impl<'a> ::Payload for Consume<'a> {
+    impl<'a> ::ProtocolMethodPayload for Consume<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.queue.len(), self.consumer_tag.len(), self.filter.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Consume<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Consume
 
     pub struct ConsumeOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -2338,24 +2408,19 @@ pub mod file {
 } // impl_properties
     } // impl<'a> ConsumeOk<'a>
 
-    impl<'a> ::Payload for ConsumeOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for ConsumeOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for ConsumeOk
 
     pub struct Cancel<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -2377,24 +2442,19 @@ pub mod file {
 } // impl_properties
     } // impl<'a> Cancel<'a>
 
-    impl<'a> ::Payload for Cancel<'a> {
+    impl<'a> ::ProtocolMethodPayload for Cancel<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             30
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Cancel<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Cancel
 
     pub struct CancelOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -2411,24 +2471,19 @@ pub mod file {
 } // impl_properties
     } // impl<'a> CancelOk<'a>
 
-    impl<'a> ::Payload for CancelOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             31
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for CancelOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for CancelOk
 
     pub struct Open<'a> {
         identifier: ::std::borrow::Cow<'a, str>,
@@ -2450,24 +2505,19 @@ pub mod file {
 } // impl_properties
     } // impl<'a> Open<'a>
 
-    impl<'a> ::Payload for Open<'a> {
+    impl<'a> ::ProtocolMethodPayload for Open<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             40
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [9, self.identifier.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Open<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Open
 
     pub struct OpenOk {
         staged_size: u64,
@@ -2482,21 +2532,16 @@ pub mod file {
 } // impl_properties
     } // impl OpenOk
 
-    impl ::Payload for OpenOk {
+    impl ::ProtocolMethodPayload for OpenOk {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             41
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             8
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for OpenOk
 
     pub struct Stage;
@@ -2507,21 +2552,16 @@ pub mod file {
         } // fn new()
     } // impl Stage
 
-    impl ::Payload for Stage {
+    impl ::ProtocolMethodPayload for Stage {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             50
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Stage
 
     pub struct Publish<'a> {
@@ -2564,24 +2604,19 @@ pub mod file {
 } // impl_properties
     } // impl<'a> Publish<'a>
 
-    impl<'a> ::Payload for Publish<'a> {
+    impl<'a> ::ProtocolMethodPayload for Publish<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             60
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [6, self.exchange.len(), self.routing_key.len(), self.identifier.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Publish<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Publish
 
     pub struct Return<'a> {
         reply_code: u16,
@@ -2611,24 +2646,19 @@ pub mod file {
 } // impl_properties
     } // impl<'a> Return<'a>
 
-    impl<'a> ::Payload for Return<'a> {
+    impl<'a> ::ProtocolMethodPayload for Return<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             70
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.reply_text.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Return<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Return
 
     pub struct Deliver<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -2671,19 +2701,14 @@ pub mod file {
 } // impl_properties
     } // impl<'a> Deliver<'a>
 
-    impl<'a> ::Payload for Deliver<'a> {
+    impl<'a> ::ProtocolMethodPayload for Deliver<'a> {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             80
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [13,
              self.consumer_tag.len(),
              self.exchange.len(),
@@ -2691,8 +2716,8 @@ pub mod file {
              self.identifier.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Deliver<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Deliver
 
     pub struct Ack {
         delivery_tag: u64,
@@ -2712,21 +2737,16 @@ pub mod file {
 } // impl_properties
     } // impl Ack
 
-    impl ::Payload for Ack {
+    impl ::ProtocolMethodPayload for Ack {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             90
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             9
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Ack
 
     pub struct Reject {
@@ -2747,24 +2767,19 @@ pub mod file {
 } // impl_properties
     } // impl Reject
 
-    impl ::Payload for Reject {
+    impl ::ProtocolMethodPayload for Reject {
         fn class_id(&self) -> u16 {
             70
         } // fn class_id()
         fn method_id(&self) -> u16 {
             100
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             9
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Reject
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Qos(Qos),
         QosOk(QosOk),
         Consume(Consume<'a>),
@@ -2779,7 +2794,73 @@ pub mod file {
         Deliver(Deliver<'a>),
         Ack(Ack),
         Reject(Reject),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Stage(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Stage(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Stage(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod file
 
@@ -2901,19 +2982,14 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Transfer<'a>
 
-    impl<'a> ::Payload for Transfer<'a> {
+    impl<'a> ::ProtocolMethodPayload for Transfer<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [43,
              self.destination.len(),
              self.exchange.len(),
@@ -2931,8 +3007,8 @@ pub mod message {
              self.body.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Transfer<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Transfer
 
     pub struct Consume<'a> {
         ticket: u16,
@@ -2978,24 +3054,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Consume<'a>
 
-    impl<'a> ::Payload for Consume<'a> {
+    impl<'a> ::ProtocolMethodPayload for Consume<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.queue.len(), self.destination.len(), self.filter.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Consume<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Consume
 
     pub struct Cancel<'a> {
         destination: ::std::borrow::Cow<'a, str>,
@@ -3012,24 +3083,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Cancel<'a>
 
-    impl<'a> ::Payload for Cancel<'a> {
+    impl<'a> ::ProtocolMethodPayload for Cancel<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             30
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.destination.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Cancel<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Cancel
 
     pub struct Get<'a> {
         ticket: u16,
@@ -3058,24 +3124,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Get<'a>
 
-    impl<'a> ::Payload for Get<'a> {
+    impl<'a> ::ProtocolMethodPayload for Get<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             40
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.queue.len(), self.destination.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Get<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Get
 
     pub struct Recover {
         requeue: bool,
@@ -3090,21 +3151,16 @@ pub mod message {
 } // impl_properties
     } // impl Recover
 
-    impl ::Payload for Recover {
+    impl ::ProtocolMethodPayload for Recover {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             50
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             1
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Recover
 
     pub struct Open<'a> {
@@ -3122,24 +3178,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Open<'a>
 
-    impl<'a> ::Payload for Open<'a> {
+    impl<'a> ::ProtocolMethodPayload for Open<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             60
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.reference.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Open<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Open
 
     pub struct Close<'a> {
         reference: ::std::borrow::Cow<'a, [u8]>,
@@ -3156,24 +3207,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Close<'a>
 
-    impl<'a> ::Payload for Close<'a> {
+    impl<'a> ::ProtocolMethodPayload for Close<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             70
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.reference.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Close<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Close
 
     pub struct Append<'a> {
         reference: ::std::borrow::Cow<'a, [u8]>,
@@ -3196,24 +3242,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Append<'a>
 
-    impl<'a> ::Payload for Append<'a> {
+    impl<'a> ::ProtocolMethodPayload for Append<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             80
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [4, self.reference.len(), self.bytes.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Append<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Append
 
     pub struct Checkpoint<'a> {
         reference: ::std::borrow::Cow<'a, [u8]>,
@@ -3236,24 +3277,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Checkpoint<'a>
 
-    impl<'a> ::Payload for Checkpoint<'a> {
+    impl<'a> ::ProtocolMethodPayload for Checkpoint<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             90
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [3, self.reference.len(), self.identifier.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Checkpoint<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Checkpoint
 
     pub struct Resume<'a> {
         reference: ::std::borrow::Cow<'a, [u8]>,
@@ -3276,24 +3312,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Resume<'a>
 
-    impl<'a> ::Payload for Resume<'a> {
+    impl<'a> ::ProtocolMethodPayload for Resume<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             100
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [3, self.reference.len(), self.identifier.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Resume<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Resume
 
     pub struct Qos {
         prefetch_size: u32,
@@ -3316,21 +3347,16 @@ pub mod message {
 } // impl_properties
     } // impl Qos
 
-    impl ::Payload for Qos {
+    impl ::ProtocolMethodPayload for Qos {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             110
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             7
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Qos
 
     pub struct Ok;
@@ -3341,21 +3367,16 @@ pub mod message {
         } // fn new()
     } // impl Ok
 
-    impl ::Payload for Ok {
+    impl ::ProtocolMethodPayload for Ok {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             500
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Ok
 
     pub struct Empty;
@@ -3366,21 +3387,16 @@ pub mod message {
         } // fn new()
     } // impl Empty
 
-    impl ::Payload for Empty {
+    impl ::ProtocolMethodPayload for Empty {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             510
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Empty
 
     pub struct Reject<'a> {
@@ -3403,24 +3419,19 @@ pub mod message {
 } // impl_properties
     } // impl<'a> Reject<'a>
 
-    impl<'a> ::Payload for Reject<'a> {
+    impl<'a> ::ProtocolMethodPayload for Reject<'a> {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             520
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [3, self.text.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Reject<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Reject
 
     pub struct Offset {
         value: u64,
@@ -3435,24 +3446,19 @@ pub mod message {
 } // impl_properties
     } // impl Offset
 
-    impl ::Payload for Offset {
+    impl ::ProtocolMethodPayload for Offset {
         fn class_id(&self) -> u16 {
             120
         } // fn class_id()
         fn method_id(&self) -> u16 {
             530
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             8
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Offset
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Transfer(Transfer<'a>),
         Consume(Consume<'a>),
         Cancel(Cancel<'a>),
@@ -3468,7 +3474,78 @@ pub mod message {
         Empty(Empty),
         Reject(Reject<'a>),
         Offset(Offset),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Transfer(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Get(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Recover(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Append(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Checkpoint(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Resume(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Ok(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Empty(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Offset(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Transfer(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Get(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Recover(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Append(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Checkpoint(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Resume(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Ok(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Empty(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Offset(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Transfer(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Get(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Recover(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Open(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Close(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Append(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Checkpoint(ref method) => {
+                    ::ProtocolMethodPayload::payload_size(method)
+                }
+                ClassMethod::Resume(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Ok(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Empty(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Offset(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod message
 
@@ -3522,24 +3599,19 @@ pub mod queue {
 } // impl_properties
     } // impl<'a> Declare<'a>
 
-    impl<'a> ::Payload for Declare<'a> {
+    impl<'a> ::ProtocolMethodPayload for Declare<'a> {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [4, self.queue.len(), self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Declare<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Declare
 
     pub struct DeclareOk<'a> {
         queue: ::std::borrow::Cow<'a, str>,
@@ -3564,24 +3636,19 @@ pub mod queue {
 } // impl_properties
     } // impl<'a> DeclareOk<'a>
 
-    impl<'a> ::Payload for DeclareOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for DeclareOk<'a> {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [9, self.queue.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for DeclareOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for DeclareOk
 
     pub struct Bind<'a> {
         ticket: u16,
@@ -3624,19 +3691,14 @@ pub mod queue {
 } // impl_properties
     } // impl<'a> Bind<'a>
 
-    impl<'a> ::Payload for Bind<'a> {
+    impl<'a> ::ProtocolMethodPayload for Bind<'a> {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [6,
              self.queue.len(),
              self.exchange.len(),
@@ -3644,8 +3706,8 @@ pub mod queue {
              self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Bind<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Bind
 
     pub struct BindOk;
 
@@ -3655,21 +3717,16 @@ pub mod queue {
         } // fn new()
     } // impl BindOk
 
-    impl ::Payload for BindOk {
+    impl ::ProtocolMethodPayload for BindOk {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for BindOk
 
     pub struct Unbind<'a> {
@@ -3709,19 +3766,14 @@ pub mod queue {
 } // impl_properties
     } // impl<'a> Unbind<'a>
 
-    impl<'a> ::Payload for Unbind<'a> {
+    impl<'a> ::ProtocolMethodPayload for Unbind<'a> {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             50
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5,
              self.queue.len(),
              self.exchange.len(),
@@ -3729,8 +3781,8 @@ pub mod queue {
              self.arguments.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Unbind<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Unbind
 
     pub struct UnbindOk;
 
@@ -3740,21 +3792,16 @@ pub mod queue {
         } // fn new()
     } // impl UnbindOk
 
-    impl ::Payload for UnbindOk {
+    impl ::ProtocolMethodPayload for UnbindOk {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             51
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for UnbindOk
 
     pub struct Purge<'a> {
@@ -3780,24 +3827,19 @@ pub mod queue {
 } // impl_properties
     } // impl<'a> Purge<'a>
 
-    impl<'a> ::Payload for Purge<'a> {
+    impl<'a> ::ProtocolMethodPayload for Purge<'a> {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             30
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [4, self.queue.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Purge<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Purge
 
     pub struct PurgeOk {
         message_count: u32,
@@ -3812,21 +3854,16 @@ pub mod queue {
 } // impl_properties
     } // impl PurgeOk
 
-    impl ::Payload for PurgeOk {
+    impl ::ProtocolMethodPayload for PurgeOk {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             31
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             4
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for PurgeOk
 
     pub struct Delete<'a> {
@@ -3858,24 +3895,19 @@ pub mod queue {
 } // impl_properties
     } // impl<'a> Delete<'a>
 
-    impl<'a> ::Payload for Delete<'a> {
+    impl<'a> ::ProtocolMethodPayload for Delete<'a> {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             40
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [4, self.queue.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Delete<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Delete
 
     pub struct DeleteOk {
         message_count: u32,
@@ -3890,24 +3922,19 @@ pub mod queue {
 } // impl_properties
     } // impl DeleteOk
 
-    impl ::Payload for DeleteOk {
+    impl ::ProtocolMethodPayload for DeleteOk {
         fn class_id(&self) -> u16 {
             50
         } // fn class_id()
         fn method_id(&self) -> u16 {
             41
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             4
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for DeleteOk
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Declare(Declare<'a>),
         DeclareOk(DeclareOk<'a>),
         Bind(Bind<'a>),
@@ -3918,7 +3945,61 @@ pub mod queue {
         PurgeOk(PurgeOk),
         Delete(Delete<'a>),
         DeleteOk(DeleteOk),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::BindOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Unbind(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::UnbindOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Purge(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::PurgeOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::BindOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Unbind(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::UnbindOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Purge(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::PurgeOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::BindOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Unbind(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::UnbindOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Purge(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::PurgeOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod queue
 
@@ -3969,21 +4050,16 @@ pub mod stream {
 } // impl_properties
     } // impl Qos
 
-    impl ::Payload for Qos {
+    impl ::ProtocolMethodPayload for Qos {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             11
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Qos
 
     pub struct QosOk;
@@ -3994,21 +4070,16 @@ pub mod stream {
         } // fn new()
     } // impl QosOk
 
-    impl ::Payload for QosOk {
+    impl ::ProtocolMethodPayload for QosOk {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for QosOk
 
     pub struct Consume<'a> {
@@ -4055,24 +4126,19 @@ pub mod stream {
 } // impl_properties
     } // impl<'a> Consume<'a>
 
-    impl<'a> ::Payload for Consume<'a> {
+    impl<'a> ::ProtocolMethodPayload for Consume<'a> {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.queue.len(), self.consumer_tag.len(), self.filter.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Consume<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Consume
 
     pub struct ConsumeOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -4089,24 +4155,19 @@ pub mod stream {
 } // impl_properties
     } // impl<'a> ConsumeOk<'a>
 
-    impl<'a> ::Payload for ConsumeOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for ConsumeOk<'a> {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for ConsumeOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for ConsumeOk
 
     pub struct Cancel<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -4128,24 +4189,19 @@ pub mod stream {
 } // impl_properties
     } // impl<'a> Cancel<'a>
 
-    impl<'a> ::Payload for Cancel<'a> {
+    impl<'a> ::ProtocolMethodPayload for Cancel<'a> {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             30
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [2, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Cancel<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Cancel
 
     pub struct CancelOk<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -4162,24 +4218,19 @@ pub mod stream {
 } // impl_properties
     } // impl<'a> CancelOk<'a>
 
-    impl<'a> ::Payload for CancelOk<'a> {
+    impl<'a> ::ProtocolMethodPayload for CancelOk<'a> {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             31
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [1, self.consumer_tag.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for CancelOk<'a>
+        } // fn payload_size()
+    } // impl ::Payload for CancelOk
 
     pub struct Publish<'a> {
         ticket: u16,
@@ -4216,24 +4267,19 @@ pub mod stream {
 } // impl_properties
     } // impl<'a> Publish<'a>
 
-    impl<'a> ::Payload for Publish<'a> {
+    impl<'a> ::ProtocolMethodPayload for Publish<'a> {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             40
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Publish<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Publish
 
     pub struct Return<'a> {
         reply_code: u16,
@@ -4263,24 +4309,19 @@ pub mod stream {
 } // impl_properties
     } // impl<'a> Return<'a>
 
-    impl<'a> ::Payload for Return<'a> {
+    impl<'a> ::ProtocolMethodPayload for Return<'a> {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             50
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [5, self.reply_text.len(), self.exchange.len(), self.routing_key.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Return<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Return
 
     pub struct Deliver<'a> {
         consumer_tag: ::std::borrow::Cow<'a, str>,
@@ -4310,26 +4351,21 @@ pub mod stream {
 } // impl_properties
     } // impl<'a> Deliver<'a>
 
-    impl<'a> ::Payload for Deliver<'a> {
+    impl<'a> ::ProtocolMethodPayload for Deliver<'a> {
         fn class_id(&self) -> u16 {
             80
         } // fn class_id()
         fn method_id(&self) -> u16 {
             60
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [11, self.consumer_tag.len(), self.exchange.len(), self.queue.len()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Deliver<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Deliver
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Qos(Qos),
         QosOk(QosOk),
         Consume(Consume<'a>),
@@ -4339,7 +4375,58 @@ pub mod stream {
         Publish(Publish<'a>),
         Return(Return<'a>),
         Deliver(Deliver<'a>),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Return(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod stream
 
@@ -4377,28 +4464,50 @@ pub mod tunnel {
 } // impl_properties
     } // impl<'a> Request<'a>
 
-    impl<'a> ::Payload for Request<'a> {
+    impl<'a> ::ProtocolMethodPayload for Request<'a> {
         fn class_id(&self) -> u16 {
             110
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             [0, self.meta_data.amqp_size()]
                 .iter()
                 .sum()
-        } // fn len()
-    } // impl<'a> ::Payload for Request<'a>
+        } // fn payload_size()
+    } // impl ::Payload for Request
 
-    pub enum Method<'a> {
+    pub enum ClassMethod<'a> {
         Request(Request<'a>),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Request(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Request(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod tunnel
 
@@ -4413,21 +4522,16 @@ pub mod tx {
         } // fn new()
     } // impl Select
 
-    impl ::Payload for Select {
+    impl ::ProtocolMethodPayload for Select {
         fn class_id(&self) -> u16 {
             90
         } // fn class_id()
         fn method_id(&self) -> u16 {
             10
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Select
 
     pub struct SelectOk;
@@ -4438,21 +4542,16 @@ pub mod tx {
         } // fn new()
     } // impl SelectOk
 
-    impl ::Payload for SelectOk {
+    impl ::ProtocolMethodPayload for SelectOk {
         fn class_id(&self) -> u16 {
             90
         } // fn class_id()
         fn method_id(&self) -> u16 {
             11
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for SelectOk
 
     pub struct Commit;
@@ -4463,21 +4562,16 @@ pub mod tx {
         } // fn new()
     } // impl Commit
 
-    impl ::Payload for Commit {
+    impl ::ProtocolMethodPayload for Commit {
         fn class_id(&self) -> u16 {
             90
         } // fn class_id()
         fn method_id(&self) -> u16 {
             20
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Commit
 
     pub struct CommitOk;
@@ -4488,21 +4582,16 @@ pub mod tx {
         } // fn new()
     } // impl CommitOk
 
-    impl ::Payload for CommitOk {
+    impl ::ProtocolMethodPayload for CommitOk {
         fn class_id(&self) -> u16 {
             90
         } // fn class_id()
         fn method_id(&self) -> u16 {
             21
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for CommitOk
 
     pub struct Rollback;
@@ -4513,21 +4602,16 @@ pub mod tx {
         } // fn new()
     } // impl Rollback
 
-    impl ::Payload for Rollback {
+    impl ::ProtocolMethodPayload for Rollback {
         fn class_id(&self) -> u16 {
             90
         } // fn class_id()
         fn method_id(&self) -> u16 {
             30
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for Rollback
 
     pub struct RollbackOk;
@@ -4538,50 +4622,89 @@ pub mod tx {
         } // fn new()
     } // impl RollbackOk
 
-    impl ::Payload for RollbackOk {
+    impl ::ProtocolMethodPayload for RollbackOk {
         fn class_id(&self) -> u16 {
             90
         } // fn class_id()
         fn method_id(&self) -> u16 {
             31
         } // fn method_id()
-        fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
-            where W: ::std::io::Write
-        {
-            ::std::result::Result::Ok(())
-        } // fn write_to()
-        fn len(&self) -> usize {
+        fn payload_size(&self) -> usize {
             0
-        } // fn len()
+        } // fn payload_size()
     } // impl ::Payload for RollbackOk
 
-    pub enum Method {
+    pub enum ClassMethod {
         Select(Select),
         SelectOk(SelectOk),
         Commit(Commit),
         CommitOk(CommitOk),
         Rollback(Rollback),
         RollbackOk(RollbackOk),
-    } // enum Method
+    } // enum ClassMethod
+
+
+    impl ::ProtocolMethodPayload for ClassMethod {
+        fn class_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::CommitOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::Rollback(ref method) => ::ProtocolMethodPayload::class_id(method),
+                ClassMethod::RollbackOk(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+            } // match *self
+
+        } // fn class_id
+
+        fn method_id(&self) -> u16 {
+            match *self {
+                ClassMethod::Select(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::CommitOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::Rollback(ref method) => ::ProtocolMethodPayload::method_id(method),
+                ClassMethod::RollbackOk(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+            } // match *self
+
+        } // fn method_id
+
+        fn payload_size(&self) -> usize {
+            match *self {
+                ClassMethod::Select(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::CommitOk(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::Rollback(ref method) => ::ProtocolMethodPayload::payload_size(method),
+                ClassMethod::RollbackOk(ref method) => {
+                    ::ProtocolMethodPayload::payload_size(method)
+                }
+
+            } // match *self
+
+        } // fn method_id
+    } // impl ::ProtocolMethodPayload for ClassMethod
 
 } // mod tx
 
 
 // Class methods
-type AccessMethod<'a> = access::Method<'a>;
-type BasicMethod<'a> = basic::Method<'a>;
-type ChannelMethod<'a> = channel::Method<'a>;
-type ConnectionMethod<'a> = connection::Method<'a>;
-type DtxMethod<'a> = dtx::Method<'a>;
-type ExchangeMethod<'a> = exchange::Method<'a>;
-type FileMethod<'a> = file::Method<'a>;
-type MessageMethod<'a> = message::Method<'a>;
-type QueueMethod<'a> = queue::Method<'a>;
-type StreamMethod<'a> = stream::Method<'a>;
-type TunnelMethod<'a> = tunnel::Method<'a>;
-type TxMethod = tx::Method;
+pub use self::access::ClassMethod as AccessMethod;
+pub use self::basic::ClassMethod as BasicMethod;
+pub use self::channel::ClassMethod as ChannelMethod;
+pub use self::connection::ClassMethod as ConnectionMethod;
+pub use self::dtx::ClassMethod as DtxMethod;
+pub use self::exchange::ClassMethod as ExchangeMethod;
+pub use self::file::ClassMethod as FileMethod;
+pub use self::message::ClassMethod as MessageMethod;
+pub use self::queue::ClassMethod as QueueMethod;
+pub use self::stream::ClassMethod as StreamMethod;
+pub use self::tunnel::ClassMethod as TunnelMethod;
+pub use self::tx::ClassMethod as TxMethod;
 
-pub enum Method<'a> {
+pub enum SpecMethod<'a> {
     Access(AccessMethod<'a>),
     Basic(BasicMethod<'a>),
     Channel(ChannelMethod<'a>),
@@ -4594,13 +4717,74 @@ pub enum Method<'a> {
     Stream(StreamMethod<'a>),
     Tunnel(TunnelMethod<'a>),
     Tx(TxMethod),
-} // enum Method
+} // enum SpecMethod
 
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq)]
-pub struct Qpid9_0;
-impl ::Spec for Qpid9_0 {
-    fn protocol_header() -> &'static [u8] {
-        b"AMQP\x00\x00\x09\x00"
-    } // fn protocol_header()
-} // impl Spec for Qpid9_0
+impl<'a> ::ProtocolMethodPayload for SpecMethod<'a> {
+    fn class_id(&self) -> u16 {
+        match *self {
+            SpecMethod::Access(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Channel(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Connection(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Dtx(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Exchange(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::File(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Message(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Queue(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Stream(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Tunnel(ref method) => ::ProtocolMethodPayload::class_id(method),
+            SpecMethod::Tx(ref method) => ::ProtocolMethodPayload::class_id(method),
+
+        } // match *self
+
+    } // fn class_id
+
+    fn method_id(&self) -> u16 {
+        match *self {
+            SpecMethod::Access(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Channel(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Connection(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Dtx(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Exchange(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::File(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Message(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Queue(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Stream(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Tunnel(ref method) => ::ProtocolMethodPayload::method_id(method),
+            SpecMethod::Tx(ref method) => ::ProtocolMethodPayload::method_id(method),
+
+        } // match *self
+
+    } // fn method_id
+
+    fn payload_size(&self) -> usize {
+        match *self {
+            SpecMethod::Access(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Channel(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Connection(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Dtx(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Exchange(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::File(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Message(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Queue(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Stream(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Tunnel(ref method) => ::ProtocolMethodPayload::payload_size(method),
+            SpecMethod::Tx(ref method) => ::ProtocolMethodPayload::payload_size(method),
+
+        } // match *self
+
+    } // fn method_id
+} // impl ProtocolMethodPayload for SpecMethod
+
+impl<'a> ::ProtocolMethod<'a> for SpecMethod<'a> {
+    type Start = connection::Start<'a>;
+    fn as_start(&self) -> Option<&Self::Start> {
+        if let SpecMethod::Connection(ConnectionMethod::Start(ref start)) = *self {
+            Some(start)
+        } else {
+            None
+        } // if let Some(Method::Start(start)) == *self
+    } // fn as_start()
+} // impl ::ProtocolMethod

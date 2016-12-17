@@ -21,3 +21,8 @@ pub fn spec_mod_name(spec: &Spec) -> String {
     };
     format!("{}{}_{}", spec.name().to_snake_case(), minor, revision)
 }
+
+pub fn frame_type_name(name: &str) -> String {
+    let name_start = if name.starts_with("frame-") { 6 } else { 0 };
+    (&name[name_start..]).to_pascal_case()
+}

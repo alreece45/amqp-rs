@@ -246,21 +246,16 @@ impl<'a> MethodModuleWriter<'a> {
     pub fn write_amqp0_payload_impl<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
+        let lifetimes = if self.has_lifetimes { ("<'a>") } else { ("") };
+        try!(writeln!(writer, "\nimpl{1} ::ProtocolMethodPayload for {0}{1} {{", self.struct_name, lifetimes));
 
-        try!(writeln!(writer, "\nimpl{1} ::Payload for {0}{1} {{", self.struct_name, lifetimes));
-
-        try!(writeln!(writer, "fn class_id(&self) -> u16 {{"));
+        try!(write!(writer, "fn class_id(&self) -> u16 {{"));
         try!(writeln!(writer, "{}", self.class.index()));
         try!(writeln!(writer, "}} // fn class_id()"));
 
         try!(writeln!(writer, "fn method_id(&self) -> u16 {{"));
         try!(writeln!(writer, "{}", self.method.index()));
         try!(writeln!(writer, "}} // fn method_id()"));
-
-        try!(writeln!(writer, "fn write_to<W>(&self, _: &mut W) -> ::std::io::Result<()>"));
-        try!(writeln!(writer, "where W: ::std::io::Write"));
-        try!(writeln!(writer, "{{\n::std::result::Result::Ok(())\n}} // fn write_to()"));
 
         let static_size_bits = self.fields.iter()
             .map(|field| field.ty().num_bits_fixed())
@@ -270,7 +265,7 @@ impl<'a> MethodModuleWriter<'a> {
         let has_dynamic_field = self.fields.iter()
             .any(|field| field.ty().dynamic_bit_method().is_some());
 
-        try!(writeln!(writer, "fn len(&self) -> usize {{"));
+        try!(writeln!(writer, "fn payload_size(&self) -> usize {{"));
         if has_dynamic_field {
             try!(writeln!(writer, "["));
             try!(writeln!(writer, "{},", static_size));
@@ -287,9 +282,9 @@ impl<'a> MethodModuleWriter<'a> {
         } else {
             try!(writeln!(writer, "{}", static_size));
         }
-        try!(writeln!(writer, "}} // fn len()"));
+        try!(writeln!(writer, "}} // fn payload_size()"));
 
-        try!(writeln!(writer, "}} // impl{1} ::Payload for {0}{1}", self.struct_name, lifetimes));
+        try!(writeln!(writer, "}} // impl ::Payload for {}", self.struct_name));
 
         Ok(())
     }

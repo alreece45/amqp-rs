@@ -17,7 +17,6 @@ use common::domain::DomainMapper;
 use super::{MethodModuleWriter, HeaderStructWriter};
 
 pub struct SpecModuleWriter<'a> {
-    struct_name: String,
     mod_name: String,
     domain_mapper: DomainMapper<'a>,
     spec: &'a Spec,
@@ -64,12 +63,44 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
             let has_lifetimes = methods.iter().any(|&(_, has_lifetimes)| has_lifetimes);
             let lifetimes = if has_lifetimes { "<'a>" } else {""};
 
-            try!(writeln!(writer, "\npub enum Method{} {{", lifetimes));
-            for (name, has_lifetimes) in methods {
+            try!(writeln!(writer, "\npub enum ClassMethod{} {{", lifetimes));
+            for &(ref name, has_lifetimes) in &methods {
                 let lifetimes = if has_lifetimes { "<'a>" } else {""};
                 try!(writeln!(writer, "{0}({0}{1}),", name, lifetimes));
             }
-            try!(writeln!(writer, "}} // enum Method\n"));
+            try!(writeln!(writer, "}} // enum ClassMethod\n"));
+
+            try!(writeln!(writer, "\nimpl{0} ::ProtocolMethodPayload for ClassMethod{0} {{", lifetimes));
+
+            // ProtocolMethod::class_id
+            try!(writeln!(writer, "\nfn class_id(&self) -> u16 {{"));
+            try!(writeln!(writer, "match *self {{"));
+            for &(ref name, _) in &methods {
+                try!(writeln!(writer, "ClassMethod::{}(ref method) => ::ProtocolMethodPayload::class_id(method),", name));
+            }
+            try!(writeln!(writer, "\n}} // match *self"));
+            try!(writeln!(writer, "\n}} // fn class_id"));
+
+            // ProtocolMethod::method_id
+            try!(writeln!(writer, "\nfn method_id(&self) -> u16 {{"));
+            try!(writeln!(writer, "match *self {{"));
+            for &(ref name, _) in &methods {
+                try!(writeln!(writer, "ClassMethod::{}(ref method) => ::ProtocolMethodPayload::method_id(method),", name));
+            }
+            try!(writeln!(writer, "\n}} // match *self"));
+            try!(writeln!(writer, "\n}} // fn method_id"));
+
+            // ProtocolMethod::method_id
+            try!(writeln!(writer, "\nfn payload_size(&self) -> usize {{"));
+            try!(writeln!(writer, "match *self {{"));
+            for &(ref name, _) in &methods {
+                try!(writeln!(writer, "ClassMethod::{}(ref method) => ::ProtocolMethodPayload::payload_size(method),", name));
+            }
+            try!(writeln!(writer, "\n}} // match *self"));
+            try!(writeln!(writer, "\n}} // fn method_id"));
+
+            try!(writeln!(writer, "}} // impl ::ProtocolMethodPayload for ClassMethod\n"));
+
             try!(writeln!(writer, "}} // mod {}\n", module_name));
 
             let has_methods = !class.methods().is_empty();
@@ -81,15 +112,14 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
         let lifetimes = if has_lifetimes { "<'a>" } else { "" };
 
         try!(writeln!(writer, "\n// Class methods"));
-        for &(ref pascal_case, ref module, has_lifetimes, has_methods) in &class_methods {
+        for &(ref pascal_case, ref module, _, has_methods) in &class_methods {
             if has_methods {
-                let lifetimes = if has_lifetimes { "<'a>" } else { "" };
-                try!(writeln!(writer, "type {0}Method{2} = {1}::Method{2};", pascal_case, module, lifetimes));
+                try!(writeln!(writer, "pub use self::{}::ClassMethod as {}Method;", module, pascal_case));
             }
         }
 
-        try!(writeln!(writer, "\npub enum Method{} {{", lifetimes));
-        for (pascal_case, _, has_lifetimes, has_methods) in class_methods {
+        try!(writeln!(writer, "\npub enum SpecMethod{} {{", lifetimes));
+        for &(ref pascal_case, _, has_lifetimes, has_methods) in &class_methods {
             if has_methods {
                 let lifetimes = if has_lifetimes { "<'a>" } else { "" };
                 try!(writeln!(writer, "{0}({0}Method{1}),", pascal_case, lifetimes));
@@ -98,20 +128,54 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
                 try!(writeln!(writer, "{},", pascal_case));
             }
         }
-        try!(writeln!(writer, "}} // enum Method"));
+        try!(writeln!(writer, "}} // enum SpecMethod"));
 
-        try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
-        try!(writeln!(writer, "\n#[derive(Debug, Clone, PartialEq)]"));
-        try!(writeln!(writer, "pub struct {};", self.struct_name));
-        try!(writeln!(writer, "impl ::Spec for {} {{", self.struct_name));
+        // ProtocolMethod
+        try!(writeln!(writer, "\nimpl<'a> ::ProtocolMethodPayload for SpecMethod<'a> {{"));
 
-        // protocol_header
-        try!(writeln!(writer, "fn protocol_header() -> &'static [u8] {{"));
-        let (minor, revision) = (self.spec.version().minor(), self.spec.version().revision  ());
-        try!(writeln!(writer, "b\"AMQP\\x00\\x00\\x{:02x}\\x{:02x}\"", minor, revision));
-        try!(writeln!(writer, "}} // fn protocol_header() "));
+        // ProtocolMethod::class_id
+        try!(writeln!(writer, "\nfn class_id(&self) -> u16 {{"));
+        try!(writeln!(writer, "match *self {{"));
+        for &(ref pascal_case, _, _, _) in &class_methods {
+            try!(writeln!(writer, "SpecMethod::{}(ref method) => ::ProtocolMethodPayload::class_id(method),", pascal_case));
+        }
+        try!(writeln!(writer, "\n}} // match *self"));
+        try!(writeln!(writer, "\n}} // fn class_id"));
 
-        try!(writeln!(writer, "}} // impl Spec for {}", self.struct_name));
+        // ProtocolMethod::method_id
+        try!(writeln!(writer, "\nfn method_id(&self) -> u16 {{"));
+        try!(writeln!(writer, "match *self {{"));
+        for &(ref pascal_case, _, _, _) in &class_methods {
+            try!(writeln!(writer, "SpecMethod::{}(ref method) => ::ProtocolMethodPayload::method_id(method),", pascal_case));
+        }
+        try!(writeln!(writer, "\n}} // match *self"));
+        try!(writeln!(writer, "\n}} // fn method_id"));
+
+        // ProtocolMethod::method_id
+        try!(writeln!(writer, "\nfn payload_size(&self) -> usize {{"));
+        try!(writeln!(writer, "match *self {{"));
+        for &(ref pascal_case, _, _, _) in &class_methods {
+            try!(writeln!(writer, "SpecMethod::{}(ref method) => ::ProtocolMethodPayload::payload_size(method),", pascal_case));
+        }
+        try!(writeln!(writer, "\n}} // match *self"));
+        try!(writeln!(writer, "\n}} // fn method_id"));
+
+        try!(writeln!(writer, "\n}} // impl ProtocolMethodPayload for SpecMethod"));
+
+
+        // ProtocolMethod
+        try!(writeln!(writer, "\nimpl<'a> ::ProtocolMethod<'a> for SpecMethod<'a> {{\n\
+            type Start = connection::Start<'a>;\n\
+
+            fn as_start(&self) -> Option<&Self::Start> {{\n\
+                if let SpecMethod::Connection(ConnectionMethod::Start(ref start)) = *self {{\n\
+                    Some(start)\n\
+                }}\n\
+                else {{\n\
+                    None\n\
+                }} // if let Some(Method::Start(start)) == *self\n\
+            }} // fn as_start()\n\
+        }} // impl ::ProtocolMethod"));
 
         Ok(())
     }
@@ -119,15 +183,9 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
 
 impl<'a> SpecModuleWriter<'a> {
     pub fn new(spec: &'a Spec) -> Self {
-        let (minor, revision) = {
-            let version = spec.version();
-            (version.minor(), version.revision())
-        };
-        let struct_name = format!("{}{}_{}", spec.name().to_pascal_case(), minor, revision);
         let mod_name = spec_mod_name(spec);
 
         SpecModuleWriter {
-            struct_name: struct_name,
             mod_name: mod_name,
             domain_mapper: DomainMapper::new(spec.domains()),
             spec: spec,
@@ -150,7 +208,7 @@ impl<'a> SpecModuleWriter<'a> {
         Ok(())
     }
 
-    pub fn write_method_enum<W>(&self, writer: &mut W) -> io::Result<()>
+    pub fn write_method_enum<W>(&self, _: &mut W) -> io::Result<()>
         where W: io::Write
     {
         Ok(())
@@ -159,7 +217,7 @@ impl<'a> SpecModuleWriter<'a> {
     pub fn write_header_enum<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(writeln!(writer, "\npub enum Header<'a> {{"));
+        try!(writeln!(writer, "\npub enum SpecHeader<'a> {{"));
         for class in self.spec.classes().values() {
             let pascal_case = class.name().to_pascal_case();
             if class.fields().is_empty() {
@@ -170,7 +228,7 @@ impl<'a> SpecModuleWriter<'a> {
                 try!(writeln!(writer, "{}({}::Header<'a>),", pascal_case, snake_case));
             }
         }
-        try!(writeln!(writer, "}} // enum Header"));
+        try!(writeln!(writer, "}} // enum SpecHeader"));
 
         Ok(())
     }
@@ -178,25 +236,114 @@ impl<'a> SpecModuleWriter<'a> {
     pub fn write_frame_enum<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let frame_types = self.spec.frame_types();
+        let frame_types = self.spec.frame_types().keys()
+            .map(|name| {
+                let prefix_end = if name.starts_with("frame-") { 6 } else { 0 };
+                (&name[prefix_end..]).to_pascal_case()
+            })
+            .collect::<Vec<_>>();
+
         if frame_types.is_empty() {
             return Ok(())
         }
 
-        try!(writeln!(writer, "\npub enum Frame<'a> {{"));
-        for frame_type in frame_types.keys() {
-            let name_start = if frame_type.starts_with("frame-") { 6 } else { 0 };
-            let pascal_case = (&frame_type[name_start..]).to_pascal_case();
+        let version = self.spec.version();
 
-            try!(match pascal_case.as_str() {
-                "Method" | "OobMethod" => writeln!(writer, "{}(Method<'a>),", pascal_case),
-                "Header" | "OobHeader" => writeln!(writer, "{}(Header<'a>),", pascal_case),
-                "Body" | "OobBody" => writeln!(writer, "{}(&'a [u8]),", pascal_case),
-                _ => writeln!(writer, "{},", pascal_case),
+        let (cycle_prop, cycle_getter, cycle_arg, cycle_create) = if version.minor() == 8 {
+            (
+                "cycle: u8,\n",
+                "\n\
+                    pub fn cycle(&self) -> u8 {{\n\
+                        self.cycle\n\
+                    }} // fn cycle()\n\
+                 \n",
+                "cycle: u8,\n",
+                "cycle: cycle,\n",
+            )
+        } else {
+            ("", "", "", "")
+        };
+
+        // struct Frame
+        try!(writeln!(writer, "\n\
+                pub struct Frame<'a> {{\n\
+                    channel: u16,\n\
+                    {}\
+                    payload: FramePayload<'a>,\n\
+                }} // struct Frame\n\
+                \n\
+                impl<'a> Frame<'a> {{\n\
+                    pub fn new<P>(channel: u16, {}payload: P) -> Self\n\
+                        where P: Into<FramePayload<'a>>\n\
+                    {{\n\
+                        Frame {{\n\
+                            channel: channel,\n\
+                            {}\
+                            payload: payload.into(),\n\
+                        }} // Frame\n\
+                    }} // fn new()\n\
+                    \n\
+                    pub fn channel(&self) -> u16 {{\n\
+                        self.channel\n\
+                    }} // fn channel()\n\
+                    \n\
+                    pub fn payload(&self) -> &FramePayload<'a> {{\n\
+                        &self.payload\n\
+                    }} // fn payload()\n\
+                    {}\n\
+                 }} // impl Frame<'a>
+                    ",
+            cycle_prop, // struct Frame<'a>...
+            cycle_arg, // fn new()...
+            cycle_create, // Frame { cycle: ... }
+            cycle_getter, // fn cycle() -> u8
+        ));
+
+        // struct FramePayload
+        try!(writeln!(writer, "\npub enum FramePayload<'a> {{"));
+        for frame_type in &frame_types {
+            try!(match frame_type.as_str() {
+                "Method" | "OobMethod" => writeln!(writer, "{}(SpecMethod<'a>),", frame_type),
+                "Header" | "OobHeader" => writeln!(writer, "{}(SpecHeader<'a>),", frame_type),
+                "Body" | "OobBody" | "Trace" => writeln!(writer, "{}(&'a [u8]),", frame_type),
+                _ => writeln!(writer, "{},", frame_type),
             });
 
         }
-        try!(writeln!(writer, "}} // enum Frame"));
+        try!(writeln!(writer, "}} // enum FramePayload"));
+
+        // impl ProtocolFramePayload
+        try!(writeln!(writer, "impl<'a> ::ProtocolFramePayload<'a> for FramePayload<'a> {{"));
+        try!(writeln!(writer, "type Method = SpecMethod<'a>;"));
+
+        // fn as_method
+        try!(writeln!(writer, "fn as_method(&self) -> Option<&SpecMethod<'a>> {{"));
+        try!(writeln!(writer, "if let FramePayload::Method(ref method) = *self {{"));
+        try!(writeln!(writer, "Some(method)"));
+        try!(writeln!(writer, "}} else {{"));
+        try!(writeln!(writer, "None"));
+        try!(writeln!(writer, "}} // if "));
+        try!(writeln!(writer, "}} // fn as_method()"));
+
+        try!(writeln!(writer, "}} // impl ::ProtocolFramePayload for FramePayload"));
+
+        for frame_type in &frame_types {
+            match frame_type.as_str() {
+                "Heartbeat" | "Body" | "OobBody" | "OobHeader" | "OobMethod" => break,
+                _ => (),
+            }
+
+            let struct_name = if frame_type == "Method" { "SpecMethod" } else { frame_type };
+            // impl From<..> for FramePayload
+            try!(writeln!(writer, "impl<'a> From<{0}<'a>> for FramePayload<'a> {{\n\
+                fn from(payload: {0}<'a>) -> {0}<'a> {{\n\
+                        FramePayload::{1}(payload)\n\
+                    }}\n\
+                }} // impl From<{0}> for FramePayload<'a>\n",
+                struct_name,
+                frame_type
+            ));
+        }
 
         Ok(())
     }
