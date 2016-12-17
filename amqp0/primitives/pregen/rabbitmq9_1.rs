@@ -2616,6 +2616,15 @@ pub use self::exchange::ClassMethod as ExchangeMethod;
 pub use self::queue::ClassMethod as QueueMethod;
 pub use self::tx::ClassMethod as TxMethod;
 
+// Class headers
+pub use self::basic::Header as BasicHeader;
+pub use self::channel::Header as ChannelHeader;
+pub use self::confirm::Header as ConfirmHeader;
+pub use self::connection::Header as ConnectionHeader;
+pub use self::exchange::Header as ExchangeHeader;
+pub use self::queue::Header as QueueHeader;
+pub use self::tx::Header as TxHeader;
+
 pub enum SpecMethod<'a> {
     Basic(BasicMethod<'a>),
     Channel(ChannelMethod<'a>),

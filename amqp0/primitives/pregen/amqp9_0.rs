@@ -4560,6 +4560,20 @@ pub use self::stream::ClassMethod as StreamMethod;
 pub use self::tunnel::ClassMethod as TunnelMethod;
 pub use self::tx::ClassMethod as TxMethod;
 
+// Class headers
+pub use self::access::Header as AccessHeader;
+pub use self::basic::Header as BasicHeader;
+pub use self::channel::Header as ChannelHeader;
+pub use self::connection::Header as ConnectionHeader;
+pub use self::dtx::Header as DtxHeader;
+pub use self::exchange::Header as ExchangeHeader;
+pub use self::file::Header as FileHeader;
+pub use self::message::Header as MessageHeader;
+pub use self::queue::Header as QueueHeader;
+pub use self::stream::Header as StreamHeader;
+pub use self::tunnel::Header as TunnelHeader;
+pub use self::tx::Header as TxHeader;
+
 pub enum SpecMethod<'a> {
     Access(AccessMethod<'a>),
     Basic(BasicMethod<'a>),

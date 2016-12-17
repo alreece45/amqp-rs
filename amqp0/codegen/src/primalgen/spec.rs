@@ -118,6 +118,13 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
             }
         }
 
+        try!(writeln!(writer, "\n// Class headers"));
+        for &(ref pascal_case, ref module, _, has_methods) in &class_methods {
+            if has_methods {
+                try!(writeln!(writer, "pub use self::{}::Header as {}Header;", module, pascal_case));
+            }
+        }
+
         try!(writeln!(writer, "\npub enum SpecMethod{} {{", lifetimes));
         for &(ref pascal_case, _, has_lifetimes, has_methods) in &class_methods {
             if has_methods {
