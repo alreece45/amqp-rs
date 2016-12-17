@@ -5,16 +5,16 @@
 // To format and replace the pre-generated files, use: cargo --features="amqp0-build-parser"
 //
 // EDITORS BEWARE: Your modifications may be overridden
+#![allow(non_camel_case_types)]
 
 use nom::{IResult, be_u8, be_u16, be_u32, be_u64};
 
-// access Class
+// Class access
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::access::Request<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-realm: call!(::common::shortstr) >>
+do_parse!(input,realm: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
 call!(::common::bool_bit),
 call!(::common::bool_bit),
@@ -31,19 +31,35 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::access::RequestOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 (::primitives::qpid9_0::access::RequestOk::new(ticket))
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// basic Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::access::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::access::Request as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::access::ClassMethod::Request
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::access::RequestOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::access::ClassMethod::RequestOk
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::access::SpecMethod<'a>
+// Class basic
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Qos {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-prefetch_size: be_u32 >>
+do_parse!(input,prefetch_size: be_u32 >>
 prefetch_count: be_u16 >>
 global: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::basic::Qos::new(prefetch_size, prefetch_count, global))
@@ -55,8 +71,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::QosOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::basic::QosOk::new())
+do_parse!(input,(::primitives::qpid9_0::basic::QosOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -65,8 +80,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Consume<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 consumer_tag: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -85,8 +99,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::ConsumeOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 (::primitives::qpid9_0::basic::ConsumeOk::new(consumer_tag))
 ) // do_parse!
 } // fn nom_bytes
@@ -96,8 +109,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Cancel<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 nowait: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::basic::Cancel::new(consumer_tag, nowait))
 ) // do_parse!
@@ -108,8 +120,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::CancelOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 (::primitives::qpid9_0::basic::CancelOk::new(consumer_tag))
 ) // do_parse!
 } // fn nom_bytes
@@ -119,8 +130,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Publish<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -136,8 +146,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Return<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reply_code: be_u16 >>
+do_parse!(input,reply_code: be_u16 >>
 reply_text: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
@@ -150,8 +159,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Deliver<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 delivery_tag: be_u64 >>
 redelivered: bits!(call!(::common::bool_bit)) >>
 exchange: call!(::common::shortstr) >>
@@ -165,8 +173,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Get<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 no_ack: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::basic::Get::new(ticket, queue, no_ack))
@@ -178,8 +185,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::GetOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-delivery_tag: be_u64 >>
+do_parse!(input,delivery_tag: be_u64 >>
 redelivered: bits!(call!(::common::bool_bit)) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
@@ -193,8 +199,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::GetEmpty<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-cluster_id: call!(::common::shortstr) >>
+do_parse!(input,cluster_id: call!(::common::shortstr) >>
 (::primitives::qpid9_0::basic::GetEmpty::new(cluster_id))
 ) // do_parse!
 } // fn nom_bytes
@@ -204,8 +209,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Ack {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-delivery_tag: be_u64 >>
+do_parse!(input,delivery_tag: be_u64 >>
 multiple: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::basic::Ack::new(delivery_tag, multiple))
 ) // do_parse!
@@ -216,8 +220,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Reject {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-delivery_tag: be_u64 >>
+do_parse!(input,delivery_tag: be_u64 >>
 requeue: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::basic::Reject::new(delivery_tag, requeue))
 ) // do_parse!
@@ -228,8 +231,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::Recover {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-requeue: bits!(call!(::common::bool_bit)) >>
+do_parse!(input,requeue: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::basic::Recover::new(requeue))
 ) // do_parse!
 } // fn nom_bytes
@@ -239,8 +241,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::RecoverSync {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-requeue: bits!(call!(::common::bool_bit)) >>
+do_parse!(input,requeue: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::basic::RecoverSync::new(requeue))
 ) // do_parse!
 } // fn nom_bytes
@@ -250,18 +251,94 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::RecoverSyncOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::basic::RecoverSyncOk::new())
+do_parse!(input,(::primitives::qpid9_0::basic::RecoverSyncOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// channel Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::basic::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::basic::Qos as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Qos
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::basic::QosOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::QosOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::basic::Consume as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Consume
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::basic::ConsumeOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::ConsumeOk
+) | // map
+30 => map!(
+call!(<::primitives::qpid9_0::basic::Cancel as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Cancel
+) | // map
+31 => map!(
+call!(<::primitives::qpid9_0::basic::CancelOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::CancelOk
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::basic::Publish as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Publish
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::basic::Return as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Return
+) | // map
+60 => map!(
+call!(<::primitives::qpid9_0::basic::Deliver as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Deliver
+) | // map
+70 => map!(
+call!(<::primitives::qpid9_0::basic::Get as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Get
+) | // map
+71 => map!(
+call!(<::primitives::qpid9_0::basic::GetOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::GetOk
+) | // map
+72 => map!(
+call!(<::primitives::qpid9_0::basic::GetEmpty as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::GetEmpty
+) | // map
+80 => map!(
+call!(<::primitives::qpid9_0::basic::Ack as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Ack
+) | // map
+90 => map!(
+call!(<::primitives::qpid9_0::basic::Reject as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Reject
+) | // map
+100 => map!(
+call!(<::primitives::qpid9_0::basic::Recover as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::Recover
+) | // map
+102 => map!(
+call!(<::primitives::qpid9_0::basic::RecoverSync as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::RecoverSync
+) | // map
+101 => map!(
+call!(<::primitives::qpid9_0::basic::RecoverSyncOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::basic::ClassMethod::RecoverSyncOk
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::basic::SpecMethod<'a>
+// Class channel
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::Open<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-out_of_band: call!(::common::shortstr) >>
+do_parse!(input,out_of_band: call!(::common::shortstr) >>
 (::primitives::qpid9_0::channel::Open::new(out_of_band))
 ) // do_parse!
 } // fn nom_bytes
@@ -271,8 +348,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::OpenOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-channel_id: call!(::common::longstr) >>
+do_parse!(input,channel_id: call!(::common::longstr) >>
 (::primitives::qpid9_0::channel::OpenOk::new(channel_id))
 ) // do_parse!
 } // fn nom_bytes
@@ -282,8 +358,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::Flow {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-active: bits!(call!(::common::bool_bit)) >>
+do_parse!(input,active: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::channel::Flow::new(active))
 ) // do_parse!
 } // fn nom_bytes
@@ -293,8 +368,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::FlowOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-active: bits!(call!(::common::bool_bit)) >>
+do_parse!(input,active: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::channel::FlowOk::new(active))
 ) // do_parse!
 } // fn nom_bytes
@@ -304,8 +378,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::Close<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reply_code: be_u16 >>
+do_parse!(input,reply_code: be_u16 >>
 reply_text: call!(::common::shortstr) >>
 class_id: be_u16 >>
 method_id: be_u16 >>
@@ -318,8 +391,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::CloseOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::channel::CloseOk::new())
+do_parse!(input,(::primitives::qpid9_0::channel::CloseOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -328,8 +400,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::Resume<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-channel_id: call!(::common::longstr) >>
+do_parse!(input,channel_id: call!(::common::longstr) >>
 (::primitives::qpid9_0::channel::Resume::new(channel_id))
 ) // do_parse!
 } // fn nom_bytes
@@ -339,8 +410,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::Ping {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::channel::Ping::new())
+do_parse!(input,(::primitives::qpid9_0::channel::Ping::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -349,8 +419,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::Pong {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::channel::Pong::new())
+do_parse!(input,(::primitives::qpid9_0::channel::Pong::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -359,18 +428,66 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::Ok {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::channel::Ok::new())
+do_parse!(input,(::primitives::qpid9_0::channel::Ok::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// connection Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::channel::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::channel::Open as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::Open
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::channel::OpenOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::OpenOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::channel::Flow as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::Flow
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::channel::FlowOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::FlowOk
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::channel::Close as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::Close
+) | // map
+41 => map!(
+call!(<::primitives::qpid9_0::channel::CloseOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::CloseOk
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::channel::Resume as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::Resume
+) | // map
+60 => map!(
+call!(<::primitives::qpid9_0::channel::Ping as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::Ping
+) | // map
+70 => map!(
+call!(<::primitives::qpid9_0::channel::Pong as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::Pong
+) | // map
+80 => map!(
+call!(<::primitives::qpid9_0::channel::Ok as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::channel::ClassMethod::Ok
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::channel::SpecMethod<'a>
+// Class connection
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::Start<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-version_major: be_u8 >>
+do_parse!(input,version_major: be_u8 >>
 version_minor: be_u8 >>
 server_properties: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 mechanisms: call!(::common::longstr) >>
@@ -384,8 +501,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::StartOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-client_properties: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
+do_parse!(input,client_properties: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 mechanism: call!(::common::shortstr) >>
 response: call!(::common::longstr) >>
 locale: call!(::common::shortstr) >>
@@ -398,8 +514,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::Secure<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-challenge: call!(::common::longstr) >>
+do_parse!(input,challenge: call!(::common::longstr) >>
 (::primitives::qpid9_0::connection::Secure::new(challenge))
 ) // do_parse!
 } // fn nom_bytes
@@ -409,8 +524,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::SecureOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-response: call!(::common::longstr) >>
+do_parse!(input,response: call!(::common::longstr) >>
 (::primitives::qpid9_0::connection::SecureOk::new(response))
 ) // do_parse!
 } // fn nom_bytes
@@ -420,8 +534,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::Tune {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-channel_max: be_u16 >>
+do_parse!(input,channel_max: be_u16 >>
 frame_max: be_u32 >>
 heartbeat: be_u16 >>
 (::primitives::qpid9_0::connection::Tune::new(channel_max, frame_max, heartbeat))
@@ -433,8 +546,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::TuneOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-channel_max: be_u16 >>
+do_parse!(input,channel_max: be_u16 >>
 frame_max: be_u32 >>
 heartbeat: be_u16 >>
 (::primitives::qpid9_0::connection::TuneOk::new(channel_max, frame_max, heartbeat))
@@ -446,8 +558,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::Open<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-virtual_host: call!(::common::shortstr) >>
+do_parse!(input,virtual_host: call!(::common::shortstr) >>
 capabilities: call!(::common::shortstr) >>
 insist: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::connection::Open::new(virtual_host, capabilities, insist))
@@ -459,8 +570,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::OpenOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-known_hosts: call!(::common::shortstr) >>
+do_parse!(input,known_hosts: call!(::common::shortstr) >>
 (::primitives::qpid9_0::connection::OpenOk::new(known_hosts))
 ) // do_parse!
 } // fn nom_bytes
@@ -470,8 +580,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::Redirect<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-host: call!(::common::shortstr) >>
+do_parse!(input,host: call!(::common::shortstr) >>
 known_hosts: call!(::common::shortstr) >>
 (::primitives::qpid9_0::connection::Redirect::new(host, known_hosts))
 ) // do_parse!
@@ -482,8 +591,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::Close<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reply_code: be_u16 >>
+do_parse!(input,reply_code: be_u16 >>
 reply_text: call!(::common::shortstr) >>
 class_id: be_u16 >>
 method_id: be_u16 >>
@@ -496,18 +604,70 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::CloseOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::connection::CloseOk::new())
+do_parse!(input,(::primitives::qpid9_0::connection::CloseOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// dtx Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::connection::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::connection::Start as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::Start
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::connection::StartOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::StartOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::connection::Secure as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::Secure
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::connection::SecureOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::SecureOk
+) | // map
+30 => map!(
+call!(<::primitives::qpid9_0::connection::Tune as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::Tune
+) | // map
+31 => map!(
+call!(<::primitives::qpid9_0::connection::TuneOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::TuneOk
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::connection::Open as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::Open
+) | // map
+41 => map!(
+call!(<::primitives::qpid9_0::connection::OpenOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::OpenOk
+) | // map
+42 => map!(
+call!(<::primitives::qpid9_0::connection::Redirect as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::Redirect
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::connection::Close as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::Close
+) | // map
+51 => map!(
+call!(<::primitives::qpid9_0::connection::CloseOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::connection::ClassMethod::CloseOk
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::connection::SpecMethod<'a>
+// Class dtx
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::dtx::Select {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::dtx::Select::new())
+do_parse!(input,(::primitives::qpid9_0::dtx::Select::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -516,8 +676,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::dtx::SelectOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::dtx::SelectOk::new())
+do_parse!(input,(::primitives::qpid9_0::dtx::SelectOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -526,8 +685,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::dtx::Start<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-dtx_identifier: call!(::common::shortstr) >>
+do_parse!(input,dtx_identifier: call!(::common::shortstr) >>
 (::primitives::qpid9_0::dtx::Start::new(dtx_identifier))
 ) // do_parse!
 } // fn nom_bytes
@@ -537,18 +695,42 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::dtx::StartOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::dtx::StartOk::new())
+do_parse!(input,(::primitives::qpid9_0::dtx::StartOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// exchange Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::dtx::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::dtx::Select as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::dtx::ClassMethod::Select
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::dtx::SelectOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::dtx::ClassMethod::SelectOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::dtx::Start as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::dtx::ClassMethod::Start
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::dtx::StartOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::dtx::ClassMethod::StartOk
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::dtx::SpecMethod<'a>
+// Class exchange
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::exchange::Declare<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 exchange: call!(::common::shortstr) >>
 ty: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -568,8 +750,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::exchange::DeclareOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::exchange::DeclareOk::new())
+do_parse!(input,(::primitives::qpid9_0::exchange::DeclareOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -578,8 +759,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::exchange::Delete<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 exchange: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
 call!(::common::bool_bit),
@@ -594,8 +774,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::exchange::DeleteOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::exchange::DeleteOk::new())
+do_parse!(input,(::primitives::qpid9_0::exchange::DeleteOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -604,8 +783,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::exchange::Bound<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-exchange: call!(::common::shortstr) >>
+do_parse!(input,exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 queue: call!(::common::shortstr) >>
 (::primitives::qpid9_0::exchange::Bound::new(exchange, routing_key, queue))
@@ -617,20 +795,52 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::exchange::BoundOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reply_code: be_u16 >>
+do_parse!(input,reply_code: be_u16 >>
 reply_text: call!(::common::shortstr) >>
 (::primitives::qpid9_0::exchange::BoundOk::new(reply_code, reply_text))
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// file Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::exchange::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::exchange::Declare as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::exchange::ClassMethod::Declare
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::exchange::DeclareOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::exchange::ClassMethod::DeclareOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::exchange::Delete as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::exchange::ClassMethod::Delete
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::exchange::DeleteOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::exchange::ClassMethod::DeleteOk
+) | // map
+22 => map!(
+call!(<::primitives::qpid9_0::exchange::Bound as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::exchange::ClassMethod::Bound
+) | // map
+23 => map!(
+call!(<::primitives::qpid9_0::exchange::BoundOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::exchange::ClassMethod::BoundOk
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::exchange::SpecMethod<'a>
+// Class file
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Qos {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-prefetch_size: be_u32 >>
+do_parse!(input,prefetch_size: be_u32 >>
 prefetch_count: be_u16 >>
 global: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::file::Qos::new(prefetch_size, prefetch_count, global))
@@ -642,8 +852,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::QosOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::file::QosOk::new())
+do_parse!(input,(::primitives::qpid9_0::file::QosOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -652,8 +861,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Consume<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 consumer_tag: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -672,8 +880,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::ConsumeOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 (::primitives::qpid9_0::file::ConsumeOk::new(consumer_tag))
 ) // do_parse!
 } // fn nom_bytes
@@ -683,8 +890,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Cancel<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 nowait: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::file::Cancel::new(consumer_tag, nowait))
 ) // do_parse!
@@ -695,8 +901,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::CancelOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 (::primitives::qpid9_0::file::CancelOk::new(consumer_tag))
 ) // do_parse!
 } // fn nom_bytes
@@ -706,8 +911,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Open<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-identifier: call!(::common::shortstr) >>
+do_parse!(input,identifier: call!(::common::shortstr) >>
 content_size: be_u64 >>
 (::primitives::qpid9_0::file::Open::new(identifier, content_size))
 ) // do_parse!
@@ -718,8 +922,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::OpenOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-staged_size: be_u64 >>
+do_parse!(input,staged_size: be_u64 >>
 (::primitives::qpid9_0::file::OpenOk::new(staged_size))
 ) // do_parse!
 } // fn nom_bytes
@@ -729,8 +932,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Stage {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::file::Stage::new())
+do_parse!(input,(::primitives::qpid9_0::file::Stage::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -739,8 +941,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Publish<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -757,8 +958,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Return<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reply_code: be_u16 >>
+do_parse!(input,reply_code: be_u16 >>
 reply_text: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
@@ -771,8 +971,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Deliver<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 delivery_tag: be_u64 >>
 redelivered: bits!(call!(::common::bool_bit)) >>
 exchange: call!(::common::shortstr) >>
@@ -787,8 +986,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Ack {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-delivery_tag: be_u64 >>
+do_parse!(input,delivery_tag: be_u64 >>
 multiple: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::file::Ack::new(delivery_tag, multiple))
 ) // do_parse!
@@ -799,20 +997,84 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::Reject {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-delivery_tag: be_u64 >>
+do_parse!(input,delivery_tag: be_u64 >>
 requeue: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::file::Reject::new(delivery_tag, requeue))
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// message Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::file::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::file::Qos as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Qos
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::file::QosOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::QosOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::file::Consume as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Consume
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::file::ConsumeOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::ConsumeOk
+) | // map
+30 => map!(
+call!(<::primitives::qpid9_0::file::Cancel as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Cancel
+) | // map
+31 => map!(
+call!(<::primitives::qpid9_0::file::CancelOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::CancelOk
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::file::Open as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Open
+) | // map
+41 => map!(
+call!(<::primitives::qpid9_0::file::OpenOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::OpenOk
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::file::Stage as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Stage
+) | // map
+60 => map!(
+call!(<::primitives::qpid9_0::file::Publish as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Publish
+) | // map
+70 => map!(
+call!(<::primitives::qpid9_0::file::Return as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Return
+) | // map
+80 => map!(
+call!(<::primitives::qpid9_0::file::Deliver as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Deliver
+) | // map
+90 => map!(
+call!(<::primitives::qpid9_0::file::Ack as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Ack
+) | // map
+100 => map!(
+call!(<::primitives::qpid9_0::file::Reject as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::file::ClassMethod::Reject
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::file::SpecMethod<'a>
+// Class message
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Transfer<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 destination: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
 call!(::common::bool_bit),
@@ -845,8 +1107,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Consume<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 destination: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -864,8 +1125,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Cancel<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-destination: call!(::common::shortstr) >>
+do_parse!(input,destination: call!(::common::shortstr) >>
 (::primitives::qpid9_0::message::Cancel::new(destination))
 ) // do_parse!
 } // fn nom_bytes
@@ -875,8 +1135,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Get<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 destination: call!(::common::shortstr) >>
 no_ack: bits!(call!(::common::bool_bit)) >>
@@ -889,8 +1148,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Recover {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-requeue: bits!(call!(::common::bool_bit)) >>
+do_parse!(input,requeue: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::message::Recover::new(requeue))
 ) // do_parse!
 } // fn nom_bytes
@@ -900,8 +1158,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Open<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reference: call!(::common::longstr) >>
+do_parse!(input,reference: call!(::common::longstr) >>
 (::primitives::qpid9_0::message::Open::new(reference))
 ) // do_parse!
 } // fn nom_bytes
@@ -911,8 +1168,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Close<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reference: call!(::common::longstr) >>
+do_parse!(input,reference: call!(::common::longstr) >>
 (::primitives::qpid9_0::message::Close::new(reference))
 ) // do_parse!
 } // fn nom_bytes
@@ -922,8 +1178,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Append<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reference: call!(::common::longstr) >>
+do_parse!(input,reference: call!(::common::longstr) >>
 bytes: call!(::common::longstr) >>
 (::primitives::qpid9_0::message::Append::new(reference, bytes))
 ) // do_parse!
@@ -934,8 +1189,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Checkpoint<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reference: call!(::common::longstr) >>
+do_parse!(input,reference: call!(::common::longstr) >>
 identifier: call!(::common::shortstr) >>
 (::primitives::qpid9_0::message::Checkpoint::new(reference, identifier))
 ) // do_parse!
@@ -946,8 +1200,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Resume<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reference: call!(::common::longstr) >>
+do_parse!(input,reference: call!(::common::longstr) >>
 identifier: call!(::common::shortstr) >>
 (::primitives::qpid9_0::message::Resume::new(reference, identifier))
 ) // do_parse!
@@ -958,8 +1211,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Qos {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-prefetch_size: be_u32 >>
+do_parse!(input,prefetch_size: be_u32 >>
 prefetch_count: be_u16 >>
 global: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::message::Qos::new(prefetch_size, prefetch_count, global))
@@ -971,8 +1223,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Ok {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::message::Ok::new())
+do_parse!(input,(::primitives::qpid9_0::message::Ok::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -981,8 +1232,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Empty {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::message::Empty::new())
+do_parse!(input,(::primitives::qpid9_0::message::Empty::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -991,8 +1241,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Reject<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-code: be_u16 >>
+do_parse!(input,code: be_u16 >>
 text: call!(::common::shortstr) >>
 (::primitives::qpid9_0::message::Reject::new(code, text))
 ) // do_parse!
@@ -1003,19 +1252,87 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::Offset {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-value: be_u64 >>
+do_parse!(input,value: be_u64 >>
 (::primitives::qpid9_0::message::Offset::new(value))
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// queue Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::message::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::message::Transfer as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Transfer
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::message::Consume as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Consume
+) | // map
+30 => map!(
+call!(<::primitives::qpid9_0::message::Cancel as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Cancel
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::message::Get as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Get
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::message::Recover as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Recover
+) | // map
+60 => map!(
+call!(<::primitives::qpid9_0::message::Open as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Open
+) | // map
+70 => map!(
+call!(<::primitives::qpid9_0::message::Close as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Close
+) | // map
+80 => map!(
+call!(<::primitives::qpid9_0::message::Append as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Append
+) | // map
+90 => map!(
+call!(<::primitives::qpid9_0::message::Checkpoint as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Checkpoint
+) | // map
+100 => map!(
+call!(<::primitives::qpid9_0::message::Resume as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Resume
+) | // map
+110 => map!(
+call!(<::primitives::qpid9_0::message::Qos as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Qos
+) | // map
+500 => map!(
+call!(<::primitives::qpid9_0::message::Ok as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Ok
+) | // map
+510 => map!(
+call!(<::primitives::qpid9_0::message::Empty as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Empty
+) | // map
+520 => map!(
+call!(<::primitives::qpid9_0::message::Reject as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Reject
+) | // map
+530 => map!(
+call!(<::primitives::qpid9_0::message::Offset as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::message::ClassMethod::Offset
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::message::SpecMethod<'a>
+// Class queue
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::Declare<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
 call!(::common::bool_bit),
@@ -1034,8 +1351,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::DeclareOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-queue: call!(::common::shortstr) >>
+do_parse!(input,queue: call!(::common::shortstr) >>
 message_count: be_u32 >>
 consumer_count: be_u32 >>
 (::primitives::qpid9_0::queue::DeclareOk::new(queue, message_count, consumer_count))
@@ -1047,8 +1363,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::Bind<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
@@ -1063,8 +1378,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::BindOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::queue::BindOk::new())
+do_parse!(input,(::primitives::qpid9_0::queue::BindOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1073,8 +1387,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::Unbind<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
@@ -1088,8 +1401,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::UnbindOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::queue::UnbindOk::new())
+do_parse!(input,(::primitives::qpid9_0::queue::UnbindOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1098,8 +1410,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::Purge<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 nowait: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::queue::Purge::new(ticket, queue, nowait))
@@ -1111,8 +1422,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::PurgeOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-message_count: be_u32 >>
+do_parse!(input,message_count: be_u32 >>
 (::primitives::qpid9_0::queue::PurgeOk::new(message_count))
 ) // do_parse!
 } // fn nom_bytes
@@ -1122,8 +1432,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::Delete<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
 call!(::common::bool_bit),
@@ -1139,19 +1448,67 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::DeleteOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-message_count: be_u32 >>
+do_parse!(input,message_count: be_u32 >>
 (::primitives::qpid9_0::queue::DeleteOk::new(message_count))
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// stream Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::queue::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::queue::Declare as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::Declare
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::queue::DeclareOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::DeclareOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::queue::Bind as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::Bind
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::queue::BindOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::BindOk
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::queue::Unbind as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::Unbind
+) | // map
+51 => map!(
+call!(<::primitives::qpid9_0::queue::UnbindOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::UnbindOk
+) | // map
+30 => map!(
+call!(<::primitives::qpid9_0::queue::Purge as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::Purge
+) | // map
+31 => map!(
+call!(<::primitives::qpid9_0::queue::PurgeOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::PurgeOk
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::queue::Delete as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::Delete
+) | // map
+41 => map!(
+call!(<::primitives::qpid9_0::queue::DeleteOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::queue::ClassMethod::DeleteOk
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::queue::SpecMethod<'a>
+// Class stream
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::Qos {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-prefetch_size: be_u32 >>
+do_parse!(input,prefetch_size: be_u32 >>
 prefetch_count: be_u16 >>
 consume_rate: be_u32 >>
 global: bits!(call!(::common::bool_bit)) >>
@@ -1164,8 +1521,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::QosOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::stream::QosOk::new())
+do_parse!(input,(::primitives::qpid9_0::stream::QosOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1174,8 +1530,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::Consume<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 queue: call!(::common::shortstr) >>
 consumer_tag: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -1193,8 +1548,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::ConsumeOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 (::primitives::qpid9_0::stream::ConsumeOk::new(consumer_tag))
 ) // do_parse!
 } // fn nom_bytes
@@ -1204,8 +1558,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::Cancel<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 nowait: bits!(call!(::common::bool_bit)) >>
 (::primitives::qpid9_0::stream::Cancel::new(consumer_tag, nowait))
 ) // do_parse!
@@ -1216,8 +1569,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::CancelOk<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 (::primitives::qpid9_0::stream::CancelOk::new(consumer_tag))
 ) // do_parse!
 } // fn nom_bytes
@@ -1227,8 +1579,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::Publish<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-ticket: be_u16 >>
+do_parse!(input,ticket: be_u16 >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
 flag1: bits!(tuple!(
@@ -1244,8 +1595,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::Return<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-reply_code: be_u16 >>
+do_parse!(input,reply_code: be_u16 >>
 reply_text: call!(::common::shortstr) >>
 exchange: call!(::common::shortstr) >>
 routing_key: call!(::common::shortstr) >>
@@ -1258,8 +1608,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::Deliver<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-consumer_tag: call!(::common::shortstr) >>
+do_parse!(input,consumer_tag: call!(::common::shortstr) >>
 delivery_tag: be_u64 >>
 exchange: call!(::common::shortstr) >>
 queue: call!(::common::shortstr) >>
@@ -1267,24 +1616,82 @@ queue: call!(::common::shortstr) >>
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// tunnel Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::stream::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::stream::Qos as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::Qos
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::stream::QosOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::QosOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::stream::Consume as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::Consume
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::stream::ConsumeOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::ConsumeOk
+) | // map
+30 => map!(
+call!(<::primitives::qpid9_0::stream::Cancel as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::Cancel
+) | // map
+31 => map!(
+call!(<::primitives::qpid9_0::stream::CancelOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::CancelOk
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::stream::Publish as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::Publish
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::stream::Return as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::Return
+) | // map
+60 => map!(
+call!(<::primitives::qpid9_0::stream::Deliver as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::stream::ClassMethod::Deliver
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::stream::SpecMethod<'a>
+// Class tunnel
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tunnel::Request<'a> {
 fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-meta_data: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
+do_parse!(input,meta_data: apply!(<::primitives::field::TableEntries as ::NomBytes>::nom_bytes, pool) >>
 (::primitives::qpid9_0::tunnel::Request::new(meta_data))
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
-// tx Class
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tunnel::ClassMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::tunnel::Request as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::tunnel::ClassMethod::Request
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::tunnel::SpecMethod<'a>
+// Class tx
 impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tx::Select {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::tx::Select::new())
+do_parse!(input,(::primitives::qpid9_0::tx::Select::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1293,8 +1700,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tx::SelectOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::tx::SelectOk::new())
+do_parse!(input,(::primitives::qpid9_0::tx::SelectOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1303,8 +1709,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tx::Commit {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::tx::Commit::new())
+do_parse!(input,(::primitives::qpid9_0::tx::Commit::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1313,8 +1718,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tx::CommitOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::tx::CommitOk::new())
+do_parse!(input,(::primitives::qpid9_0::tx::CommitOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1323,8 +1727,7 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tx::Rollback {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::tx::Rollback::new())
+do_parse!(input,(::primitives::qpid9_0::tx::Rollback::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
@@ -1333,8 +1736,158 @@ impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tx::RollbackOk {
 fn nom_bytes<'b, P>(input: &'a [u8], _: &'b mut P) -> IResult<&'a [u8], Self>
 where P: ::pool::ParserPool
 {
-do_parse!(input,
-(::primitives::qpid9_0::tx::RollbackOk::new())
+do_parse!(input,(::primitives::qpid9_0::tx::RollbackOk::new())
 ) // do_parse!
 } // fn nom_bytes
 } // impl NomBytes
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::tx::ClassMethod {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+10 => map!(
+call!(<::primitives::qpid9_0::tx::Select as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::tx::ClassMethod::Select
+) | // map
+11 => map!(
+call!(<::primitives::qpid9_0::tx::SelectOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::tx::ClassMethod::SelectOk
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::tx::Commit as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::tx::ClassMethod::Commit
+) | // map
+21 => map!(
+call!(<::primitives::qpid9_0::tx::CommitOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::tx::ClassMethod::CommitOk
+) | // map
+30 => map!(
+call!(<::primitives::qpid9_0::tx::Rollback as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::tx::ClassMethod::Rollback
+) | // map
+31 => map!(
+call!(<::primitives::qpid9_0::tx::RollbackOk as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::tx::ClassMethod::RollbackOk
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::tx::SpecMethod<'a>
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::SpecMethod<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u16,
+
+30 => map!(
+call!(<::primitives::qpid9_0::AccessMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Access
+) | // map
+60 => map!(
+call!(<::primitives::qpid9_0::BasicMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Basic
+) | // map
+20 => map!(
+call!(<::primitives::qpid9_0::ChannelMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Channel
+) | // map
+10 => map!(
+call!(<::primitives::qpid9_0::ConnectionMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Connection
+) | // map
+100 => map!(
+call!(<::primitives::qpid9_0::DtxMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Dtx
+) | // map
+40 => map!(
+call!(<::primitives::qpid9_0::ExchangeMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Exchange
+) | // map
+70 => map!(
+call!(<::primitives::qpid9_0::FileMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::File
+) | // map
+120 => map!(
+call!(<::primitives::qpid9_0::MessageMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Message
+) | // map
+50 => map!(
+call!(<::primitives::qpid9_0::QueueMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Queue
+) | // map
+80 => map!(
+call!(<::primitives::qpid9_0::StreamMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Stream
+) | // map
+110 => map!(
+call!(<::primitives::qpid9_0::TunnelMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Tunnel
+) | // map
+90 => map!(
+call!(<::primitives::qpid9_0::TxMethod as ::NomBytes>::nom_bytes, pool),
+::primitives::qpid9_0::SpecMethod::Tx
+) // map!
+) // switch!
+} // fn nom_bytes
+} // impl ::NomBytes<'a> for ::primitives::qpid9_0::SpecMethod<'a>
+
+impl<'a> ::NomBytes<'a> for ::primitives::qpid9_0::Frame<'a> {
+fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>
+where P: ::pool::ParserPool
+{
+switch!(input, be_u8,
+
+3 => do_parse!(
+channel: be_u16 >>
+payload: map!(length_bytes!(be_u32), ::primitives::qpid9_0::FramePayload::Body) >>
+(::primitives::qpid9_0::Frame::new(channel, payload))
+
+) | // do_parse
+8 => do_parse!(
+payload: value!(
+::primitives::qpid9_0::FramePayload::Heartbeat,
+tag!(b"\x00\x00\xCE")
+) >>channel: value!(0) >>(::primitives::qpid9_0::Frame::new(channel, payload))
+
+) | // do_parse
+1 => do_parse!(
+channel: be_u16 >>
+payload: map!(
+length_value!(
+be_u32,
+call!(<::primitives::qpid9_0::SpecMethod as ::NomBytes>::nom_bytes, pool)
+),
+::primitives::qpid9_0::FramePayload::Method
+) >> // map
+(::primitives::qpid9_0::Frame::new(channel, payload))
+
+) | // do_parse
+6 => do_parse!(
+channel: be_u16 >>
+payload: map!(length_bytes!(be_u32), ::primitives::qpid9_0::FramePayload::OobBody) >>
+(::primitives::qpid9_0::Frame::new(channel, payload))
+
+) | // do_parse
+4 => do_parse!(
+channel: be_u16 >>
+payload: map!(
+length_value!(
+be_u32,
+call!(<::primitives::qpid9_0::SpecMethod as ::NomBytes>::nom_bytes, pool)
+),
+::primitives::qpid9_0::FramePayload::OobMethod
+) >> // map
+(::primitives::qpid9_0::Frame::new(channel, payload))
+
+) | // do_parse
+7 => do_parse!(
+channel: be_u16 >>
+payload: map!(length_bytes!(be_u32), ::primitives::qpid9_0::FramePayload::Trace) >>
+(::primitives::qpid9_0::Frame::new(channel, payload))
+
+) // do_parse
+) // switch!
+} // fn nom_bytes
+} // impl NomBytes<'a> for ::primitives::qpid9_0::Frame<'a>

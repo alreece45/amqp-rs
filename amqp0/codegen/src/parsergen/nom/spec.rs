@@ -9,11 +9,12 @@
 use std::io;
 
 use inflections::Inflect;
-use specs::Spec;
+use specs::{Spec, Class};
 
 use CodeGenerator;
-use common::spec_mod_name;
-use common::domain::DomainMapper;
+use common::{spec_mod_name, frame_type_name};
+
+use common::domain::{Domain, DomainMapper};
 use super::MethodModuleWriter;
 
 pub struct SpecModuleWriter<'a> {
@@ -30,16 +31,25 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
             return Ok(());
         }
 
+        // some nom parsers have an unused variable e
+        try!(writeln!(writer, "#![allow(unused_variables)]"));
         try!(writeln!(writer, "\nuse nom::{{IResult, be_u8, be_u16, be_u32, be_u64}};\n"));
 
         for class in self.spec.classes().values() {
-            try!(write!(writer, "// {} Class", class.name()));
+            try!(write!(writer, "// Class {}", class.name()));
             for method in class.methods() {
                 let mod_name = format!("{}::{}", self.mod_name, class.name().to_snake_case());
                 let method_writer = MethodModuleWriter::new(&mod_name, method, &self.domain_mapper);
                 try!(method_writer.write_rust_to(writer));
             }
+
+            //try!(self.write_class_header_parser(class, writer));
+            try!(self.write_class_method_parser(class, writer));
         }
+
+        //try!(self.write_spec_header_parser(writer));
+        try!(self.write_spec_method_parser(writer));
+        try!(self.write_frame_parser(writer));
 
         Ok(())
     }
@@ -52,6 +62,164 @@ impl<'a> SpecModuleWriter<'a> {
             domain_mapper: DomainMapper::new(spec.domains()),
             spec: spec,
         }
+    }
+
+    fn write_frame_parser<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        try!(writeln!(writer, "\n\
+            impl<'a> ::NomBytes<'a> for ::primitives::{}::Frame<'a> {{\n\
+                fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>\n\
+                    where P: ::pool::ParserPool\n\
+                {{\n\
+                    switch!(input, be_u8,\n",
+                      self.mod_name
+        ));
+
+        let (cycle_parse, cycle_arg) = if self.spec.version().minor() == 8 {
+            ("\ncycle: be_u8 >>", "cycle, ")
+        } else {
+            ("", "")
+        };
+
+        let mut has_parent = false;
+        for ty in self.spec.frame_types().values() {
+            let name = frame_type_name(ty.name());
+
+            // FIXME: implement header parsing
+            if name == "Header" || name == "OobHeader" {
+                continue;
+            }
+            if has_parent {
+                try!(writeln!(writer, " | // do_parse"))
+            }
+            else {
+                has_parent = true;
+            }
+
+            try!(write!(writer, "{} => ", ty.value()));
+            try!(writeln!(writer, "do_parse!({}", cycle_parse));
+
+            match name.as_str() {
+                "Heartbeat" => {
+                    try!(write!(writer,
+                                "payload: value!(\n\
+                                    ::primitives::{0}::FramePayload::Heartbeat,\n\
+                                    tag!(b\"\\x00\\x00\\xCE\")\n\
+                                ) >>\
+                                channel: value!(0) >>",
+                                self.mod_name
+                    ));
+                },
+                enum_name => {
+                    try!(write!(writer, "\
+                            channel: be_u16 >>\n\
+                            payload: "
+                    ));
+
+                    let struct_name = match enum_name {
+                        "Method" | "OobMethod" => Some("SpecMethod"),
+                        "Header" | "OobHeader" => Some("SpecHeader"),
+                        _ => None,
+                    };
+
+                    if let Some(struct_name) = struct_name {
+                        try!(writeln!(writer,
+                                      "map!(\n\
+                                          length_value!(\n\
+                                              be_u32,\n\
+                                              call!(<::primitives::{0}::{1} as ::NomBytes>::nom_bytes, pool)\n\
+                                          ),\n\
+                                          ::primitives::{0}::FramePayload::{2}\n\
+                                      ) >> // map",
+                                      self.mod_name,
+                                      struct_name,
+                                      enum_name
+                        ));
+                    }
+                        else {
+                            try!(writeln!(
+                                writer,
+                                "map!(length_bytes!(be_u32), ::primitives::{}::FramePayload::{}) >>",
+                                self.mod_name,
+                                enum_name
+                            ));
+                        }
+                }
+            }
+
+            try!(writeln!(
+                writer,
+                "(::primitives::{}::Frame::new(channel, {}payload))\n",
+                self.mod_name,
+                cycle_arg,
+            ));
+            try!(write!(writer, ")"));
+        }
+
+        try!(writeln!(writer, " // do_parse"));
+        try!(writeln!(writer, ") // switch!"));
+        try!(writeln!(writer, "}} // fn nom_bytes"));
+        try!(writeln!(writer, "}} // impl NomBytes<'a> for ::primitives::{}::Frame<'a>", self.mod_name));
+
+        Ok(())
+    }
+
+    fn write_class_method_parser<W>(&self, class: &Class, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        let has_lifetimes = class.methods().iter()
+            .flat_map(|method| method.fields())
+            .filter(|field| !field.is_reserved())
+            .map(|field| Domain::new(self.domain_mapper.map(field.domain())))
+            .any(|domain| !domain.is_copy());
+
+        let lifetimes = if has_lifetimes { "<'a>" } else { "" };
+
+        let class_mod_name = class.name().to_snake_case();
+        try!(writeln!(writer, "\n\
+            impl<'a> ::NomBytes<'a> for ::primitives::{}::{}::ClassMethod{} {{\n\
+                fn nom_bytes<'b, P>(input: &'a [u8], pool: &'b mut P) -> IResult<&'a [u8], Self>\n\
+                    where P: ::pool::ParserPool\n\
+                {{\n\
+                    switch!(input, be_u16,\n",
+            self.mod_name,
+            class_mod_name,
+            lifetimes
+        ));
+
+        let mut has_parent = false;
+        for method in class.methods() {
+            if has_parent {
+                try!(writeln!(writer, " | // map"))
+            }
+            else {
+                has_parent = true;
+            }
+
+            try!(write!(
+                writer,
+                "{0} => map!(\n\
+                    call!(<::primitives::{1}::{2}::{3} as ::NomBytes>::nom_bytes, pool),\n\
+                    ::primitives::{1}::{2}::ClassMethod::{3}\n\
+                )",
+                method.index(),
+                self.mod_name,
+                class_mod_name,
+                method.name().to_pascal_case(),
+            ));
+        }
+        try!(writeln!(writer, " // map!"));
+        try!(writeln!(writer, ") // switch!"));
+        try!(writeln!(writer, "}} // fn nom_bytes"));
+        try!(writeln!(
+            writer,
+            "}} // impl ::NomBytes<'a> for ::primitives::{}::{}::SpecMethod<'a>",
+            self.mod_name,
+            class_mod_name
+        ));
+
+        Ok(())
     }
 
     pub fn mod_name(&self) -> &str {
