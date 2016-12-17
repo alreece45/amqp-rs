@@ -10,27 +10,27 @@ use super::Config;
 
 use std::borrow::Cow;
 use url::Url;
-use primitives::Spec;
-use primitives::rabbitmq9_1::Rabbitmq9_1;
+use parser_nom::NomBytes;
+use primitives::{Protocol, Rabbitmq9_1};
 
-use session::auth::{Authenticator, PlainAuthenticator};
 use channel;
+use session::BlockingSession;
+use session::auth::{Authenticator, PlainAuthenticator};
 use super::ParseUrlError;
 
 type DefaultAuthenticator = PlainAuthenticator<'static>;
-type DefaultSpec = Rabbitmq9_1;
+type DefaultProtocol = Rabbitmq9_1;
 
 /// Provides an interface to build a session configuration (`SessionConfig`)
 #[derive(Debug, Clone, PartialEq)]
-pub struct ConfigBuilder<'a, S, A, C>
-    where S: Spec,
-          A: Authenticator,
+pub struct ConfigBuilder<'config, S, A, C>
+    where A: Authenticator,
           C: channel::IdStrategy
 {
-    config: Config<'a, S, A, C>
+    config: Config<'config, S, A, C>
 }
 
-impl<'a> ConfigBuilder<'a, Rabbitmq9_1, PlainAuthenticator<'a>, channel::DefaultIdStrategy> {
+impl<'config> ConfigBuilder<'config, Rabbitmq9_1, PlainAuthenticator<'config>, channel::DefaultIdStrategy> {
     pub fn parse_url<U>(url: U) -> Result<Self, ParseUrlError>
         where U: AsRef<str>
     {
@@ -74,13 +74,21 @@ impl<'a> ConfigBuilder<'a, Rabbitmq9_1, PlainAuthenticator<'a>, channel::Default
     }
 }
 
-impl<'a, S, A, C> ConfigBuilder<'a, S, A, C>
-    where S: Spec,
-          A: Authenticator,
+impl<'config, P, A, C> ConfigBuilder<'config, P, A, C>
+    where A: Authenticator,
+          C: channel::IdStrategy
+{
+    pub fn into_blocking(self) -> BlockingSession<'config, P, A, C> {
+        BlockingSession::from_config(self.into())
+    }
+}
+
+impl<'config, P, A, C> ConfigBuilder<'config, P, A, C>
+    where A: Authenticator,
           C: channel::IdStrategy
 {
     pub fn host<H>(mut self, host: H) -> Self
-        where H: Into<Cow<'a, str>>
+        where H: Into<Cow<'config, str>>
     {
         self.config.host = host.into();
         self
@@ -92,7 +100,7 @@ impl<'a, S, A, C> ConfigBuilder<'a, S, A, C>
     }
 
     pub fn virtual_host<V>(mut self, virtual_host: V) -> Self
-        where V: Into<Cow<'a, str>>
+        where V: Into<Cow<'config, str>>
     {
         self.config.virtual_host = virtual_host.into();
         self
@@ -104,7 +112,7 @@ impl<'a, S, A, C> ConfigBuilder<'a, S, A, C>
     }
 
     pub fn locale<L>(mut self, locale: L) -> Self
-        where L: Into<Cow<'a, str>>
+        where L: Into<Cow<'config, str>>
     {
         self.config.locale = locale.into();
         self
@@ -115,9 +123,9 @@ impl<'a, S, A, C> ConfigBuilder<'a, S, A, C>
         self
     }
 
-    pub fn plain_auth<U, P>(self, username: U, password: P) -> ConfigBuilder<'a, S, PlainAuthenticator<'a>, C>
-        where U: Into<Cow<'a, str>>,
-              P: Into<Cow<'a, str>>
+    pub fn plain_auth<T, U>(self, username: T, password: U) -> ConfigBuilder<'config, P, PlainAuthenticator<'config>, C>
+        where T: Into<Cow<'config, str>>,
+              U: Into<Cow<'config, str>>
     {
         let authenticator = PlainAuthenticator::new("", username.into(), password.into());
         ConfigBuilder {
@@ -125,15 +133,15 @@ impl<'a, S, A, C> ConfigBuilder<'a, S, A, C>
         }
     }
 
-    pub fn with_spec<SS>(self) -> ConfigBuilder<'a, SS, A, C>
-        where SS: Spec
+    pub fn with_protocol<'a, SS>(self) -> ConfigBuilder<'config, SS, A, C>
+        where SS: Protocol<'a>
     {
         ConfigBuilder {
-            config: self.config.with_spec::<SS>()
+            config: self.config.with_protocol::<SS>()
         }
     }
 
-    pub fn with_authenticator<T, U>(self, authenticator: U) -> ConfigBuilder<'a, S, T, C>
+    pub fn with_authenticator<T, U>(self, authenticator: U) -> ConfigBuilder<'config, P, T, C>
         where T: Authenticator,
               U: Into<T>
     {
@@ -142,7 +150,7 @@ impl<'a, S, A, C> ConfigBuilder<'a, S, A, C>
         }
     }
 
-    pub fn with_channel_id_strategy<T, U>(self, channel_id_strategy: U) -> ConfigBuilder<'a, S, A, T>
+    pub fn with_channel_id_strategy<T, U>(self, channel_id_strategy: U) -> ConfigBuilder<'config, P, A, T>
         where T: channel::IdStrategy,
               U: Into<T>
     {
@@ -153,12 +161,11 @@ impl<'a, S, A, C> ConfigBuilder<'a, S, A, C>
 }
 
 
-impl<'a, S, A, C> From<ConfigBuilder<'a, S, A, C>> for Config<'a, S, A, C>
-    where S: Spec,
-          A: Authenticator,
+impl<'config, P, A, C> From<ConfigBuilder<'config, P, A, C>> for Config<'config, P, A, C>
+    where A: Authenticator,
           C: channel::IdStrategy
 {
-    fn from(config: ConfigBuilder<'a, S, A, C>) -> Self {
+    fn from(config: ConfigBuilder<'config, P, A, C>) -> Self {
         config.config
     }
 }

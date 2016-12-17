@@ -12,9 +12,9 @@ use std::borrow::Cow;
 use std::marker::PhantomData;
 use url;
 
-use primitives::Spec;
+use primitives::Protocol;
 use primitives::field::TableEntries;
-use primitives::rabbitmq9_1::Rabbitmq9_1;
+use primitives::Rabbitmq9_1;
 use super::auth::{Authenticator, PlainAuthenticator};
 
 use channel::{
@@ -37,19 +37,18 @@ impl From<url::ParseError> for ParseUrlError {
 
 /// The sealed/completed configuration (the other being the config-builder object)
 #[derive(Debug, Clone, PartialEq)]
-pub struct Config<'a, S, A, C>
-    where S: Spec,
-          A: Authenticator,
+pub struct Config<'config, P, A, C>
+    where A: Authenticator,
           C: ChannelIdStrategy
 {
-    host: Cow<'a, str>,
+    host: Cow<'config, str>,
     port: u16,
-    virtual_host: Cow<'a, str>,
+    virtual_host: Cow<'config, str>,
     use_tls: bool,
 
-    locale: Cow<'a, str>,
+    locale: Cow<'config, str>,
     authenticator: A,
-    properties: TableEntries<'a>,
+    properties: TableEntries<'config>,
     channel_id_strategy: C,
 
     // tunable properties
@@ -57,13 +56,13 @@ pub struct Config<'a, S, A, C>
     frame_max: u32,
     heartbeat: u16,
 
-    spec: PhantomData<S>,
+    protocol: PhantomData<P>,
 }
 
-impl<'a> Config<'a, Rabbitmq9_1, PlainAuthenticator<'a>, DefaultChannelIdStrategy> {
-    fn new<H, V>(host: H, port: u16, virtual_host: V, use_tls: bool) -> Self
-        where H: Into<Cow<'a, str>>,
-              V: Into<Cow<'a, str>>,
+impl<'config, 'bytes> Config<'config, Rabbitmq9_1, PlainAuthenticator<'config>, DefaultChannelIdStrategy> {
+    pub fn new<H, V>(host: H, port: u16, virtual_host: V, use_tls: bool) -> Self
+        where H: Into<Cow<'config, str>>,
+              V: Into<Cow<'config, str>>,
     {
         Config {
             host: host.into(),
@@ -76,7 +75,7 @@ impl<'a> Config<'a, Rabbitmq9_1, PlainAuthenticator<'a>, DefaultChannelIdStrateg
             channel_id_strategy: DefaultChannelIdStrategy::new(),
             properties: TableEntries::new(),
 
-            spec: PhantomData,
+            protocol: PhantomData,
 
             // tune
             channel_max: 0,
@@ -86,17 +85,16 @@ impl<'a> Config<'a, Rabbitmq9_1, PlainAuthenticator<'a>, DefaultChannelIdStrateg
     }
 }
 
-impl<'a, S, A, C> Config<'a, S, A, C>
-    where S: Spec,
-          A: Authenticator,
+impl<'config, S, A, C> Config<'config, S, A, C>
+    where A: Authenticator,
           C: ChannelIdStrategy
 {
-    fn with_authenticator<T, U>(self, authenticator: U) -> Config<'a, S, T, C>
+    fn with_authenticator<T, U>(self, authenticator: U) -> Config<'config, S, T, C>
         where T: Authenticator,
               U: Into<T>
     {
         Config {
-            spec: self.spec,
+            protocol: self.protocol,
 
             host: self.host,
             port: self.port,
@@ -115,12 +113,12 @@ impl<'a, S, A, C> Config<'a, S, A, C>
         }
     }
 
-    fn with_channel_id_strategy<T, U>(self, channel_id_strategy: U) -> Config<'a, S, A, T>
+    fn with_channel_id_strategy<T, U>(self, channel_id_strategy: U) -> Config<'config, S, A, T>
         where T: ChannelIdStrategy,
               U: Into<T>
     {
         Config {
-            spec: self.spec,
+            protocol: self.protocol,
 
             host: self.host,
             port: self.port,
@@ -139,9 +137,9 @@ impl<'a, S, A, C> Config<'a, S, A, C>
         }
     }
 
-    fn with_spec<SS: Spec>(self) -> Config<'a, SS, A, C> {
+    fn with_protocol<'a, SS: Protocol<'a>>(self) -> Config<'config, SS, A, C> {
         Config {
-            spec: PhantomData,
+            protocol: PhantomData,
 
             host: self.host,
             port: self.port,
@@ -184,7 +182,7 @@ impl<'a, S, A, C> Config<'a, S, A, C>
         &self.authenticator
     }
 
-    pub fn properties(&self) -> &TableEntries<'a> {
+    pub fn properties(&self) -> &TableEntries<'config> {
         &self.properties
     }
 
