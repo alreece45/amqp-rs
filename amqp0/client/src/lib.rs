@@ -7,10 +7,11 @@
 // except according to those terms.
 
 extern crate url;
+extern crate netbuf;
 extern crate amqp0_primitives as primitives;
 extern crate amqp0_parser_nom as parser_nom;
 
 pub mod channel;
 pub mod session;
 
-pub use session::{ConfigBuilder, Session};
+pub use session::{ConfigBuilder, BlockingSession};
