@@ -61,10 +61,9 @@ impl<'a> MethodModuleWriter<'a> {
                         num_flags += 1;
                     }
                     needs_adding
-                }
-                    else {
-                        true
-                    };
+                } else {
+                    true
+                };
 
                 if part_needs_adding {
                     if let Domain::Bit = *field.ty() {
