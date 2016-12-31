@@ -7,8 +7,9 @@
 // except according to those terms.
 
 mod class_mod;
-mod method_enum;
 mod frame_payload_enum;
+mod header_enum;
+mod method_enum;
 mod spec_module;
 
 pub use self::spec_module::SpecModuleWriter;
