@@ -20,13 +20,51 @@ include!(concat!(env!("OUT_DIR"), "/mod.rs"));
 
 pub mod field;
 
+#[derive(Clone)]
+pub struct Frame<P> {
+    channel: u16,
+    payload: P
+}
+
+impl<'a, P> Frame<P>
+    where P: ProtocolFramePayload<'a>
+{
+    pub fn channel(&self) -> u16 {
+        self.channel
+    }
+    pub fn payload(&self) -> &P {
+        &self.payload
+    }
+}
+
+impl<'a, P> Encodable for Frame<P>
+    where P: ProtocolFramePayload<'a>
+{
+    fn encoded_size(&self) -> usize {
+        4 + self.payload.encoded_size()
+    }
+}
+
+use std::borrow::Cow;
+
+impl<'a> Encodable for Cow<'a, [u8]> {
+    fn encoded_size(&self) -> usize {
+        self.len()
+    }
+}
+impl<'a> Encodable for Cow<'a, str> {
+    fn encoded_size(&self) -> usize {
+        self.len()
+    }
+}
+
 pub trait Protocol<'a> {
     type Frame: 'a;
 
     fn protocol_header() -> &'static [u8];
 }
 
-pub trait ProtocolFramePayload<'a> {
+pub trait ProtocolFramePayload<'a>: Encodable {
     type Method: ProtocolMethod<'a>;
 
     fn as_method(&self) -> Option<&Self::Method>;
@@ -37,9 +75,12 @@ pub trait ProtocolMethod<'a> {
     fn as_start(&self) -> Option<&Self::Start>;
 }
 
-pub trait ProtocolMethodPayload {
+pub trait ProtocolMethodPayload: Encodable {
     fn class_id(&self) -> u16;
     fn method_id(&self) -> u16;
-    fn payload_size(&self) -> usize;
+}
+
+pub trait Encodable {
+    fn encoded_size(&self) -> usize;
 }
 

@@ -10,6 +10,7 @@ use std::borrow::Cow;
 use std::collections::HashMap;
 use std::ops::{Deref, DerefMut};
 
+use Encodable;
 use super::Value;
 
 pub type TableEntry<'a> = (Cow<'a, str>, Value<'a>);
@@ -36,12 +37,6 @@ impl<'a> TableEntries<'a> {
         }
     }
 
-    pub fn amqp_size(&self) -> usize {
-        self.entries.iter()
-            .map(|&(ref k, ref v)| k.len() + v.amqp_size())
-            .sum()
-    }
-
     pub fn into_static(self) -> TableEntries<'static> {
         TableEntries {
             entries: self.entries.into_static()
@@ -54,6 +49,14 @@ impl<'a> TableEntries<'a> {
 
     pub fn to_table(&self) -> Table<'a> {
         Table::from_hashmap(self.to_hashmap())
+    }
+}
+
+impl<'a> Encodable for TableEntries<'a> {
+    fn encoded_size(&self) -> usize {
+        self.entries.iter()
+            .map(|&(ref k, ref v)| k.len() + v.encoded_size())
+            .sum()
     }
 }
 
@@ -111,12 +114,6 @@ impl<'a> Table<'a> {
               V: Into<Value<'a>>
     {
         self.values.insert(key.into(), value.into())
-    }
-
-    pub fn amqp_size(&self) -> usize {
-        self.values.iter()
-            .map(|(k, v)| k.len() + v.amqp_size())
-            .sum()
     }
 }
 

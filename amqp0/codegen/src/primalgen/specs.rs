@@ -6,15 +6,11 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-mod writer;
-
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::ops::Deref;
 
 use specs::Spec;
-
-pub use self::writer::SpecsModuleWriter;
 
 #[derive(Debug)]
 pub struct Specs<'a> {

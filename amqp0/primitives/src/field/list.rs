@@ -8,6 +8,7 @@
 
 use std::ops::{Deref, DerefMut};
 
+use Encodable;
 use super::Value;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -44,10 +45,12 @@ impl<'a> List<'a> {
     {
         self.values.push(value.into())
     }
+}
 
-    pub fn amqp_size(&self) -> usize {
+impl<'a> Encodable for List<'a> {
+    fn encoded_size(&self) -> usize {
         self.values.iter()
-            .map(|v| v.amqp_size())
+            .map(|v| v.encoded_size())
             .sum()
     }
 }

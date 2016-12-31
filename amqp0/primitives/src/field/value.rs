@@ -8,6 +8,8 @@
 
 use std::borrow::Cow;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+use Encodable;
 use super::MAX_SHORTSTR_LEN;
 use super::{TableEntries, List};
 
@@ -66,21 +68,6 @@ impl<'a> Value<'a> {
         }
     }
 
-    pub fn amqp_size(&self) -> usize {
-        match *self {
-            Value::Void => 0,
-            Value::Bool(_) | Value::I8(_)  | Value::U8(_)  => 1,
-            Value::I16(_) | Value::U16(_) => 2,
-            Value::I32(_) | Value::U32(_) | Value::F32(_) | Value::Timestamp(_) => 4,
-            Value::I64(_) | Value::U64(_) | Value::F64(_) => 8,
-            Value::Decimal(_, _) => 3,
-            Value::ShortString(ref value) => value.len(),
-            Value::LongString(ref value) => value.len(),
-            Value::List(ref entries) => entries.iter().map(|e| e.amqp_size()).sum(),
-            Value::Table(ref table) => table.amqp_size(),
-        }
-    }
-
     pub fn into_static(self) -> Value<'static> {
         match self {
             Value::Bool(val)           => Value::Bool(val),
@@ -101,6 +88,23 @@ impl<'a> Value<'a> {
             Value::List(list)          => Value::List(list.into_static()),
             Value::Table(entries)      => Value::Table(entries.into_static()),
             Value::Void                => Value::Void,
+        }
+    }
+}
+
+impl<'a> Encodable for Value<'a> {
+    fn encoded_size(&self) -> usize {
+        match *self {
+            Value::Void => 0,
+            Value::Bool(_) | Value::I8(_)  | Value::U8(_)  => 1,
+            Value::I16(_) | Value::U16(_) => 2,
+            Value::I32(_) | Value::U32(_) | Value::F32(_) | Value::Timestamp(_) => 4,
+            Value::I64(_) | Value::U64(_) | Value::F64(_) => 8,
+            Value::Decimal(_, _) => 3,
+            Value::ShortString(ref value) => value.len(),
+            Value::LongString(ref value) => value.len(),
+            Value::List(ref entries) => entries.iter().map(|e| e.encoded_size()).sum(),
+            Value::Table(ref table) => table.encoded_size(),
         }
     }
 }

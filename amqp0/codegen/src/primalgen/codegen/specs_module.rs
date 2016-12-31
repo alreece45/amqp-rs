@@ -13,7 +13,7 @@ use specs::Spec;
 
 use CodeGenerator;
 use common::spec_mod_name;
-use super::Specs;
+use primalgen::Specs;
 
 pub struct SpecsModuleWriter<'a> {
     specs: Specs<'a>,
