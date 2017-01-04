@@ -1,10 +1,11 @@
 [package]
 name = "amqp0-specgen"
 authors = ["Alexander Reece <github@reece45.com>"]
-version = "0.0.4"
+version = "0.0.5"
 
 [dependencies]
 log = "0.3"
+phf_codegen = "0.7.20"
 xml-rs = "0.3.4"
 
 [dependencies.clippy]

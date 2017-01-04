@@ -1,6 +1,6 @@
 [package]
 name = "amqp0-specs"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
@@ -10,6 +10,7 @@ amqp0-build-specs = ["amqp0-specgen"]
 amqp0-pregen-specs = ["amqp0-specgen", "rustfmt"]
 
 [dependencies]
+phf = "0.7.20"
 
 [dependencies.clippy]
 version = "*"

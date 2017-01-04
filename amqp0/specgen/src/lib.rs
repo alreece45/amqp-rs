@@ -12,6 +12,7 @@
 
 #[macro_use]
 extern crate log;
+extern crate phf_codegen;
 extern crate xml;
 
 mod version;
@@ -162,10 +163,10 @@ impl<'a> Spec<'a> {
         try!(writeln!(writer, "Spec {{"));
         try!(writeln!(writer, "name: {},", name.format_rust()));
         try!(writeln!(writer, "classes: {},", self.classes().format_rust()));
-        try!(writeln!(writer, "constants: {}.into_iter().collect(),", codegen::format_to_vec(ungrouped.iter())));
+        try!(writeln!(writer, "constants: {},", codegen::format_to_map(ungrouped.into_iter())));
         try!(writeln!(writer, "domains: {},", self.domains().format_rust()));
-        try!(writeln!(writer, "frame_types: {}.into_iter().collect(),", codegen::format_to_vec(frame_types.iter())));
-        try!(writeln!(writer, "response_codes: {}.into_iter().collect(),", codegen::format_to_vec(response_codes.iter())));
+        try!(writeln!(writer, "frame_types: {},", codegen::format_to_map(frame_types.into_iter())));
+        try!(writeln!(writer, "response_codes: {},", codegen::format_to_map(response_codes.into_iter())));
         try!(writeln!(writer, "version: {},", self.version().format_rust()));
         try!(writeln!(writer, "}}"));
 

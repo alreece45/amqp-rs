@@ -9,19 +9,19 @@
 use std::collections::BTreeMap;
 
 use super::FormatRustCode;
-use super::format_to_vec;
+use super::{format_to_map, format_to_slice};
 use {Assertion, Constant, Class, ClassField, ClassMethod, ClassMethodField, Domain, Version};
 
 impl<'a> FormatRustCode for BTreeMap<String, Class<'a>> {
     fn format_rust(&self) -> String {
-        format!("{}.into_iter().collect()", format_to_vec(self.iter()))
+        format!("{}", format_to_map(self.iter()))
     }
 }
 
 impl<'a> FormatRustCode for BTreeMap<String, Domain<'a>> {
     fn format_rust(&self) -> String {
         let iter = self.iter().map(|(k, v)| (k.replace(" ", "-"), v));
-        format!("{}.into_iter().collect()", format_to_vec(iter))
+        format!("{}", format_to_map(iter))
     }
 }
 
@@ -112,7 +112,7 @@ impl FormatRustCode for Assertion {
             Assertion::ChannelMax => "ClassMethodFieldAssertion::ChannelMax".to_string(),
             Assertion::NotZero => "ClassMethodFieldAssertion::NotZero".to_string(),
             Assertion::Enum(ref values) => {
-                format!("ClassMethodFieldAssertion::Enum({})", format_to_vec(values.iter()))
+                format!("ClassMethodFieldAssertion::Enum({})", format_to_slice(values.iter()))
             },
             Assertion::Length(ref length) => format!("ClassMethodFieldAssertion::Length({})", length),
             Assertion::Regexp(ref pattern) => {

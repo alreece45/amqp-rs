@@ -8,7 +8,7 @@
 
 use std::borrow::Cow;
 use super::FormatRustCode;
-use super::format_to_vec;
+use super::format_to_slice;
 
 impl<'a, T: ?Sized> FormatRustCode for &'a T
     where T: FormatRustCode
@@ -74,13 +74,13 @@ impl<A, B> FormatRustCode for (A, B)
 
 impl<T: FormatRustCode> FormatRustCode for Vec<T> {
     fn format_rust(&self) -> String {
-        format_to_vec(self.iter())
+        format_to_slice(self.iter())
     }
 }
 
 
 impl<'a, T: FormatRustCode> FormatRustCode for &'a [T] {
     fn format_rust(&self) -> String {
-        format_to_vec(self.iter())
+        format_to_slice(self.iter())
     }
 }

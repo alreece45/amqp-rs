@@ -75,21 +75,32 @@ mod spec0_builder {
                 .unwrap();
 
             for &(name, ref spec) in &specs {
-                {
+                let (snake_name, constant_name) = {
                     let v = spec.version();
-                    writeln!(writer, "pub fn {}0_{}_{}() -> Spec {{", name, v.minor(), v.revision()).unwrap();
-                }
+                    (
+                        format!("{}0_{}_{}", name, v.minor(), v.revision()),
+                        format!("SPEC_{}0_{}_{}", name.to_uppercase(), v.minor(), v.revision())
+                    )
+                };
+
+                writeln!(writer, "static {}: Spec = ", constant_name).unwrap();
                 spec.write_generated(name, &mut writer).unwrap();
+                writeln!(writer, ";").unwrap();
+
+                writeln!(writer, "pub fn {}() -> &'static Spec {{", snake_name).unwrap();
+                writeln!(writer, "&{}", constant_name).unwrap();
                 writeln!(writer, "}}").unwrap();
             }
 
-            writeln!(writer, "pub fn specs() -> Vec<Spec> {{").unwrap();
-            writeln!(writer, "vec![").unwrap();
+            writeln!(writer, "static SPECS: &'static [&'static Spec] = &[").unwrap();
             for &(name, ref spec) in &specs {
                 let v = spec.version();
-                writeln!(writer, "{}0_{}_{}(),", name, v.minor(), v.revision()).unwrap();
+                writeln!(writer, "&SPEC_{}0_{}_{},", name.to_uppercase(), v.minor(), v.revision()).unwrap();
             }
-            writeln!(writer, "]").unwrap();
+            writeln!(writer, "];").unwrap();
+
+            writeln!(writer, "pub fn specs() -> &'static [&'static Spec] {{").unwrap();
+            writeln!(writer, "&SPECS").unwrap();
             writeln!(writer, "}}").unwrap();
         }
 

@@ -10,7 +10,10 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
-use std::collections::BTreeMap;
+extern crate phf;
+
+use phf::OrderedMap;
+use std::hash::{Hash, Hasher};
 
 #[cfg(feature = "amqp0-build-specs")]
 include!(concat!(env!("OUT_DIR"), "/amqp0.rs"));
@@ -23,23 +26,78 @@ pub struct Version {
     revision: u16,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct Spec {
     name: &'static str,
-    classes: BTreeMap<&'static str, Class>,
-    constants: BTreeMap<&'static str, Constant>,
-    domains: BTreeMap<&'static str, &'static str>,
-    frame_types: BTreeMap<&'static str, Constant>,
-    response_codes: BTreeMap<&'static str, Constant>,
+    classes: &'static OrderedMap<&'static str, Class>,
+    constants: &'static OrderedMap<&'static str, Constant>,
+    domains: &'static OrderedMap<&'static str, &'static str>,
+    frame_types: &'static OrderedMap<&'static str, Constant>,
+    response_codes: &'static OrderedMap<&'static str, Constant>,
     version: Version,
+}
+
+use phf::PhfHash;
+
+impl PartialEq for Spec {
+    fn eq(&self, other: &Spec) -> bool {
+
+        fn is_map_eq<K, V>(map1: &OrderedMap<K, V>, map2: &OrderedMap<K, V>) -> bool
+            where K: Eq + PhfHash,
+                  V: Eq
+        {
+            map1.entries().all(|(k, v1)| {
+                match map2.get(k) {
+                    Some(v2) if v1 == v2 => true,
+                    _ => false,
+                }
+            })
+        }
+
+        self.name == other.name
+            && self.version == other.version
+            && is_map_eq(self.classes, other.classes)
+            && is_map_eq(self.constants, other.constants)
+            && is_map_eq(self.domains, other.domains)
+            && is_map_eq(self.frame_types, other.frame_types)
+            && is_map_eq(self.response_codes, other.response_codes)
+    }
+}
+impl Eq for Spec {}
+
+impl Hash for Spec {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.name.hash(state);
+        for (name, class) in self.classes {
+            name.hash(state);
+            class.hash(state);
+        }
+        for (name, value) in self.constants {
+            name.hash(state);
+            value.hash(state);
+        }
+        for (name, mapping) in self.domains {
+            name.hash(state);
+            mapping.hash(state);
+        }
+        for (name, value) in self.frame_types {
+            name.hash(state);
+            value.hash(state);
+        }
+        for (name, response_code) in self.response_codes {
+            name.hash(state);
+            response_code.hash(state);
+        }
+        self.version.hash(state)
+    }
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Class {
     name: &'static str,
-    fields: Vec<ClassField>,
+    fields: &'static [ClassField],
     index: u16,
-    methods: Vec<ClassMethod>,
+    methods: &'static [ClassMethod],
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -47,7 +105,7 @@ pub struct ClassMethod {
     name: &'static str,
     index: u16,
     response: Option<&'static str>,
-    fields: Vec<ClassMethodField>,
+    fields: &'static [ClassMethodField],
     is_synchronous: bool,
 
     chassis_server: Option<&'static str>,
@@ -64,7 +122,7 @@ pub struct ClassField {
 pub struct ClassMethodField {
     name: &'static str,
     domain: &'static str,
-    assertions: Vec<ClassMethodFieldAssertion>,
+    assertions: &'static [ClassMethodFieldAssertion],
     is_reserved: bool,
 }
 
@@ -74,7 +132,7 @@ pub enum ClassMethodFieldAssertion {
     NotNull,
     ChannelMax,
     NotZero,
-    Enum(Vec<&'static str>),
+    Enum(&'static [&'static str]),
     Length(usize),
     Regexp(&'static str),
     Syntax(&'static str),
@@ -91,17 +149,17 @@ impl Spec {
     pub fn name(&self) -> &'static str {
         self.name
     }
-    pub fn classes(&self) -> &BTreeMap<&'static str, Class> {
-        &self.classes
+    pub fn classes(&self) -> &'static OrderedMap<&'static str, Class> {
+        self.classes
     }
-    pub fn domains(&self) -> &BTreeMap<&'static str, &'static str> {
-        &self.domains
+    pub fn domains(&self) -> &'static OrderedMap<&'static str, &'static str> {
+        self.domains
     }
-    pub fn frame_types(&self) -> &BTreeMap<&'static str, Constant> {
-        &self.frame_types
+    pub fn frame_types(&self) -> &'static OrderedMap<&'static str, Constant> {
+        self.frame_types
     }
-    pub fn response_codes(&self) -> &BTreeMap<&'static str, Constant> {
-        &self.response_codes
+    pub fn response_codes(&self) -> &'static OrderedMap<&'static str, Constant> {
+        self.response_codes
     }
     pub fn version(&self) -> &Version {
         &self.version
@@ -113,7 +171,7 @@ impl Class {
         self.name
     }
 
-    pub fn fields(&self) -> &[ClassField] {
+    pub fn fields(&self) -> &'static [ClassField] {
         &self.fields
     }
 
@@ -121,7 +179,7 @@ impl Class {
         self.index
     }
 
-    pub fn methods(&self) -> &[ClassMethod] {
+    pub fn methods(&self) -> &'static [ClassMethod] {
         &self.methods
     }
 }
@@ -143,7 +201,7 @@ impl ClassMethod {
     pub fn name(&self) -> &str {
         &self.name
     }
-    pub fn fields(&self) -> &[ClassMethodField] {
+    pub fn fields(&self) -> &'static [ClassMethodField] {
         &self.fields
     }
 }
@@ -157,7 +215,7 @@ impl ClassMethodField {
         self.domain
     }
 
-    pub fn assertions(&self) -> &[ClassMethodFieldAssertion] {
+    pub fn assertions(&self) -> &'static [ClassMethodFieldAssertion] {
         &self.assertions
     }
 
