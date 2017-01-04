@@ -1,22 +1,22 @@
 
 extern crate amqp0_specs as amqp0;
 
-use std::collections::HashMap;
-use amqp0::ClassMethod;
+use std::collections::BTreeMap;
 
 fn main() {
-    let specs = amqp0::specs();
+    let mut classes = BTreeMap::new();
+    for spec in amqp0::specs().iter() {
+        for class in spec.classes().values() {
+            let entry = classes.entry(class.name())
+                .or_insert((1, class.index()));
+            entry.0 += 1;
+        }
+    }
 
-    // assert_name_indexes_consistent(&specs);
-    println!("{:#?}", specs);
+    let common = classes.into_iter()
+        .filter(|&(_, v)| v.0 > 1)
+        .map(|(k, v)| (k, v.1))
+        .collect::<BTreeMap<_, _>>();
 
-    let (vanillas, e) = amqp0::specs().into_iter()
-        .partition::<Vec<_>, _>(|s| s.name() == "amqp");
-
-    let extended = e.iter()
-        .map(|s| (s.version(), s))
-        .collect::<HashMap<_, _>>();
-
-    let mut defined_methods = HashMap::<&str, &ClassMethod>::new();
+    println!("Common Classes: {:#?}", common);
 }
-
