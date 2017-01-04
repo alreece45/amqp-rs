@@ -12,19 +12,20 @@ use specs::{ClassField, ClassMethodField};
 
 use common::domain::Domain;
 
-pub struct Field<'a, T: 'a>
+#[derive(Debug, Clone)]
+pub struct Field<T>
     where T: BasicField
 {
-    field: &'a T,
+    field: T,
     var_name: String,
     ty: Domain,
 }
 
-impl<'a, T> Field<'a, T>
+impl<T> Field<T>
     where T: BasicField
 {
     pub fn from_amqp0_field(
-        field: &'a T,
+        field: T,
         ty: Domain
     ) -> Self {
         let var_name = match field.name() {
@@ -48,13 +49,13 @@ impl<'a, T> Field<'a, T>
     }
 }
 
-impl<'a, T> Deref for Field<'a, T>
+impl<T> Deref for Field<T>
     where T: BasicField
 {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
-        self.field
+        &self.field
     }
 }
 
@@ -63,13 +64,13 @@ pub trait BasicField {
 }
 
 impl BasicField for ClassMethodField {
-    fn name(&self) -> &'static str{
+    fn name(&self) -> &'static str {
         self.name()
     }
 }
 
 impl BasicField for ClassField {
-    fn name(&self) -> &'static str{
+    fn name(&self) -> &'static str {
         self.name()
     }
 }

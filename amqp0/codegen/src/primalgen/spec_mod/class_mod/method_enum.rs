@@ -9,10 +9,10 @@
 use std::io;
 
 use CodeGenerator;
-use primalgen::Class;
+use common::Class;
 
 pub struct MethodEnumWriter<'a> {
-    class: &'a Class<'a>,
+    class: &'a Class,
 }
 
 impl<'a> CodeGenerator for MethodEnumWriter<'a> {

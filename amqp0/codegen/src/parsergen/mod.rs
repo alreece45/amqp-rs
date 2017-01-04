@@ -12,10 +12,9 @@ use std::borrow::Cow;
 use std::mem;
 use specs::ClassMethodField;
 
-use common;
-use common::domain::Domain;
+use common::{self, Domain};
 
-type Field<'a> = common::Field<'a, ClassMethodField>;
+type Field = common::Field<ClassMethodField>;
 
 ///
 /// The values for multiple fields can be packed into one byte.
@@ -30,7 +29,7 @@ enum FieldChunk<'a> {
 }
 
 impl<'a> FieldChunk<'a> {
-    pub fn from_field(field: &'a Field<'a>, flag_num: u8) -> Self {
+    pub fn from_field(field: &'a Field, flag_num: u8) -> Self {
         if field.is_reserved() {
             match *field.ty() {
                 Domain::Bit => FieldChunk::Flags(flag_num, vec![!field.is_reserved()], None),
@@ -46,7 +45,7 @@ impl<'a> FieldChunk<'a> {
         }
     }
 
-    pub fn add_field(&mut self, field: &'a Field<'a>) -> bool {
+    pub fn add_field(&mut self, field: &'a Field) -> bool {
         match *self {
             FieldChunk::Flags(flag_num, ref mut bits, ref mut name) if bits.len() <= 8 => {
                 bits.push(!field.is_reserved());

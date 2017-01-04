@@ -6,25 +6,23 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+mod class_mod;
+mod frame_payload_enum;
+mod header_enum;
+mod method_enum;
+
 use std::io;
 
-use specs;
-
 use CodeGenerator;
-use common::spec_mod_name;
-use common::domain::DomainMapper;
+use common::Spec;
 
-use primalgen::Spec;
-
-use super::header_enum::HeaderEnumWriter;
-use super::class_mod::ClassModuleWriter;
-use super::method_enum::MethodEnumWriter;
-use super::frame_payload_enum::FramePayloadEnumWriter;
+use self::class_mod::ClassModuleWriter;
+use self::frame_payload_enum::FramePayloadEnumWriter;
+use self::header_enum::HeaderEnumWriter;
+use self::method_enum::MethodEnumWriter;
 
 pub struct SpecModuleWriter<'a> {
-    mod_name: String,
-    spec: Spec<'a>,
-    domain_mapper: DomainMapper<'a>,
+    spec: &'a Spec,
 }
 
 impl<'a> CodeGenerator for SpecModuleWriter<'a> {
@@ -49,7 +47,7 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
 
         try!(writeln!(writer, "\n// Class Modules"));
         for class in self.spec.classes() {
-            let module_writer = ClassModuleWriter::new(class, &self.domain_mapper);
+            let module_writer = ClassModuleWriter::new(class);
             try!(module_writer.write_rust_to(writer));
         }
 
@@ -75,20 +73,14 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
 }
 
 impl<'a> SpecModuleWriter<'a> {
-    pub fn new(spec: &'a specs::Spec) -> Self {
-        let mod_name = spec_mod_name(spec);
-        let domain_mapper = DomainMapper::new(spec.domains());
-        let spec = Spec::new(spec, &domain_mapper);
-
+    pub fn new(spec: &'a Spec) -> Self {
         SpecModuleWriter {
-            domain_mapper: domain_mapper,
-            mod_name: mod_name,
             spec: spec,
         }
     }
 
     pub fn mod_name(&self) -> &str {
-        &self.mod_name
+        self.spec.mod_name()
     }
 
     pub fn write_class_constants<W>(&self, writer: &mut W) -> io::Result<()>

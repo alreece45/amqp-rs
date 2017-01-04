@@ -12,6 +12,8 @@
 
 extern crate amqp0_specs as specs;
 extern crate inflections;
+extern crate lazycell;
+extern crate phf;
 
 #[cfg(feature = "rustfmt")]
 extern crate rustfmt;
@@ -24,6 +26,8 @@ mod common;
 use std::fs::{self, File};
 use std::io::{self, BufWriter};
 use std::path::{Path, PathBuf};
+
+pub use common::{Specs, Spec, Class, ClassMethod};
 
 pub trait Builder {
     fn name(&self) -> &str;

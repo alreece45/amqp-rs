@@ -9,10 +9,10 @@
 use std::io;
 
 use CodeGenerator;
-use primalgen::Spec;
+use common::Spec;
 
 pub struct MethodEnumWriter<'a> {
-    spec: &'a Spec<'a>,
+    spec: &'a Spec,
     has_lifetimes: bool
 }
 

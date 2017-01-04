@@ -9,11 +9,9 @@
 use std::borrow::Cow;
 use std::io;
 use inflections::Inflect;
-use specs::Spec;
 
 use CodeGenerator;
-use common::spec_mod_name;
-use primalgen::Specs;
+use common::{Specs, Spec};
 
 pub struct SpecsModuleWriter<'a> {
     specs: Specs<'a>,
@@ -28,8 +26,7 @@ impl<'a> CodeGenerator for SpecsModuleWriter<'a> {
 
         try!(writeln!(writer, ""));
         for spec in self.specs.iter() {
-            let mod_name = spec_mod_name(spec);
-            try!(writeln!(writer, "pub mod {};", mod_name));
+            try!(writeln!(writer, "pub mod {};", spec.mod_name()));
         }
         try!(writeln!(writer, ""));
 
@@ -169,7 +166,6 @@ impl<'a> SpecsModuleWriter<'a> {
                 (version.minor(), version.revision())
             };
             let struct_name = format!("{}{}_{}", spec.name().to_pascal_case(), minor, revision);
-            let mod_name = spec_mod_name(spec);
 
             try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
             try!(writeln!(writer, "\n#[derive(Debug, Clone, PartialEq)]"));
@@ -180,7 +176,7 @@ impl<'a> SpecsModuleWriter<'a> {
             try!(writeln!(writer, "impl<'a> ::Protocol<'a> for {} {{", struct_name));
 
             // Protocol::Frame
-            try!(writeln!(writer, "type Frame = {}::Frame<'a>;", mod_name));
+            try!(writeln!(writer, "type Frame = {}::Frame<'a>;", spec.mod_name()));
 
             // Protocol::protocol_header
             try!(writeln!(writer, "fn protocol_header() -> &'static [u8] {{"));

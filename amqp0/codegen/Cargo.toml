@@ -8,7 +8,9 @@ default = []
 
 [dependencies]
 inflections = "1.0.0"
-amqp0-specs = { version = "0.0.4", path = "../specs" }
+lazycell = "0.5.0"
+phf = "0.7.20"
+amqp0-specs = { version = "0.0.5", path = "../specs" }
 
 [dependencies.clippy]
 version = "*"

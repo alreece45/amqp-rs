@@ -7,19 +7,21 @@
 // except according to those terms.
 
 use std::borrow::Cow;
-use std::collections::BTreeMap;
+use phf::OrderedMap;
 
-pub struct DomainMapper<'a> {
-    domains: &'a BTreeMap<&'a str, &'a str>,
+#[derive(Debug, Clone)]
+pub struct DomainMapper {
+    domains: &'static OrderedMap<&'static str, &'static str>,
 }
 
-impl<'a> DomainMapper<'a> {
-    pub fn new(domains: &'a BTreeMap<&str, &str>) -> DomainMapper<'a> {
+impl DomainMapper {
+    pub fn from_spec(spec: &'static ::specs::Spec) -> Self {
         DomainMapper {
-            domains: domains
+            domains: spec.domains()
         }
     }
-    pub fn map(&self, domain: &'a str) -> &'a str {
+
+    pub fn map(&self, domain: &str) -> Domain {
         let mut ty = domain;
         while let Some(mapping) = self.domains.get(ty) {
             // detect identity mappings
@@ -28,11 +30,11 @@ impl<'a> DomainMapper<'a> {
             }
             ty = mapping;
         }
-        ty
+        Domain::new(ty)
     }
 }
 
-#[doc(hidden)]
+#[derive(Debug, Clone)]
 pub enum Domain {
     Bit,
     Octet,
@@ -115,7 +117,7 @@ impl Domain {
     pub fn dynamic_bit_method(&self) -> Option<&'static str> {
         match *self {
             Domain::ShortString | Domain::LongString | Domain::Content => Some("len"),
-            Domain::Table => Some("amqp_size"),
+            Domain::Table => Some("Encodable::encoded_size"),
             _ => None,
         }
     }

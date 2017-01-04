@@ -10,7 +10,7 @@ use std::collections::{HashMap, HashSet};
 use std::io;
 
 use CodeGenerator;
-use primalgen::{Class, ClassMethod};
+use common::{Class, ClassMethod};
 
 impl<'a> CodeGenerator for MethodStructWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
@@ -26,8 +26,8 @@ impl<'a> CodeGenerator for MethodStructWriter<'a> {
 }
 
 pub struct MethodStructWriter<'a> {
-    class: &'a Class<'a>,
-    method: &'a ClassMethod<'a>,
+    class: &'a Class,
+    method: &'a ClassMethod,
 
     /// For non-copy parameters, allow conversion using Into<>.
     /// Using Into requires defining generic parameters.

@@ -7,41 +7,23 @@
 // except according to those terms.
 
 use std::io;
-use specs::{Class, ClassField};
-
-use common;
-use common::domain::{Domain, DomainMapper};
-
-type Field<'a> = common::Field<'a, ClassField>;
+use common::Class;
 
 pub struct HeaderStructWriter<'a> {
-    fields: Vec<Field<'a>>,
-    has_lifetimes: bool,
+    class: &'a Class,
 }
 
 impl<'a> HeaderStructWriter<'a> {
-    pub fn new(class: &'a Class,domain_mapper: &DomainMapper) -> Self {
-        let fields = class.fields().iter()
-            .map(|field| {
-                let ty = Domain::new(domain_mapper.map(field.domain()));
-                Field::from_amqp0_field(field, ty)
-            })
-            .collect::<Vec<_>>();
-
-        let has_lifetimes = fields.iter()
-            .map(|f| !f.ty().is_copy())
-            .any(|is_copy| is_copy);
-
+    pub fn new(class: &'a Class) -> Self {
         HeaderStructWriter {
-            fields: fields,
-            has_lifetimes: has_lifetimes,
+            class: class
         }
     }
 
     pub fn write_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if self.fields.is_empty() {
+        if self.class.fields().is_empty() {
             return Ok(());
         }
 
@@ -53,25 +35,25 @@ impl<'a> HeaderStructWriter<'a> {
         Ok(())
     }
 
-    pub fn write_struct<W>(&self, writer: &mut W) -> io::Result<()>
+    fn write_struct<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
         try!(writeln!(writer, "#[derive(Debug)]"));
 
-        let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
+        let lifetimes = if self.class.has_field_lifetimes() { "<'a>" } else { "" };
 
         try!(writeln!(writer, "pub struct Header{} {{", lifetimes));
-        for field in &self.fields {
+        for field in self.class.fields() {
             try!(writeln!(writer, "{}: Option<{}>,", field.var_name(), field.ty().cow_definition("a")));
         }
         try!(writeln!(writer, "}} // struct Header"));
         Ok(())
     }
 
-    pub fn write_inherent_impl<W>(&self, writer: &mut W) -> io::Result<()>
+    fn write_inherent_impl<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
+        let lifetimes = if self.class.has_field_lifetimes() { "<'a>" } else { "" };
 
         try!(writeln!(writer, "\nimpl{0} Header{0} {{", lifetimes));
         try!(self.write_getters(writer));
@@ -80,10 +62,10 @@ impl<'a> HeaderStructWriter<'a> {
         Ok(())
     }
 
-    pub fn write_encodable_impl<W>(&self, writer: &mut W) -> io::Result<()>
+    fn write_encodable_impl<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
+        let lifetimes = if self.class.has_field_lifetimes() { "<'a>" } else { "" };
 
         try!(writeln!(writer, "\nimpl{0} ::Encodable for Header{0} {{", lifetimes));
         try!(writeln!(writer, "fn encoded_size(&self) -> usize {{"));
@@ -94,15 +76,15 @@ impl<'a> HeaderStructWriter<'a> {
         Ok(())
     }
 
-    pub fn write_getters<W>(&self, writer: &mut W) -> io::Result<()>
+    fn write_getters<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if self.fields.is_empty() {
+        if self.class.fields().is_empty() {
             return Ok(());
         }
 
         try!(writeln!(writer, "impl_properties! {{"));
-        for field in &self.fields {
+        for field in self.class.fields() {
             try!(write!(writer, "({0}, {0}_mut, set_{0}, take_{0}) -> ", field.var_name()));
 
             let ty = field.ty().borrowed_type();

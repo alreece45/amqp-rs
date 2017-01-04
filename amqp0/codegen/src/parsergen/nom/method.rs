@@ -7,50 +7,30 @@
 // except according to those terms.
 
 use std::io;
-use inflections::Inflect;
-use specs::{ClassMethod, ClassMethodField};
 
 use CodeGenerator;
-use common;
-use common::domain::{Domain, DomainMapper};
+use common::{Spec, Class, ClassMethod, Domain};
 use parsergen::FieldChunk;
 
-type Field<'a> = common::Field<'a, ClassMethodField>;
-
 pub struct MethodModuleWriter<'a> {
-    module: &'a str,
+    spec: &'a Spec,
+    class: &'a Class,
     method: &'a ClassMethod,
-    fields: Vec<Field<'a>>,
-    has_lifetimes: bool,
 }
 
 impl<'a> MethodModuleWriter<'a> {
-    pub fn new(module: &'a str, method: &'a ClassMethod, domain_mapper: &DomainMapper) -> Self {
-        // fields
-        let fields = method.fields().iter()
-            .map(|field| {
-                let ty = Domain::new(domain_mapper.map(field.domain()));
-                Field::from_amqp0_field(field, ty)
-            })
-            .collect::<Vec<_>>();
-
-        // has_lifetimes
-        let has_lifetimes = fields.iter()
-            .map(|f| !f.is_reserved() && !f.ty().is_copy())
-            .any(|is_copy| is_copy);
-
+    pub fn new(spec: &'a Spec, class: &'a Class, method: &'a ClassMethod) -> Self {
         MethodModuleWriter {
-            module: module,
+            spec: spec,
+            class: class,
             method: method,
-            fields: fields,
-            has_lifetimes: has_lifetimes,
         }
     }
 
     fn field_chunks(&self) -> Vec<FieldChunk> {
         let mut num_flags = 0;
         let field_chunks = Vec::new();
-        self.fields.iter()
+        self.method.fields().iter()
             .fold(field_chunks, |mut field_chunks, field| {
                 let part_needs_adding = if let Domain::Bit = *field.ty() {
                     let needs_adding = field_chunks.last_mut()
@@ -80,18 +60,19 @@ impl<'a> CodeGenerator for MethodModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let struct_name = self.method.name().to_pascal_case();
-        let lifetimes = if self.has_lifetimes { "<'a>" } else { "" };
-        let uses_pool = self.fields.iter().any(|f| f.ty().is_owned());
+        let struct_name = self.method.pascal_case();
+        let lifetimes = if self.method.has_lifetimes() { "<'a>" } else { "" };
+        let uses_pool = self.method.fields().iter().any(|f| f.ty().is_owned());
 
         try!(write!(writer, "\n\
-    impl<'a> ::NomBytes<'a> for ::primitives::{}::{}{} {{\n\
+    impl<'a> ::NomBytes<'a> for ::primitives::{}::{}::{}{} {{\n\
         type Output = Self;\n\
         fn nom_bytes<'b, P>(input: &'a [u8], {}: &'b mut P) -> IResult<&'a [u8], Self>\n\
             where P: ::pool::ParserPool\n\
         {{\n\
-            do_parse!(input,\n",
-            self.module,
+            do_parse!(input,",
+            self.spec.mod_name(),
+            self.class.snake_case(),
             struct_name,
             lifetimes,
             if uses_pool { "pool" } else { "_" }
@@ -114,7 +95,7 @@ impl<'a> CodeGenerator for MethodModuleWriter<'a> {
             .collect::<Vec<_>>()
             .join(", ");
 
-        try!(writeln!(writer, "(::primitives::{}::{}::new({}))", self.module, struct_name, arguments));
+        try!(writeln!(writer, "(::primitives::{}::{}::{}::new({}))", self.spec.mod_name(), self.class.snake_case(), struct_name, arguments));
 
         try!(writeln!(writer, ") // do_parse!"));
         try!(writeln!(writer, "}} // fn nom_bytes"));

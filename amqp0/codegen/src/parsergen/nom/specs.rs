@@ -8,10 +8,9 @@
 
 use std::borrow::Cow;
 use std::io;
-use specs::Spec;
 
 use CodeGenerator;
-use common::spec_mod_name;
+use common::Spec;
 
 pub struct SpecsModuleWriter<'a> {
     specs: Cow<'a, [Spec]>,
@@ -33,8 +32,7 @@ impl<'a> CodeGenerator for SpecsModuleWriter<'a> {
     {
         try!(writeln!(writer, ""));
         for spec in self.specs.iter() {
-            let mod_name = spec_mod_name(spec);
-            try!(writeln!(writer, "pub mod {};", mod_name));
+            try!(writeln!(writer, "pub mod {};", spec.mod_name()));
         }
         try!(writeln!(writer, ""));
 

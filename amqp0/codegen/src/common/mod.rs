@@ -6,21 +6,21 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+mod domain;
 mod field;
-pub mod domain;
+mod class;
+mod class_method;
+mod spec;
+mod specs;
 
-use specs::Spec;
 use inflections::Inflect;
 
+pub use self::class::{Class, ClassField};
+pub use self::class_method::{ClassMethod, ClassMethodField};
+pub use self::domain::{Domain, DomainMapper};
 pub use self::field::Field;
-
-pub fn spec_mod_name(spec: &Spec) -> String {
-    let (minor, revision) = {
-        let version = spec.version();
-        (version.minor(), version.revision())
-    };
-    format!("{}{}_{}", spec.name().to_snake_case(), minor, revision)
-}
+pub use self::spec::Spec;
+pub use self::specs::Specs;
 
 pub fn frame_type_name(name: &str) -> String {
     let name_start = if name.starts_with("frame-") { 6 } else { 0 };

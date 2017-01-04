@@ -10,9 +10,9 @@ use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::ops::Deref;
 
-use specs::Spec;
+use common::Spec;
 
-#[derive(Debug)]
+#[derive(Clone)]
 pub struct Specs<'a> {
     /// TODO: is Cow<> really the appropriate type, here?
     /// Would AsRef or Borrow be better, since we never take ownership?
@@ -52,7 +52,7 @@ impl<'a> Specs<'a> {
         let mut defined_classes = HashMap::<&str, u16>::new();
 
         for spec in self.specs.iter() {
-            for class in spec.classes().values() {
+            for class in spec.classes() {
                 let index = class.index();
                 if let Some(old_index) = defined_classes.get(class.name()) {
                     if index != *old_index {
@@ -73,11 +73,13 @@ impl<'a> Specs<'a> {
     ///
     /// The only requirement here is for a class to exist in more than one primalgen.spec.
     ///
-    pub fn common_classes(&self) -> HashMap<&str, u16> {
+    pub fn common_classes(&self) -> HashMap<&'a str, u16> {
         let mut classes = HashMap::new();
+
         for spec in self.specs.iter() {
-            for class in spec.classes().values() {
-                let entry = classes.entry(class.name()).or_insert((1, class.index()));
+            for class in spec.classes() {
+                let entry = classes.entry(class.name())
+                    .or_insert((1, class.index()));
                 entry.0 += 1;
             }
         }
@@ -128,19 +130,19 @@ impl<'a> Specs<'a> {
     ///
     pub fn common_methods(&self) -> HashMap<&str, HashMap<&str, u16>> {
         // internal structs
-        struct MethodGroups<'a> {
-            maybe_common: HashMap<&'a str, MethodGroup<'a>>,
-            uncommon: HashSet<&'a str>,
+        struct MethodGroups<'b> {
+            maybe_common: HashMap<&'b str, MethodGroup<'b>>,
+            uncommon: HashSet<&'b str>,
         }
-        struct MethodGroup<'a> {
+        struct MethodGroup<'b> {
             index: u16,
-            specs: HashSet<&'a Spec>,
+            specs: HashSet<&'b Spec>,
         }
 
         let mut groups = HashMap::new();
 
         for spec in self.specs.iter() {
-            for class in spec.classes().values() {
+            for class in spec.classes() {
                 let mut groups = groups.entry(class.name())
                     .or_insert_with(|| {
                         MethodGroups {
@@ -205,6 +207,6 @@ impl<'a> Deref for Specs<'a> {
     type Target = [Spec];
 
     fn deref(&self) -> &Self::Target {
-        &self.specs[..]
+        &*self.specs
     }
 }

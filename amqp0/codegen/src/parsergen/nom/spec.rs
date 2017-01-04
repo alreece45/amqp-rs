@@ -9,17 +9,13 @@
 use std::io;
 
 use inflections::Inflect;
-use specs::{Spec, Class};
 
 use CodeGenerator;
-use common::{spec_mod_name, frame_type_name};
-
-use common::domain::{Domain, DomainMapper};
+use common::frame_type_name;
+use common::{Spec, Class};
 use super::MethodModuleWriter;
 
 pub struct SpecModuleWriter<'a> {
-    mod_name: String,
-    domain_mapper: DomainMapper<'a>,
     spec: &'a Spec,
 }
 
@@ -35,11 +31,10 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
         try!(writeln!(writer, "#![allow(unused_variables)]"));
         try!(writeln!(writer, "\nuse nom::{{IResult, be_u8, be_u16, be_u32, be_u64}};\n"));
 
-        for class in self.spec.classes().values() {
+        for class in self.spec.classes() {
             try!(write!(writer, "// Class {}", class.name()));
             for method in class.methods() {
-                let mod_name = format!("{}::{}", self.mod_name, class.name().to_snake_case());
-                let method_writer = MethodModuleWriter::new(&mod_name, method, &self.domain_mapper);
+                let method_writer = MethodModuleWriter::new(&self.spec, &class, method);
                 try!(method_writer.write_rust_to(writer));
             }
 
@@ -58,8 +53,6 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
 impl<'a> SpecModuleWriter<'a> {
     pub fn new(spec: &'a Spec) -> Self {
         SpecModuleWriter {
-            mod_name: spec_mod_name(spec),
-            domain_mapper: DomainMapper::new(spec.domains()),
             spec: spec,
         }
     }
@@ -74,7 +67,7 @@ impl<'a> SpecModuleWriter<'a> {
                     where P: ::pool::ParserPool\n\
                 {{\n\
                     switch!(input, be_u8,\n",
-                      self.mod_name
+              self.spec.mod_name()
         ));
 
         let (cycle_parse, cycle_arg) = if self.spec.version().minor() == 8 {
@@ -109,7 +102,7 @@ impl<'a> SpecModuleWriter<'a> {
                                     tag!(b\"\\x00\\x00\\xCE\")\n\
                                 ) >>\
                                 channel: value!(0) >>",
-                                self.mod_name
+                        self.spec.mod_name()
                     ));
                 },
                 enum_name => {
@@ -133,16 +126,16 @@ impl<'a> SpecModuleWriter<'a> {
                                           ),\n\
                                           ::primitives::{0}::FramePayload::{2}\n\
                                       ) >> // map",
-                                      self.mod_name,
-                                      struct_name,
-                                      enum_name
+                              self.spec.mod_name(),
+                              struct_name,
+                              enum_name
                         ));
                     }
                         else {
                             try!(writeln!(
                                 writer,
                                 "map!(length_bytes!(be_u32), ::primitives::{}::FramePayload::{}) >>",
-                                self.mod_name,
+                                self.spec.mod_name(),
                                 enum_name
                             ));
                         }
@@ -152,7 +145,7 @@ impl<'a> SpecModuleWriter<'a> {
             try!(writeln!(
                 writer,
                 "(::primitives::{}::Frame::new(channel, {}payload))\n",
-                self.mod_name,
+                self.spec.mod_name(),
                 cycle_arg,
             ));
             try!(write!(writer, ")"));
@@ -161,11 +154,51 @@ impl<'a> SpecModuleWriter<'a> {
         try!(writeln!(writer, " // do_parse"));
         try!(writeln!(writer, ") // switch!"));
         try!(writeln!(writer, "}} // fn nom_bytes"));
-        try!(writeln!(writer, "}} // impl NomBytes for ::primitives::{}::Frame<'a>", self.mod_name));
+        try!(writeln!(writer, "}} // impl NomBytes for ::primitives::{}::Frame<'a>", self.spec.mod_name()));
 
         Ok(())
     }
 
+    fn write_spec_header_parser<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        try!(writeln!(writer, "\n\
+            impl<'a> ::NomBytes<'a> for ::primitives::{}::SpecHeader<'a> {{\n\
+                type Output = Self;\n\
+                fn nom_bytes<'pool, P>(input: &'a [u8], pool: &'pool mut P)  -> IResult<&'a [u8], Self>\n\
+                    where P: ::pool::ParserPool\n\
+                {{\n\
+                    switch!(input, be_u16,\n",
+              self.spec.mod_name()
+        ));
+
+        let mut has_parent = false;
+        for class in self.spec.classes() {
+            if has_parent {
+                try!(writeln!(writer, " | // map"))
+            }
+                else {
+                    has_parent = true;
+                }
+
+            try!(write!(
+                writer,
+                "{0} => map!(\n\
+                    call!(<::primitives::{1}::{2}Header as ::NomBytes>::nom_bytes, pool),\n\
+                    ::primitives::{1}::SpecHeader::{2}\n\
+                )",
+                class.index(),
+                self.spec.mod_name(),
+                class.pascal_case(),
+            ));
+        }
+        try!(writeln!(writer, " // map!"));
+        try!(writeln!(writer, ") // switch!"));
+        try!(writeln!(writer, "}} // fn nom_bytes"));
+        try!(writeln!(writer, "}} // impl ::NomBytes for ::primitives::{}::SpecHeader<'a>", self.spec.mod_name()));
+
+        Ok(())
+    }
 
     fn write_spec_method_parser<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
@@ -177,11 +210,11 @@ impl<'a> SpecModuleWriter<'a> {
                     where P: ::pool::ParserPool\n\
                 {{\n\
                     switch!(input, be_u16,\n",
-            self.mod_name
+            self.spec.mod_name()
         ));
 
         let mut has_parent = false;
-        for class in self.spec.classes().values() {
+        for class in self.spec.classes() {
             if has_parent {
                 try!(writeln!(writer, " | // map"))
             }
@@ -196,24 +229,83 @@ impl<'a> SpecModuleWriter<'a> {
                     ::primitives::{1}::SpecMethod::{2}\n\
                 )",
                 class.index(),
-                self.mod_name,
+                self.spec.mod_name(),
                 class.name().to_pascal_case(),
             ));
         }
         try!(writeln!(writer, " // map!"));
         try!(writeln!(writer, ") // switch!"));
         try!(writeln!(writer, "}} // fn nom_bytes"));
-        try!(writeln!(writer, "}} // impl ::NomBytes for ::primitives::{}::SpecMethod<'a>", self.mod_name));
+        try!(writeln!(writer, "}} // impl ::NomBytes for ::primitives::{}::SpecMethod<'a>", self.spec.mod_name()));
 
         Ok(())
     }
+
+    fn write_class_header_parser<W>(&self, class: &Class, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        let domain_mapper = self.spec.domain_mapper();
+        let has_lifetimes = class.fields().iter()
+            .map(|field| domain_mapper.map(field.domain()))
+            .any(|domain| !domain.is_copy());
+
+        let lifetimes = if has_lifetimes { "<'a>" } else { "" };
+
+        let class_mod_name = class.name().to_snake_case();
+        try!(writeln!(writer, "\n\
+            impl<'a> ::NomBytes<'a> for ::primitives::{}::{}::Header{} {{\n\
+                type Output = Self;\n\
+                fn nom_bytes<'pool, P>(input: &'a [u8], pool: &'pool mut P)  -> IResult<&'a [u8], Self>\n\
+                    where P: ::pool::ParserPool\n\
+                {{\n\
+                    switch!(input, be_u16,\n",
+                      self.spec.mod_name(),
+                      class_mod_name,
+                      lifetimes
+        ));
+
+        let mut has_parent = false;
+        for method in class.methods() {
+            if has_parent {
+                try!(writeln!(writer, " | // map"))
+            }
+                else {
+                    has_parent = true;
+                }
+
+            try!(write!(
+                writer,
+                "{0} => map!(\n\
+                    call!(<::primitives::{1}::{2}::{3} as ::NomBytes>::nom_bytes, pool),\n\
+                    ::primitives::{1}::{2}::Header::{3}\n\
+                )",
+                method.index(),
+                self.spec.mod_name(),
+                class_mod_name,
+                method.name().to_pascal_case(),
+            ));
+        }
+        try!(writeln!(writer, " // map!"));
+        try!(writeln!(writer, ") // switch!"));
+        try!(writeln!(writer, "}} // fn nom_bytes"));
+        try!(writeln!(
+            writer,
+            "}} // impl ::NomBytes for ::primitives::{}::{}::Header<'a>",
+            self.spec.mod_name(),
+            class_mod_name
+        ));
+
+        Ok(())
+    }
+
     fn write_class_method_parser<W>(&self, class: &Class, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
+        let domain_mapper = self.spec.domain_mapper();
         let has_lifetimes = class.methods().iter()
             .flat_map(|method| method.fields())
             .filter(|field| !field.is_reserved())
-            .map(|field| Domain::new(self.domain_mapper.map(field.domain())))
+            .map(|field| domain_mapper.map(field.domain()))
             .any(|domain| !domain.is_copy());
 
         let lifetimes = if has_lifetimes { "<'a>" } else { "" };
@@ -226,7 +318,7 @@ impl<'a> SpecModuleWriter<'a> {
                     where P: ::pool::ParserPool\n\
                 {{\n\
                     switch!(input, be_u16,\n",
-            self.mod_name,
+            self.spec.mod_name(),
             class_mod_name,
             lifetimes
         ));
@@ -247,7 +339,7 @@ impl<'a> SpecModuleWriter<'a> {
                     ::primitives::{1}::{2}::ClassMethod::{3}\n\
                 )",
                 method.index(),
-                self.mod_name,
+                self.spec.mod_name(),
                 class_mod_name,
                 method.name().to_pascal_case(),
             ));
@@ -258,14 +350,10 @@ impl<'a> SpecModuleWriter<'a> {
         try!(writeln!(
             writer,
             "}} // impl ::NomBytes for ::primitives::{}::{}::SpecMethod<'a>",
-            self.mod_name,
+            self.spec.mod_name(),
             class_mod_name
         ));
 
         Ok(())
-    }
-
-    pub fn mod_name(&self) -> &str {
-        &self.mod_name
     }
 }
