@@ -32,7 +32,7 @@ mod amqp0 {
     use std::fs;
     use std::path::{Path, PathBuf};
 
-    use codegen::{Builder, CodeWriter};
+    use codegen::{Builder, CodeWriter, Spec};
     use codegen::parsergen::nom::{SpecsModuleWriter, SpecModuleWriter};
     use specs::specs as amqp0_specs;
 
@@ -53,7 +53,9 @@ mod amqp0 {
         println!("Building parser from amqpspec");
 
         let out_path = env::var_os("OUT_DIR").map(PathBuf::from).expect("Error: OUT_DIR not set");
-        let specs = amqp0_specs();
+        let specs = amqp0_specs().iter()
+            .map(|spec| Spec::new(spec))
+            .collect::<Vec<_>>();
         let mut paths: Vec<PathBuf> = Vec::with_capacity(1 + specs.len());
 
         // mod.rs
@@ -67,7 +69,7 @@ mod amqp0 {
         // {name}{minor}_{revision}.rs
         for spec in &specs {
             let spec_writer = SpecModuleWriter::new(spec);
-            let filename = format!("{}.rs", spec_writer.mod_name());
+            let filename = format!("{}.rs", spec.mod_name());
             let path = out_path.join(&filename);
             let writer = CodeWriter::new(ParserBuilder, spec_writer);
             println!("Generating {}", filename);

@@ -19,9 +19,6 @@ include!(concat!(env!("OUT_DIR"), "/mod.rs"));
 extern crate nom;
 extern crate amqp0_primitives as primitives;
 
-#[cfg(not(feature = "lifeguard"))]
-extern crate lifeguard;
-
 mod common;
 mod field;
 

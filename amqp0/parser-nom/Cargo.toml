@@ -1,6 +1,6 @@
 [package]
 name = "amqp0-parser-nom"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Alexander Reece <github@reece45.com>"]
 build = "build.rs"
 
@@ -11,7 +11,7 @@ amqp0-pregen-parser = ["amqp0-build-parser", "rustfmt"]
 rustfmt = ["amqp0-codegen/rustfmt"]
 
 [dependencies]
-nom = "2.0.0"
+nom = "2.0.1"
 
 [dependencies.amqp0-primitives]
 path = "../primitives"
