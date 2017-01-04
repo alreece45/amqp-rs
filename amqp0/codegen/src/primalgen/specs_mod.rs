@@ -10,6 +10,7 @@ use std::borrow::Cow;
 use std::io;
 use inflections::Inflect;
 
+use specs;
 use CodeGenerator;
 use common::{Specs, Spec};
 
@@ -40,9 +41,13 @@ impl<'a> CodeGenerator for SpecsModuleWriter<'a> {
 }
 
 impl<'a> SpecsModuleWriter<'a> {
-    pub fn new<S>(specs: S) -> Self
-        where S: Into<Cow<'a, [Spec]>>
+    pub fn from_spec_slice<S>(specs: S) -> Self
+        where S: Into<Cow<'a, [&'static specs::Spec]>>
     {
+        let specs = specs.into().iter()
+            .map(|spec| Spec::new(spec))
+            .collect::<Vec<_>>();
+
         SpecsModuleWriter {
             specs: Specs::new(specs)
         }

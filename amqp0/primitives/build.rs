@@ -36,7 +36,7 @@ mod amqp0 {
 
     use env_logger;
 
-    use codegen::{self, Builder, CodeWriter};
+    use codegen::{self, Builder, CodeWriter}; 
     use codegen::primalgen::{SpecsModuleWriter, SpecModuleWriter};
     use specs::specs as amqp0_specs;
 
@@ -62,7 +62,7 @@ mod amqp0 {
         let mut paths: Vec<PathBuf> = Vec::with_capacity(1 + specs.len());
 
         // mod.rs
-        let specs_writer = SpecsModuleWriter::new(&specs[..]);
+        let specs_writer = SpecsModuleWriter::from_spec_slice(&specs[..]);
         let writer = CodeWriter::new(PrimitivesBuilder, specs_writer);
         println!("Generated mod.rs");
         let mod_path = out_path.join("mod.rs");
@@ -70,8 +70,8 @@ mod amqp0 {
         paths.push(mod_path);
 
         // {name}{minor}_{revision}.rs
-        for spec in &specs {
-            let spec_writer = SpecModuleWriter::new(spec);
+        for spec in specs {
+            let spec_writer = SpecModuleWriter::from_spec(spec);
             let filename = format!("{}.rs", spec_writer.mod_name());
             let path = out_path.join(&filename);
             let writer = CodeWriter::new(PrimitivesBuilder, spec_writer);
