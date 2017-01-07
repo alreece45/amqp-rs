@@ -12,23 +12,23 @@
 
 extern crate env_logger;
 
-#[cfg(any(feature = "amqp0-build-primitives", feature = "amqp0-pregen-primitives"))]
+#[cfg(feature = "amqp0-codegen")]
 extern crate amqp0_codegen as codegen;
-#[cfg(any(feature = "amqp0-build-primitives", feature = "amqp0-pregen-primitives"))]
+#[cfg(feature = "amqp0-specs")]
 extern crate amqp0_specs as specs;
 
 fn main() {
     amqp0::build();
 }
 
-#[cfg(not(any(feature = "amqp0-build-primitives", feature = "amqp0-pregen-primitives")))]
+#[cfg(not(feature = "amqp0-specs"))]
 mod amqp0 {
     pub fn build() {
         println!("Skipping build (neither amqp0-build-primitives nor amqp0-pregen-primitives specified)");
     }
 }
 
-#[cfg(any(feature = "amqp0-build-primitives", feature = "amqp0-pregen-primitives"))]
+#[cfg(feature = "amqp0-specs")]
 mod amqp0 {
     use std::env;
     use std::fs;
@@ -36,7 +36,7 @@ mod amqp0 {
 
     use env_logger;
 
-    use codegen::{self, Builder, CodeWriter}; 
+    use codegen::{self, Builder, CodeWriter};
     use codegen::primalgen::{SpecsModuleWriter, SpecModuleWriter};
     use specs::specs as amqp0_specs;
 
