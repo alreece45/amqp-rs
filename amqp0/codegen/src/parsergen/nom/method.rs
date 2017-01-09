@@ -8,7 +8,7 @@
 
 use std::io;
 
-use CodeGenerator;
+use WriteRust;
 use common::{Spec, Class, ClassMethod, Domain};
 use parsergen::FieldChunk;
 
@@ -56,7 +56,7 @@ impl<'a> MethodModuleWriter<'a> {
     }
 }
 
-impl<'a> CodeGenerator for MethodModuleWriter<'a> {
+impl<'a> WriteRust for MethodModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

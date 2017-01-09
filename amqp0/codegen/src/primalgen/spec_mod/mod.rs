@@ -15,7 +15,7 @@ use std::borrow::Cow;
 use std::io;
 use specs;
 
-use CodeGenerator;
+use WriteRust;
 use common::Spec;
 
 use self::class_mod::ClassModuleWriter;
@@ -27,7 +27,7 @@ pub struct SpecModuleWriter<'a> {
     spec: Cow<'a, Spec>,
 }
 
-impl<'a> CodeGenerator for SpecModuleWriter<'a> {
+impl<'a> WriteRust for SpecModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

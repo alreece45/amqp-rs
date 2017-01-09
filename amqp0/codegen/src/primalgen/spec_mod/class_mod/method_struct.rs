@@ -9,10 +9,10 @@
 use std::collections::{HashMap, HashSet};
 use std::io;
 
-use CodeGenerator;
+use WriteRust;
 use common::{Class, ClassMethod};
 
-impl<'a> CodeGenerator for MethodStructWriter<'a> {
+impl<'a> WriteRust for MethodStructWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

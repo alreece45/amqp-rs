@@ -10,7 +10,7 @@ use std::io;
 use inflections::Inflect;
 use specs::Spec;
 
-use CodeGenerator;
+use WriteRust;
 
 pub struct FramePayloadEnumWriter {
     frame_types: Vec<ClassModFrameType>,
@@ -23,7 +23,7 @@ enum ClassModFrameType {
     Empty(String),
 }
 
-impl CodeGenerator for FramePayloadEnumWriter {
+impl WriteRust for FramePayloadEnumWriter {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

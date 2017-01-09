@@ -9,7 +9,7 @@
 use std::borrow::Cow;
 use std::io;
 
-use CodeGenerator;
+use WriteRust;
 use common::Spec;
 
 pub struct SpecsModuleWriter<'a> {
@@ -26,7 +26,7 @@ impl<'a> SpecsModuleWriter<'a> {
     }
 }
 
-impl<'a> CodeGenerator for SpecsModuleWriter<'a> {
+impl<'a> WriteRust for SpecsModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

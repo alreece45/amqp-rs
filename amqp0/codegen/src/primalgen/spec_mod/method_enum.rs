@@ -8,7 +8,7 @@
 
 use std::io;
 
-use CodeGenerator;
+use WriteRust;
 use common::Spec;
 
 pub struct MethodEnumWriter<'a> {
@@ -16,7 +16,7 @@ pub struct MethodEnumWriter<'a> {
     has_lifetimes: bool
 }
 
-impl<'a> CodeGenerator for MethodEnumWriter<'a> {
+impl<'a> WriteRust for MethodEnumWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

@@ -10,6 +10,9 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
+#[macro_use]
+extern crate log;
+
 extern crate amqp0_specs as specs;
 extern crate inflections;
 extern crate lazycell;
@@ -29,48 +32,15 @@ use std::path::{Path, PathBuf};
 
 pub use common::{Specs, Spec, Class, ClassMethod};
 
-pub trait Builder {
+pub trait Source {
     fn name(&self) -> &str;
     fn crates(&self) -> &[&str];
+
     fn rebuild_features(&self) -> &[&str];
     fn pregeneration_features(&self) -> &[&str];
-}
 
-pub trait CodeGenerator {
-    fn write_rust_to<W>(&self, &mut W) -> io::Result<()>
-        where W: io::Write;
-}
-
-pub struct CodeWriter<B: Builder, G: CodeGenerator> {
-    builder: B,
-    generator: G,
-}
-
-impl<B, G> CodeWriter<B, G>
-    where B: Builder,
-          G: CodeGenerator
-{
-    pub fn new(builder: B, generator: G) -> Self {
-        CodeWriter {
-            builder: builder,
-            generator: generator,
-        }
-    }
-
-    pub fn write_to_path<P>(&self, path: &P) -> io::Result<()>
-        where P: AsRef<Path>
-    {
-        let path = path.as_ref();
-        let parent = path.parent().unwrap();
-        try!(fs::create_dir_all(parent));
-
-        let file = try!(File::create(path));
-        let mut writer = BufWriter::new(file);
-        try!(self.write_header_to(&mut writer));
-        try!(self.generator.write_rust_to(&mut writer));
-
-        Ok(())
-    }
+    fn base_dir(&self) -> &Path;
+    fn should_format(&self) -> bool;
 
     fn write_header_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
@@ -83,21 +53,45 @@ impl<B, G> CodeWriter<B, G>
 // To format and replace the pre-generated files, use: cargo --features=\"{}\"
 //
 // EDITORS BEWARE: Your modifications may be overridden",
-                 self.builder.name(),
-                 self.builder.crates().join(", "),
-                 if self.builder.crates().len() != 1 { "s" } else { "" },
-                 self.builder.rebuild_features().join(" "),
-                 self.builder.pregeneration_features().join(" ")
+             self.name(),
+             self.crates().join(", "),
+             if self.crates().len() != 1 { "s" } else { "" },
+             self.rebuild_features().join(" "),
+             self.pregeneration_features().join(" ")
         )
     }
 }
 
+pub trait WriteRust {
+    fn write_rust_to<W>(&self, &mut W) -> io::Result<()>
+        where W: io::Write;
+
+    fn write_rust_to_path<S, P>(&self, source: &S, path: &P) -> io::Result<()>
+        where S: Source,
+              P: AsRef<Path>
+    {
+        let path = path.as_ref();
+
+        // create directory
+        let parent = path.parent().unwrap();
+        try!(fs::create_dir_all(parent));
+
+        // create file and write contents
+        let mut writer = BufWriter::new(try!(File::create(path)));
+        try!(source.write_header_to(&mut writer));
+        try!(self.write_rust_to(&mut writer));
+
+        Ok(())
+    }
+}
+
 #[cfg(not(feature = "rustfmt"))]
-pub fn format_files(_: Vec<PathBuf>) {}
+#[doc(hidden)]
+fn format_files(_: Vec<PathBuf>) {}
 
 #[cfg(feature = "rustfmt")]
 #[doc(hidden)]
-pub fn format_files(paths: Vec<PathBuf>) {
+fn format_files(paths: Vec<PathBuf>) {
     use rustfmt::Input;
     use rustfmt::config::{self as fmtconfig};
 
@@ -108,8 +102,8 @@ pub fn format_files(paths: Vec<PathBuf>) {
     };
 
     for path in paths {
-        println ! ("Formatting {}", path.display());
-        let summary = rustfmt::run(Input::File(path), & config);
+        println!("Formatting {}", path.display());
+        let summary = rustfmt::run(Input::File(path), &config);
         println!("rustfmt Summary: {:?}", summary)
     }
 }

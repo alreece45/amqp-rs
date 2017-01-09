@@ -8,14 +8,14 @@
 
 use std::io;
 
-use CodeGenerator;
+use WriteRust;
 use common::Class;
 
 pub struct MethodEnumWriter<'a> {
     class: &'a Class,
 }
 
-impl<'a> CodeGenerator for MethodEnumWriter<'a> {
+impl<'a> WriteRust for MethodEnumWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

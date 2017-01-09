@@ -13,7 +13,7 @@ mod method_enum;
 use std::io;
 use common::Class;
 
-use CodeGenerator;
+use WriteRust;
 
 use self::method_enum::MethodEnumWriter;
 use self::header_struct::HeaderStructWriter;
@@ -31,7 +31,7 @@ impl<'a> ClassModuleWriter<'a> {
     }
 }
 
-impl<'a> CodeGenerator for ClassModuleWriter<'a> {
+impl<'a> WriteRust for ClassModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
@@ -44,7 +44,7 @@ impl<'a> CodeGenerator for ClassModuleWriter<'a> {
             // try!(writeln!(writer, "pub mod {} {{", method.snake_case()));
 
             // write the struct
-            let struct_writer = MethodStructWriter::new(&self.class, &method);
+            let struct_writer = MethodStructWriter::new(self.class, method);
             try!(struct_writer.write_rust_to(writer));
 
             // try!(writeln!(writer, "}} // mod {}\n", method.snake_case()));

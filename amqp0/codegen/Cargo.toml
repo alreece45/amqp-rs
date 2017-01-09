@@ -1,13 +1,14 @@
 [package]
 name = "amqp0-codegen"
 authors = ["Alexander Reece <github@reece45.com>"]
-version = "0.0.4"
+version = "0.0.5"
 
 [features]
 default = []
 
 [dependencies]
 inflections = "1.0.0"
+log = "0.3.6"
 lazycell = "0.5.0"
 phf = "0.7.20"
 amqp0-specs = { version = "0.0.5", path = "../specs" }

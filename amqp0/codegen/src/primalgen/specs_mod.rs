@@ -11,14 +11,14 @@ use std::io;
 use inflections::Inflect;
 
 use specs;
-use CodeGenerator;
+use WriteRust;
 use common::{Specs, Spec};
 
 pub struct SpecsModuleWriter<'a> {
     specs: Specs<'a>,
 }
 
-impl<'a> CodeGenerator for SpecsModuleWriter<'a> {
+impl<'a> WriteRust for SpecsModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

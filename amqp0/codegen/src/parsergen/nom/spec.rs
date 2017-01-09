@@ -10,7 +10,7 @@ use std::io;
 
 use inflections::Inflect;
 
-use CodeGenerator;
+use WriteRust;
 use common::frame_type_name;
 use common::{Spec, Class};
 use super::MethodModuleWriter;
@@ -19,7 +19,7 @@ pub struct SpecModuleWriter<'a> {
     spec: &'a Spec,
 }
 
-impl<'a> CodeGenerator for SpecModuleWriter<'a> {
+impl<'a> WriteRust for SpecModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
@@ -34,7 +34,7 @@ impl<'a> CodeGenerator for SpecModuleWriter<'a> {
         for class in self.spec.classes() {
             try!(write!(writer, "// Class {}", class.name()));
             for method in class.methods() {
-                let method_writer = MethodModuleWriter::new(&self.spec, &class, method);
+                let method_writer = MethodModuleWriter::new(self.spec, class, method);
                 try!(method_writer.write_rust_to(writer));
             }
 
