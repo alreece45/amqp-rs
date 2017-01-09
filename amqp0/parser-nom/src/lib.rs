@@ -10,9 +10,9 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
-#[cfg(not(feature = "amqp0-build-parser"))]
+#[cfg(feature = "amqp0-pregen-parser")]
 include!(concat!("../pregen/mod.rs"));
-#[cfg(feature = "amqp0-build-parser")]
+#[cfg(not(feature = "amqp0-pregen-parser"))]
 include!(concat!(env!("OUT_DIR"), "/mod.rs"));
 
 #[macro_use]
@@ -29,6 +29,6 @@ use pool::ParserPool;
 
 pub trait NomBytes<'a>: Sized {
     type Output: 'a;
-    fn nom_bytes<'b, P>(&'a [u8], &'b mut P) -> IResult<&'a [u8], Self>
+    fn nom_bytes<'b, P> (&'a [u8], &'b mut P) -> IResult<&'a [u8], Self>
         where P: ParserPool;
 }

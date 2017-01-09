@@ -10,86 +10,69 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
-#[cfg(any(feature = "amqp0-build-parser", feature = "amqp0-pregen-parser"))]
+extern crate env_logger;
+
+#[cfg(feature = "amqp0-codegen")]
 extern crate amqp0_codegen as codegen;
-#[cfg(any(feature = "amqp0-build-parser", feature = "amqp0-pregen-parser"))]
+#[cfg(feature = "amqp0-specs")]
 extern crate amqp0_specs as specs;
 
 fn main() {
     amqp0::build();
 }
 
-#[cfg(not(any(feature = "amqp0-build-parser", feature = "amqp0-pregen-parser")))]
+#[cfg(not(feature = "amqp0-specs"))]
 mod amqp0 {
     pub fn build() {
         println!("Skipping build (neither amqp0-build-parser nor amqp0-pregen-parser specified)");
     }
 }
 
-#[cfg(any(feature = "amqp0-build-parser", feature = "amqp0-pregen-parser"))]
+#[cfg(feature = "amqp0-specs")]
 mod amqp0 {
     use std::env;
-    use std::fs;
     use std::path::{Path, PathBuf};
 
-    use codegen::{Builder, CodeWriter, Spec};
-    use codegen::parsergen::nom::{SpecsModuleWriter, SpecModuleWriter};
+    use env_logger;
+    use codegen::Source;
+    use codegen::parsergen::nom::ModulesWriter;
     use specs::specs as amqp0_specs;
 
-    struct ParserBuilder;
+    struct NomParserSource  {
+        base_dir: PathBuf,
+    }
 
-    const BUILDER_CRATES: &'static [&'static str] = &["amqp0-codegen"];
-    const BUILDER_REBUILD: &'static [&'static str] = &["amqp0-build-parser"];
-    const BUILDER_PREGEN: &'static [&'static str] = &["amqp0-build-parser"];
+    const SOURCE_CRATES: &'static [&'static str] = &["amqp0-codegen"];
+    const SOURCE_REBUILD: &'static [&'static str] = &["amqp0-build-parser"];
+    const SOURCE_PREGEN: &'static [&'static str] = &["amqp0-pregen-parser"];
 
-    impl Builder for ParserBuilder {
+    impl Source for NomParserSource {
         fn name(&self) -> &str { "amqp0-parser-nom" }
-        fn crates(&self) -> &[&str] { BUILDER_CRATES }
-        fn rebuild_features(&self) -> &[&str] { BUILDER_REBUILD }
-        fn pregeneration_features(&self) -> &[&str] { BUILDER_PREGEN }
+        fn crates(&self) -> &[&str] { SOURCE_CRATES }
+
+        fn rebuild_features(&self) -> &[&str] { SOURCE_REBUILD }
+        fn pregeneration_features(&self) -> &[&str] { SOURCE_PREGEN }
+
+        fn base_dir(&self) -> &Path { &self.base_dir }
+
+        // rustfmt bug
+        fn should_format(&self) -> bool { false }
     }
 
     pub fn build() {
-        println!("Building parser from amqpspec");
+        let base_dir = if cfg!(feature = "amqp0-pregen-parser") {
+            PathBuf::from("pregen")
+        } else {
+            env::var_os("OUT_DIR")
+                .map(PathBuf::from)
+                .expect("Error: OUT_DIR not set")
+        };
 
-        let out_path = env::var_os("OUT_DIR").map(PathBuf::from).expect("Error: OUT_DIR not set");
-        let specs = amqp0_specs().iter()
-            .map(|spec| Spec::new(spec))
-            .collect::<Vec<_>>();
-        let mut paths: Vec<PathBuf> = Vec::with_capacity(1 + specs.len());
+        env_logger::init().unwrap();
+        println!("Building amqp0-parser-nom");
 
-        // mod.rs
-        let specs_writer = SpecsModuleWriter::new(&specs[..]);
-        let writer = CodeWriter::new(ParserBuilder, specs_writer);
-        println!("Generated mod.rs");
-        let mod_path = out_path.join("mod.rs");
-        writer.write_to_path(&mod_path).expect("Failed to write amqp0.rs");
-        paths.push(mod_path);
-
-        // {name}{minor}_{revision}.rs
-        for spec in &specs {
-            let spec_writer = SpecModuleWriter::new(spec);
-            let filename = format!("{}.rs", spec.mod_name());
-            let path = out_path.join(&filename);
-            let writer = CodeWriter::new(ParserBuilder, spec_writer);
-            println!("Generating {}", filename);
-            writer.write_to_path(&path).expect("Failed to write spec module");
-            paths.push(path);
-        }
-
-        if cfg!(feature = "rustfmt") {
-            // Formatting is currently broken for these pregenerated files
-            // codegen::format_files(paths.clone());
-        }
-
-        if cfg!(feature = "amqp0-pregen-parser") {
-            let pregen_dir = Path::new("pregen");
-            for path in paths {
-                let suffix = path.strip_prefix(&out_path).unwrap();
-                let dst = pregen_dir.join(suffix);
-                println!("Saving to {} to {}", path.display(), dst.display());
-                fs::copy(&path, dst).unwrap();
-            }
-        }
+        let source = NomParserSource { base_dir: base_dir };
+        let writer = ModulesWriter::new(&source, amqp0_specs());
+        writer.write_files().unwrap();
     }
 }

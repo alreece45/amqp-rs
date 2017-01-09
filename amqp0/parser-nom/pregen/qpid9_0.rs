@@ -2,7 +2,7 @@
 // Pre-generated files are used by default. Generation is done with the amqp0-codegen crate
 //
 // To regenerate, and not use pre-generated files, use: cargo --features="amqp0-build-parser"
-// To format and replace the pre-generated files, use: cargo --features="amqp0-build-parser"
+// To format and replace the pre-generated files, use: cargo --features="amqp0-pregen-parser"
 //
 // EDITORS BEWARE: Your modifications may be overridden
 #![allow(unused_variables)]
