@@ -80,7 +80,7 @@ impl Spec {
 impl Deref for Spec {
     type Target = ::specs::Spec;
     fn deref(&self) -> &Self::Target {
-        &self.spec
+        self.spec
     }
 }
 
@@ -92,7 +92,7 @@ impl Hash for Spec {
 
 impl PartialEq for Spec {
     fn eq(&self, other: &Self) -> bool {
-        self.spec.eq(&other.spec)
+        self.spec.eq(other.spec)
     }
 }
 impl Eq for Spec {}

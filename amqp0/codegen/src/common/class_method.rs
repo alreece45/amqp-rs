@@ -79,6 +79,6 @@ impl Deref for ClassMethod {
     type Target = specs::ClassMethod;
 
     fn deref(&self) -> &Self::Target {
-        &self.method
+        self.method
     }
 }
