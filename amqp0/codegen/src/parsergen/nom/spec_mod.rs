@@ -51,7 +51,7 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
 }
 
 impl<'a> SpecModuleWriter<'a> {
-    pub fn new(spec: &'a Spec) -> Self {
+    pub fn from_spec(spec: &'a Spec) -> Self {
         SpecModuleWriter {
             spec: spec,
         }

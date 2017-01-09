@@ -17,7 +17,7 @@ pub struct SpecsModuleWriter<'a> {
 }
 
 impl<'a> SpecsModuleWriter<'a> {
-    pub fn new<S>(specs: S) -> Self
+    pub fn from_spec_slice<S>(specs: S) -> Self
         where S: Into<Cow<'a, [Spec]>>
     {
         SpecsModuleWriter {
