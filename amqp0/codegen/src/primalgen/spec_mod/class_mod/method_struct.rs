@@ -124,16 +124,10 @@ impl<'a> MethodStructWriter<'a> {
 
         try!(write!(writer, "pub fn new"));
 
-        println!("{:#?}", self.generic_types);
-
         // generic arguments: <A, B, C>
         if !self.generic_types.is_empty() {
             let generics = self.method.fields().iter()
-                .filter_map(|f| {
-                    let mapping = self.generic_types.get(f.var_name());
-                    println!("Looking for {:?}, found {:?}", f.var_name(), mapping);
-                    mapping
-                })
+                .filter_map(|f| self.generic_types.get(f.var_name()))
                 .map(|s| s.as_str())
                 .collect::<Vec<_>>()
                 .join(", ");
