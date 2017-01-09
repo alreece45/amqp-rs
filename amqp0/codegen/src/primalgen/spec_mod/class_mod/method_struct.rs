@@ -230,7 +230,7 @@ impl<'a> MethodStructWriter<'a> {
                     continue;
                 }
 
-                if let Some(_) = field.ty().dynamic_bit_method() {
+                if field.ty().dynamic_bit_method().is_some() {
                     try!(writeln!(writer, "::Encodable::encoded_size(&self.{}),", field.var_name()));
                 }
             }
