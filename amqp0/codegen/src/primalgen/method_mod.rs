@@ -85,7 +85,7 @@ impl<'a> WriteRust for MethodModuleWriter<'a> {
             for (method_name, field_names) in class_methods {
                 let method_pascal = method_name.to_pascal_case();
                 if field_names.is_empty() {
-                    try!(writeln!(writer, "pub trait {}Method {{}}", method_pascal));
+                    try!(writeln!(writer, "pub trait Set{}MethodFields {{}}", method_pascal));
                     continue;
                 }
 
@@ -95,7 +95,7 @@ impl<'a> WriteRust for MethodModuleWriter<'a> {
                     .any(|method| method.has_lifetimes());
 
                 let lifetimes = if has_lifetimes { "<'a>" } else { "" };
-                let section = format!("pub trait {}Method{}", method_pascal, lifetimes);
+                let section = format!("pub trait Set{}MethodFields{}", method_pascal, lifetimes);
 
                 try!(writeln!(writer, "{} {{", section));
                 for field_name in field_names {
