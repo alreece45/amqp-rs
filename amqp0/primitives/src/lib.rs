@@ -5,7 +5,6 @@
 // <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
-
 #![cfg_attr(feature="clippy", feature(plugin))]
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
@@ -15,6 +14,8 @@ extern crate cfg_if;
 
 #[macro_use]
 mod macros;
+
+pub mod field;
 
 // default: pregen/mod.rs
 // build    OUT_DIR/mod.rs
@@ -29,34 +30,11 @@ cfg_if! {
     }
 }
 
-pub mod field;
-
-#[derive(Clone)]
-pub struct Frame<P> {
-    channel: u16,
-    payload: P
-}
-
-impl<'a, P> Frame<P>
-    where P: ProtocolFramePayload<'a>
-{
-    pub fn channel(&self) -> u16 {
-        self.channel
-    }
-    pub fn payload(&self) -> &P {
-        &self.payload
-    }
-}
-
-impl<'a, P> Encodable for Frame<P>
-    where P: ProtocolFramePayload<'a>
-{
-    fn encoded_size(&self) -> usize {
-        4 + self.payload.encoded_size()
-    }
-}
-
 use std::borrow::Cow;
+
+pub trait Encodable {
+    fn encoded_size(&self) -> usize;
+}
 
 impl<'a> Encodable for Cow<'a, [u8]> {
     fn encoded_size(&self) -> usize {
@@ -90,8 +68,3 @@ pub trait ProtocolMethodPayload: Encodable {
     fn class_id(&self) -> u16;
     fn method_id(&self) -> u16;
 }
-
-pub trait Encodable {
-    fn encoded_size(&self) -> usize;
-}
-
