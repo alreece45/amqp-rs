@@ -89,9 +89,26 @@ impl<'a> WriteRust for MethodModuleWriter<'a> {
             try!(writeln!(writer, "\npub mod {} {{", class_snake));
 
             for (method, fields) in class_methods {
+                let has_lifetimes = self.specs.iter()
+                    .filter_map(|spec| spec.class(class))
+                    .filter_map(|class| class.method(method))
+                    .any(|method| method.has_lifetimes());
+
+                let lifetimes = if has_lifetimes { "<'a>" } else { "" };
+                let pascal_method = method.to_pascal_case();
+
+                let section = format!("pub trait {}Method{}", pascal_method, lifetimes);
+                try!(write!(writer, "{} {{\ntype Payload: Default", section));
+
+                if fields.len() > 0 {
+                    try!(write!(writer, " + Set{}MethodFields{}", pascal_method, lifetimes))
+                }
+                try!(writeln!(writer, ";\n}} // {}\n", section));
+
                 let setter = SetterTraitDefinitionWriter::new(self.specs, class, method, &fields);
                 try!(setter.write_rust_to(writer));
             }
+
             try!(writeln!(writer, "}} // mod {}", class_snake));
         }
 

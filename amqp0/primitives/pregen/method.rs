@@ -7,6 +7,10 @@
 // EDITORS BEWARE: Your modifications may be overridden
 
 pub mod access {
+    pub trait RequestMethod<'a> {
+        type Payload: Default + SetRequestMethodFields<'a>;
+    } // pub trait RequestMethod<'a>
+
     pub trait SetRequestMethodFields<'a> {
         fn set_active(_: bool) {}
         fn set_exclusive(_: bool) {}
@@ -16,6 +20,10 @@ pub mod access {
         fn set_write(_: bool) {}
     } // pub trait SetRequestMethodFields<'a>
 
+    pub trait RequestOkMethod {
+        type Payload: Default + SetRequestOkMethodFields;
+    } // pub trait RequestOkMethod
+
     pub trait SetRequestOkMethodFields {
         fn set_ticket(_: u16) {}
     } // pub trait SetRequestOkMethodFields
@@ -23,19 +31,35 @@ pub mod access {
 } // mod access
 
 pub mod basic {
+    pub trait AckMethod {
+        type Payload: Default + SetAckMethodFields;
+    } // pub trait AckMethod
+
     pub trait SetAckMethodFields {
         fn set_delivery_tag(_: u64) {}
         fn set_multiple(_: bool) {}
     } // pub trait SetAckMethodFields
+
+    pub trait CancelMethod<'a> {
+        type Payload: Default + SetCancelMethodFields<'a>;
+    } // pub trait CancelMethod<'a>
 
     pub trait SetCancelMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_no_wait(_: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
+    pub trait CancelOkMethod<'a> {
+        type Payload: Default + SetCancelOkMethodFields<'a>;
+    } // pub trait CancelOkMethod<'a>
+
     pub trait SetCancelOkMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
+
+    pub trait ConsumeMethod<'a> {
+        type Payload: Default + SetConsumeMethodFields<'a>;
+    } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
@@ -49,9 +73,17 @@ pub mod basic {
         fn set_ticket(_: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub trait ConsumeOkMethod<'a> {
+        type Payload: Default + SetConsumeOkMethodFields<'a>;
+    } // pub trait ConsumeOkMethod<'a>
+
     pub trait SetConsumeOkMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
+
+    pub trait DeliverMethod<'a> {
+        type Payload: Default + SetDeliverMethodFields<'a>;
+    } // pub trait DeliverMethod<'a>
 
     pub trait SetDeliverMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -61,15 +93,27 @@ pub mod basic {
         fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
+    pub trait GetMethod<'a> {
+        type Payload: Default + SetGetMethodFields<'a>;
+    } // pub trait GetMethod<'a>
+
     pub trait SetGetMethodFields<'a> {
         fn set_no_ack(_: bool) {}
         fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_ticket(_: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
+    pub trait GetEmptyMethod<'a> {
+        type Payload: Default + SetGetEmptyMethodFields<'a>;
+    } // pub trait GetEmptyMethod<'a>
+
     pub trait SetGetEmptyMethodFields<'a> {
         fn set_cluster_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetEmptyMethodFields<'a>
+
+    pub trait GetOkMethod<'a> {
+        type Payload: Default + SetGetOkMethodFields<'a>;
+    } // pub trait GetOkMethod<'a>
 
     pub trait SetGetOkMethodFields<'a> {
         fn set_delivery_tag(_: u64) {}
@@ -79,11 +123,19 @@ pub mod basic {
         fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetOkMethodFields<'a>
 
+    pub trait NackMethod {
+        type Payload: Default + SetNackMethodFields;
+    } // pub trait NackMethod
+
     pub trait SetNackMethodFields {
         fn set_delivery_tag(_: u64) {}
         fn set_multiple(_: bool) {}
         fn set_requeue(_: bool) {}
     } // pub trait SetNackMethodFields
+
+    pub trait PublishMethod<'a> {
+        type Payload: Default + SetPublishMethodFields<'a>;
+    } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -93,28 +145,64 @@ pub mod basic {
         fn set_ticket(_: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
+    pub trait QosMethod {
+        type Payload: Default + SetQosMethodFields;
+    } // pub trait QosMethod
+
     pub trait SetQosMethodFields {
         fn set_global(_: bool) {}
         fn set_prefetch_count(_: u16) {}
         fn set_prefetch_size(_: u32) {}
     } // pub trait SetQosMethodFields
 
+    pub trait QosOkMethod {
+        type Payload: Default;
+    } // pub trait QosOkMethod
+
+    pub trait RecoverMethod {
+        type Payload: Default + SetRecoverMethodFields;
+    } // pub trait RecoverMethod
+
     pub trait SetRecoverMethodFields {
         fn set_requeue(_: bool) {}
     } // pub trait SetRecoverMethodFields
+
+    pub trait RecoverAsyncMethod {
+        type Payload: Default + SetRecoverAsyncMethodFields;
+    } // pub trait RecoverAsyncMethod
 
     pub trait SetRecoverAsyncMethodFields {
         fn set_requeue(_: bool) {}
     } // pub trait SetRecoverAsyncMethodFields
 
+    pub trait RecoverOkMethod {
+        type Payload: Default;
+    } // pub trait RecoverOkMethod
+
+    pub trait RecoverSyncMethod {
+        type Payload: Default + SetRecoverSyncMethodFields;
+    } // pub trait RecoverSyncMethod
+
     pub trait SetRecoverSyncMethodFields {
         fn set_requeue(_: bool) {}
     } // pub trait SetRecoverSyncMethodFields
+
+    pub trait RecoverSyncOkMethod {
+        type Payload: Default;
+    } // pub trait RecoverSyncOkMethod
+
+    pub trait RejectMethod {
+        type Payload: Default + SetRejectMethodFields;
+    } // pub trait RejectMethod
 
     pub trait SetRejectMethodFields {
         fn set_delivery_tag(_: u64) {}
         fn set_requeue(_: bool) {}
     } // pub trait SetRejectMethodFields
+
+    pub trait ReturnMethod<'a> {
+        type Payload: Default + SetReturnMethodFields<'a>;
+    } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -126,11 +214,19 @@ pub mod basic {
 } // mod basic
 
 pub mod channel {
+    pub trait AlertMethod<'a> {
+        type Payload: Default + SetAlertMethodFields<'a>;
+    } // pub trait AlertMethod<'a>
+
     pub trait SetAlertMethodFields<'a> {
         fn set_details<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_reply_code(_: u16) {}
         fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetAlertMethodFields<'a>
+
+    pub trait CloseMethod<'a> {
+        type Payload: Default + SetCloseMethodFields<'a>;
+    } // pub trait CloseMethod<'a>
 
     pub trait SetCloseMethodFields<'a> {
         fn set_class_id(_: u16) {}
@@ -139,21 +235,57 @@ pub mod channel {
         fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
+    pub trait CloseOkMethod {
+        type Payload: Default;
+    } // pub trait CloseOkMethod
+
+    pub trait FlowMethod {
+        type Payload: Default + SetFlowMethodFields;
+    } // pub trait FlowMethod
+
     pub trait SetFlowMethodFields {
         fn set_active(_: bool) {}
     } // pub trait SetFlowMethodFields
+
+    pub trait FlowOkMethod {
+        type Payload: Default + SetFlowOkMethodFields;
+    } // pub trait FlowOkMethod
 
     pub trait SetFlowOkMethodFields {
         fn set_active(_: bool) {}
     } // pub trait SetFlowOkMethodFields
 
+    pub trait OkMethod {
+        type Payload: Default;
+    } // pub trait OkMethod
+
+    pub trait OpenMethod<'a> {
+        type Payload: Default + SetOpenMethodFields<'a>;
+    } // pub trait OpenMethod<'a>
+
     pub trait SetOpenMethodFields<'a> {
         fn set_out_of_band<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
+    pub trait OpenOkMethod<'a> {
+        type Payload: Default + SetOpenOkMethodFields<'a>;
+    } // pub trait OpenOkMethod<'a>
+
     pub trait SetOpenOkMethodFields<'a> {
         fn set_channel_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenOkMethodFields<'a>
+
+    pub trait PingMethod {
+        type Payload: Default;
+    } // pub trait PingMethod
+
+    pub trait PongMethod {
+        type Payload: Default;
+    } // pub trait PongMethod
+
+    pub trait ResumeMethod<'a> {
+        type Payload: Default + SetResumeMethodFields<'a>;
+    } // pub trait ResumeMethod<'a>
 
     pub trait SetResumeMethodFields<'a> {
         fn set_channel_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
@@ -162,16 +294,32 @@ pub mod channel {
 } // mod channel
 
 pub mod confirm {
+    pub trait SelectMethod {
+        type Payload: Default + SetSelectMethodFields;
+    } // pub trait SelectMethod
+
     pub trait SetSelectMethodFields {
         fn set_no_wait(_: bool) {}
     } // pub trait SetSelectMethodFields
 
+    pub trait SelectOkMethod {
+        type Payload: Default;
+    } // pub trait SelectOkMethod
+
 } // mod confirm
 
 pub mod connection {
+    pub trait BlockedMethod<'a> {
+        type Payload: Default + SetBlockedMethodFields<'a>;
+    } // pub trait BlockedMethod<'a>
+
     pub trait SetBlockedMethodFields<'a> {
         fn set_reason<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBlockedMethodFields<'a>
+
+    pub trait CloseMethod<'a> {
+        type Payload: Default + SetCloseMethodFields<'a>;
+    } // pub trait CloseMethod<'a>
 
     pub trait SetCloseMethodFields<'a> {
         fn set_class_id(_: u16) {}
@@ -180,28 +328,56 @@ pub mod connection {
         fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
+    pub trait CloseOkMethod {
+        type Payload: Default;
+    } // pub trait CloseOkMethod
+
+    pub trait OpenMethod<'a> {
+        type Payload: Default + SetOpenMethodFields<'a>;
+    } // pub trait OpenMethod<'a>
+
     pub trait SetOpenMethodFields<'a> {
         fn set_capabilities<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_insist(_: bool) {}
         fn set_virtual_host<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
+    pub trait OpenOkMethod<'a> {
+        type Payload: Default + SetOpenOkMethodFields<'a>;
+    } // pub trait OpenOkMethod<'a>
+
     pub trait SetOpenOkMethodFields<'a> {
         fn set_known_hosts<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenOkMethodFields<'a>
+
+    pub trait RedirectMethod<'a> {
+        type Payload: Default + SetRedirectMethodFields<'a>;
+    } // pub trait RedirectMethod<'a>
 
     pub trait SetRedirectMethodFields<'a> {
         fn set_host<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_known_hosts<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRedirectMethodFields<'a>
 
+    pub trait SecureMethod<'a> {
+        type Payload: Default + SetSecureMethodFields<'a>;
+    } // pub trait SecureMethod<'a>
+
     pub trait SetSecureMethodFields<'a> {
         fn set_challenge<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureMethodFields<'a>
 
+    pub trait SecureOkMethod<'a> {
+        type Payload: Default + SetSecureOkMethodFields<'a>;
+    } // pub trait SecureOkMethod<'a>
+
     pub trait SetSecureOkMethodFields<'a> {
         fn set_response<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureOkMethodFields<'a>
+
+    pub trait StartMethod<'a> {
+        type Payload: Default + SetStartMethodFields<'a>;
+    } // pub trait StartMethod<'a>
 
     pub trait SetStartMethodFields<'a> {
         fn set_locales<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
@@ -211,6 +387,10 @@ pub mod connection {
         fn set_version_minor(_: u8) {}
     } // pub trait SetStartMethodFields<'a>
 
+    pub trait StartOkMethod<'a> {
+        type Payload: Default + SetStartOkMethodFields<'a>;
+    } // pub trait StartOkMethod<'a>
+
     pub trait SetStartOkMethodFields<'a> {
         fn set_client_properties<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_locale<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -218,11 +398,19 @@ pub mod connection {
         fn set_response<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStartOkMethodFields<'a>
 
+    pub trait TuneMethod {
+        type Payload: Default + SetTuneMethodFields;
+    } // pub trait TuneMethod
+
     pub trait SetTuneMethodFields {
         fn set_channel_max(_: u16) {}
         fn set_frame_max(_: u32) {}
         fn set_heartbeat(_: u16) {}
     } // pub trait SetTuneMethodFields
+
+    pub trait TuneOkMethod {
+        type Payload: Default + SetTuneOkMethodFields;
+    } // pub trait TuneOkMethod
 
     pub trait SetTuneOkMethodFields {
         fn set_channel_max(_: u16) {}
@@ -230,16 +418,40 @@ pub mod connection {
         fn set_heartbeat(_: u16) {}
     } // pub trait SetTuneOkMethodFields
 
+    pub trait UnblockedMethod {
+        type Payload: Default;
+    } // pub trait UnblockedMethod
+
 } // mod connection
 
 pub mod dtx {
+    pub trait SelectMethod {
+        type Payload: Default;
+    } // pub trait SelectMethod
+
+    pub trait SelectOkMethod {
+        type Payload: Default;
+    } // pub trait SelectOkMethod
+
+    pub trait StartMethod<'a> {
+        type Payload: Default + SetStartMethodFields<'a>;
+    } // pub trait StartMethod<'a>
+
     pub trait SetStartMethodFields<'a> {
         fn set_dtx_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetStartMethodFields<'a>
 
+    pub trait StartOkMethod {
+        type Payload: Default;
+    } // pub trait StartOkMethod
+
 } // mod dtx
 
 pub mod exchange {
+    pub trait BindMethod<'a> {
+        type Payload: Default + SetBindMethodFields<'a>;
+    } // pub trait BindMethod<'a>
+
     pub trait SetBindMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -248,16 +460,32 @@ pub mod exchange {
         fn set_source<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBindMethodFields<'a>
 
+    pub trait BindOkMethod {
+        type Payload: Default;
+    } // pub trait BindOkMethod
+
+    pub trait BoundMethod<'a> {
+        type Payload: Default + SetBoundMethodFields<'a>;
+    } // pub trait BoundMethod<'a>
+
     pub trait SetBoundMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundMethodFields<'a>
 
+    pub trait BoundOkMethod<'a> {
+        type Payload: Default + SetBoundOkMethodFields<'a>;
+    } // pub trait BoundOkMethod<'a>
+
     pub trait SetBoundOkMethodFields<'a> {
         fn set_reply_code(_: u16) {}
         fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundOkMethodFields<'a>
+
+    pub trait DeclareMethod<'a> {
+        type Payload: Default + SetDeclareMethodFields<'a>;
+    } // pub trait DeclareMethod<'a>
 
     pub trait SetDeclareMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
@@ -271,12 +499,28 @@ pub mod exchange {
         fn set_ty<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareMethodFields<'a>
 
+    pub trait DeclareOkMethod {
+        type Payload: Default;
+    } // pub trait DeclareOkMethod
+
+    pub trait DeleteMethod<'a> {
+        type Payload: Default + SetDeleteMethodFields<'a>;
+    } // pub trait DeleteMethod<'a>
+
     pub trait SetDeleteMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_if_unused(_: bool) {}
         fn set_no_wait(_: bool) {}
         fn set_ticket(_: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
+
+    pub trait DeleteOkMethod {
+        type Payload: Default;
+    } // pub trait DeleteOkMethod
+
+    pub trait UnbindMethod<'a> {
+        type Payload: Default + SetUnbindMethodFields<'a>;
+    } // pub trait UnbindMethod<'a>
 
     pub trait SetUnbindMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
@@ -286,22 +530,42 @@ pub mod exchange {
         fn set_source<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetUnbindMethodFields<'a>
 
+    pub trait UnbindOkMethod {
+        type Payload: Default;
+    } // pub trait UnbindOkMethod
+
 } // mod exchange
 
 pub mod file {
+    pub trait AckMethod {
+        type Payload: Default + SetAckMethodFields;
+    } // pub trait AckMethod
+
     pub trait SetAckMethodFields {
         fn set_delivery_tag(_: u64) {}
         fn set_multiple(_: bool) {}
     } // pub trait SetAckMethodFields
+
+    pub trait CancelMethod<'a> {
+        type Payload: Default + SetCancelMethodFields<'a>;
+    } // pub trait CancelMethod<'a>
 
     pub trait SetCancelMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_no_wait(_: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
+    pub trait CancelOkMethod<'a> {
+        type Payload: Default + SetCancelOkMethodFields<'a>;
+    } // pub trait CancelOkMethod<'a>
+
     pub trait SetCancelOkMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
+
+    pub trait ConsumeMethod<'a> {
+        type Payload: Default + SetConsumeMethodFields<'a>;
+    } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -314,9 +578,17 @@ pub mod file {
         fn set_ticket(_: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub trait ConsumeOkMethod<'a> {
+        type Payload: Default + SetConsumeOkMethodFields<'a>;
+    } // pub trait ConsumeOkMethod<'a>
+
     pub trait SetConsumeOkMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
+
+    pub trait DeliverMethod<'a> {
+        type Payload: Default + SetDeliverMethodFields<'a>;
+    } // pub trait DeliverMethod<'a>
 
     pub trait SetDeliverMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -327,14 +599,26 @@ pub mod file {
         fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
+    pub trait OpenMethod<'a> {
+        type Payload: Default + SetOpenMethodFields<'a>;
+    } // pub trait OpenMethod<'a>
+
     pub trait SetOpenMethodFields<'a> {
         fn set_content_size(_: u64) {}
         fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
+    pub trait OpenOkMethod {
+        type Payload: Default + SetOpenOkMethodFields;
+    } // pub trait OpenOkMethod
+
     pub trait SetOpenOkMethodFields {
         fn set_staged_size(_: u64) {}
     } // pub trait SetOpenOkMethodFields
+
+    pub trait PublishMethod<'a> {
+        type Payload: Default + SetPublishMethodFields<'a>;
+    } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -345,16 +629,32 @@ pub mod file {
         fn set_ticket(_: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
+    pub trait QosMethod {
+        type Payload: Default + SetQosMethodFields;
+    } // pub trait QosMethod
+
     pub trait SetQosMethodFields {
         fn set_global(_: bool) {}
         fn set_prefetch_count(_: u16) {}
         fn set_prefetch_size(_: u32) {}
     } // pub trait SetQosMethodFields
 
+    pub trait QosOkMethod {
+        type Payload: Default;
+    } // pub trait QosOkMethod
+
+    pub trait RejectMethod {
+        type Payload: Default + SetRejectMethodFields;
+    } // pub trait RejectMethod
+
     pub trait SetRejectMethodFields {
         fn set_delivery_tag(_: u64) {}
         fn set_requeue(_: bool) {}
     } // pub trait SetRejectMethodFields
+
+    pub trait ReturnMethod<'a> {
+        type Payload: Default + SetReturnMethodFields<'a>;
+    } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -363,26 +663,50 @@ pub mod file {
         fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
+    pub trait StageMethod {
+        type Payload: Default;
+    } // pub trait StageMethod
+
 } // mod file
 
 pub mod message {
+    pub trait AppendMethod<'a> {
+        type Payload: Default + SetAppendMethodFields<'a>;
+    } // pub trait AppendMethod<'a>
+
     pub trait SetAppendMethodFields<'a> {
         fn set_bytes<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
         fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetAppendMethodFields<'a>
 
+    pub trait CancelMethod<'a> {
+        type Payload: Default + SetCancelMethodFields<'a>;
+    } // pub trait CancelMethod<'a>
+
     pub trait SetCancelMethodFields<'a> {
         fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelMethodFields<'a>
+
+    pub trait CheckpointMethod<'a> {
+        type Payload: Default + SetCheckpointMethodFields<'a>;
+    } // pub trait CheckpointMethod<'a>
 
     pub trait SetCheckpointMethodFields<'a> {
         fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCheckpointMethodFields<'a>
 
+    pub trait CloseMethod<'a> {
+        type Payload: Default + SetCloseMethodFields<'a>;
+    } // pub trait CloseMethod<'a>
+
     pub trait SetCloseMethodFields<'a> {
         fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCloseMethodFields<'a>
+
+    pub trait ConsumeMethod<'a> {
+        type Payload: Default + SetConsumeMethodFields<'a>;
+    } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
         fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -394,6 +718,14 @@ pub mod message {
         fn set_ticket(_: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub trait EmptyMethod {
+        type Payload: Default;
+    } // pub trait EmptyMethod
+
+    pub trait GetMethod<'a> {
+        type Payload: Default + SetGetMethodFields<'a>;
+    } // pub trait GetMethod<'a>
+
     pub trait SetGetMethodFields<'a> {
         fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_no_ack(_: bool) {}
@@ -401,13 +733,29 @@ pub mod message {
         fn set_ticket(_: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
+    pub trait OffsetMethod {
+        type Payload: Default + SetOffsetMethodFields;
+    } // pub trait OffsetMethod
+
     pub trait SetOffsetMethodFields {
         fn set_value(_: u64) {}
     } // pub trait SetOffsetMethodFields
 
+    pub trait OkMethod {
+        type Payload: Default;
+    } // pub trait OkMethod
+
+    pub trait OpenMethod<'a> {
+        type Payload: Default + SetOpenMethodFields<'a>;
+    } // pub trait OpenMethod<'a>
+
     pub trait SetOpenMethodFields<'a> {
         fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenMethodFields<'a>
+
+    pub trait QosMethod {
+        type Payload: Default + SetQosMethodFields;
+    } // pub trait QosMethod
 
     pub trait SetQosMethodFields {
         fn set_global(_: bool) {}
@@ -415,19 +763,35 @@ pub mod message {
         fn set_prefetch_size(_: u32) {}
     } // pub trait SetQosMethodFields
 
+    pub trait RecoverMethod {
+        type Payload: Default + SetRecoverMethodFields;
+    } // pub trait RecoverMethod
+
     pub trait SetRecoverMethodFields {
         fn set_requeue(_: bool) {}
     } // pub trait SetRecoverMethodFields
+
+    pub trait RejectMethod<'a> {
+        type Payload: Default + SetRejectMethodFields<'a>;
+    } // pub trait RejectMethod<'a>
 
     pub trait SetRejectMethodFields<'a> {
         fn set_code(_: u16) {}
         fn set_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRejectMethodFields<'a>
 
+    pub trait ResumeMethod<'a> {
+        type Payload: Default + SetResumeMethodFields<'a>;
+    } // pub trait ResumeMethod<'a>
+
     pub trait SetResumeMethodFields<'a> {
         fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
+
+    pub trait TransferMethod<'a> {
+        type Payload: Default + SetTransferMethodFields<'a>;
+    } // pub trait TransferMethod<'a>
 
     pub trait SetTransferMethodFields<'a> {
         fn set_app_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -457,6 +821,10 @@ pub mod message {
 } // mod message
 
 pub mod queue {
+    pub trait BindMethod<'a> {
+        type Payload: Default + SetBindMethodFields<'a>;
+    } // pub trait BindMethod<'a>
+
     pub trait SetBindMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -465,6 +833,14 @@ pub mod queue {
         fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_ticket(_: u16) {}
     } // pub trait SetBindMethodFields<'a>
+
+    pub trait BindOkMethod {
+        type Payload: Default;
+    } // pub trait BindOkMethod
+
+    pub trait DeclareMethod<'a> {
+        type Payload: Default + SetDeclareMethodFields<'a>;
+    } // pub trait DeclareMethod<'a>
 
     pub trait SetDeclareMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
@@ -477,11 +853,19 @@ pub mod queue {
         fn set_ticket(_: u16) {}
     } // pub trait SetDeclareMethodFields<'a>
 
+    pub trait DeclareOkMethod<'a> {
+        type Payload: Default + SetDeclareOkMethodFields<'a>;
+    } // pub trait DeclareOkMethod<'a>
+
     pub trait SetDeclareOkMethodFields<'a> {
         fn set_consumer_count(_: u32) {}
         fn set_message_count(_: u32) {}
         fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareOkMethodFields<'a>
+
+    pub trait DeleteMethod<'a> {
+        type Payload: Default + SetDeleteMethodFields<'a>;
+    } // pub trait DeleteMethod<'a>
 
     pub trait SetDeleteMethodFields<'a> {
         fn set_if_empty(_: bool) {}
@@ -491,9 +875,17 @@ pub mod queue {
         fn set_ticket(_: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
+    pub trait DeleteOkMethod {
+        type Payload: Default + SetDeleteOkMethodFields;
+    } // pub trait DeleteOkMethod
+
     pub trait SetDeleteOkMethodFields {
         fn set_message_count(_: u32) {}
     } // pub trait SetDeleteOkMethodFields
+
+    pub trait PurgeMethod<'a> {
+        type Payload: Default + SetPurgeMethodFields<'a>;
+    } // pub trait PurgeMethod<'a>
 
     pub trait SetPurgeMethodFields<'a> {
         fn set_no_wait(_: bool) {}
@@ -501,9 +893,17 @@ pub mod queue {
         fn set_ticket(_: u16) {}
     } // pub trait SetPurgeMethodFields<'a>
 
+    pub trait PurgeOkMethod {
+        type Payload: Default + SetPurgeOkMethodFields;
+    } // pub trait PurgeOkMethod
+
     pub trait SetPurgeOkMethodFields {
         fn set_message_count(_: u32) {}
     } // pub trait SetPurgeOkMethodFields
+
+    pub trait UnbindMethod<'a> {
+        type Payload: Default + SetUnbindMethodFields<'a>;
+    } // pub trait UnbindMethod<'a>
 
     pub trait SetUnbindMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
@@ -513,17 +913,33 @@ pub mod queue {
         fn set_ticket(_: u16) {}
     } // pub trait SetUnbindMethodFields<'a>
 
+    pub trait UnbindOkMethod {
+        type Payload: Default;
+    } // pub trait UnbindOkMethod
+
 } // mod queue
 
 pub mod stream {
+    pub trait CancelMethod<'a> {
+        type Payload: Default + SetCancelMethodFields<'a>;
+    } // pub trait CancelMethod<'a>
+
     pub trait SetCancelMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_no_wait(_: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
+    pub trait CancelOkMethod<'a> {
+        type Payload: Default + SetCancelOkMethodFields<'a>;
+    } // pub trait CancelOkMethod<'a>
+
     pub trait SetCancelOkMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
+
+    pub trait ConsumeMethod<'a> {
+        type Payload: Default + SetConsumeMethodFields<'a>;
+    } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -535,9 +951,17 @@ pub mod stream {
         fn set_ticket(_: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub trait ConsumeOkMethod<'a> {
+        type Payload: Default + SetConsumeOkMethodFields<'a>;
+    } // pub trait ConsumeOkMethod<'a>
+
     pub trait SetConsumeOkMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
+
+    pub trait DeliverMethod<'a> {
+        type Payload: Default + SetDeliverMethodFields<'a>;
+    } // pub trait DeliverMethod<'a>
 
     pub trait SetDeliverMethodFields<'a> {
         fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -545,6 +969,10 @@ pub mod stream {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
+
+    pub trait PublishMethod<'a> {
+        type Payload: Default + SetPublishMethodFields<'a>;
+    } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -554,12 +982,24 @@ pub mod stream {
         fn set_ticket(_: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
+    pub trait QosMethod {
+        type Payload: Default + SetQosMethodFields;
+    } // pub trait QosMethod
+
     pub trait SetQosMethodFields {
         fn set_consume_rate(_: u32) {}
         fn set_global(_: bool) {}
         fn set_prefetch_count(_: u16) {}
         fn set_prefetch_size(_: u32) {}
     } // pub trait SetQosMethodFields
+
+    pub trait QosOkMethod {
+        type Payload: Default;
+    } // pub trait QosOkMethod
+
+    pub trait ReturnMethod<'a> {
+        type Payload: Default + SetReturnMethodFields<'a>;
+    } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -571,9 +1011,21 @@ pub mod stream {
 } // mod stream
 
 pub mod test {
+    pub trait ContentMethod {
+        type Payload: Default;
+    } // pub trait ContentMethod
+
+    pub trait ContentOkMethod {
+        type Payload: Default + SetContentOkMethodFields;
+    } // pub trait ContentOkMethod
+
     pub trait SetContentOkMethodFields {
         fn set_content_checksum(_: u32) {}
     } // pub trait SetContentOkMethodFields
+
+    pub trait IntegerMethod {
+        type Payload: Default + SetIntegerMethodFields;
+    } // pub trait IntegerMethod
 
     pub trait SetIntegerMethodFields {
         fn set_integer_1(_: u8) {}
@@ -583,9 +1035,17 @@ pub mod test {
         fn set_operation(_: u8) {}
     } // pub trait SetIntegerMethodFields
 
+    pub trait IntegerOkMethod {
+        type Payload: Default + SetIntegerOkMethodFields;
+    } // pub trait IntegerOkMethod
+
     pub trait SetIntegerOkMethodFields {
         fn set_result(_: u64) {}
     } // pub trait SetIntegerOkMethodFields
+
+    pub trait StringMethod<'a> {
+        type Payload: Default + SetStringMethodFields<'a>;
+    } // pub trait StringMethod<'a>
 
     pub trait SetStringMethodFields<'a> {
         fn set_operation(_: u8) {}
@@ -593,15 +1053,27 @@ pub mod test {
         fn set_string_2<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringMethodFields<'a>
 
+    pub trait StringOkMethod<'a> {
+        type Payload: Default + SetStringOkMethodFields<'a>;
+    } // pub trait StringOkMethod<'a>
+
     pub trait SetStringOkMethodFields<'a> {
         fn set_result<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringOkMethodFields<'a>
+
+    pub trait TableMethod<'a> {
+        type Payload: Default + SetTableMethodFields<'a>;
+    } // pub trait TableMethod<'a>
 
     pub trait SetTableMethodFields<'a> {
         fn set_integer_op(_: u8) {}
         fn set_string_op(_: u8) {}
         fn set_table<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
     } // pub trait SetTableMethodFields<'a>
+
+    pub trait TableOkMethod<'a> {
+        type Payload: Default + SetTableOkMethodFields<'a>;
+    } // pub trait TableOkMethod<'a>
 
     pub trait SetTableOkMethodFields<'a> {
         fn set_integer_result(_: u64) {}
@@ -611,10 +1083,39 @@ pub mod test {
 } // mod test
 
 pub mod tunnel {
+    pub trait RequestMethod<'a> {
+        type Payload: Default + SetRequestMethodFields<'a>;
+    } // pub trait RequestMethod<'a>
+
     pub trait SetRequestMethodFields<'a> {
         fn set_meta_data<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
     } // pub trait SetRequestMethodFields<'a>
 
 } // mod tunnel
 
-pub mod tx {} // mod tx
+pub mod tx {
+    pub trait CommitMethod {
+        type Payload: Default;
+    } // pub trait CommitMethod
+
+    pub trait CommitOkMethod {
+        type Payload: Default;
+    } // pub trait CommitOkMethod
+
+    pub trait RollbackMethod {
+        type Payload: Default;
+    } // pub trait RollbackMethod
+
+    pub trait RollbackOkMethod {
+        type Payload: Default;
+    } // pub trait RollbackOkMethod
+
+    pub trait SelectMethod {
+        type Payload: Default;
+    } // pub trait SelectMethod
+
+    pub trait SelectOkMethod {
+        type Payload: Default;
+    } // pub trait SelectOkMethod
+
+} // mod tx
