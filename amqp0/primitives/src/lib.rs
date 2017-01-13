@@ -11,12 +11,23 @@
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
 #[macro_use]
+extern crate cfg_if;
+
+#[macro_use]
 mod macros;
 
-#[cfg(not(feature = "amqp0-build-primitives"))]
-include!(concat!("../pregen/mod.rs"));
-#[cfg(feature = "amqp0-build-primitives")]
-include!(concat!(env!("OUT_DIR"), "/mod.rs"));
+// default: pregen/mod.rs
+// build    OUT_DIR/mod.rs
+// pregen:  pregen/mod.rs
+
+cfg_if! {
+    if #[cfg(all(feature="amqp0-build-primitives", not(feature="amqp0-pregen-primitives")))] {
+        include!(concat!(env!("OUT_DIR"), "/mod.rs"));
+    }
+    else {
+        include!(concat!("../pregen/mod.rs"));
+    }
+}
 
 pub mod field;
 
