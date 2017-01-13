@@ -99,7 +99,6 @@ pub mod basic {
         fn set_prefetch_size(_: u32) {}
     } // pub trait SetQosMethodFields
 
-    pub trait SetQosOkMethodFields {}
     pub trait SetRecoverMethodFields {
         fn set_requeue(_: bool) {}
     } // pub trait SetRecoverMethodFields
@@ -108,12 +107,10 @@ pub mod basic {
         fn set_requeue(_: bool) {}
     } // pub trait SetRecoverAsyncMethodFields
 
-    pub trait SetRecoverOkMethodFields {}
     pub trait SetRecoverSyncMethodFields {
         fn set_requeue(_: bool) {}
     } // pub trait SetRecoverSyncMethodFields
 
-    pub trait SetRecoverSyncOkMethodFields {}
     pub trait SetRejectMethodFields {
         fn set_delivery_tag(_: u64) {}
         fn set_requeue(_: bool) {}
@@ -142,7 +139,6 @@ pub mod channel {
         fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
-    pub trait SetCloseOkMethodFields {}
     pub trait SetFlowMethodFields {
         fn set_active(_: bool) {}
     } // pub trait SetFlowMethodFields
@@ -151,7 +147,6 @@ pub mod channel {
         fn set_active(_: bool) {}
     } // pub trait SetFlowOkMethodFields
 
-    pub trait SetOkMethodFields {}
     pub trait SetOpenMethodFields<'a> {
         fn set_out_of_band<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
@@ -160,8 +155,6 @@ pub mod channel {
         fn set_channel_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenOkMethodFields<'a>
 
-    pub trait SetPingMethodFields {}
-    pub trait SetPongMethodFields {}
     pub trait SetResumeMethodFields<'a> {
         fn set_channel_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
@@ -173,7 +166,6 @@ pub mod confirm {
         fn set_no_wait(_: bool) {}
     } // pub trait SetSelectMethodFields
 
-    pub trait SetSelectOkMethodFields {}
 } // mod confirm
 
 pub mod connection {
@@ -188,7 +180,6 @@ pub mod connection {
         fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
-    pub trait SetCloseOkMethodFields {}
     pub trait SetOpenMethodFields<'a> {
         fn set_capabilities<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_insist(_: bool) {}
@@ -239,17 +230,13 @@ pub mod connection {
         fn set_heartbeat(_: u16) {}
     } // pub trait SetTuneOkMethodFields
 
-    pub trait SetUnblockedMethodFields {}
 } // mod connection
 
 pub mod dtx {
-    pub trait SetSelectMethodFields {}
-    pub trait SetSelectOkMethodFields {}
     pub trait SetStartMethodFields<'a> {
         fn set_dtx_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetStartMethodFields<'a>
 
-    pub trait SetStartOkMethodFields {}
 } // mod dtx
 
 pub mod exchange {
@@ -261,7 +248,6 @@ pub mod exchange {
         fn set_source<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBindMethodFields<'a>
 
-    pub trait SetBindOkMethodFields {}
     pub trait SetBoundMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -285,7 +271,6 @@ pub mod exchange {
         fn set_ty<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareMethodFields<'a>
 
-    pub trait SetDeclareOkMethodFields {}
     pub trait SetDeleteMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_if_unused(_: bool) {}
@@ -293,7 +278,6 @@ pub mod exchange {
         fn set_ticket(_: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
-    pub trait SetDeleteOkMethodFields {}
     pub trait SetUnbindMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -302,7 +286,6 @@ pub mod exchange {
         fn set_source<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetUnbindMethodFields<'a>
 
-    pub trait SetUnbindOkMethodFields {}
 } // mod exchange
 
 pub mod file {
@@ -368,7 +351,6 @@ pub mod file {
         fn set_prefetch_size(_: u32) {}
     } // pub trait SetQosMethodFields
 
-    pub trait SetQosOkMethodFields {}
     pub trait SetRejectMethodFields {
         fn set_delivery_tag(_: u64) {}
         fn set_requeue(_: bool) {}
@@ -381,7 +363,6 @@ pub mod file {
         fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
-    pub trait SetStageMethodFields {}
 } // mod file
 
 pub mod message {
@@ -413,7 +394,6 @@ pub mod message {
         fn set_ticket(_: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
-    pub trait SetEmptyMethodFields {}
     pub trait SetGetMethodFields<'a> {
         fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_no_ack(_: bool) {}
@@ -425,7 +405,6 @@ pub mod message {
         fn set_value(_: u64) {}
     } // pub trait SetOffsetMethodFields
 
-    pub trait SetOkMethodFields {}
     pub trait SetOpenMethodFields<'a> {
         fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenMethodFields<'a>
@@ -487,7 +466,6 @@ pub mod queue {
         fn set_ticket(_: u16) {}
     } // pub trait SetBindMethodFields<'a>
 
-    pub trait SetBindOkMethodFields {}
     pub trait SetDeclareMethodFields<'a> {
         fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_auto_delete(_: bool) {}
@@ -535,7 +513,6 @@ pub mod queue {
         fn set_ticket(_: u16) {}
     } // pub trait SetUnbindMethodFields<'a>
 
-    pub trait SetUnbindOkMethodFields {}
 } // mod queue
 
 pub mod stream {
@@ -584,7 +561,6 @@ pub mod stream {
         fn set_prefetch_size(_: u32) {}
     } // pub trait SetQosMethodFields
 
-    pub trait SetQosOkMethodFields {}
     pub trait SetReturnMethodFields<'a> {
         fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_reply_code(_: u16) {}
@@ -595,7 +571,6 @@ pub mod stream {
 } // mod stream
 
 pub mod test {
-    pub trait SetContentMethodFields {}
     pub trait SetContentOkMethodFields {
         fn set_content_checksum(_: u32) {}
     } // pub trait SetContentOkMethodFields
@@ -642,11 +617,4 @@ pub mod tunnel {
 
 } // mod tunnel
 
-pub mod tx {
-    pub trait SetCommitMethodFields {}
-    pub trait SetCommitOkMethodFields {}
-    pub trait SetRollbackMethodFields {}
-    pub trait SetRollbackOkMethodFields {}
-    pub trait SetSelectMethodFields {}
-    pub trait SetSelectOkMethodFields {}
-} // mod tx
+pub mod tx {} // mod tx
