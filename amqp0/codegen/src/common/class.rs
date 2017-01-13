@@ -6,6 +6,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use std::iter::ExactSizeIterator;
+use std::collections::{btree_map, BTreeMap};
 use std::cell::Cell;
 use std::ops::Deref;
 use std::rc::Rc;
@@ -29,10 +31,26 @@ pub struct Class {
     pascal_case: Rc<LazyCell<String>>,
 
     fields: Rc<LazyCell<Vec<ClassField>>>,
-    methods: Rc<LazyCell<Vec<ClassMethod>>>,
+    methods: Rc<LazyCell<BTreeMap<&'static str, ClassMethod>>>,
 
     has_field_lifetimes: Cell<Option<bool>>,
     has_method_lifetimes: Cell<Option<bool>>,
+}
+
+pub struct Methods<'a>(btree_map::Values<'a, &'a str, ClassMethod>);
+
+impl<'a> Iterator for Methods<'a> {
+    type Item = &'a ClassMethod;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next()
+    }
+}
+
+impl<'a> ExactSizeIterator for Methods<'a> {
+    fn len(&self) -> usize {
+        self.0.len()
+    }
 }
 
 impl Class {
@@ -53,12 +71,20 @@ impl Class {
         }
     }
 
-    pub fn methods(&self) -> &[ClassMethod] {
+    fn method_map(&self) -> &BTreeMap<&str, ClassMethod> {
         self.methods.borrow_with(|| {
             self.class.methods().iter()
-                .map(|method| ClassMethod::new(self.spec, method))
-                .collect::<Vec<_>>()
+                .map(|method| (method.name(), ClassMethod::new(self.spec, method)))
+                .collect::<_>()
         })
+    }
+
+    pub fn method<'a>(&self, name: &'a str) -> Option<&ClassMethod> {
+        self.method_map().get(name)
+    }
+
+    pub fn methods<'a>(&'a self) -> Methods<'a> {
+        Methods(self.method_map().values())
     }
 
     pub fn fields(&self) -> &[ClassField] {
@@ -103,7 +129,7 @@ impl Class {
 
     pub fn has_method_lifetimes(&self) -> bool {
         if self.has_method_lifetimes.get().is_none() {
-            let has_method_lifetimes = self.methods().iter()
+            let has_method_lifetimes = self.methods()
                 .any(|method| method.has_lifetimes());
             self.has_method_lifetimes.set(Some(has_method_lifetimes));
         }

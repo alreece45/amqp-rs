@@ -6,26 +6,24 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::borrow::Cow;
 use std::io;
 use inflections::Inflect;
 
-use specs;
 use WriteRust;
 use common::{Specs, Spec};
 
-pub struct SpecsModuleWriter<'a> {
+pub struct RootModuleWriter<'a> {
     specs: Specs<'a>,
 }
 
-impl<'a> WriteRust for SpecsModuleWriter<'a> {
+impl<'a> WriteRust for RootModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
         // ensure that class ids remain consistent across the specs
         self.specs.assert_name_indexes_consistent();
 
-        try!(writeln!(writer, ""));
+        try!(writeln!(writer, "\npub mod method;"));
         for spec in self.specs.iter() {
             try!(writeln!(writer, "pub mod {};", spec.mod_name()));
         }
@@ -40,15 +38,9 @@ impl<'a> WriteRust for SpecsModuleWriter<'a> {
     }
 }
 
-impl<'a> SpecsModuleWriter<'a> {
-    pub fn from_spec_slice<S>(specs: S) -> Self
-        where S: Into<Cow<'a, [&'static specs::Spec]>>
-    {
-        let specs = specs.into().iter()
-            .map(|spec| Spec::new(spec))
-            .collect::<Vec<_>>();
-
-        SpecsModuleWriter {
+impl<'a> RootModuleWriter<'a> {
+    pub fn new(specs: &'a [Spec]) -> Self {
+        RootModuleWriter {
             specs: Specs::new(specs)
         }
     }

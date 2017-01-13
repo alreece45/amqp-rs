@@ -7,6 +7,7 @@
 // except according to those terms.
 
 use std::io;
+use std::iter::ExactSizeIterator;
 
 use inflections::Inflect;
 
@@ -23,7 +24,7 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if self.spec.classes().is_empty() {
+        if self.spec.classes().len() == 0 {
             return Ok(());
         }
 
@@ -302,7 +303,7 @@ impl<'a> SpecModuleWriter<'a> {
         where W: io::Write
     {
         let domain_mapper = self.spec.domain_mapper();
-        let has_lifetimes = class.methods().iter()
+        let has_lifetimes = class.methods()
             .flat_map(|method| method.fields())
             .filter(|field| !field.is_reserved())
             .map(|field| domain_mapper.map(field.domain()))

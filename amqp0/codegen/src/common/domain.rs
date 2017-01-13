@@ -34,7 +34,7 @@ impl DomainMapper {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash)]
 pub enum Domain {
     Bit,
     Octet,

@@ -44,7 +44,7 @@ impl<'a> WriteRust for HeaderEnumWriter<'a> {
 
 impl<'a> HeaderEnumWriter<'a> {
     pub fn new(spec: &'a Spec) -> Self {
-        let has_lifetimes = spec.classes().iter()
+        let has_lifetimes = spec.classes()
             .any(|class| class.has_field_lifetimes());
 
         HeaderEnumWriter {

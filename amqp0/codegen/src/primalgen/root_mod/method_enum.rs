@@ -24,11 +24,11 @@ impl<'a> WriteRust for MethodEnumWriter<'a> {
         try!(writeln!(writer, "#[derive(Debug)]"));
         try!(writeln!(writer, "pub enum SpecMethod{} {{", lifetimes));
         for class in self.spec.classes() {
-            if class.methods().is_empty() {
+            if class.methods().len() == 0 {
                 try!(writeln!(writer, "{},", class.pascal_case()));
             }
             else {
-                let has_lifetimes = class.methods().iter().any(|m| m.has_lifetimes());
+                let has_lifetimes = class.methods().any(|m| m.has_lifetimes());
                 let lifetimes = if has_lifetimes { "<'a>" } else { "" };
                 try!(writeln!(writer, "{0}({0}Method{1}),", class.pascal_case(), lifetimes));
             }
@@ -44,7 +44,7 @@ impl<'a> WriteRust for MethodEnumWriter<'a> {
 
 impl<'a> MethodEnumWriter<'a> {
     pub fn new(spec: &'a Spec) -> Self {
-        let has_lifetimes = spec.classes().iter()
+        let has_lifetimes = spec.classes()
             .any(|class| class.has_method_lifetimes());
 
         MethodEnumWriter {

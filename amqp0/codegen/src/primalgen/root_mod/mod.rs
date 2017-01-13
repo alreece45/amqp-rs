@@ -11,9 +11,8 @@ mod frame_payload_enum;
 mod header_enum;
 mod method_enum;
 
-use std::borrow::Cow;
+use std::iter::ExactSizeIterator;
 use std::io;
-use specs;
 
 use WriteRust;
 use common::Spec;
@@ -24,14 +23,14 @@ use self::header_enum::HeaderEnumWriter;
 use self::method_enum::MethodEnumWriter;
 
 pub struct SpecModuleWriter<'a> {
-    spec: Cow<'a, Spec>,
+    spec: &'a Spec,
 }
 
 impl<'a> WriteRust for SpecModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if self.spec.classes().is_empty() {
+        if self.spec.classes().len() == 0 {
             return Ok(());
         }
 
@@ -75,9 +74,9 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
 }
 
 impl<'a> SpecModuleWriter<'a> {
-    pub fn from_spec(spec: &'static specs::Spec) -> Self {
+    pub fn new(spec: &'a Spec) -> Self {
         SpecModuleWriter {
-            spec: Cow::Owned(Spec::new(spec)),
+            spec: spec,
         }
     }
 

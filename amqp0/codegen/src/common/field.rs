@@ -30,6 +30,7 @@ impl<T> Field<T>
     ) -> Self {
         let var_name = match field.name() {
             "type" => "ty".into(),
+            "nowait" => "no_wait".into(),
             name => name.to_snake_case().into(),
         };
 
