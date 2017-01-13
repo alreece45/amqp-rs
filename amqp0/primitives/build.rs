@@ -9,6 +9,7 @@
 #![cfg_attr(feature="clippy", feature(plugin))]
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
+
 extern crate env_logger;
 
 #[cfg(feature = "amqp0-codegen")]
