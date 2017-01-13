@@ -8,7 +8,7 @@
 
 mod method_mod;
 mod root_mod;
-mod specs_mod;
+mod spec_mod;
 
 use std::io;
 use std::path::PathBuf;
@@ -20,8 +20,8 @@ use common::Spec;
 use specs;
 
 use self::method_mod::MethodModuleWriter;
+use self::spec_mod::SpecModuleWriter;
 use self::root_mod::RootModuleWriter;
-use self::specs_mod::RootModuleWriter;
 
 pub struct ModulesWriter<'a, S>
     where S: Source + 'a
@@ -62,7 +62,7 @@ impl<'a, S> ModulesWriter<'a, S>
 
     fn write_spec_mod(&self, spec: &Spec) -> io::Result<PathBuf> {
         debug!("Preparing primalgen spec module {}", spec.name());
-        let writer = RootModuleWriter::new(spec);
+        let writer = SpecModuleWriter::new(spec);
         let filename = format!("{}.rs", writer.mod_name());
         let path = self.source.base_dir().join(&filename);
 

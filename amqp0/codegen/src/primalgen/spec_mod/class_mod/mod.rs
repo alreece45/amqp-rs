@@ -7,8 +7,9 @@
 // except according to those terms.
 
 mod header_struct;
-mod method_struct;
 mod method_enum;
+mod method_impl_inherit;
+mod method_struct;
 
 use std::io;
 use common::Class;
@@ -45,7 +46,7 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
 
             // write the struct
             let struct_writer = MethodStructWriter::new(self.class, method);
-            try!(struct_writer.write_rust_to(writer));
+            try!(struct_writer.write_rust_to(writer))
 
             // try!(writeln!(writer, "}} // mod {}\n", method.snake_case()));
         }
