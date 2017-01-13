@@ -9,6 +9,7 @@
 mod header_struct;
 mod method_enum;
 mod method_impl_inherit;
+mod method_encodable_impl;
 mod method_struct;
 
 use std::io;

@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -10,7 +10,9 @@ use std::io;
 
 use WriteRust;
 use common::{Class, ClassMethod};
+
 use super::method_impl_inherit::InheritMethodImplWriter;
+use super::method_encodable_impl::EncodableMethodImplWriter;
 
 impl<'a> WriteRust for MethodStructWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
@@ -21,7 +23,9 @@ impl<'a> WriteRust for MethodStructWriter<'a> {
         let inherit_impl = InheritMethodImplWriter::new(self.method);
         try!(inherit_impl.write_rust_to(writer));
 
-        try!(self.write_encodable_impl(writer));
+        let encodable_impl = EncodableMethodImplWriter::new(self.method);
+        try!(encodable_impl.write_rust_to(writer));
+
         try!(self.write_amqp0_payload_impl(writer));
 
         Ok(())
@@ -71,42 +75,6 @@ impl<'a> MethodStructWriter<'a> {
             }
         }
         try!(writeln!(writer, "}} // struct {}{}", self.method.pascal_case(), lifetimes));
-        Ok(())
-    }
-
-    pub fn write_encodable_impl<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        let lifetimes = if self.method.has_lifetimes() { ("<'a>") } else { ("") };
-        let static_size_bits = self.method.fields().iter()
-            .map(|field| field.ty().num_bits_fixed())
-            .fold(0, |sum, num_bits| sum + num_bits);
-
-        let static_size = static_size_bits / 8 + if static_size_bits % 8 > 0 { 1 } else { 0 };
-        let has_dynamic_field = self.method.fields().iter()
-            .any(|field| field.ty().dynamic_bit_method().is_some());
-
-        try!(writeln!(writer, "\nimpl{1} ::Encodable for {0}{1} {{", self.method.pascal_case(), lifetimes));
-        try!(writeln!(writer, "fn encoded_size(&self) -> usize {{"));
-        if has_dynamic_field {
-            try!(writeln!(writer, "["));
-            try!(writeln!(writer, "{},", static_size));
-            for field in self.method.fields() {
-                if field.is_reserved() {
-                    continue;
-                }
-
-                if field.ty().dynamic_bit_method().is_some() {
-                    try!(writeln!(writer, "::Encodable::encoded_size(&self.{}),", field.var_name()));
-                }
-            }
-            try!(writeln!(writer, "].iter().sum()"));
-        } else {
-            try!(writeln!(writer, "{}", static_size));
-        }
-        try!(writeln!(writer, "}} // fn encoded_size()"));
-        try!(writeln!(writer, "}} // impl Encodable"));
-
         Ok(())
     }
 
