@@ -53,7 +53,7 @@ mod amqp0 {
         fn pregeneration_features(&self) -> &[&str] { BUILDER_PREGEN }
 
         fn base_dir(&self) -> &Path { &self.base_dir }
-        fn should_format(&self) -> bool { cfg!(feature = "rustfmt") }
+        fn should_format(&self) -> bool { cfg!(feature = "amqp0-pregen-primitives") }
     }
 
     pub fn build() {
