@@ -39,7 +39,7 @@ mod amqp0 {
 
     const BUILDER_CRATES: &'static [&'static str] = &["amqp0-codegen"];
     const BUILDER_REBUILD: &'static [&'static str] = &["amqp0-build-primitives"];
-    const BUILDER_PREGEN: &'static [&'static str] = &["amqp0-build-primitives"];
+    const BUILDER_PREGEN: &'static [&'static str] = &["amqp0-pregen-primitives"];
 
     struct PrimitivesSource {
         base_dir: PathBuf,
