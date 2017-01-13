@@ -20,7 +20,7 @@ use common::Spec;
 use specs;
 
 use self::method_mod::MethodModuleWriter;
-use self::root_mod::SpecModuleWriter;
+use self::root_mod::RootModuleWriter;
 use self::specs_mod::RootModuleWriter;
 
 pub struct ModulesWriter<'a, S>
@@ -62,7 +62,7 @@ impl<'a, S> ModulesWriter<'a, S>
 
     fn write_spec_mod(&self, spec: &Spec) -> io::Result<PathBuf> {
         debug!("Preparing primalgen spec module {}", spec.name());
-        let writer = SpecModuleWriter::new(spec);
+        let writer = RootModuleWriter::new(spec);
         let filename = format!("{}.rs", writer.mod_name());
         let path = self.source.base_dir().join(&filename);
 

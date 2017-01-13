@@ -22,11 +22,11 @@ use self::frame_payload_enum::FramePayloadEnumWriter;
 use self::header_enum::HeaderEnumWriter;
 use self::method_enum::MethodEnumWriter;
 
-pub struct SpecModuleWriter<'a> {
+pub struct RootModuleWriter<'a> {
     spec: &'a Spec,
 }
 
-impl<'a> WriteRust for SpecModuleWriter<'a> {
+impl<'a> WriteRust for RootModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
@@ -73,9 +73,9 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
     }
 }
 
-impl<'a> SpecModuleWriter<'a> {
+impl<'a> RootModuleWriter<'a> {
     pub fn new(spec: &'a Spec) -> Self {
-        SpecModuleWriter {
+        RootModuleWriter {
             spec: spec,
         }
     }
