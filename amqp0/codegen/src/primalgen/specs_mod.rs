@@ -60,7 +60,7 @@ impl<'a> RootModuleWriter<'a> {
 
         let common_classes = {
             let mut classes = self.specs.common_classes().into_iter().collect::<Vec<_>>();
-            classes.sort_by(|&(_, a), &(_, b)| a.cmp(&b));
+            classes.sort_by_key(|entry| (entry.1, entry.0));
             classes
         };
 
