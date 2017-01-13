@@ -32,7 +32,7 @@ impl<'a> MethodModuleWriter<'a> {
     }
 
     fn class_methods(&'a self) -> BTreeMap<&'a str, BTreeSet<&'a str>> {
-        self.class_names().iter()
+        self.class_names().into_iter()
             .filter_map(|class_name| {
                 let method_names = self.specs.iter()
                     .filter_map(|spec| spec.class(class_name))
@@ -43,7 +43,7 @@ impl<'a> MethodModuleWriter<'a> {
                 if method_names.is_empty() {
                     None
                 } else {
-                    Some((*class_name, method_names))
+                    Some((class_name, method_names))
                 }
             })
             .collect()
