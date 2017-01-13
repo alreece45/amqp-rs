@@ -66,7 +66,7 @@ mod amqp0 {
         };
 
         env_logger::init().unwrap();
-        println!("Building primitives from amqpspec");
+        println!("Building amqp0-primitives");
 
         let source = PrimitivesSource { base_dir: base_dir };
         let writer = ModulesWriter::new(&source, amqp0_specs());
