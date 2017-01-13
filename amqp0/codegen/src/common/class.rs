@@ -7,7 +7,7 @@
 // except according to those terms.
 
 use std::iter::ExactSizeIterator;
-use std::collections::{btree_map, BTreeMap};
+use std::collections::{btree_map, BTreeMap, BTreeSet, HashMap};
 use std::cell::Cell;
 use std::ops::Deref;
 use std::rc::Rc;
@@ -32,25 +32,10 @@ pub struct Class {
 
     fields: Rc<LazyCell<Vec<ClassField>>>,
     methods: Rc<LazyCell<BTreeMap<&'static str, ClassMethod>>>,
+    method_indexes: Rc<LazyCell<BTreeMap<u16, Vec<&'static str>>>>,
 
     has_field_lifetimes: Cell<Option<bool>>,
     has_method_lifetimes: Cell<Option<bool>>,
-}
-
-pub struct Methods<'a>(btree_map::Values<'a, &'a str, ClassMethod>);
-
-impl<'a> Iterator for Methods<'a> {
-    type Item = &'a ClassMethod;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.0.next()
-    }
-}
-
-impl<'a> ExactSizeIterator for Methods<'a> {
-    fn len(&self) -> usize {
-        self.0.len()
-    }
 }
 
 impl Class {
@@ -64,6 +49,7 @@ impl Class {
             snake_case: Rc::new(LazyCell::new()),
 
             methods: Rc::new(LazyCell::new()),
+            method_indexes: Rc::new(LazyCell::new()),
             fields: Rc::new(LazyCell::new()),
 
             has_field_lifetimes: Cell::new(None),
@@ -79,12 +65,33 @@ impl Class {
         })
     }
 
+    fn method_index_map(&self) -> &BTreeMap<u16, Vec<&str>> {
+        self.method_indexes.borrow_with(|| {
+            self.class.methods().iter()
+                .fold(HashMap::new(), |mut map, method| {
+                    map.entry(method.index())
+                        .or_insert(BTreeSet::new())
+                        .insert(method.name());
+                    map
+                })
+                .into_iter()
+                .map(|(index, methods)| {
+                    (index, methods.into_iter().collect())
+                })
+                .collect()
+        })
+    }
+
     pub fn method<'a>(&self, name: &'a str) -> Option<&ClassMethod> {
         self.method_map().get(name)
     }
 
     pub fn methods<'a>(&'a self) -> Methods<'a> {
         Methods(self.method_map().values())
+    }
+
+    pub fn method_indexes<'a>(&'a self) -> MethodIndexes<'a> {
+        MethodIndexes(self.method_index_map().iter())
     }
 
     pub fn fields(&self) -> &[ClassField] {
@@ -141,5 +148,36 @@ impl Deref for Class {
     type Target = specs::Class;
     fn deref(&self) -> &Self::Target {
         self.class
+    }
+}
+
+pub struct Methods<'a>(btree_map::Values<'a, &'a str, ClassMethod>);
+pub struct MethodIndexes<'a>(btree_map::Iter<'a, u16, Vec<&'a str>>);
+
+impl<'a> Iterator for Methods<'a> {
+    type Item = &'a ClassMethod;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next()
+    }
+}
+
+impl<'a> ExactSizeIterator for Methods<'a> {
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
+impl<'a> Iterator for MethodIndexes<'a> {
+    type Item = (u16, &'a [&'a str]);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(|(index, method_names)| (*index, &method_names[..]))
+    }
+}
+
+impl<'a> ExactSizeIterator for MethodIndexes<'a> {
+    fn len(&self) -> usize {
+        self.0.len()
     }
 }

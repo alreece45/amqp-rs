@@ -7,7 +7,7 @@
 // except according to those terms.
 
 use std::cell::Cell;
-use std::collections::{btree_map, BTreeMap};
+use std::collections::{btree_map, BTreeMap, BTreeSet, HashMap};
 use std::iter::ExactSizeIterator;
 use std::ops::Deref;
 use std::rc::Rc;
@@ -22,34 +22,18 @@ use common::{DomainMapper, Class};
 pub struct Spec {
     spec: &'static ::specs::Spec,
 
+    class_indexes: Rc<LazyCell<BTreeMap<u16, Vec<&'static str>>>>,
     class_map: Rc<LazyCell<BTreeMap<&'static str, Class>>>,
     mod_name: Rc<LazyCell<String>>,
     pascal_case: Rc<LazyCell<String>>,
     has_lifetimes: Cell<Option<bool>>,
 }
 
-pub struct Classes<'a> {
-    classes: btree_map::Values<'a, &'a str, Class>,
-}
-
-impl<'a> Iterator for Classes<'a> {
-    type Item = &'a Class;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.classes.next()
-    }
-}
-
-impl<'a> ExactSizeIterator for Classes<'a> {
-    fn len(&self) -> usize {
-        self.classes.len()
-    }
-}
-
 impl Spec {
     pub fn new(spec: &'static ::specs::Spec) -> Self {
         Spec {
             spec: spec,
+            class_indexes: Rc::new(LazyCell::new()),
             class_map: Rc::new(LazyCell::new()),
             mod_name: Rc::new(LazyCell::new()),
             pascal_case: Rc::new(LazyCell::new()),
@@ -61,7 +45,23 @@ impl Spec {
         DomainMapper::from_spec(self.spec)
     }
 
-    fn class_map(&self) -> &BTreeMap<&'static str, Class> {
+    pub fn classes<'a>(&'a self) -> Classes<'a> {
+        Classes {
+            classes: self.class_name_map().values()
+        }
+    }
+
+    pub fn class_indexes<'a>(&'a self) -> ClassIndexes<'a> {
+        ClassIndexes {
+            class_indexes: self.class_index_map().iter()
+        }
+    }
+
+    pub fn class<'a>(&self, name: &'a str) -> Option<&Class> {
+        self.class_name_map().get(name)
+    }
+
+    fn class_name_map(&self) -> &BTreeMap<&'static str, Class> {
         self.class_map.borrow_with(|| {
             self.spec.classes().values()
                 .map(|class| (class.name(), Class::new(self.spec, class)))
@@ -69,14 +69,19 @@ impl Spec {
         })
     }
 
-    pub fn class<'a>(&self, name: &'a str) -> Option<&Class> {
-        self.class_map().get(name)
-    }
-
-    pub fn classes<'a>(&'a self) -> Classes<'a> {
-        Classes {
-            classes: self.class_map().values()
-        }
+    fn class_index_map<'a>(&'a self) -> &BTreeMap<u16, Vec<&'static str>> {
+        self.class_indexes.borrow_with(|| {
+            self.spec.classes().entries()
+                .fold(HashMap::new(), |mut map, (name, class)| {
+                    map.entry(class.index())
+                        .or_insert(BTreeSet::new())
+                        .insert(*name);
+                    map
+                })
+                .into_iter()
+                .map(|(index, classes)| (index, classes.into_iter().collect()))
+                .collect()
+        })
     }
 
     pub fn has_lifetimes(&self) -> bool {
@@ -104,6 +109,42 @@ impl Spec {
                 self.version().revision()
             )
         })
+    }
+}
+
+pub struct Classes<'a> {
+    classes: btree_map::Values<'a, &'a str, Class>,
+}
+
+impl<'a> Iterator for Classes<'a> {
+    type Item = &'a Class;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.classes.next()
+    }
+}
+
+impl<'a> ExactSizeIterator for Classes<'a> {
+    fn len(&self) -> usize {
+        self.classes.len()
+    }
+}
+
+pub struct ClassIndexes<'a> {
+    class_indexes: btree_map::Iter<'a, u16, Vec<&'a str>>,
+}
+
+impl<'a> Iterator for ClassIndexes<'a> {
+    type Item = (u16, &'a [&'a str]);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.class_indexes.next()
+            .map(|(index, class_names)| (*index, &class_names[..]))
+    }
+}
+impl<'a> ExactSizeIterator for ClassIndexes<'a> {
+    fn len(&self) -> usize {
+        self.class_indexes.len()
     }
 }
 
