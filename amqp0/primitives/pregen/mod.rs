@@ -2,10 +2,11 @@
 // Pre-generated files are used by default. Generation is done with the amqp0-codegen crate
 //
 // To regenerate, and not use pre-generated files, use: cargo --features="amqp0-build-primitives"
-// To format and replace the pre-generated files, use: cargo --features="amqp0-build-primitives"
+// To format and replace the pre-generated files, use: cargo --features="amqp0-pregen-primitives"
 //
 // EDITORS BEWARE: Your modifications may be overridden
 
+pub mod method;
 pub mod amqp9_1;
 pub mod amqp9_0;
 pub mod amqp8_0;
@@ -44,8 +45,8 @@ pub const CLASS_CONFIRM: u16 = 85;
 pub const CLASS_TX: u16 = 90;
 pub const CLASS_DTX: u16 = 100;
 pub const CLASS_TUNNEL: u16 = 110;
-pub const CLASS_TEST: u16 = 120;
 pub const CLASS_MESSAGE: u16 = 120;
+pub const CLASS_TEST: u16 = 120;
 
 // Index values for methods common among the different specs
 //
