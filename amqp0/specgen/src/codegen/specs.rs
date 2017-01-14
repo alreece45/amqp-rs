@@ -14,14 +14,14 @@ use {Assertion, Constant, Class, ClassField, ClassMethod, ClassMethodField, Doma
 
 impl<'a> FormatRustCode for BTreeMap<String, Class<'a>> {
     fn format_rust(&self) -> String {
-        format!("{}", format_to_map(self.iter()))
+        format_to_map(self.iter())
     }
 }
 
 impl<'a> FormatRustCode for BTreeMap<String, Domain<'a>> {
     fn format_rust(&self) -> String {
         let iter = self.iter().map(|(k, v)| (k.replace(" ", "-"), v));
-        format!("{}", format_to_map(iter))
+        format_to_map(iter)
     }
 }
 
