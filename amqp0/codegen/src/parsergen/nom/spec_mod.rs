@@ -14,7 +14,7 @@ use inflections::Inflect;
 use WriteRust;
 use common::frame_type_name;
 use common::{Spec, Class};
-use super::MethodModuleWriter;
+use super::method_mod::MethodModuleWriter;
 
 pub struct SpecModuleWriter<'a> {
     spec: &'a Spec,

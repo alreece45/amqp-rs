@@ -16,7 +16,6 @@ use specs;
 use {WriteRust, Source, format_files};
 use common::Spec;
 
-use self::method_mod::MethodModuleWriter;
 use self::spec_mod::SpecModuleWriter;
 use self::specs_mod::SpecsModuleWriter;
 
@@ -28,7 +27,7 @@ pub struct ModulesWriter<'a, S>
 }
 
 impl<'a, S> ModulesWriter<'a, S>
-where S: Source + 'a
+    where S: Source + 'a
 {
     pub fn new(source: &'a S, specs: &'a [&'static specs::Spec]) -> Self {
         ModulesWriter {
