@@ -11,7 +11,7 @@ use std::io;
 use WriteRust;
 use common::{Class, ClassMethod};
 
-use super::method_impl_inherit::InheritMethodImplWriter;
+use super::method_impl::MethodImplWriter;
 use super::method_encodable_impl::EncodableMethodImplWriter;
 use super::method_payload_impl::MethodPayloadImplWriter;
 
@@ -21,7 +21,7 @@ impl<'a> WriteRust for MethodStructWriter<'a> {
     {
         try!(self.write_struct(writer));
 
-        let inherit_impl = InheritMethodImplWriter::new(self.method);
+        let inherit_impl = MethodImplWriter::new(self.method);
         try!(inherit_impl.write_rust_to(writer));
 
         let encodable_impl = EncodableMethodImplWriter::new(self.method);

@@ -8,7 +8,7 @@
 
 mod header_struct;
 mod method_enum;
-mod method_impl_inherit;
+mod method_impl;
 mod method_encodable_impl;
 mod method_payload_impl;
 mod method_struct;

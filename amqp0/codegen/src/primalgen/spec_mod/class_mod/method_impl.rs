@@ -12,7 +12,7 @@ use std::io;
 use WriteRust;
 use common::ClassMethod;
 
-impl<'a> WriteRust for InheritMethodImplWriter<'a> {
+impl<'a> WriteRust for MethodImplWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
@@ -27,7 +27,7 @@ impl<'a> WriteRust for InheritMethodImplWriter<'a> {
     }
 }
 
-pub struct InheritMethodImplWriter<'a> {
+pub struct MethodImplWriter<'a> {
     method: &'a ClassMethod,
 
     /// For non-copy parameters, allow conversion using Into<>.
@@ -37,7 +37,7 @@ pub struct InheritMethodImplWriter<'a> {
     has_fields: bool,
 }
 
-impl<'a> InheritMethodImplWriter<'a> {
+impl<'a> MethodImplWriter<'a> {
     pub fn new(method: &'a ClassMethod) -> Self {
         let has_fields = method.fields().iter().any(|f| !f.is_reserved());
         let generic_types = {
@@ -63,7 +63,7 @@ impl<'a> InheritMethodImplWriter<'a> {
                 .collect()
         };
 
-        InheritMethodImplWriter {
+        MethodImplWriter {
             method: method,
             generic_types: generic_types,
             has_fields: has_fields,
