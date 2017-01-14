@@ -23,6 +23,7 @@ pub struct ClassMethod {
     pascal_case: String,
     snake_case: String,
     has_lifetimes: bool,
+    has_usable_fields: bool,
 }
 
 impl ClassMethod {
@@ -43,6 +44,7 @@ impl ClassMethod {
         let constant_case = method.name().to_constant_case();
         let pascal_case = method.name().to_pascal_case();
         let snake_case = method.name().to_snake_case();
+        let has_usable_fields = method.fields().iter().any(|f| !f.is_reserved());
 
         ClassMethod {
             method: method,
@@ -50,7 +52,8 @@ impl ClassMethod {
             constant_case: constant_case,
             pascal_case: pascal_case,
             snake_case: snake_case,
-            has_lifetimes: has_lifetimes
+            has_lifetimes: has_lifetimes,
+            has_usable_fields: has_usable_fields,
         }
     }
 
@@ -72,6 +75,10 @@ impl ClassMethod {
 
     pub fn has_lifetimes(&self) -> bool {
         self.has_lifetimes
+    }
+
+    pub fn has_usable_fields(&self) -> bool {
+        self.has_usable_fields
     }
 }
 

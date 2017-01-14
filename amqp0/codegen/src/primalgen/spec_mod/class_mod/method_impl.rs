@@ -34,12 +34,10 @@ pub struct MethodImplWriter<'a> {
     /// Using Into requires defining generic parameters.
     /// We store the names of the generic parameters here
     generic_types: HashMap<&'a str, String>,
-    has_fields: bool,
 }
 
 impl<'a> MethodImplWriter<'a> {
     pub fn new(method: &'a ClassMethod) -> Self {
-        let has_fields = method.fields().iter().any(|f| !f.is_reserved());
         let generic_types = {
             let mut labels = HashSet::new();
             method.fields().iter()
@@ -66,14 +64,13 @@ impl<'a> MethodImplWriter<'a> {
         MethodImplWriter {
             method: method,
             generic_types: generic_types,
-            has_fields: has_fields,
         }
     }
 
     pub fn write_constructor<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if !self.has_fields {
+        if !self.method.has_usable_fields() {
             try!(writeln!(writer, "pub fn new() -> Self {{"));
             try!(writeln!(writer, "{}", self.method.pascal_case()));
             try!(writeln!(writer, "}} // fn new()"));
@@ -144,7 +141,7 @@ impl<'a> MethodImplWriter<'a> {
     pub fn write_getters<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        if !self.has_fields {
+        if !self.method.has_usable_fields() {
             return Ok(());
         }
 

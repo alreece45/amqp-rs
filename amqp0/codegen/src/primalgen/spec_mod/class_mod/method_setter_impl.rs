@@ -15,7 +15,6 @@ use common::{Class, ClassMethod};
 pub struct MethodSetterImplWriter<'a> {
     class: &'a Class,
     method: &'a ClassMethod,
-    has_fields: bool,
 }
 
 impl<'a> WriteRust for MethodSetterImplWriter<'a> {
@@ -24,7 +23,7 @@ impl<'a> WriteRust for MethodSetterImplWriter<'a> {
     {
         let lifetimes = if self.method.has_lifetimes() { "<'a>" } else { "" };
 
-        if self.has_fields {
+        if self.method.has_usable_fields() {
             let section = format!(
                 "impl{lifetimes} ::method::{class}::Set{method}MethodFields{lifetimes} \
                     for {method}{lifetimes}",
@@ -71,11 +70,9 @@ impl<'a> WriteRust for MethodSetterImplWriter<'a> {
 
 impl<'a> MethodSetterImplWriter<'a> {
     pub fn new(class: &'a Class, method: &'a ClassMethod) -> Self {
-        let has_fields = method.fields().iter().any(|f| !f.is_reserved());
         MethodSetterImplWriter {
             class: class,
             method: method,
-            has_fields: has_fields,
         }
     }
 }
