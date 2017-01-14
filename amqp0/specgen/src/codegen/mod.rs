@@ -29,7 +29,7 @@ pub fn format_to_map<'a, I, K, V>(iter: I) -> String
     // estimate the length of the map to reduce allocations
     let init_len = 48;
     let len_per_entry = 10;
-    let formatted_len = entries.iter().fold(0, |l, &(ref k, ref v)| l + k.len() + v.len());
+    let formatted_len = entries.iter().fold(0, |l, &(k, ref v)| l + k.len() + v.len());
     let suffix_len = 8;
 
     let estimated_len = init_len + entries.len() * len_per_entry + formatted_len + suffix_len;
