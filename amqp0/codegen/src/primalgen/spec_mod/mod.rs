@@ -39,11 +39,11 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
         try!(self.write_class_constants(writer));
         try!(self.write_method_constants(writer));
 
-        let header_enum = HeaderEnumWriter::new(&self.spec);
+        let header_enum = HeaderEnumWriter::new(self.spec);
         try!(header_enum.write_rust_to(writer));
         try!(self.write_frame_struct(writer));
 
-        let frame_payload_enum = FramePayloadEnumWriter::new(&self.spec);
+        let frame_payload_enum = FramePayloadEnumWriter::new(self.spec);
         try!(frame_payload_enum.write_rust_to(writer));
 
         // aliases
@@ -60,7 +60,7 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
             try!(writeln!(writer, "pub use self::{}::Header as {}Header;", class.snake_case(), class.pascal_case()));
         }
 
-        let method_enum = MethodEnumWriter::new(&self.spec);
+        let method_enum = MethodEnumWriter::new(self.spec);
         try!(method_enum.write_rust_to(writer));
 
         Ok(())
