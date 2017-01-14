@@ -39,7 +39,7 @@ pub fn format_to_map<'a, I, K, V>(iter: I) -> String
         map.entry(key, &value);
     }
     let mut buffer = Vec::with_capacity(estimated_len);
-    buffer.extend(b"&");
+    buffer.extend_from_slice(b"&");
 
     map.build(&mut buffer).unwrap();
     String::from_utf8(buffer).unwrap()
