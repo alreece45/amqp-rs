@@ -11,6 +11,7 @@ fn main() {
         .virtual_host("/")
         .into_blocking();
 
+    /*
     print!("{:#?}", session);
     {
         let start1 = session.connect().unwrap();
@@ -19,4 +20,5 @@ fn main() {
 
     let start2 = session.connect().unwrap();
     print!("Start2: {:?}", start2);
+    */
 }
