@@ -34,8 +34,6 @@ cfg_if! {
     }
 }
 
-use std::io;
-
 pub use self::encodable::Encodable;
 
 pub trait Protocol<'a> {
