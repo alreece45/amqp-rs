@@ -10,6 +10,7 @@ mod class_mod;
 mod method_mod;
 mod root_mod;
 mod spec_mod;
+mod spec_struct;
 
 use std::{fs, io};
 use std::path::PathBuf;
@@ -22,8 +23,8 @@ use specs;
 
 use self::class_mod::ClassModuleWriter;
 use self::method_mod::MethodModuleWriter;
-use self::spec_mod::SpecModuleWriter;
 use self::root_mod::RootModuleWriter;
+use self::spec_mod::SpecModuleWriter;
 
 pub struct ModulesWriter<'a, S>
     where S: Source + 'a

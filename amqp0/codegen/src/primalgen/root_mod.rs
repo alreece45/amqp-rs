@@ -12,6 +12,8 @@ use inflections::Inflect;
 use WriteRust;
 use common::Specs;
 
+use super::spec_struct::SpecStructWriter;
+
 pub struct RootModuleWriter<'a> {
     specs: &'a Specs<'a>,
 }
@@ -24,15 +26,19 @@ impl<'a> WriteRust for RootModuleWriter<'a> {
         self.specs.assert_name_indexes_consistent();
 
         try!(writeln!(writer, "\npub mod method;"));
-        for spec in self.specs.iter() {
+        for spec in self.specs {
             try!(writeln!(writer, "pub mod {};", spec.mod_name()));
         }
         try!(writeln!(writer, ""));
 
-        try!(self.write_frame_types(writer));
-        try!(self.write_classes(writer));
-        try!(self.write_methods(writer));
-        try!(self.write_specs(writer));
+        try!(self.write_frame_type_constants(writer));
+        try!(self.write_class_constants(writer));
+        try!(self.write_method_constants(writer));
+
+        for spec in self.specs {
+            let spec_struct = SpecStructWriter::new(spec);
+            try!(spec_struct.write_rust_to(writer));
+        }
 
         Ok(())
     }
@@ -45,18 +51,21 @@ impl<'a> RootModuleWriter<'a> {
         }
     }
 
-    pub fn write_classes<W>(&self, writer: &mut W) -> io::Result<()>
+    pub fn write_class_constants<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Index values for classes shared among multiple specs"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Sometimes, the index value is repeated in different classes, but these are not reused"));
-        try!(writeln!(writer, "// within a single protocol"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Classes are currently only considered common if they are used in more than one"));
-        try!(writeln!(writer, "// spec. This behavior *may* change in the future as more specs are added."));
-        try!(writeln!(writer, "//"));
+        try!(writeln!(
+            writer,
+            "//\n\
+            // Index values for classes shared among multiple specs\n\
+            //\n\
+            // Sometimes, the index value is repeated in different classes, but these are not reused\n\
+            // within a single protocol\n\
+            //\n\
+            // Classes are currently only considered common if they are used in more than one\n\
+            // spec. This behavior *may* change in the future as more specs are added.\n\
+            //"
+        ));
 
         let common_classes = {
             let mut classes = self.specs.common_classes().into_iter().collect::<Vec<_>>();
@@ -73,12 +82,15 @@ impl<'a> RootModuleWriter<'a> {
         Ok(())
     }
 
-    pub fn write_frame_types<W>(&self, writer: &mut W) -> io::Result<()>
+    pub fn write_frame_type_constants<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Frame types ids shared among multiple specs"));
-        try!(writeln!(writer, "//"));
+        try!(writeln!(
+            writer,
+            "//\n\
+            // Frame types ids shared among multiple specs\n\
+            //"
+        ));
 
         let common_frame_types = {
             let mut frame_types = self.specs.common_frame_types().into_iter().collect::<Vec<_>>();
@@ -95,20 +107,23 @@ impl<'a> RootModuleWriter<'a> {
         Ok(())
     }
 
-    pub fn write_methods<W>(&self, writer: &mut W) -> io::Result<()>
+    pub fn write_method_constants<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Index values for methods common among the different specs"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Methods are only considered common when:"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "//   * The index value is consistent across all of the specs"));
-        try!(writeln!(writer, "//   * The method is used in more than one primalgen.spec"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// This may change in the future-- in that case, methods *may* be removed, or"));
-        try!(writeln!(writer, "// one of the requirements may be relaxed."));
-        try!(writeln!(writer, "//"));
+        try!(writeln!(
+            writer,
+            "//\n\
+            // Index values for methods common among the different specs\n\
+            //\n\
+            // Methods are only considered common when:\n\
+            //\n\
+            //   * The index value is consistent across all of the specs\n\
+            //   * The method is used in more than one primalgen.spec\n\
+            //\n\
+            // This may change in the future-- in that case, methods *may* be removed, or\n\
+            // one of the requirements may be relaxed.\n\
+            //"
+        ));
 
         let common_methods = {
             let mut methods = self.specs.common_methods().into_iter().collect::<Vec<_>>();
@@ -137,51 +152,6 @@ impl<'a> RootModuleWriter<'a> {
                 }
             }
             try!(writeln!(writer, ""));
-        }
-
-        Ok(())
-    }
-
-    pub fn write_specs<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Index values for methods common among the different specs"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// Methods are only considered common when:"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "//   * The index value is consistent across all of the specs"));
-        try!(writeln!(writer, "//   * The method is used in more than one primalgen.spec"));
-        try!(writeln!(writer, "//"));
-        try!(writeln!(writer, "// This may change in the future-- in that case, methods *may* be removed, or"));
-        try!(writeln!(writer, "// one of the requirements may be relaxed."));
-        try!(writeln!(writer, "//"));
-
-        for spec in self.specs.iter() {
-            let (minor, revision) = {
-                let version = spec.version();
-                (version.minor(), version.revision())
-            };
-            let struct_name = format!("{}{}_{}", spec.name().to_pascal_case(), minor, revision);
-
-            try!(writeln!(writer, "\n#[allow(non_camel_case_types)]"));
-            try!(writeln!(writer, "\n#[derive(Debug, Clone, PartialEq)]"));
-
-            try!(writeln!(writer, "pub struct {};", struct_name));
-
-            // impl Protocol
-            try!(writeln!(writer, "impl<'a> ::Protocol<'a> for {} {{", struct_name));
-
-            // Protocol::Frame
-            try!(writeln!(writer, "type Frame = {}::Frame<'a>;", spec.mod_name()));
-
-            // Protocol::protocol_header
-            try!(writeln!(writer, "fn protocol_header() -> &'static [u8] {{"));
-            let (minor, revision) = (spec.version().minor(), spec.version().revision());
-            try!(writeln!(writer, "b\"AMQP\\x00\\x00\\x{:02x}\\x{:02x}\"", minor, revision));
-            try!(writeln!(writer, "}} // fn protocol_header() "));
-
-            try!(writeln!(writer, "}} // impl ::Protocol<'a> for {}", struct_name));
         }
 
         Ok(())
