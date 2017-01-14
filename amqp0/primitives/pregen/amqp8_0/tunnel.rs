@@ -44,8 +44,8 @@ impl<'a> ::Encodable for Header<'a> {
         3 + ::Encodable::encoded_size(&self.headers) + ::Encodable::encoded_size(&self.proxy_name) +
         ::Encodable::encoded_size(&self.data_name)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.flag_bits(), writer));
 
@@ -88,8 +88,8 @@ impl<'a> ::Encodable for Request<'a> {
     fn encoded_size(&self) -> usize {
         0 + ::Encodable::encoded_size(&self.meta_data)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.meta_data, writer));
 
@@ -127,8 +127,8 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         unimplemented!()
     } // fn write_encoded_to()

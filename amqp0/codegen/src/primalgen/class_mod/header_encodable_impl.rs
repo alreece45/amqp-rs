@@ -91,8 +91,8 @@ impl<'a> EncodableHeaderImplWriter<'a> {
     fn write_encoded_writer<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(writeln!(writer, "fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>"));
-        try!(writeln!(writer, "where W: ::io::Write"));
+        try!(writeln!(writer, "fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>"));
+        try!(writeln!(writer, "where W: ::std::io::Write"));
         try!(writeln!(writer, "{{"));
 
         let mut bit_fields = Vec::with_capacity(8);

@@ -79,8 +79,8 @@ impl<'a> ::Encodable for Header<'a> {
         ::Encodable::encoded_size(&self.app_id) +
         ::Encodable::encoded_size(&self.cluster_id)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.flag_bits(), writer));
 
@@ -135,8 +135,8 @@ impl ::Encodable for Ack {
     fn encoded_size(&self) -> usize {
         9
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
         try!(::Encodable::write_encoded_to(&{
@@ -202,8 +202,8 @@ impl<'a> ::Encodable for Cancel<'a> {
     fn encoded_size(&self) -> usize {
         1 + ::Encodable::encoded_size(&self.consumer_tag)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
         try!(::Encodable::write_encoded_to(&{
@@ -266,8 +266,8 @@ impl<'a> ::Encodable for CancelOk<'a> {
     fn encoded_size(&self) -> usize {
         0 + ::Encodable::encoded_size(&self.consumer_tag)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
 
@@ -361,8 +361,8 @@ impl<'a> ::Encodable for Consume<'a> {
         3 + ::Encodable::encoded_size(&self.queue) + ::Encodable::encoded_size(&self.consumer_tag) +
         ::Encodable::encoded_size(&self.arguments)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.ticket, writer));
         try!(::Encodable::write_encoded_to(&self.queue, writer));
@@ -453,8 +453,8 @@ impl<'a> ::Encodable for ConsumeOk<'a> {
     fn encoded_size(&self) -> usize {
         0 + ::Encodable::encoded_size(&self.consumer_tag)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
 
@@ -530,8 +530,8 @@ impl<'a> ::Encodable for Deliver<'a> {
         ::Encodable::encoded_size(&self.exchange) +
         ::Encodable::encoded_size(&self.routing_key)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
         try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
@@ -618,8 +618,8 @@ impl<'a> ::Encodable for Get<'a> {
     fn encoded_size(&self) -> usize {
         3 + ::Encodable::encoded_size(&self.queue)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.ticket, writer));
         try!(::Encodable::write_encoded_to(&self.queue, writer));
@@ -686,8 +686,8 @@ impl<'a> ::Encodable for GetEmpty<'a> {
     fn encoded_size(&self) -> usize {
         0 + ::Encodable::encoded_size(&self.cluster_id)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.cluster_id, writer));
 
@@ -761,8 +761,8 @@ impl<'a> ::Encodable for GetOk<'a> {
         13 + ::Encodable::encoded_size(&self.exchange) +
         ::Encodable::encoded_size(&self.routing_key)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
         try!(::Encodable::write_encoded_to(&{
@@ -859,8 +859,8 @@ impl<'a> ::Encodable for Publish<'a> {
     fn encoded_size(&self) -> usize {
         3 + ::Encodable::encoded_size(&self.exchange) + ::Encodable::encoded_size(&self.routing_key)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.ticket, writer));
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
@@ -943,8 +943,8 @@ impl ::Encodable for Qos {
     fn encoded_size(&self) -> usize {
         7
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.prefetch_size, writer));
         try!(::Encodable::write_encoded_to(&self.prefetch_count, writer));
@@ -1002,8 +1002,8 @@ impl ::Encodable for QosOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -1045,8 +1045,8 @@ impl ::Encodable for Recover {
     fn encoded_size(&self) -> usize {
         1
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
@@ -1101,8 +1101,8 @@ impl ::Encodable for RecoverSync {
     fn encoded_size(&self) -> usize {
         1
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
@@ -1152,8 +1152,8 @@ impl ::Encodable for RecoverSyncOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -1200,8 +1200,8 @@ impl ::Encodable for Reject {
     fn encoded_size(&self) -> usize {
         9
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
         try!(::Encodable::write_encoded_to(&{
@@ -1277,8 +1277,8 @@ impl<'a> ::Encodable for Return<'a> {
         ::Encodable::encoded_size(&self.exchange) +
         ::Encodable::encoded_size(&self.routing_key)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.reply_code, writer));
         try!(::Encodable::write_encoded_to(&self.reply_text, writer));
@@ -1364,8 +1364,8 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         unimplemented!()
     } // fn write_encoded_to()

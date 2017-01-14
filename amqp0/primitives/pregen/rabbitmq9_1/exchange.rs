@@ -63,8 +63,8 @@ impl<'a> ::Encodable for Bind<'a> {
         ::Encodable::encoded_size(&self.routing_key) +
         ::Encodable::encoded_size(&self.arguments)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&0u16, writer)); // reserved: reserved_1
         try!(::Encodable::write_encoded_to(&self.destination, writer));
@@ -139,8 +139,8 @@ impl ::Encodable for BindOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -225,8 +225,8 @@ impl<'a> ::Encodable for Declare<'a> {
         5 + ::Encodable::encoded_size(&self.exchange) + ::Encodable::encoded_size(&self.ty) +
         ::Encodable::encoded_size(&self.arguments)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&0u16, writer)); // reserved: reserved_1
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
@@ -311,8 +311,8 @@ impl ::Encodable for DeclareOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -364,8 +364,8 @@ impl<'a> ::Encodable for Delete<'a> {
     fn encoded_size(&self) -> usize {
         5 + ::Encodable::encoded_size(&self.exchange)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&0u16, writer)); // reserved: reserved_1
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
@@ -426,8 +426,8 @@ impl ::Encodable for DeleteOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -495,8 +495,8 @@ impl<'a> ::Encodable for Unbind<'a> {
         ::Encodable::encoded_size(&self.routing_key) +
         ::Encodable::encoded_size(&self.arguments)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&0u16, writer)); // reserved: reserved_1
         try!(::Encodable::write_encoded_to(&self.destination, writer));
@@ -571,8 +571,8 @@ impl ::Encodable for UnbindOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -615,8 +615,8 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         unimplemented!()
     } // fn write_encoded_to()

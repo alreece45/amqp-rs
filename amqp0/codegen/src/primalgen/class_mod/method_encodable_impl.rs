@@ -105,8 +105,8 @@ impl<'a> EncodableMethodImplWriter<'a> {
         if self.method.fields().is_empty() {
             try!(writeln!(
                 writer,
-                "fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()> \n\
-                    where W: ::io::Write\n\
+                "fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()> \n\
+                    where W: ::std::io::Write\n\
                 {{\n\
                     ::std::result::Result::Ok(())\n\
                 }}\n\
@@ -115,8 +115,8 @@ impl<'a> EncodableMethodImplWriter<'a> {
             return Ok(())
         }
 
-        try!(writeln!(writer, "fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>"));
-        try!(writeln!(writer, "where W: ::io::Write"));
+        try!(writeln!(writer, "fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>"));
+        try!(writeln!(writer, "where W: ::std::io::Write"));
         try!(writeln!(writer, "{{"));
 
         let mut bit_fields = Vec::with_capacity(8);

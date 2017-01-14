@@ -85,8 +85,8 @@ impl<'a> ::Encodable for Declare<'a> {
         3 + ::Encodable::encoded_size(&self.exchange) + ::Encodable::encoded_size(&self.ty) +
         ::Encodable::encoded_size(&self.arguments)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.ticket, writer));
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
@@ -174,8 +174,8 @@ impl ::Encodable for DeclareOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -230,8 +230,8 @@ impl<'a> ::Encodable for Delete<'a> {
     fn encoded_size(&self) -> usize {
         3 + ::Encodable::encoded_size(&self.exchange)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.ticket, writer));
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
@@ -295,8 +295,8 @@ impl ::Encodable for DeleteOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -331,8 +331,8 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         unimplemented!()
     } // fn write_encoded_to()

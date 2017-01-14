@@ -32,8 +32,8 @@ impl ::Encodable for Commit {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -70,8 +70,8 @@ impl ::Encodable for CommitOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -108,8 +108,8 @@ impl ::Encodable for Rollback {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -146,8 +146,8 @@ impl ::Encodable for RollbackOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -184,8 +184,8 @@ impl ::Encodable for Select {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -222,8 +222,8 @@ impl ::Encodable for SelectOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -262,8 +262,8 @@ impl ::Encodable for ClassMethod {
         } // match *self
 
     } // fn encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         unimplemented!()
     } // fn write_encoded_to()

@@ -51,8 +51,8 @@ impl<'a> ::Encodable for Bound<'a> {
         ::Encodable::encoded_size(&self.routing_key) +
         ::Encodable::encoded_size(&self.queue)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
         try!(::Encodable::write_encoded_to(&self.routing_key, writer));
@@ -122,8 +122,8 @@ impl<'a> ::Encodable for BoundOk<'a> {
     fn encoded_size(&self) -> usize {
         2 + ::Encodable::encoded_size(&self.reply_text)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.reply_code, writer));
         try!(::Encodable::write_encoded_to(&self.reply_text, writer));
@@ -226,8 +226,8 @@ impl<'a> ::Encodable for Declare<'a> {
         3 + ::Encodable::encoded_size(&self.exchange) + ::Encodable::encoded_size(&self.ty) +
         ::Encodable::encoded_size(&self.arguments)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.ticket, writer));
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
@@ -315,8 +315,8 @@ impl ::Encodable for DeclareOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -371,8 +371,8 @@ impl<'a> ::Encodable for Delete<'a> {
     fn encoded_size(&self) -> usize {
         3 + ::Encodable::encoded_size(&self.exchange)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.ticket, writer));
         try!(::Encodable::write_encoded_to(&self.exchange, writer));
@@ -436,8 +436,8 @@ impl ::Encodable for DeleteOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -476,8 +476,8 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         unimplemented!()
     } // fn write_encoded_to()

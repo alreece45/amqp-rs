@@ -48,8 +48,8 @@ impl<'a> ::Encodable for Alert<'a> {
     fn encoded_size(&self) -> usize {
         2 + ::Encodable::encoded_size(&self.reply_text) + ::Encodable::encoded_size(&self.details)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.reply_code, writer));
         try!(::Encodable::write_encoded_to(&self.reply_text, writer));
@@ -123,8 +123,8 @@ impl<'a> ::Encodable for Close<'a> {
     fn encoded_size(&self) -> usize {
         6 + ::Encodable::encoded_size(&self.reply_text)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.reply_code, writer));
         try!(::Encodable::write_encoded_to(&self.reply_text, writer));
@@ -182,8 +182,8 @@ impl ::Encodable for CloseOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -225,8 +225,8 @@ impl ::Encodable for Flow {
     fn encoded_size(&self) -> usize {
         1
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
@@ -281,8 +281,8 @@ impl ::Encodable for FlowOk {
     fn encoded_size(&self) -> usize {
         1
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
@@ -339,8 +339,8 @@ impl<'a> ::Encodable for Open<'a> {
     fn encoded_size(&self) -> usize {
         0 + ::Encodable::encoded_size(&self.out_of_band)
     } // encoded_size
-    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         try!(::Encodable::write_encoded_to(&self.out_of_band, writer));
 
@@ -386,8 +386,8 @@ impl ::Encodable for OpenOk {
     fn encoded_size(&self) -> usize {
         0
     } // encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         ::std::result::Result::Ok(())
     }
@@ -429,8 +429,8 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
-    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
-        where W: ::io::Write
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>
+        where W: ::std::io::Write
     {
         unimplemented!()
     } // fn write_encoded_to()

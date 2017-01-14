@@ -57,8 +57,8 @@ impl<'a> MethodEnumWriter<'a> {
         try!(writeln!(writer, "\n}} // match *self"));
         try!(writeln!(writer, "\n}} // fn encoded_size"));
 
-        try!(writeln!(writer, "fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>"));
-        try!(writeln!(writer, "where W: ::io::Write"));
+        try!(writeln!(writer, "fn write_encoded_to<W>(&self, _: &mut W) -> ::std::io::Result<()>"));
+        try!(writeln!(writer, "where W: ::std::io::Write"));
         try!(writeln!(writer, "{{"));
         try!(writeln!(writer, "unimplemented!()"));
         try!(writeln!(writer, "}} // fn write_encoded_to()"));
