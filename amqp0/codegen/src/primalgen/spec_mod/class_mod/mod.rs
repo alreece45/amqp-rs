@@ -11,6 +11,7 @@ mod method_enum;
 mod method_impl;
 mod method_encodable_impl;
 mod method_payload_impl;
+mod method_setter_impl;
 mod method_struct;
 
 use std::io;
@@ -23,6 +24,7 @@ use self::method_enum::MethodEnumWriter;
 use self::method_impl::MethodImplWriter;
 use self::method_encodable_impl::EncodableMethodImplWriter;
 use self::method_payload_impl::MethodPayloadImplWriter;
+use self::method_setter_impl::MethodSetterImplWriter;
 use self::method_struct::MethodStructWriter;
 
 pub struct ClassModuleWriter<'a> {
@@ -59,6 +61,9 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
 
             let payload_impl = MethodPayloadImplWriter::new(self.class, method);
             try!(payload_impl.write_rust_to(writer));
+
+            let setter_impl = MethodSetterImplWriter::new(self.class, method);
+            try!(setter_impl.write_rust_to(writer));
         }
 
         let method_enum = MethodEnumWriter::new(self.class);

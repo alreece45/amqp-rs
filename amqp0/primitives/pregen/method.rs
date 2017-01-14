@@ -12,12 +12,12 @@ pub mod access {
     } // pub trait RequestMethod<'a>
 
     pub trait SetRequestMethodFields<'a> {
-        fn set_active(_: bool) {}
-        fn set_exclusive(_: bool) {}
-        fn set_passive(_: bool) {}
-        fn set_read(_: bool) {}
-        fn set_realm<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_write(_: bool) {}
+        fn set_active(&mut self, _: bool) {}
+        fn set_exclusive(&mut self, _: bool) {}
+        fn set_passive(&mut self, _: bool) {}
+        fn set_read(&mut self, _: bool) {}
+        fn set_realm<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_write(&mut self, _: bool) {}
     } // pub trait SetRequestMethodFields<'a>
 
     pub trait RequestOkMethod {
@@ -25,7 +25,7 @@ pub mod access {
     } // pub trait RequestOkMethod
 
     pub trait SetRequestOkMethodFields {
-        fn set_ticket(_: u16) {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetRequestOkMethodFields
 
 } // mod access
@@ -36,8 +36,8 @@ pub mod basic {
     } // pub trait AckMethod
 
     pub trait SetAckMethodFields {
-        fn set_delivery_tag(_: u64) {}
-        fn set_multiple(_: bool) {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_multiple(&mut self, _: bool) {}
     } // pub trait SetAckMethodFields
 
     pub trait CancelMethod<'a> {
@@ -45,8 +45,8 @@ pub mod basic {
     } // pub trait CancelMethod<'a>
 
     pub trait SetCancelMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_no_wait(_: bool) {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
     pub trait CancelOkMethod<'a> {
@@ -54,7 +54,7 @@ pub mod basic {
     } // pub trait CancelOkMethod<'a>
 
     pub trait SetCancelOkMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
     pub trait ConsumeMethod<'a> {
@@ -62,15 +62,15 @@ pub mod basic {
     } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
-        fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_exclusive(_: bool) {}
-        fn set_filter<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_no_ack(_: bool) {}
-        fn set_no_local(_: bool) {}
-        fn set_no_wait(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_arguments<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exclusive(&mut self, _: bool) {}
+        fn set_filter<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_no_ack(&mut self, _: bool) {}
+        fn set_no_local(&mut self, _: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
     pub trait ConsumeOkMethod<'a> {
@@ -78,7 +78,7 @@ pub mod basic {
     } // pub trait ConsumeOkMethod<'a>
 
     pub trait SetConsumeOkMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
     pub trait DeliverMethod<'a> {
@@ -86,11 +86,11 @@ pub mod basic {
     } // pub trait DeliverMethod<'a>
 
     pub trait SetDeliverMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_delivery_tag(_: u64) {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_redelivered(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_redelivered(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
     pub trait GetMethod<'a> {
@@ -98,9 +98,9 @@ pub mod basic {
     } // pub trait GetMethod<'a>
 
     pub trait SetGetMethodFields<'a> {
-        fn set_no_ack(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_no_ack(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
     pub trait GetEmptyMethod<'a> {
@@ -108,7 +108,7 @@ pub mod basic {
     } // pub trait GetEmptyMethod<'a>
 
     pub trait SetGetEmptyMethodFields<'a> {
-        fn set_cluster_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetEmptyMethodFields<'a>
 
     pub trait GetOkMethod<'a> {
@@ -116,11 +116,11 @@ pub mod basic {
     } // pub trait GetOkMethod<'a>
 
     pub trait SetGetOkMethodFields<'a> {
-        fn set_delivery_tag(_: u64) {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_message_count(_: u32) {}
-        fn set_redelivered(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_message_count(&mut self, _: u32) {}
+        fn set_redelivered(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetOkMethodFields<'a>
 
     pub trait NackMethod {
@@ -128,9 +128,9 @@ pub mod basic {
     } // pub trait NackMethod
 
     pub trait SetNackMethodFields {
-        fn set_delivery_tag(_: u64) {}
-        fn set_multiple(_: bool) {}
-        fn set_requeue(_: bool) {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_multiple(&mut self, _: bool) {}
+        fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetNackMethodFields
 
     pub trait PublishMethod<'a> {
@@ -138,11 +138,11 @@ pub mod basic {
     } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_immediate(_: bool) {}
-        fn set_mandatory(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_immediate(&mut self, _: bool) {}
+        fn set_mandatory(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
     pub trait QosMethod {
@@ -150,9 +150,9 @@ pub mod basic {
     } // pub trait QosMethod
 
     pub trait SetQosMethodFields {
-        fn set_global(_: bool) {}
-        fn set_prefetch_count(_: u16) {}
-        fn set_prefetch_size(_: u32) {}
+        fn set_global(&mut self, _: bool) {}
+        fn set_prefetch_count(&mut self, _: u16) {}
+        fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
     pub trait QosOkMethod {
@@ -164,7 +164,7 @@ pub mod basic {
     } // pub trait RecoverMethod
 
     pub trait SetRecoverMethodFields {
-        fn set_requeue(_: bool) {}
+        fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverMethodFields
 
     pub trait RecoverAsyncMethod {
@@ -172,7 +172,7 @@ pub mod basic {
     } // pub trait RecoverAsyncMethod
 
     pub trait SetRecoverAsyncMethodFields {
-        fn set_requeue(_: bool) {}
+        fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverAsyncMethodFields
 
     pub trait RecoverOkMethod {
@@ -184,7 +184,7 @@ pub mod basic {
     } // pub trait RecoverSyncMethod
 
     pub trait SetRecoverSyncMethodFields {
-        fn set_requeue(_: bool) {}
+        fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverSyncMethodFields
 
     pub trait RecoverSyncOkMethod {
@@ -196,8 +196,8 @@ pub mod basic {
     } // pub trait RejectMethod
 
     pub trait SetRejectMethodFields {
-        fn set_delivery_tag(_: u64) {}
-        fn set_requeue(_: bool) {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRejectMethodFields
 
     pub trait ReturnMethod<'a> {
@@ -205,10 +205,10 @@ pub mod basic {
     } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_reply_code(_: u16) {}
-        fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reply_code(&mut self, _: u16) {}
+        fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
 } // mod basic
@@ -219,9 +219,9 @@ pub mod channel {
     } // pub trait AlertMethod<'a>
 
     pub trait SetAlertMethodFields<'a> {
-        fn set_details<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_reply_code(_: u16) {}
-        fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_details<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_reply_code(&mut self, _: u16) {}
+        fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetAlertMethodFields<'a>
 
     pub trait CloseMethod<'a> {
@@ -229,10 +229,10 @@ pub mod channel {
     } // pub trait CloseMethod<'a>
 
     pub trait SetCloseMethodFields<'a> {
-        fn set_class_id(_: u16) {}
-        fn set_method_id(_: u16) {}
-        fn set_reply_code(_: u16) {}
-        fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_class_id(&mut self, _: u16) {}
+        fn set_method_id(&mut self, _: u16) {}
+        fn set_reply_code(&mut self, _: u16) {}
+        fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
     pub trait CloseOkMethod {
@@ -244,7 +244,7 @@ pub mod channel {
     } // pub trait FlowMethod
 
     pub trait SetFlowMethodFields {
-        fn set_active(_: bool) {}
+        fn set_active(&mut self, _: bool) {}
     } // pub trait SetFlowMethodFields
 
     pub trait FlowOkMethod {
@@ -252,7 +252,7 @@ pub mod channel {
     } // pub trait FlowOkMethod
 
     pub trait SetFlowOkMethodFields {
-        fn set_active(_: bool) {}
+        fn set_active(&mut self, _: bool) {}
     } // pub trait SetFlowOkMethodFields
 
     pub trait OkMethod {
@@ -264,7 +264,7 @@ pub mod channel {
     } // pub trait OpenMethod<'a>
 
     pub trait SetOpenMethodFields<'a> {
-        fn set_out_of_band<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_out_of_band<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
     pub trait OpenOkMethod<'a> {
@@ -272,7 +272,7 @@ pub mod channel {
     } // pub trait OpenOkMethod<'a>
 
     pub trait SetOpenOkMethodFields<'a> {
-        fn set_channel_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_channel_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenOkMethodFields<'a>
 
     pub trait PingMethod {
@@ -288,7 +288,7 @@ pub mod channel {
     } // pub trait ResumeMethod<'a>
 
     pub trait SetResumeMethodFields<'a> {
-        fn set_channel_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_channel_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
 
 } // mod channel
@@ -299,7 +299,7 @@ pub mod confirm {
     } // pub trait SelectMethod
 
     pub trait SetSelectMethodFields {
-        fn set_no_wait(_: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetSelectMethodFields
 
     pub trait SelectOkMethod {
@@ -314,7 +314,7 @@ pub mod connection {
     } // pub trait BlockedMethod<'a>
 
     pub trait SetBlockedMethodFields<'a> {
-        fn set_reason<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reason<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBlockedMethodFields<'a>
 
     pub trait CloseMethod<'a> {
@@ -322,10 +322,10 @@ pub mod connection {
     } // pub trait CloseMethod<'a>
 
     pub trait SetCloseMethodFields<'a> {
-        fn set_class_id(_: u16) {}
-        fn set_method_id(_: u16) {}
-        fn set_reply_code(_: u16) {}
-        fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_class_id(&mut self, _: u16) {}
+        fn set_method_id(&mut self, _: u16) {}
+        fn set_reply_code(&mut self, _: u16) {}
+        fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
     pub trait CloseOkMethod {
@@ -337,9 +337,9 @@ pub mod connection {
     } // pub trait OpenMethod<'a>
 
     pub trait SetOpenMethodFields<'a> {
-        fn set_capabilities<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_insist(_: bool) {}
-        fn set_virtual_host<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_capabilities<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_insist(&mut self, _: bool) {}
+        fn set_virtual_host<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
     pub trait OpenOkMethod<'a> {
@@ -347,7 +347,7 @@ pub mod connection {
     } // pub trait OpenOkMethod<'a>
 
     pub trait SetOpenOkMethodFields<'a> {
-        fn set_known_hosts<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_known_hosts<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenOkMethodFields<'a>
 
     pub trait RedirectMethod<'a> {
@@ -355,8 +355,8 @@ pub mod connection {
     } // pub trait RedirectMethod<'a>
 
     pub trait SetRedirectMethodFields<'a> {
-        fn set_host<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_known_hosts<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_host<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_known_hosts<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRedirectMethodFields<'a>
 
     pub trait SecureMethod<'a> {
@@ -364,7 +364,7 @@ pub mod connection {
     } // pub trait SecureMethod<'a>
 
     pub trait SetSecureMethodFields<'a> {
-        fn set_challenge<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_challenge<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureMethodFields<'a>
 
     pub trait SecureOkMethod<'a> {
@@ -372,7 +372,7 @@ pub mod connection {
     } // pub trait SecureOkMethod<'a>
 
     pub trait SetSecureOkMethodFields<'a> {
-        fn set_response<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_response<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureOkMethodFields<'a>
 
     pub trait StartMethod<'a> {
@@ -380,11 +380,11 @@ pub mod connection {
     } // pub trait StartMethod<'a>
 
     pub trait SetStartMethodFields<'a> {
-        fn set_locales<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
-        fn set_mechanisms<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
-        fn set_server_properties<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_version_major(_: u8) {}
-        fn set_version_minor(_: u8) {}
+        fn set_locales<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_mechanisms<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_server_properties<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_version_major(&mut self, _: u8) {}
+        fn set_version_minor(&mut self, _: u8) {}
     } // pub trait SetStartMethodFields<'a>
 
     pub trait StartOkMethod<'a> {
@@ -392,10 +392,10 @@ pub mod connection {
     } // pub trait StartOkMethod<'a>
 
     pub trait SetStartOkMethodFields<'a> {
-        fn set_client_properties<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_locale<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_mechanism<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_response<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_client_properties<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_locale<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_mechanism<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_response<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStartOkMethodFields<'a>
 
     pub trait TuneMethod {
@@ -403,9 +403,9 @@ pub mod connection {
     } // pub trait TuneMethod
 
     pub trait SetTuneMethodFields {
-        fn set_channel_max(_: u16) {}
-        fn set_frame_max(_: u32) {}
-        fn set_heartbeat(_: u16) {}
+        fn set_channel_max(&mut self, _: u16) {}
+        fn set_frame_max(&mut self, _: u32) {}
+        fn set_heartbeat(&mut self, _: u16) {}
     } // pub trait SetTuneMethodFields
 
     pub trait TuneOkMethod {
@@ -413,9 +413,9 @@ pub mod connection {
     } // pub trait TuneOkMethod
 
     pub trait SetTuneOkMethodFields {
-        fn set_channel_max(_: u16) {}
-        fn set_frame_max(_: u32) {}
-        fn set_heartbeat(_: u16) {}
+        fn set_channel_max(&mut self, _: u16) {}
+        fn set_frame_max(&mut self, _: u32) {}
+        fn set_heartbeat(&mut self, _: u16) {}
     } // pub trait SetTuneOkMethodFields
 
     pub trait UnblockedMethod {
@@ -438,7 +438,7 @@ pub mod dtx {
     } // pub trait StartMethod<'a>
 
     pub trait SetStartMethodFields<'a> {
-        fn set_dtx_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_dtx_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetStartMethodFields<'a>
 
     pub trait StartOkMethod {
@@ -453,11 +453,11 @@ pub mod exchange {
     } // pub trait BindMethod<'a>
 
     pub trait SetBindMethodFields<'a> {
-        fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_no_wait(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_source<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_arguments<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_source<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBindMethodFields<'a>
 
     pub trait BindOkMethod {
@@ -469,9 +469,9 @@ pub mod exchange {
     } // pub trait BoundMethod<'a>
 
     pub trait SetBoundMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundMethodFields<'a>
 
     pub trait BoundOkMethod<'a> {
@@ -479,8 +479,8 @@ pub mod exchange {
     } // pub trait BoundOkMethod<'a>
 
     pub trait SetBoundOkMethodFields<'a> {
-        fn set_reply_code(_: u16) {}
-        fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reply_code(&mut self, _: u16) {}
+        fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundOkMethodFields<'a>
 
     pub trait DeclareMethod<'a> {
@@ -488,15 +488,15 @@ pub mod exchange {
     } // pub trait DeclareMethod<'a>
 
     pub trait SetDeclareMethodFields<'a> {
-        fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_auto_delete(_: bool) {}
-        fn set_durable(_: bool) {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_internal(_: bool) {}
-        fn set_no_wait(_: bool) {}
-        fn set_passive(_: bool) {}
-        fn set_ticket(_: u16) {}
-        fn set_ty<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_arguments<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_auto_delete(&mut self, _: bool) {}
+        fn set_durable(&mut self, _: bool) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_internal(&mut self, _: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_passive(&mut self, _: bool) {}
+        fn set_ticket(&mut self, _: u16) {}
+        fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareMethodFields<'a>
 
     pub trait DeclareOkMethod {
@@ -508,10 +508,10 @@ pub mod exchange {
     } // pub trait DeleteMethod<'a>
 
     pub trait SetDeleteMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_if_unused(_: bool) {}
-        fn set_no_wait(_: bool) {}
-        fn set_ticket(_: u16) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_if_unused(&mut self, _: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
     pub trait DeleteOkMethod {
@@ -523,11 +523,11 @@ pub mod exchange {
     } // pub trait UnbindMethod<'a>
 
     pub trait SetUnbindMethodFields<'a> {
-        fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_no_wait(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_source<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_arguments<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_source<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetUnbindMethodFields<'a>
 
     pub trait UnbindOkMethod {
@@ -542,8 +542,8 @@ pub mod file {
     } // pub trait AckMethod
 
     pub trait SetAckMethodFields {
-        fn set_delivery_tag(_: u64) {}
-        fn set_multiple(_: bool) {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_multiple(&mut self, _: bool) {}
     } // pub trait SetAckMethodFields
 
     pub trait CancelMethod<'a> {
@@ -551,8 +551,8 @@ pub mod file {
     } // pub trait CancelMethod<'a>
 
     pub trait SetCancelMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_no_wait(_: bool) {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
     pub trait CancelOkMethod<'a> {
@@ -560,7 +560,7 @@ pub mod file {
     } // pub trait CancelOkMethod<'a>
 
     pub trait SetCancelOkMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
     pub trait ConsumeMethod<'a> {
@@ -568,14 +568,14 @@ pub mod file {
     } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_exclusive(_: bool) {}
-        fn set_filter<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_no_ack(_: bool) {}
-        fn set_no_local(_: bool) {}
-        fn set_no_wait(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exclusive(&mut self, _: bool) {}
+        fn set_filter<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_no_ack(&mut self, _: bool) {}
+        fn set_no_local(&mut self, _: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
     pub trait ConsumeOkMethod<'a> {
@@ -583,7 +583,7 @@ pub mod file {
     } // pub trait ConsumeOkMethod<'a>
 
     pub trait SetConsumeOkMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
     pub trait DeliverMethod<'a> {
@@ -591,12 +591,12 @@ pub mod file {
     } // pub trait DeliverMethod<'a>
 
     pub trait SetDeliverMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_delivery_tag(_: u64) {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_redelivered(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_redelivered(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
     pub trait OpenMethod<'a> {
@@ -604,8 +604,8 @@ pub mod file {
     } // pub trait OpenMethod<'a>
 
     pub trait SetOpenMethodFields<'a> {
-        fn set_content_size(_: u64) {}
-        fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_size(&mut self, _: u64) {}
+        fn set_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
     pub trait OpenOkMethod {
@@ -613,7 +613,7 @@ pub mod file {
     } // pub trait OpenOkMethod
 
     pub trait SetOpenOkMethodFields {
-        fn set_staged_size(_: u64) {}
+        fn set_staged_size(&mut self, _: u64) {}
     } // pub trait SetOpenOkMethodFields
 
     pub trait PublishMethod<'a> {
@@ -621,12 +621,12 @@ pub mod file {
     } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_immediate(_: bool) {}
-        fn set_mandatory(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_immediate(&mut self, _: bool) {}
+        fn set_mandatory(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
     pub trait QosMethod {
@@ -634,9 +634,9 @@ pub mod file {
     } // pub trait QosMethod
 
     pub trait SetQosMethodFields {
-        fn set_global(_: bool) {}
-        fn set_prefetch_count(_: u16) {}
-        fn set_prefetch_size(_: u32) {}
+        fn set_global(&mut self, _: bool) {}
+        fn set_prefetch_count(&mut self, _: u16) {}
+        fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
     pub trait QosOkMethod {
@@ -648,8 +648,8 @@ pub mod file {
     } // pub trait RejectMethod
 
     pub trait SetRejectMethodFields {
-        fn set_delivery_tag(_: u64) {}
-        fn set_requeue(_: bool) {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRejectMethodFields
 
     pub trait ReturnMethod<'a> {
@@ -657,10 +657,10 @@ pub mod file {
     } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_reply_code(_: u16) {}
-        fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reply_code(&mut self, _: u16) {}
+        fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
     pub trait StageMethod {
@@ -675,8 +675,8 @@ pub mod message {
     } // pub trait AppendMethod<'a>
 
     pub trait SetAppendMethodFields<'a> {
-        fn set_bytes<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
-        fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_bytes<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetAppendMethodFields<'a>
 
     pub trait CancelMethod<'a> {
@@ -684,7 +684,7 @@ pub mod message {
     } // pub trait CancelMethod<'a>
 
     pub trait SetCancelMethodFields<'a> {
-        fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelMethodFields<'a>
 
     pub trait CheckpointMethod<'a> {
@@ -692,8 +692,8 @@ pub mod message {
     } // pub trait CheckpointMethod<'a>
 
     pub trait SetCheckpointMethodFields<'a> {
-        fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCheckpointMethodFields<'a>
 
     pub trait CloseMethod<'a> {
@@ -701,7 +701,7 @@ pub mod message {
     } // pub trait CloseMethod<'a>
 
     pub trait SetCloseMethodFields<'a> {
-        fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCloseMethodFields<'a>
 
     pub trait ConsumeMethod<'a> {
@@ -709,13 +709,13 @@ pub mod message {
     } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
-        fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_exclusive(_: bool) {}
-        fn set_filter<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_no_ack(_: bool) {}
-        fn set_no_local(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exclusive(&mut self, _: bool) {}
+        fn set_filter<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_no_ack(&mut self, _: bool) {}
+        fn set_no_local(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
     pub trait EmptyMethod {
@@ -727,10 +727,10 @@ pub mod message {
     } // pub trait GetMethod<'a>
 
     pub trait SetGetMethodFields<'a> {
-        fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_no_ack(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_no_ack(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
     pub trait OffsetMethod {
@@ -738,7 +738,7 @@ pub mod message {
     } // pub trait OffsetMethod
 
     pub trait SetOffsetMethodFields {
-        fn set_value(_: u64) {}
+        fn set_value(&mut self, _: u64) {}
     } // pub trait SetOffsetMethodFields
 
     pub trait OkMethod {
@@ -750,7 +750,7 @@ pub mod message {
     } // pub trait OpenMethod<'a>
 
     pub trait SetOpenMethodFields<'a> {
-        fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenMethodFields<'a>
 
     pub trait QosMethod {
@@ -758,9 +758,9 @@ pub mod message {
     } // pub trait QosMethod
 
     pub trait SetQosMethodFields {
-        fn set_global(_: bool) {}
-        fn set_prefetch_count(_: u16) {}
-        fn set_prefetch_size(_: u32) {}
+        fn set_global(&mut self, _: bool) {}
+        fn set_prefetch_count(&mut self, _: u16) {}
+        fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
     pub trait RecoverMethod {
@@ -768,7 +768,7 @@ pub mod message {
     } // pub trait RecoverMethod
 
     pub trait SetRecoverMethodFields {
-        fn set_requeue(_: bool) {}
+        fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverMethodFields
 
     pub trait RejectMethod<'a> {
@@ -776,8 +776,8 @@ pub mod message {
     } // pub trait RejectMethod<'a>
 
     pub trait SetRejectMethodFields<'a> {
-        fn set_code(_: u16) {}
-        fn set_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_code(&mut self, _: u16) {}
+        fn set_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRejectMethodFields<'a>
 
     pub trait ResumeMethod<'a> {
@@ -785,8 +785,8 @@ pub mod message {
     } // pub trait ResumeMethod<'a>
 
     pub trait SetResumeMethodFields<'a> {
-        fn set_identifier<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_reference<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
 
     pub trait TransferMethod<'a> {
@@ -794,28 +794,28 @@ pub mod message {
     } // pub trait TransferMethod<'a>
 
     pub trait SetTransferMethodFields<'a> {
-        fn set_app_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_application_headers<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_body<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
-        fn set_content_encoding<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_content_type<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_correlation_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_delivery_mode(_: u8) {}
-        fn set_destination<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_expiration(_: u64) {}
-        fn set_immediate(_: bool) {}
-        fn set_message_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_priority(_: u8) {}
-        fn set_redelivered(_: bool) {}
-        fn set_reply_to<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_security_token<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
-        fn set_ticket(_: u16) {}
-        fn set_timestamp(_: u64) {}
-        fn set_transaction_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ttl(_: u64) {}
-        fn set_user_id<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_app_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_application_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_body<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_correlation_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_mode(&mut self, _: u8) {}
+        fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_expiration(&mut self, _: u64) {}
+        fn set_immediate(&mut self, _: bool) {}
+        fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_priority(&mut self, _: u8) {}
+        fn set_redelivered(&mut self, _: bool) {}
+        fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_security_token<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_ticket(&mut self, _: u16) {}
+        fn set_timestamp(&mut self, _: u64) {}
+        fn set_transaction_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ttl(&mut self, _: u64) {}
+        fn set_user_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetTransferMethodFields<'a>
 
 } // mod message
@@ -826,12 +826,12 @@ pub mod queue {
     } // pub trait BindMethod<'a>
 
     pub trait SetBindMethodFields<'a> {
-        fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_no_wait(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_arguments<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetBindMethodFields<'a>
 
     pub trait BindOkMethod {
@@ -843,14 +843,14 @@ pub mod queue {
     } // pub trait DeclareMethod<'a>
 
     pub trait SetDeclareMethodFields<'a> {
-        fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_auto_delete(_: bool) {}
-        fn set_durable(_: bool) {}
-        fn set_exclusive(_: bool) {}
-        fn set_no_wait(_: bool) {}
-        fn set_passive(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_arguments<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_auto_delete(&mut self, _: bool) {}
+        fn set_durable(&mut self, _: bool) {}
+        fn set_exclusive(&mut self, _: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_passive(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeclareMethodFields<'a>
 
     pub trait DeclareOkMethod<'a> {
@@ -858,9 +858,9 @@ pub mod queue {
     } // pub trait DeclareOkMethod<'a>
 
     pub trait SetDeclareOkMethodFields<'a> {
-        fn set_consumer_count(_: u32) {}
-        fn set_message_count(_: u32) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_count(&mut self, _: u32) {}
+        fn set_message_count(&mut self, _: u32) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareOkMethodFields<'a>
 
     pub trait DeleteMethod<'a> {
@@ -868,11 +868,11 @@ pub mod queue {
     } // pub trait DeleteMethod<'a>
 
     pub trait SetDeleteMethodFields<'a> {
-        fn set_if_empty(_: bool) {}
-        fn set_if_unused(_: bool) {}
-        fn set_no_wait(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_if_empty(&mut self, _: bool) {}
+        fn set_if_unused(&mut self, _: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
     pub trait DeleteOkMethod {
@@ -880,7 +880,7 @@ pub mod queue {
     } // pub trait DeleteOkMethod
 
     pub trait SetDeleteOkMethodFields {
-        fn set_message_count(_: u32) {}
+        fn set_message_count(&mut self, _: u32) {}
     } // pub trait SetDeleteOkMethodFields
 
     pub trait PurgeMethod<'a> {
@@ -888,9 +888,9 @@ pub mod queue {
     } // pub trait PurgeMethod<'a>
 
     pub trait SetPurgeMethodFields<'a> {
-        fn set_no_wait(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPurgeMethodFields<'a>
 
     pub trait PurgeOkMethod {
@@ -898,7 +898,7 @@ pub mod queue {
     } // pub trait PurgeOkMethod
 
     pub trait SetPurgeOkMethodFields {
-        fn set_message_count(_: u32) {}
+        fn set_message_count(&mut self, _: u32) {}
     } // pub trait SetPurgeOkMethodFields
 
     pub trait UnbindMethod<'a> {
@@ -906,11 +906,11 @@ pub mod queue {
     } // pub trait UnbindMethod<'a>
 
     pub trait SetUnbindMethodFields<'a> {
-        fn set_arguments<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_arguments<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetUnbindMethodFields<'a>
 
     pub trait UnbindOkMethod {
@@ -925,8 +925,8 @@ pub mod stream {
     } // pub trait CancelMethod<'a>
 
     pub trait SetCancelMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_no_wait(_: bool) {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
     pub trait CancelOkMethod<'a> {
@@ -934,7 +934,7 @@ pub mod stream {
     } // pub trait CancelOkMethod<'a>
 
     pub trait SetCancelOkMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
     pub trait ConsumeMethod<'a> {
@@ -942,13 +942,13 @@ pub mod stream {
     } // pub trait ConsumeMethod<'a>
 
     pub trait SetConsumeMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_exclusive(_: bool) {}
-        fn set_filter<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
-        fn set_no_local(_: bool) {}
-        fn set_no_wait(_: bool) {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exclusive(&mut self, _: bool) {}
+        fn set_filter<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_no_local(&mut self, _: bool) {}
+        fn set_no_wait(&mut self, _: bool) {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
     pub trait ConsumeOkMethod<'a> {
@@ -956,7 +956,7 @@ pub mod stream {
     } // pub trait ConsumeOkMethod<'a>
 
     pub trait SetConsumeOkMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
     pub trait DeliverMethod<'a> {
@@ -964,10 +964,10 @@ pub mod stream {
     } // pub trait DeliverMethod<'a>
 
     pub trait SetDeliverMethodFields<'a> {
-        fn set_consumer_tag<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_delivery_tag(_: u64) {}
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_queue<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_tag(&mut self, _: u64) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
     pub trait PublishMethod<'a> {
@@ -975,11 +975,11 @@ pub mod stream {
     } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_immediate(_: bool) {}
-        fn set_mandatory(_: bool) {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_ticket(_: u16) {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_immediate(&mut self, _: bool) {}
+        fn set_mandatory(&mut self, _: bool) {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
     pub trait QosMethod {
@@ -987,10 +987,10 @@ pub mod stream {
     } // pub trait QosMethod
 
     pub trait SetQosMethodFields {
-        fn set_consume_rate(_: u32) {}
-        fn set_global(_: bool) {}
-        fn set_prefetch_count(_: u16) {}
-        fn set_prefetch_size(_: u32) {}
+        fn set_consume_rate(&mut self, _: u32) {}
+        fn set_global(&mut self, _: bool) {}
+        fn set_prefetch_count(&mut self, _: u16) {}
+        fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
     pub trait QosOkMethod {
@@ -1002,10 +1002,10 @@ pub mod stream {
     } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
-        fn set_exchange<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_reply_code(_: u16) {}
-        fn set_reply_text<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_routing_key<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reply_code(&mut self, _: u16) {}
+        fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
 } // mod stream
@@ -1020,7 +1020,7 @@ pub mod test {
     } // pub trait ContentOkMethod
 
     pub trait SetContentOkMethodFields {
-        fn set_content_checksum(_: u32) {}
+        fn set_content_checksum(&mut self, _: u32) {}
     } // pub trait SetContentOkMethodFields
 
     pub trait IntegerMethod {
@@ -1028,11 +1028,11 @@ pub mod test {
     } // pub trait IntegerMethod
 
     pub trait SetIntegerMethodFields {
-        fn set_integer_1(_: u8) {}
-        fn set_integer_2(_: u16) {}
-        fn set_integer_3(_: u32) {}
-        fn set_integer_4(_: u64) {}
-        fn set_operation(_: u8) {}
+        fn set_integer_1(&mut self, _: u8) {}
+        fn set_integer_2(&mut self, _: u16) {}
+        fn set_integer_3(&mut self, _: u32) {}
+        fn set_integer_4(&mut self, _: u64) {}
+        fn set_operation(&mut self, _: u8) {}
     } // pub trait SetIntegerMethodFields
 
     pub trait IntegerOkMethod {
@@ -1040,7 +1040,7 @@ pub mod test {
     } // pub trait IntegerOkMethod
 
     pub trait SetIntegerOkMethodFields {
-        fn set_result(_: u64) {}
+        fn set_result(&mut self, _: u64) {}
     } // pub trait SetIntegerOkMethodFields
 
     pub trait StringMethod<'a> {
@@ -1048,9 +1048,9 @@ pub mod test {
     } // pub trait StringMethod<'a>
 
     pub trait SetStringMethodFields<'a> {
-        fn set_operation(_: u8) {}
-        fn set_string_1<V>(_: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-        fn set_string_2<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_operation(&mut self, _: u8) {}
+        fn set_string_1<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_string_2<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringMethodFields<'a>
 
     pub trait StringOkMethod<'a> {
@@ -1058,7 +1058,7 @@ pub mod test {
     } // pub trait StringOkMethod<'a>
 
     pub trait SetStringOkMethodFields<'a> {
-        fn set_result<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_result<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringOkMethodFields<'a>
 
     pub trait TableMethod<'a> {
@@ -1066,9 +1066,9 @@ pub mod test {
     } // pub trait TableMethod<'a>
 
     pub trait SetTableMethodFields<'a> {
-        fn set_integer_op(_: u8) {}
-        fn set_string_op(_: u8) {}
-        fn set_table<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_integer_op(&mut self, _: u8) {}
+        fn set_string_op(&mut self, _: u8) {}
+        fn set_table<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
     } // pub trait SetTableMethodFields<'a>
 
     pub trait TableOkMethod<'a> {
@@ -1076,8 +1076,8 @@ pub mod test {
     } // pub trait TableOkMethod<'a>
 
     pub trait SetTableOkMethodFields<'a> {
-        fn set_integer_result(_: u64) {}
-        fn set_string_result<V>(_: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
+        fn set_integer_result(&mut self, _: u64) {}
+        fn set_string_result<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetTableOkMethodFields<'a>
 
 } // mod test
@@ -1088,7 +1088,7 @@ pub mod tunnel {
     } // pub trait RequestMethod<'a>
 
     pub trait SetRequestMethodFields<'a> {
-        fn set_meta_data<V>(_: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_meta_data<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
     } // pub trait SetRequestMethodFields<'a>
 
 } // mod tunnel
