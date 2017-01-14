@@ -6,7 +6,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-mod class_mod;
 mod frame_payload_enum;
 mod header_enum;
 mod method_enum;
@@ -15,15 +14,13 @@ use std::iter::ExactSizeIterator;
 use std::io;
 
 use WriteRust;
-use common::{Specs, Spec};
+use common::Spec;
 
-use self::class_mod::ClassModuleWriter;
 use self::frame_payload_enum::FramePayloadEnumWriter;
 use self::header_enum::HeaderEnumWriter;
 use self::method_enum::MethodEnumWriter;
 
 pub struct SpecModuleWriter<'a> {
-    specs: &'a Specs<'a>,
     spec: &'a Spec,
 }
 
@@ -35,7 +32,9 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
             return Ok(());
         }
 
-        try!(writeln!(writer, "#![allow(too_many_arguments)]\n"));
+        for class in self.spec.classes() {
+            try!(writeln!(writer, "mod {};", class.snake_case()));
+        }
 
         try!(self.write_class_constants(writer));
         try!(self.write_method_constants(writer));
@@ -46,12 +45,6 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
 
         let frame_payload_enum = FramePayloadEnumWriter::new(&self.spec);
         try!(frame_payload_enum.write_rust_to(writer));
-
-        try!(writeln!(writer, "\n// Class Modules"));
-        for class in self.spec.classes() {
-            let module_writer = ClassModuleWriter::new(self.specs, self.spec, class);
-            try!(module_writer.write_rust_to(writer));
-        }
 
         // aliases
         try!(writeln!(writer, "\n// Class methods"));
@@ -75,15 +68,10 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
 }
 
 impl<'a> SpecModuleWriter<'a> {
-    pub fn new(specs: &'a Specs<'a>, spec: &'a Spec) -> Self {
+    pub fn new(spec: &'a Spec) -> Self {
         SpecModuleWriter {
-            specs: specs,
             spec: spec,
         }
-    }
-
-    pub fn mod_name(&self) -> &str {
-        self.spec.mod_name()
     }
 
     pub fn write_class_constants<W>(&self, writer: &mut W) -> io::Result<()>

@@ -6,19 +6,21 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+mod class_mod;
 mod method_mod;
 mod root_mod;
 mod spec_mod;
 
-use std::io;
+use std::{fs, io};
 use std::path::PathBuf;
 
 use {Source, WriteRust};
 use format_files;
-use common::{Specs, Spec};
+use common::{Specs, Spec, Class};
 
 use specs;
 
+use self::class_mod::ClassModuleWriter;
 use self::method_mod::MethodModuleWriter;
 use self::spec_mod::SpecModuleWriter;
 use self::root_mod::RootModuleWriter;
@@ -63,23 +65,43 @@ impl<'a, S> ModulesWriter<'a, S>
 
     fn write_spec_mod(&self, spec: &Spec) -> io::Result<PathBuf> {
         debug!("Preparing primalgen spec module {}", spec.name());
-        let writer = SpecModuleWriter::new(&self.specs, spec);
-        let filename = format!("{}.rs", writer.mod_name());
-        let path = self.source.base_dir().join(&filename);
+        let mod_path = self.source.base_dir().join(spec.mod_name());
+        let path = mod_path.join("mod.rs");
+
+        let old_path = self.source.base_dir().join(format!("{}.rs", spec.mod_name()));
+        println!("Removing potentially old path: {}", old_path.display());
+        let _ = fs::remove_file(old_path);
 
         info!("Writing primalgen spec module {} to {}", spec.name(), path.display());
+        let writer = SpecModuleWriter::new(spec);
+        try!(writer.write_rust_to_path(self.source, &path));
+        Ok(path)
+    }
+
+    fn write_class_mod(&self, spec: &Spec, class: &Class) -> io::Result<PathBuf> {
+        debug!("Preparing primalgen class module {}", spec.name());
+        let mod_path = self.source.base_dir().join(spec.mod_name());
+        let path = mod_path.join(format!("{}.rs", class.snake_case()));
+
+        info!("Writing primalgen class module {} to {}", spec.name(), path.display());
+        let writer = ClassModuleWriter::new(&self.specs, spec, class);
         try!(writer.write_rust_to_path(self.source, &path));
         Ok(path)
     }
 
     pub fn write_files(&self) -> io::Result<()> {
         let paths = {
-            let mut paths = Vec::with_capacity(self.specs.len() + 2);
+            let num_classes = self.specs.iter().flat_map(|spec| spec.classes()).count();
+            let mut paths = Vec::with_capacity(2 + num_classes);
+
             paths.push(try!(self.write_root_mod()));
             paths.push(try!(self.write_methods_mod()));
 
             for spec in &self.specs {
                 paths.push(try!(self.write_spec_mod(spec)));
+                for class in spec.classes() {
+                    paths.push(try!(self.write_class_mod(spec, class)));
+                }
             }
             paths
         };
