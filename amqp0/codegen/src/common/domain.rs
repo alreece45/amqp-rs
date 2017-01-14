@@ -112,22 +112,14 @@ impl Domain {
         }
     }
 
-    pub fn num_bits_fixed(&self) -> usize {
+    pub fn num_bits_static(&self) -> usize {
         match *self {
             Domain::Bit => 1,
-            Domain::Octet | Domain::Content => 8,
+            Domain::Octet | Domain::Content | Domain::ShortString => 8,
             Domain::Short => 16,
             Domain::Long => 32,
             Domain::LongLong | Domain::Timestamp => 64,
-            Domain::ShortString | Domain::LongString | Domain::Table => 0,
-        }
-    }
-
-    pub fn num_bits_static(&self) -> usize {
-        self.num_bits_fixed() + match *self {
-            Domain::ShortString => 8,
             Domain::LongString | Domain::Table => 32,
-            _ => 0,
         }
     }
 

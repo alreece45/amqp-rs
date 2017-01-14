@@ -65,8 +65,8 @@ impl<'a> EncodableHeaderImplWriter<'a> {
         let padding_bytes = if self.class.fields().len() % 8 != 0 { 1 } else { 0 };
         let num_flag_bytes = self.class.fields().len() / 8 + padding_bytes;
         let num_field_bits = self.class.fields().iter()
-            .map(|field| field.ty().num_bits_fixed())
-            .fold(0, |sum, num_bits| sum + num_bits);
+            .map(|field| field.ty().num_bits_static())
+            .fold(0usize, |sum, num_bits| sum + num_bits);
 
         let static_size_bits = num_flag_bytes * 8 + num_field_bits;
         let static_size = static_size_bits / 8 + if static_size_bits % 8 > 0 { 1 } else { 0 };

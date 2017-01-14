@@ -68,7 +68,7 @@ impl<'a> Header<'a> {
 
 impl<'a> ::Encodable for Header<'a> {
     fn encoded_size(&self) -> usize {
-        12 + ::Encodable::encoded_size(&self.content_type) +
+        26 + ::Encodable::encoded_size(&self.content_type) +
         ::Encodable::encoded_size(&self.content_encoding) +
         ::Encodable::encoded_size(&self.headers) +
         ::Encodable::encoded_size(&self.correlation_id) +
@@ -138,7 +138,7 @@ impl ::Encodable for Ack {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer)); // delivery_tag
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -150,6 +150,24 @@ impl ::Encodable for Ack {
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_ack_encodable_bytes_written_matches_len() {
+    let payload: Ack = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl ::ProtocolMethodPayload for Ack {
     fn class_id(&self) -> u16 {
@@ -205,7 +223,7 @@ impl<'a> ::Encodable for Cancel<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer)); // consumer_tag
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -217,6 +235,24 @@ impl<'a> ::Encodable for Cancel<'a> {
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_cancel_encodable_bytes_written_matches_len() {
+    let payload: Cancel = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for Cancel<'a> {
     fn class_id(&self) -> u16 {
@@ -269,11 +305,29 @@ impl<'a> ::Encodable for CancelOk<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer)); // consumer_tag
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_cancel_ok_encodable_bytes_written_matches_len() {
+    let payload: CancelOk = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for CancelOk<'a> {
     fn class_id(&self) -> u16 {
@@ -364,9 +418,9 @@ impl<'a> ::Encodable for Consume<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.ticket, writer));
-        try!(::Encodable::write_encoded_to(&self.queue, writer));
-        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.ticket, writer)); // ticket
+        try!(::Encodable::write_encoded_to(&self.queue, writer)); // queue
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer)); // consumer_tag
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -377,11 +431,29 @@ impl<'a> ::Encodable for Consume<'a> {
                                                bits
                                            },
                                            writer));
-        try!(::Encodable::write_encoded_to(&self.arguments, writer));
+        try!(::Encodable::write_encoded_to(&self.arguments, writer)); // arguments
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_consume_encodable_bytes_written_matches_len() {
+    let payload: Consume = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for Consume<'a> {
     fn class_id(&self) -> u16 {
@@ -456,11 +528,29 @@ impl<'a> ::Encodable for ConsumeOk<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer)); // consumer_tag
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_consume_ok_encodable_bytes_written_matches_len() {
+    let payload: ConsumeOk = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for ConsumeOk<'a> {
     fn class_id(&self) -> u16 {
@@ -533,8 +623,8 @@ impl<'a> ::Encodable for Deliver<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
-        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer)); // consumer_tag
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer)); // delivery_tag
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -542,12 +632,30 @@ impl<'a> ::Encodable for Deliver<'a> {
                                                bits
                                            },
                                            writer));
-        try!(::Encodable::write_encoded_to(&self.exchange, writer));
-        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
+        try!(::Encodable::write_encoded_to(&self.exchange, writer)); // exchange
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer)); // routing_key
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_deliver_encodable_bytes_written_matches_len() {
+    let payload: Deliver = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for Deliver<'a> {
     fn class_id(&self) -> u16 {
@@ -621,8 +729,8 @@ impl<'a> ::Encodable for Get<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.ticket, writer));
-        try!(::Encodable::write_encoded_to(&self.queue, writer));
+        try!(::Encodable::write_encoded_to(&self.ticket, writer)); // ticket
+        try!(::Encodable::write_encoded_to(&self.queue, writer)); // queue
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -634,6 +742,24 @@ impl<'a> ::Encodable for Get<'a> {
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_get_encodable_bytes_written_matches_len() {
+    let payload: Get = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for Get<'a> {
     fn class_id(&self) -> u16 {
@@ -689,11 +815,29 @@ impl<'a> ::Encodable for GetEmpty<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.cluster_id, writer));
+        try!(::Encodable::write_encoded_to(&self.cluster_id, writer)); // cluster_id
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_get_empty_encodable_bytes_written_matches_len() {
+    let payload: GetEmpty = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for GetEmpty<'a> {
     fn class_id(&self) -> u16 {
@@ -764,7 +908,7 @@ impl<'a> ::Encodable for GetOk<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer)); // delivery_tag
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -772,13 +916,31 @@ impl<'a> ::Encodable for GetOk<'a> {
                                                bits
                                            },
                                            writer));
-        try!(::Encodable::write_encoded_to(&self.exchange, writer));
-        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
-        try!(::Encodable::write_encoded_to(&self.message_count, writer));
+        try!(::Encodable::write_encoded_to(&self.exchange, writer)); // exchange
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer)); // routing_key
+        try!(::Encodable::write_encoded_to(&self.message_count, writer)); // message_count
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_get_ok_encodable_bytes_written_matches_len() {
+    let payload: GetOk = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for GetOk<'a> {
     fn class_id(&self) -> u16 {
@@ -862,9 +1024,9 @@ impl<'a> ::Encodable for Publish<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.ticket, writer));
-        try!(::Encodable::write_encoded_to(&self.exchange, writer));
-        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
+        try!(::Encodable::write_encoded_to(&self.ticket, writer)); // ticket
+        try!(::Encodable::write_encoded_to(&self.exchange, writer)); // exchange
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer)); // routing_key
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -877,6 +1039,24 @@ impl<'a> ::Encodable for Publish<'a> {
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_publish_encodable_bytes_written_matches_len() {
+    let payload: Publish = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for Publish<'a> {
     fn class_id(&self) -> u16 {
@@ -946,8 +1126,8 @@ impl ::Encodable for Qos {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.prefetch_size, writer));
-        try!(::Encodable::write_encoded_to(&self.prefetch_count, writer));
+        try!(::Encodable::write_encoded_to(&self.prefetch_size, writer)); // prefetch_size
+        try!(::Encodable::write_encoded_to(&self.prefetch_count, writer)); // prefetch_count
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -959,6 +1139,24 @@ impl ::Encodable for Qos {
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_qos_encodable_bytes_written_matches_len() {
+    let payload: Qos = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl ::ProtocolMethodPayload for Qos {
     fn class_id(&self) -> u16 {
@@ -1008,6 +1206,24 @@ impl ::Encodable for QosOk {
         ::std::result::Result::Ok(())
     }
 } // impl Encodable
+
+#[test]
+fn test_qos_ok_encodable_bytes_written_matches_len() {
+    let payload: QosOk = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl ::ProtocolMethodPayload for QosOk {
     fn class_id(&self) -> u16 {
@@ -1059,6 +1275,24 @@ impl ::Encodable for Recover {
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_recover_encodable_bytes_written_matches_len() {
+    let payload: Recover = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl ::ProtocolMethodPayload for Recover {
     fn class_id(&self) -> u16 {
@@ -1116,6 +1350,24 @@ impl ::Encodable for RecoverSync {
     } // fn write_encoded_to()
 } // impl Encodable
 
+#[test]
+fn test_recover_sync_encodable_bytes_written_matches_len() {
+    let payload: RecoverSync = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
+
 impl ::ProtocolMethodPayload for RecoverSync {
     fn class_id(&self) -> u16 {
         60
@@ -1158,6 +1410,24 @@ impl ::Encodable for RecoverSyncOk {
         ::std::result::Result::Ok(())
     }
 } // impl Encodable
+
+#[test]
+fn test_recover_sync_ok_encodable_bytes_written_matches_len() {
+    let payload: RecoverSyncOk = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl ::ProtocolMethodPayload for RecoverSyncOk {
     fn class_id(&self) -> u16 {
@@ -1203,7 +1473,7 @@ impl ::Encodable for Reject {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer)); // delivery_tag
         try!(::Encodable::write_encoded_to(&{
                                                let mut bits = ::bit_vec::BitVec::from_elem(8,
                                                                                            false);
@@ -1215,6 +1485,24 @@ impl ::Encodable for Reject {
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_reject_encodable_bytes_written_matches_len() {
+    let payload: Reject = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl ::ProtocolMethodPayload for Reject {
     fn class_id(&self) -> u16 {
@@ -1280,14 +1568,32 @@ impl<'a> ::Encodable for Return<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.reply_code, writer));
-        try!(::Encodable::write_encoded_to(&self.reply_text, writer));
-        try!(::Encodable::write_encoded_to(&self.exchange, writer));
-        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
+        try!(::Encodable::write_encoded_to(&self.reply_code, writer)); // reply_code
+        try!(::Encodable::write_encoded_to(&self.reply_text, writer)); // reply_text
+        try!(::Encodable::write_encoded_to(&self.exchange, writer)); // exchange
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer)); // routing_key
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_return_encodable_bytes_written_matches_len() {
+    let payload: Return = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for Return<'a> {
     fn class_id(&self) -> u16 {

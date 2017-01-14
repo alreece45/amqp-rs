@@ -41,7 +41,7 @@ impl<'a> Header<'a> {
 
 impl<'a> ::Encodable for Header<'a> {
     fn encoded_size(&self) -> usize {
-        3 + ::Encodable::encoded_size(&self.headers) + ::Encodable::encoded_size(&self.proxy_name) +
+        9 + ::Encodable::encoded_size(&self.headers) + ::Encodable::encoded_size(&self.proxy_name) +
         ::Encodable::encoded_size(&self.data_name)
     } // encoded_size
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
@@ -91,11 +91,29 @@ impl<'a> ::Encodable for Request<'a> {
     fn write_encoded_to<W>(&self, writer: &mut W) -> ::std::io::Result<()>
         where W: ::std::io::Write
     {
-        try!(::Encodable::write_encoded_to(&self.meta_data, writer));
+        try!(::Encodable::write_encoded_to(&self.meta_data, writer)); // meta_data
 
         ::std::result::Result::Ok(())
     } // fn write_encoded_to()
 } // impl Encodable
+
+#[test]
+fn test_request_encodable_bytes_written_matches_len() {
+    let payload: Request = Default::default();
+    let expected_len = ::Encodable::encoded_size(&payload);
+    let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));
+    ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();
+    let payload = writer.into_inner();
+
+    if payload.len() != expected_len {
+        panic!("Expected payload len {}, got {}, {:?}",
+               expected_len,
+               payload.len(),
+               &payload[..]);
+    }
+}
+
+
 
 impl<'a> ::ProtocolMethodPayload for Request<'a> {
     fn class_id(&self) -> u16 {
