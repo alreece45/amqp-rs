@@ -13,6 +13,7 @@ use common::{Class, ClassMethod};
 
 use super::method_impl_inherit::InheritMethodImplWriter;
 use super::method_encodable_impl::EncodableMethodImplWriter;
+use super::method_payload_impl::MethodPayloadImplWriter;
 
 impl<'a> WriteRust for MethodStructWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
@@ -26,7 +27,8 @@ impl<'a> WriteRust for MethodStructWriter<'a> {
         let encodable_impl = EncodableMethodImplWriter::new(self.method);
         try!(encodable_impl.write_rust_to(writer));
 
-        try!(self.write_amqp0_payload_impl(writer));
+        let payload_impl = MethodPayloadImplWriter::new(self.class, self.method);
+        try!(payload_impl.write_rust_to(writer));
 
         Ok(())
     }
@@ -75,25 +77,6 @@ impl<'a> MethodStructWriter<'a> {
             }
         }
         try!(writeln!(writer, "}} // struct {}{}", self.method.pascal_case(), lifetimes));
-        Ok(())
-    }
-
-    pub fn write_amqp0_payload_impl<W>(&self, writer: &mut W) -> io::Result<()>
-        where W: io::Write
-    {
-        let lifetimes = if self.method.has_lifetimes() { ("<'a>") } else { ("") };
-        try!(writeln!(writer, "\nimpl{1} ::ProtocolMethodPayload for {0}{1} {{", self.method.pascal_case(), lifetimes));
-
-        try!(write!(writer, "fn class_id(&self) -> u16 {{"));
-        try!(writeln!(writer, "{}", self.class.index()));
-        try!(writeln!(writer, "}} // fn class_id()"));
-
-        try!(writeln!(writer, "fn method_id(&self) -> u16 {{"));
-        try!(writeln!(writer, "{}", self.method.index()));
-        try!(writeln!(writer, "}} // fn method_id()"));
-
-        try!(writeln!(writer, "}} // impl ::Payload for {}", self.method.pascal_case()));
-
         Ok(())
     }
 }
