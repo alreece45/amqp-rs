@@ -8,7 +8,10 @@
 
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::io;
 use std::ops::{Deref, DerefMut};
+
+use byteorder::{WriteBytesExt, BigEndian};
 
 use Encodable;
 use super::Value;
@@ -50,13 +53,30 @@ impl<'a> TableEntries<'a> {
     pub fn to_table(&self) -> Table<'a> {
         Table::from_hashmap(self.to_hashmap())
     }
+
+    pub fn encoded_entries_size(&self) -> usize {
+        self.entries.iter()
+            .map(|&(ref k, ref v)| k.encoded_size() + v.encoded_size())
+            .sum()
+    }
 }
 
 impl<'a> Encodable for TableEntries<'a> {
     fn encoded_size(&self) -> usize {
-        self.entries.iter()
-            .map(|&(ref k, ref v)| k.len() + v.encoded_size())
-            .sum()
+        4 + self.encoded_entries_size()
+    }
+
+    fn write_encoded_to<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        try!(writer.write_u32::<BigEndian>(self.encoded_entries_size() as u32));
+
+        for &(ref key, ref value) in self.iter() {
+            try!(key.write_encoded_to(writer));
+            try!(value.write_encoded_to(writer));
+        }
+
+        Ok(())
     }
 }
 

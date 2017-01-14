@@ -7,6 +7,7 @@
 // except according to those terms.
 
 mod header_struct;
+mod header_encodable_impl;
 mod common_impl;
 mod method_enum;
 mod method_impl;
@@ -22,6 +23,7 @@ use WriteRust;
 
 use self::common_impl::CommonImplWriter;
 use self::header_struct::HeaderStructWriter;
+use self::header_encodable_impl::EncodableHeaderImplWriter;
 use self::method_enum::MethodEnumWriter;
 use self::method_impl::MethodImplWriter;
 use self::method_default_impl::DefaultImplWriter;
@@ -55,6 +57,9 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
 
         let header = HeaderStructWriter::new(self.class);
         try!(header.write_to(writer));
+
+        let encodable_impl = EncodableHeaderImplWriter::new(self.class);
+        try!(encodable_impl.write_rust_to(writer));
 
         for method in self.class.methods() {
             let common_impl= CommonImplWriter::new(self.specs, self.spec, self.class, method);

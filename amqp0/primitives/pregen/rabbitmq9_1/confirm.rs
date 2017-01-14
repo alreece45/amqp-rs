@@ -36,7 +36,20 @@ impl Default for Select {
 impl ::Encodable for Select {
     fn encoded_size(&self) -> usize {
         1
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.no_wait);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Select {
@@ -74,7 +87,12 @@ impl Default for SelectOk {
 impl ::Encodable for SelectOk {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for SelectOk {
@@ -102,6 +120,11 @@ impl ::Encodable for ClassMethod {
         } // match *self
 
     } // fn encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        unimplemented!()
+    } // fn write_encoded_to()
 } // impl ::Encodable for ClassMethod
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod {

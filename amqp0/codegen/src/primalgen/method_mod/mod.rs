@@ -100,7 +100,7 @@ impl<'a> WriteRust for MethodModuleWriter<'a> {
                 let section = format!("pub trait {}Method{}", pascal_method, lifetimes);
                 try!(write!(writer, "{} {{\ntype Payload: Default", section));
 
-                if fields.is_empty() {
+                if !fields.is_empty() {
                     try!(write!(writer, " + Set{}MethodFields{}", pascal_method, lifetimes))
                 }
                 try!(writeln!(writer, ";\n}} // {}\n", section));

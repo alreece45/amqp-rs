@@ -89,6 +89,12 @@ impl FramePayloadEnumWriter {
         try!(writeln!(writer, "_ => 0"));
         try!(writeln!(writer, "}} // match "));
         try!(writeln!(writer, "}} // fn encoded_size()"));
+
+        try!(writeln!(writer, "fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>"));
+        try!(writeln!(writer, "where W: ::io::Write"));
+        try!(writeln!(writer, "{{"));
+        try!(writeln!(writer, "unimplemented!()"));
+        try!(writeln!(writer, "}} // fn write_encoded_to()"));
         try!(writeln!(writer, "}} // impl Encodable"));
 
         Ok(())

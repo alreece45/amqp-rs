@@ -31,7 +31,12 @@ impl Default for Select {
 impl ::Encodable for Select {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Select {
@@ -64,7 +69,12 @@ impl Default for SelectOk {
 impl ::Encodable for SelectOk {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for SelectOk {
@@ -103,10 +113,15 @@ impl<'a> Default for Start<'a> {
 
 impl<'a> ::Encodable for Start<'a> {
     fn encoded_size(&self) -> usize {
-        [1, ::Encodable::encoded_size(&self.dtx_identifier)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        0 + ::Encodable::encoded_size(&self.dtx_identifier)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.dtx_identifier, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Start<'a> {
@@ -146,7 +161,12 @@ impl Default for StartOk {
 impl ::Encodable for StartOk {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for StartOk {
@@ -178,6 +198,11 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        unimplemented!()
+    } // fn write_encoded_to()
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {

@@ -31,7 +31,12 @@ impl Default for Content {
 impl ::Encodable for Content {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Content {
@@ -69,7 +74,14 @@ impl Default for ContentOk {
 impl ::Encodable for ContentOk {
     fn encoded_size(&self) -> usize {
         4
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.content_checksum, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for ContentOk {
@@ -131,7 +143,18 @@ impl Default for Integer {
 impl ::Encodable for Integer {
     fn encoded_size(&self) -> usize {
         16
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.integer_1, writer));
+        try!(::Encodable::write_encoded_to(&self.integer_2, writer));
+        try!(::Encodable::write_encoded_to(&self.integer_3, writer));
+        try!(::Encodable::write_encoded_to(&self.integer_4, writer));
+        try!(::Encodable::write_encoded_to(&self.operation, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Integer {
@@ -186,7 +209,14 @@ impl Default for IntegerOk {
 impl ::Encodable for IntegerOk {
     fn encoded_size(&self) -> usize {
         8
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.result, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for IntegerOk {
@@ -239,10 +269,17 @@ impl<'a> Default for String<'a> {
 
 impl<'a> ::Encodable for String<'a> {
     fn encoded_size(&self) -> usize {
-        [4, ::Encodable::encoded_size(&self.string_1), ::Encodable::encoded_size(&self.string_2)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        1 + ::Encodable::encoded_size(&self.string_1) + ::Encodable::encoded_size(&self.string_2)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.string_1, writer));
+        try!(::Encodable::write_encoded_to(&self.string_2, writer));
+        try!(::Encodable::write_encoded_to(&self.operation, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for String<'a> {
@@ -296,10 +333,15 @@ impl<'a> Default for StringOk<'a> {
 
 impl<'a> ::Encodable for StringOk<'a> {
     fn encoded_size(&self) -> usize {
-        [2, ::Encodable::encoded_size(&self.result)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        0 + ::Encodable::encoded_size(&self.result)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.result, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for StringOk<'a> {
@@ -353,10 +395,17 @@ impl<'a> Default for Table<'a> {
 
 impl<'a> ::Encodable for Table<'a> {
     fn encoded_size(&self) -> usize {
-        [2, ::Encodable::encoded_size(&self.table)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        2 + ::Encodable::encoded_size(&self.table)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.table, writer));
+        try!(::Encodable::write_encoded_to(&self.integer_op, writer));
+        try!(::Encodable::write_encoded_to(&self.string_op, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Table<'a> {
@@ -413,10 +462,16 @@ impl<'a> Default for TableOk<'a> {
 
 impl<'a> ::Encodable for TableOk<'a> {
     fn encoded_size(&self) -> usize {
-        [10, ::Encodable::encoded_size(&self.string_result)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        8 + ::Encodable::encoded_size(&self.string_result)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.integer_result, writer));
+        try!(::Encodable::write_encoded_to(&self.string_result, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for TableOk<'a> {
@@ -466,6 +521,11 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        unimplemented!()
+    } // fn write_encoded_to()
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {

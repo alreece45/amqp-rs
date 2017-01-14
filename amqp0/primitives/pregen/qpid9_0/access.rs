@@ -60,10 +60,26 @@ impl<'a> Default for Request<'a> {
 
 impl<'a> ::Encodable for Request<'a> {
     fn encoded_size(&self) -> usize {
-        [2, ::Encodable::encoded_size(&self.realm)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        1 + ::Encodable::encoded_size(&self.realm)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.realm, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.exclusive);
+                                               bits.set(6, self.passive);
+                                               bits.set(5, self.active);
+                                               bits.set(4, self.write);
+                                               bits.set(3, self.read);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Request<'a> {
@@ -123,7 +139,14 @@ impl Default for RequestOk {
 impl ::Encodable for RequestOk {
     fn encoded_size(&self) -> usize {
         2
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.ticket, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for RequestOk {
@@ -156,6 +179,11 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        unimplemented!()
+    } // fn write_encoded_to()
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {

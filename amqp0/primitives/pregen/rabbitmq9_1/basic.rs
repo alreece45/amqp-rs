@@ -30,6 +30,24 @@ pub struct Header<'a> {
 } // struct Header
 
 impl<'a> Header<'a> {
+    fn flag_bits(&self) -> ::bit_vec::BitVec {
+        let mut flags = ::bit_vec::BitVec::from_elem(16, false);
+        flags.set(0, self.content_type.is_some());
+        flags.set(1, self.content_encoding.is_some());
+        flags.set(2, self.headers.is_some());
+        flags.set(3, self.delivery_mode.is_some());
+        flags.set(4, self.priority.is_some());
+        flags.set(5, self.correlation_id.is_some());
+        flags.set(6, self.reply_to.is_some());
+        flags.set(7, self.expiration.is_some());
+        flags.set(8, self.message_id.is_some());
+        flags.set(9, self.timestamp.is_some());
+        flags.set(10, self.ty.is_some());
+        flags.set(11, self.user_id.is_some());
+        flags.set(12, self.app_id.is_some());
+        flags.set(13, self.reserved.is_some());
+        flags
+    } // fn flag_bits()
     impl_properties! {
 (content_type, content_type_mut, set_content_type, take_content_type) -> Option< Cow<str> >,
 (content_encoding, content_encoding_mut, set_content_encoding, take_content_encoding) -> Option< Cow<str> >,
@@ -50,9 +68,39 @@ impl<'a> Header<'a> {
 
 impl<'a> ::Encodable for Header<'a> {
     fn encoded_size(&self) -> usize {
-        unimplemented!()
-    } // fn encoded_size
-} // impl ::Encodable for Header<'a>
+        12 + ::Encodable::encoded_size(&self.content_type) +
+        ::Encodable::encoded_size(&self.content_encoding) +
+        ::Encodable::encoded_size(&self.headers) +
+        ::Encodable::encoded_size(&self.correlation_id) +
+        ::Encodable::encoded_size(&self.reply_to) +
+        ::Encodable::encoded_size(&self.expiration) +
+        ::Encodable::encoded_size(&self.message_id) +
+        ::Encodable::encoded_size(&self.ty) + ::Encodable::encoded_size(&self.user_id) +
+        ::Encodable::encoded_size(&self.app_id) + ::Encodable::encoded_size(&self.reserved)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.flag_bits(), writer));
+
+        try!(::Encodable::write_encoded_to(&self.content_type, writer));
+        try!(::Encodable::write_encoded_to(&self.content_encoding, writer));
+        try!(::Encodable::write_encoded_to(&self.headers, writer));
+        try!(::Encodable::write_encoded_to(&self.delivery_mode, writer));
+        try!(::Encodable::write_encoded_to(&self.priority, writer));
+        try!(::Encodable::write_encoded_to(&self.correlation_id, writer));
+        try!(::Encodable::write_encoded_to(&self.reply_to, writer));
+        try!(::Encodable::write_encoded_to(&self.expiration, writer));
+        try!(::Encodable::write_encoded_to(&self.message_id, writer));
+        try!(::Encodable::write_encoded_to(&self.timestamp, writer));
+        try!(::Encodable::write_encoded_to(&self.ty, writer));
+        try!(::Encodable::write_encoded_to(&self.user_id, writer));
+        try!(::Encodable::write_encoded_to(&self.app_id, writer));
+        try!(::Encodable::write_encoded_to(&self.reserved, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
+} // impl Encodable
 impl ::method::basic::AckMethod for ::Rabbitmq9_1 {
     type Payload = Ack;
 } // impl ::method::basic::AckMethod for ::Rabbitmq9_1
@@ -85,7 +133,21 @@ impl Default for Ack {
 impl ::Encodable for Ack {
     fn encoded_size(&self) -> usize {
         9
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.multiple);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Ack {
@@ -137,10 +199,22 @@ impl<'a> Default for Cancel<'a> {
 
 impl<'a> ::Encodable for Cancel<'a> {
     fn encoded_size(&self) -> usize {
-        [2, ::Encodable::encoded_size(&self.consumer_tag)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        1 + ::Encodable::encoded_size(&self.consumer_tag)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.no_wait);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Cancel<'a> {
@@ -189,10 +263,15 @@ impl<'a> Default for CancelOk<'a> {
 
 impl<'a> ::Encodable for CancelOk<'a> {
     fn encoded_size(&self) -> usize {
-        [1, ::Encodable::encoded_size(&self.consumer_tag)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        0 + ::Encodable::encoded_size(&self.consumer_tag)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for CancelOk<'a> {
@@ -273,13 +352,29 @@ impl<'a> Default for Consume<'a> {
 
 impl<'a> ::Encodable for Consume<'a> {
     fn encoded_size(&self) -> usize {
-        [5,
-         ::Encodable::encoded_size(&self.queue),
-         ::Encodable::encoded_size(&self.consumer_tag),
-         ::Encodable::encoded_size(&self.arguments)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        5 + ::Encodable::encoded_size(&self.queue) + ::Encodable::encoded_size(&self.consumer_tag) +
+        ::Encodable::encoded_size(&self.arguments)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&0u16, writer)); // reserved: reserved_1
+        try!(::Encodable::write_encoded_to(&self.queue, writer));
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.no_local);
+                                               bits.set(6, self.no_ack);
+                                               bits.set(5, self.exclusive);
+                                               bits.set(4, self.no_wait);
+                                               bits
+                                           },
+                                           writer));
+        try!(::Encodable::write_encoded_to(&self.arguments, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Consume<'a> {
@@ -347,10 +442,15 @@ impl<'a> Default for ConsumeOk<'a> {
 
 impl<'a> ::Encodable for ConsumeOk<'a> {
     fn encoded_size(&self) -> usize {
-        [1, ::Encodable::encoded_size(&self.consumer_tag)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        0 + ::Encodable::encoded_size(&self.consumer_tag)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for ConsumeOk<'a> {
@@ -417,13 +517,27 @@ impl<'a> Default for Deliver<'a> {
 
 impl<'a> ::Encodable for Deliver<'a> {
     fn encoded_size(&self) -> usize {
-        [12,
-         ::Encodable::encoded_size(&self.consumer_tag),
-         ::Encodable::encoded_size(&self.exchange),
-         ::Encodable::encoded_size(&self.routing_key)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        9 + ::Encodable::encoded_size(&self.consumer_tag) +
+        ::Encodable::encoded_size(&self.exchange) +
+        ::Encodable::encoded_size(&self.routing_key)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.consumer_tag, writer));
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.redelivered);
+                                               bits
+                                           },
+                                           writer));
+        try!(::Encodable::write_encoded_to(&self.exchange, writer));
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Deliver<'a> {
@@ -490,10 +604,23 @@ impl<'a> Default for Get<'a> {
 
 impl<'a> ::Encodable for Get<'a> {
     fn encoded_size(&self) -> usize {
-        [4, ::Encodable::encoded_size(&self.queue)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        5 + ::Encodable::encoded_size(&self.queue)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&0u16, writer)); // reserved: reserved_1
+        try!(::Encodable::write_encoded_to(&self.queue, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.no_ack);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Get<'a> {
@@ -535,9 +662,15 @@ impl Default for GetEmpty {
 
 impl ::Encodable for GetEmpty {
     fn encoded_size(&self) -> usize {
-        [1].iter()
-            .sum()
-    } // fn encoded_size()
+        1
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&0u8, writer)); // reserved: reserved_1
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for GetEmpty {
@@ -597,12 +730,26 @@ impl<'a> Default for GetOk<'a> {
 
 impl<'a> ::Encodable for GetOk<'a> {
     fn encoded_size(&self) -> usize {
-        [15,
-         ::Encodable::encoded_size(&self.exchange),
-         ::Encodable::encoded_size(&self.routing_key)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        13 + ::Encodable::encoded_size(&self.exchange) +
+        ::Encodable::encoded_size(&self.routing_key)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.redelivered);
+                                               bits
+                                           },
+                                           writer));
+        try!(::Encodable::write_encoded_to(&self.exchange, writer));
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
+        try!(::Encodable::write_encoded_to(&self.message_count, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for GetOk<'a> {
@@ -669,7 +816,22 @@ impl Default for Nack {
 impl ::Encodable for Nack {
     fn encoded_size(&self) -> usize {
         9
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.multiple);
+                                               bits.set(6, self.requeue);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Nack {
@@ -731,10 +893,25 @@ impl<'a> Default for Publish<'a> {
 
 impl<'a> ::Encodable for Publish<'a> {
     fn encoded_size(&self) -> usize {
-        [5, ::Encodable::encoded_size(&self.exchange), ::Encodable::encoded_size(&self.routing_key)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        5 + ::Encodable::encoded_size(&self.exchange) + ::Encodable::encoded_size(&self.routing_key)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&0u16, writer)); // reserved: reserved_1
+        try!(::Encodable::write_encoded_to(&self.exchange, writer));
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.mandatory);
+                                               bits.set(6, self.immediate);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Publish<'a> {
@@ -798,7 +975,22 @@ impl Default for Qos {
 impl ::Encodable for Qos {
     fn encoded_size(&self) -> usize {
         7
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.prefetch_size, writer));
+        try!(::Encodable::write_encoded_to(&self.prefetch_count, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.global);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Qos {
@@ -842,7 +1034,12 @@ impl Default for QosOk {
 impl ::Encodable for QosOk {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for QosOk {
@@ -880,7 +1077,20 @@ impl Default for Recover {
 impl ::Encodable for Recover {
     fn encoded_size(&self) -> usize {
         1
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.requeue);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Recover {
@@ -923,7 +1133,20 @@ impl Default for RecoverAsync {
 impl ::Encodable for RecoverAsync {
     fn encoded_size(&self) -> usize {
         1
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.requeue);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for RecoverAsync {
@@ -961,7 +1184,12 @@ impl Default for RecoverOk {
 impl ::Encodable for RecoverOk {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for RecoverOk {
@@ -1004,7 +1232,21 @@ impl Default for Reject {
 impl ::Encodable for Reject {
     fn encoded_size(&self) -> usize {
         9
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.delivery_tag, writer));
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.requeue);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Reject {
@@ -1064,13 +1306,20 @@ impl<'a> Default for Return<'a> {
 
 impl<'a> ::Encodable for Return<'a> {
     fn encoded_size(&self) -> usize {
-        [5,
-         ::Encodable::encoded_size(&self.reply_text),
-         ::Encodable::encoded_size(&self.exchange),
-         ::Encodable::encoded_size(&self.routing_key)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        2 + ::Encodable::encoded_size(&self.reply_text) +
+        ::Encodable::encoded_size(&self.exchange) +
+        ::Encodable::encoded_size(&self.routing_key)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.reply_code, writer));
+        try!(::Encodable::write_encoded_to(&self.reply_text, writer));
+        try!(::Encodable::write_encoded_to(&self.exchange, writer));
+        try!(::Encodable::write_encoded_to(&self.routing_key, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Return<'a> {
@@ -1150,6 +1399,11 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        unimplemented!()
+    } // fn write_encoded_to()
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {

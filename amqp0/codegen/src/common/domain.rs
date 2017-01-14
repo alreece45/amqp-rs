@@ -34,7 +34,7 @@ impl DomainMapper {
     }
 }
 
-#[derive(Debug, Clone, Hash)]
+#[derive(Debug, Clone, Hash, PartialEq)]
 pub enum Domain {
     Bit,
     Octet,
@@ -62,6 +62,15 @@ impl Domain {
             "table" => Domain::Table,
             "content" => Domain::Content,
             _ => panic!("Unimplemented type: {}", name)
+        }
+    }
+
+    pub fn empty_encoded_value(&self) -> &'static str {
+        match *self {
+            Domain::Bit | Domain::ShortString | Domain::Octet => "0u8",
+            Domain::Short => "0u16",
+            Domain::Long | Domain::LongString | Domain::Table | Domain::Content  => "0u32",
+            Domain::LongLong | Domain::Timestamp => "0u64",
         }
     }
 
@@ -106,11 +115,19 @@ impl Domain {
     pub fn num_bits_fixed(&self) -> usize {
         match *self {
             Domain::Bit => 1,
-            Domain::Octet | Domain::ShortString | Domain::Content => 8,
-            Domain::Short | Domain::LongString => 16,
+            Domain::Octet | Domain::Content => 8,
+            Domain::Short => 16,
             Domain::Long => 32,
             Domain::LongLong | Domain::Timestamp => 64,
-            Domain::Table => 0,
+            Domain::ShortString | Domain::LongString | Domain::Table => 0,
+        }
+    }
+
+    pub fn num_bits_static(&self) -> usize {
+        self.num_bits_fixed() + match *self {
+            Domain::ShortString => 8,
+            Domain::LongString | Domain::Table => 32,
+            _ => 0,
         }
     }
 

@@ -21,6 +21,15 @@ pub struct Header<'a> {
 } // struct Header
 
 impl<'a> Header<'a> {
+    fn flag_bits(&self) -> ::bit_vec::BitVec {
+        let mut flags = ::bit_vec::BitVec::from_elem(8, false);
+        flags.set(0, self.headers.is_some());
+        flags.set(1, self.proxy_name.is_some());
+        flags.set(2, self.data_name.is_some());
+        flags.set(3, self.durable.is_some());
+        flags.set(4, self.broadcast.is_some());
+        flags
+    } // fn flag_bits()
     impl_properties! {
 (headers, headers_mut, set_headers, take_headers) -> Option< &::field::TableEntries<'a> >,
 (proxy_name, proxy_name_mut, set_proxy_name, take_proxy_name) -> Option< Cow<str> >,
@@ -32,9 +41,23 @@ impl<'a> Header<'a> {
 
 impl<'a> ::Encodable for Header<'a> {
     fn encoded_size(&self) -> usize {
-        unimplemented!()
-    } // fn encoded_size
-} // impl ::Encodable for Header<'a>
+        3 + ::Encodable::encoded_size(&self.headers) + ::Encodable::encoded_size(&self.proxy_name) +
+        ::Encodable::encoded_size(&self.data_name)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.flag_bits(), writer));
+
+        try!(::Encodable::write_encoded_to(&self.headers, writer));
+        try!(::Encodable::write_encoded_to(&self.proxy_name, writer));
+        try!(::Encodable::write_encoded_to(&self.data_name, writer));
+        try!(::Encodable::write_encoded_to(&self.durable, writer));
+        try!(::Encodable::write_encoded_to(&self.broadcast, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
+} // impl Encodable
 impl<'a> ::method::tunnel::RequestMethod<'a> for ::Qpid8_0 {
     type Payload = Request<'a>;
 } // impl<'a> ::method::tunnel::RequestMethod<'a> for ::Qpid8_0
@@ -63,10 +86,15 @@ impl<'a> Default for Request<'a> {
 
 impl<'a> ::Encodable for Request<'a> {
     fn encoded_size(&self) -> usize {
-        [0, ::Encodable::encoded_size(&self.meta_data)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        0 + ::Encodable::encoded_size(&self.meta_data)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.meta_data, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Request<'a> {
@@ -99,6 +127,11 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        unimplemented!()
+    } // fn write_encoded_to()
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {

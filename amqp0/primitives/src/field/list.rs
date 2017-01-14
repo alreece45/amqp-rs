@@ -6,7 +6,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use std::io;
 use std::ops::{Deref, DerefMut};
+use byteorder::{WriteBytesExt, BigEndian};
 
 use Encodable;
 use super::Value;
@@ -23,7 +25,6 @@ impl List<'static> {
 }
 
 impl<'a> List<'a> {
-
     pub fn from_vec(values: Vec<Value<'a>>) -> Self {
         List {
             values: values
@@ -45,13 +46,32 @@ impl<'a> List<'a> {
     {
         self.values.push(value.into())
     }
+
+    pub fn values_encoded_size(&self) -> usize {
+        self.values.iter()
+            .map(|v| v.encoded_size())
+            .sum()
+    }
 }
 
 impl<'a> Encodable for List<'a> {
     fn encoded_size(&self) -> usize {
-        self.values.iter()
-            .map(|v| v.encoded_size())
-            .sum()
+        4 + self.values_encoded_size()
+    }
+
+    fn write_encoded_to<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        if self.values_encoded_size() > (::std::u32::MAX as usize) {
+            return Err(io::Error::new(io::ErrorKind::InvalidData, "AMQP list too large"));
+        }
+
+        try!(writer.write_u32::<BigEndian>(self.values_encoded_size() as u32));
+        for value in self.iter() {
+            try!(value.write_encoded_to(writer));
+        }
+
+        Ok(())
     }
 }
 

@@ -9,6 +9,8 @@ amqp0-pregen-primitives = ["amqp0-build-primitives", "amqp0-codegen/rustfmt"]
 amqp0-build-primitives = ["amqp0-codegen", "amqp0-specs"]
 
 [dependencies]
+bit-vec = "0.4.3"
+byteorder = "1.0.0"
 cfg-if = "0.1.0"
 
 [dependencies.clippy]

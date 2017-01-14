@@ -7,7 +7,10 @@
 // except according to those terms.
 
 use std::borrow::Cow;
+use std::io;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+use byteorder::{WriteBytesExt, BigEndian};
 
 use Encodable;
 use super::MAX_SHORTSTR_LEN;
@@ -94,7 +97,7 @@ impl<'a> Value<'a> {
 
 impl<'a> Encodable for Value<'a> {
     fn encoded_size(&self) -> usize {
-        match *self {
+         1 + match *self {
             Value::Void => 0,
             Value::Bool(_) | Value::I8(_)  | Value::U8(_)  => 1,
             Value::I16(_) | Value::U16(_) => 2,
@@ -106,6 +109,41 @@ impl<'a> Encodable for Value<'a> {
             Value::List(ref entries) => entries.iter().map(|e| e.encoded_size()).sum(),
             Value::Table(ref table) => table.encoded_size(),
         }
+    }
+
+    fn write_encoded_to<W>(&self, writer: &mut W) -> io::Result<()>
+        where W: io::Write
+    {
+        try!(write!(writer, "{}", self.id()));
+
+        match *self {
+            Value::Void => (),
+            Value::Bool(val) => try!(writer.write_u8(if val { 1 } else { 0 })),
+
+            Value::U8(val) => try!(writer.write_u8(val)),
+            Value::I8(val) => try!(writer.write_i8(val)),
+            Value::U16(val) => try!(writer.write_u16::<BigEndian>(val)),
+            Value::I16(val) => try!(writer.write_i16::<BigEndian>(val)),
+            Value::U32(val) => try!(writer.write_u32::<BigEndian>(val)),
+            Value::I32(val) => try!(writer.write_i32::<BigEndian>(val)),
+            Value::U64(val) | Value::Timestamp(val) => try!(writer.write_u64::<BigEndian>(val)),
+            Value::I64(val) => try!(writer.write_i64::<BigEndian>(val)),
+
+            Value::F32(val) => try!(writer.write_f32::<BigEndian>(val)),
+            Value::F64(val) => try!(writer.write_f64::<BigEndian>(val)),
+
+            Value::Decimal(scale, value) => {
+                try!(writer.write_u8(scale));
+                try!(writer.write_u32::<BigEndian>(value));
+            },
+
+            Value::ShortString(ref val) => try!(val.write_encoded_to(writer)),
+            Value::LongString(ref val) => try!(val.write_encoded_to(writer)),
+            Value::List(ref val) => try!(val.write_encoded_to(writer)),
+            Value::Table(ref table) => try!(table.write_encoded_to(writer)),
+        }
+
+        Ok(())
     }
 }
 

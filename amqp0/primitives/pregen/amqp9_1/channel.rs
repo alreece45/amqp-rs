@@ -48,10 +48,18 @@ impl<'a> Default for Close<'a> {
 
 impl<'a> ::Encodable for Close<'a> {
     fn encoded_size(&self) -> usize {
-        [7, ::Encodable::encoded_size(&self.reply_text)]
-            .iter()
-            .sum()
-    } // fn encoded_size()
+        6 + ::Encodable::encoded_size(&self.reply_text)
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&self.reply_code, writer));
+        try!(::Encodable::write_encoded_to(&self.reply_text, writer));
+        try!(::Encodable::write_encoded_to(&self.class_id, writer));
+        try!(::Encodable::write_encoded_to(&self.method_id, writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl<'a> ::ProtocolMethodPayload for Close<'a> {
@@ -100,7 +108,12 @@ impl Default for CloseOk {
 impl ::Encodable for CloseOk {
     fn encoded_size(&self) -> usize {
         0
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        ::std::result::Result::Ok(())
+    }
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for CloseOk {
@@ -138,7 +151,20 @@ impl Default for Flow {
 impl ::Encodable for Flow {
     fn encoded_size(&self) -> usize {
         1
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.active);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Flow {
@@ -181,7 +207,20 @@ impl Default for FlowOk {
 impl ::Encodable for FlowOk {
     fn encoded_size(&self) -> usize {
         1
-    } // fn encoded_size()
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&{
+                                               let mut bits = ::bit_vec::BitVec::from_elem(8,
+                                                                                           false);
+                                               bits.set(7, self.active);
+                                               bits
+                                           },
+                                           writer));
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for FlowOk {
@@ -218,9 +257,15 @@ impl Default for Open {
 
 impl ::Encodable for Open {
     fn encoded_size(&self) -> usize {
-        [1].iter()
-            .sum()
-    } // fn encoded_size()
+        1
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&0u8, writer)); // reserved: reserved_1
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for Open {
@@ -253,9 +298,15 @@ impl Default for OpenOk {
 
 impl ::Encodable for OpenOk {
     fn encoded_size(&self) -> usize {
-        [2].iter()
-            .sum()
-    } // fn encoded_size()
+        4
+    } // encoded_size
+    fn write_encoded_to<W>(&self, writer: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        try!(::Encodable::write_encoded_to(&0u32, writer)); // reserved: reserved_1
+
+        ::std::result::Result::Ok(())
+    } // fn write_encoded_to()
 } // impl Encodable
 
 impl ::ProtocolMethodPayload for OpenOk {
@@ -292,6 +343,11 @@ impl<'a> ::Encodable for ClassMethod<'a> {
         } // match *self
 
     } // fn encoded_size
+    fn write_encoded_to<W>(&self, _: &mut W) -> ::io::Result<()>
+        where W: ::io::Write
+    {
+        unimplemented!()
+    } // fn write_encoded_to()
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
