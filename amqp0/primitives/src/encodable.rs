@@ -79,7 +79,7 @@ impl Encodable for u64 {
 
 impl<'a> Encodable for Cow<'a, [u8]> {
     fn encoded_size(&self) -> usize {
-        1 + self.len()
+        4 + self.len()
     }
 
     fn write_encoded_to<W>(&self, writer: &mut W) -> io::Result<()>
@@ -98,7 +98,7 @@ impl<'a> Encodable for Cow<'a, [u8]> {
 
 impl<'a> Encodable for Cow<'a, str> {
     fn encoded_size(&self) -> usize {
-        4 + self.len()
+        1 + self.len()
     }
 
     fn write_encoded_to<W>(&self, writer: &mut W) -> io::Result<()>
