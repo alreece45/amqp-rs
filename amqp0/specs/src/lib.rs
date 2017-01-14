@@ -172,7 +172,7 @@ impl Class {
     }
 
     pub fn fields(&self) -> &'static [ClassField] {
-        &self.fields
+        self.fields
     }
 
     pub fn index(&self) -> u16 {
@@ -180,13 +180,13 @@ impl Class {
     }
 
     pub fn methods(&self) -> &'static [ClassMethod] {
-        &self.methods
+        self.methods
     }
 }
 
 impl ClassField {
     pub fn name(&self) -> &'static str {
-        &self.name
+        self.name
     }
 
     pub fn domain(&self) -> &'static str {
@@ -199,16 +199,16 @@ impl ClassMethod {
         self.index
     }
     pub fn name(&self) -> &str {
-        &self.name
+        self.name
     }
     pub fn fields(&self) -> &'static [ClassMethodField] {
-        &self.fields
+        self.fields
     }
 }
 
 impl ClassMethodField {
     pub fn name(&self) -> &'static str {
-        &self.name
+        self.name
     }
 
     pub fn domain(&self) -> &'static str {
@@ -216,7 +216,7 @@ impl ClassMethodField {
     }
 
     pub fn assertions(&self) -> &'static [ClassMethodFieldAssertion] {
-        &self.assertions
+        self.assertions
     }
 
     pub fn is_reserved(&self) -> bool {
