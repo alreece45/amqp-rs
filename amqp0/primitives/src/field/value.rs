@@ -45,26 +45,26 @@ pub enum Value<'a> {
 
 impl<'a> Value<'a> {
 
-    pub fn id(&self) -> char {
+    pub fn id(&self) -> &'static str {
         match *self {
-            Value::Table(_)       => 'F',
-            Value::Bool(_)        => 't',
-            Value::I8(_)          => 'b',
-            Value::U8(_)          => 'B',
-            Value::I16(_)         => 'U',
-            Value::U16(_)         => 'u',
-            Value::I32(_)         => 'I',
-            Value::U32(_)         => 'i',
-            Value::I64(_)         => 'L',
-            Value::U64(_)         => 'l',
-            Value::F32(_)         => 'd',
-            Value::F64(_)         => 'f',
-            Value::Timestamp(_)   => 'T',
-            Value::Decimal(_, _)  => 'D',
-            Value::ShortString(_) => 's',
-            Value::LongString(_)  => 'S',
-            Value::List(_)        => 'A',
-            Value::Void           => 'V',
+            Value::Table(_)       => "F",
+            Value::Bool(_)        => "t",
+            Value::I8(_)          => "b",
+            Value::U8(_)          => "B",
+            Value::I16(_)         => "U",
+            Value::U16(_)         => "u",
+            Value::I32(_)         => "I",
+            Value::U32(_)         => "i",
+            Value::I64(_)         => "L",
+            Value::U64(_)         => "l",
+            Value::F32(_)         => "d",
+            Value::F64(_)         => "f",
+            Value::Timestamp(_)   => "T",
+            Value::Decimal(_, _)  => "D"    ,
+            Value::ShortString(_) => "s",
+            Value::LongString(_)  => "S",
+            Value::List(_)        => "A",
+            Value::Void           => "V",
         }
     }
 
