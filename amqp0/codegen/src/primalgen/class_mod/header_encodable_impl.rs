@@ -26,6 +26,25 @@ impl<'a> WriteRust for EncodableHeaderImplWriter<'a> {
         try!(self.write_encoded_writer(writer));
         try!(writeln!(writer, "}} // impl Encodable"));
 
+        try!(writeln!(writer, "\n#[test]\n\
+            fn test_headers_encodable_bytes_written_matches_len() {{\n\
+                let payload: Header = Default::default();\n\
+                let expected_len = ::Encodable::encoded_size(&payload);\n\
+                let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));\n\
+                ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();\n\
+                let payload = writer.into_inner();\n\
+                \n\
+                if payload.len() != expected_len {{\n\
+                    panic!(\n\
+                        \"Expected payload len {{}}, got {{}}, {{:?}}\",\n\
+                        expected_len,\n\
+                        payload.len(),\n\
+                        &payload[..]\n\
+                    );\n\
+                }}\n\
+            }}\n\n",
+        ));
+
         Ok(())
     }
 }
@@ -62,21 +81,12 @@ impl<'a> EncodableHeaderImplWriter<'a> {
     pub fn write_encoded_size<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let padding_bytes = if self.class.fields().len() % 8 != 0 { 1 } else { 0 };
-        let num_flag_bytes = self.class.fields().len() / 8 + padding_bytes;
-        let num_field_bits = self.class.fields().iter()
-            .map(|field| field.ty().num_bits_static())
-            .fold(0usize, |sum, num_bits| sum + num_bits);
+        let num_field_padding_bytes = if self.class.fields().len() % 8 == 0 { 0 } else { 1 };
+        let num_field_bytes = self.class.fields().len() / 8 + num_field_padding_bytes;
 
-        let static_size_bits = num_flag_bytes * 8 + num_field_bits;
-        let static_size = static_size_bits / 8 + if static_size_bits % 8 > 0 { 1 } else { 0 };
-        try!(write!(writer, "fn encoded_size(&self) -> usize {{\n{}", static_size));
+        try!(write!(writer, "fn encoded_size(&self) -> usize {{\n{}", num_field_bytes));
 
         for field in self.class.fields() {
-            if field.ty().dynamic_bit_method().is_none() {
-                continue;
-            }
-
             try!(write!(
                 writer,
                 " + ::Encodable::encoded_size(&self.{0})",

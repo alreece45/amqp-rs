@@ -37,7 +37,7 @@ impl<'a> HeaderStructWriter<'a> {
     fn write_struct<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(writeln!(writer, "#[derive(Debug)]"));
+        try!(writeln!(writer, "#[derive(Debug, Default)]"));
 
         let lifetimes = if self.class.has_field_lifetimes() { "<'a>" } else { "" };
 

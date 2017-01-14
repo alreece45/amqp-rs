@@ -72,7 +72,7 @@ impl<'a> EncodableMethodImplWriter<'a> {
 
             for field in fields.drain(..) {
                 if field.is_reserved() {
-                    try!(writeln!(writer, "// bit {} reserved ({})", bit_num,   field.var_name()));
+                    try!(writeln!(writer, "// bit {} reserved ({})", bit_num, field.var_name()));
                 } else {
                     try!(writeln!(writer, "bits.set({}, self.{});", bit_num, field.var_name()));
                 }
