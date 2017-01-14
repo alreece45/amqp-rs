@@ -10,11 +10,6 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
-#[cfg(feature = "amqp0-pregen-parser")]
-include!(concat!("../pregen/mod.rs"));
-#[cfg(not(feature = "amqp0-pregen-parser"))]
-include!(concat!(env!("OUT_DIR"), "/mod.rs"));
-
 #[macro_use]
 extern crate nom;
 extern crate amqp0_primitives as primitives;
