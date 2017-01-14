@@ -51,7 +51,7 @@ impl Spec {
         }
     }
 
-    pub fn class_indexes<'a>(&'a self) -> ClassIndexes<'a> {
+    pub fn class_indexes(&self) -> ClassIndexes {
         ClassIndexes {
             class_indexes: self.class_index_map().iter()
         }

@@ -94,7 +94,7 @@ impl Class {
         self.method_map().get(name)
     }
 
-    pub fn methods<'a>(&'a self) -> Methods<'a> {
+    pub fn methods(&self) -> Methods {
         Methods(self.method_map().values())
     }
 
