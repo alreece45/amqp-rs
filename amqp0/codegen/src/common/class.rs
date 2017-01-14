@@ -78,7 +78,7 @@ impl Class {
             self.class.methods().iter()
                 .fold(HashMap::new(), |mut map, method| {
                     map.entry(method.index())
-                        .or_insert(BTreeSet::new())
+                        .or_insert_with(BTreeSet::new)
                         .insert(method.name());
                     map
                 })

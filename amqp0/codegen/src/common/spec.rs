@@ -74,7 +74,7 @@ impl Spec {
             self.spec.classes().entries()
                 .fold(HashMap::new(), |mut map, (name, class)| {
                     map.entry(class.index())
-                        .or_insert(BTreeSet::new())
+                        .or_insert_with(BTreeSet::new)
                         .insert(*name);
                     map
                 })
