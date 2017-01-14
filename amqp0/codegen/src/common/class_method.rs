@@ -57,6 +57,14 @@ impl ClassMethod {
         }
     }
 
+    pub fn method(&self) -> &'static specs::ClassMethod {
+        self.method
+    }
+
+    pub fn name(&self) -> &'static str {
+        self.method.name()
+    }
+
     pub fn fields(&self) -> &[ClassMethodField] {
         &self.fields
     }

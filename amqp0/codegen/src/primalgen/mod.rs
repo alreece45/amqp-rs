@@ -15,7 +15,7 @@ use std::path::PathBuf;
 
 use {Source, WriteRust};
 use format_files;
-use common::Spec;
+use common::{Specs, Spec};
 
 use specs;
 
@@ -26,7 +26,7 @@ use self::root_mod::RootModuleWriter;
 pub struct ModulesWriter<'a, S>
     where S: Source + 'a
 {
-    specs: Vec<Spec>,
+    specs: Specs<'a>,
     source: &'a S,
 }
 
@@ -34,8 +34,9 @@ impl<'a, S> ModulesWriter<'a, S>
     where S: Source + 'a
 {
     pub fn new(source: &'a S, specs: &'a [&'static specs::Spec]) -> Self {
+        let specs = Specs::new(specs.iter().map(|spec| Spec::new(spec)).collect::<Vec<_>>());
         ModulesWriter {
-            specs: specs.iter().map(|spec| Spec::new(spec)).collect(),
+            specs: specs,
             source: source,
         }
     }
@@ -62,7 +63,7 @@ impl<'a, S> ModulesWriter<'a, S>
 
     fn write_spec_mod(&self, spec: &Spec) -> io::Result<PathBuf> {
         debug!("Preparing primalgen spec module {}", spec.name());
-        let writer = SpecModuleWriter::new(spec);
+        let writer = SpecModuleWriter::new(&self.specs, spec);
         let filename = format!("{}.rs", writer.mod_name());
         let path = self.source.base_dir().join(&filename);
 

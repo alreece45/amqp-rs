@@ -96,7 +96,12 @@ impl Spec {
 
     pub fn pascal_case(&self) -> &str {
         self.pascal_case.borrow_with(|| {
-            self.name().to_pascal_case()
+            format!(
+                "{}{}_{}",
+                self.name().to_pascal_case(),
+                self.version().minor(),
+                self.version().revision()
+            )
         })
     }
 

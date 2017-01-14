@@ -10,9 +10,10 @@ use std::borrow::Cow;
 use std::io;
 
 use WriteRust;
-use common::{Class, ClassMethod};
+use common::{Specs, Class, ClassMethod};
 
 pub struct MethodSetterImplWriter<'a> {
+    specs: &'a Specs<'a>,
     class: &'a Class,
     method: &'a ClassMethod,
 }
@@ -21,13 +22,25 @@ impl<'a> WriteRust for MethodSetterImplWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let lifetimes = if self.method.has_lifetimes() { "<'a>" } else { "" };
+        let spec_method = self.specs.method(self.class.name(), self.method.name()).unwrap();
 
-        if self.method.has_usable_fields() {
+        // (impl, trait, method)
+        let lifetimes = match (spec_method.has_lifetimes(), self.method.has_lifetimes()) {
+            (false, false) => ("", "", ""),
+            (spec, method) => (
+                "<'a>",
+                if spec { "<'a>" } else { "" },
+                if method { "<'a>" } else { "" }
+            ),
+        };
+
+        if spec_method.has_usable_fields() {
             let section = format!(
-                "impl{lifetimes} ::method::{class}::Set{method}MethodFields{lifetimes} \
-                    for {method}{lifetimes}",
-                lifetimes = lifetimes,
+                "impl{impl_lifetimes} ::method::{class}::Set{method}MethodFields{spec_lifetimes} \
+                    for {method}{method_lifetimes}",
+                impl_lifetimes = lifetimes.0,
+                spec_lifetimes = lifetimes.1,
+                method_lifetimes = lifetimes.2,
                 class = self.class.snake_case(),
                 method = self.method.pascal_case()
             );
@@ -69,8 +82,9 @@ impl<'a> WriteRust for MethodSetterImplWriter<'a> {
 }
 
 impl<'a> MethodSetterImplWriter<'a> {
-    pub fn new(class: &'a Class, method: &'a ClassMethod) -> Self {
+    pub fn new(specs: &'a Specs, class: &'a Class, method: &'a ClassMethod) -> Self {
         MethodSetterImplWriter {
+            specs: specs,
             class: class,
             method: method,
         }

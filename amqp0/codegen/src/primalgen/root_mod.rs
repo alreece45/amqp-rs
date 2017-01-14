@@ -10,10 +10,10 @@ use std::io;
 use inflections::Inflect;
 
 use WriteRust;
-use common::{Specs, Spec};
+use common::Specs;
 
 pub struct RootModuleWriter<'a> {
-    specs: Specs<'a>,
+    specs: &'a Specs<'a>,
 }
 
 impl<'a> WriteRust for RootModuleWriter<'a> {
@@ -39,9 +39,9 @@ impl<'a> WriteRust for RootModuleWriter<'a> {
 }
 
 impl<'a> RootModuleWriter<'a> {
-    pub fn new(specs: &'a [Spec]) -> Self {
+    pub fn new(specs: &'a Specs) -> Self {
         RootModuleWriter {
-            specs: Specs::new(specs)
+            specs: specs
         }
     }
 

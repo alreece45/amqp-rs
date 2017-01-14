@@ -33,9 +33,9 @@ impl<'a> WriteRust for MethodStructWriter<'a> {
             if field.ty().is_copy() || field.ty().is_owned() {
                 try!(writeln!(writer, "{},", field.ty().owned_type()));
             }
-                else {
-                    try!(writeln!(writer, "{},", field.ty().cow_definition("a")));
-                }
+            else {
+                try!(writeln!(writer, "{},", field.ty().cow_definition("a")));
+            }
         }
         try!(writeln!(writer, "}} // struct {}{}", self.method.pascal_case(), lifetimes));
 
@@ -49,8 +49,6 @@ pub struct MethodStructWriter<'a> {
 
 impl<'a> MethodStructWriter<'a> {
     pub fn new(method: &'a ClassMethod) -> Self {
-        let has_fields = method.fields().iter().any(|f| !f.is_reserved());
-
         MethodStructWriter {
             method: method,
         }

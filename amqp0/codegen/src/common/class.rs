@@ -57,6 +57,14 @@ impl Class {
         }
     }
 
+    pub fn class(&self) -> &'static specs::Class {
+        self.class
+    }
+
+    pub fn name(&self) -> &'static str {
+        self.class.name()
+    }
+
     fn method_map(&self) -> &BTreeMap<&str, ClassMethod> {
         self.methods.borrow_with(|| {
             self.class.methods().iter()

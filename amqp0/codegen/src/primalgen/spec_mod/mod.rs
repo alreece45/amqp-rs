@@ -15,7 +15,7 @@ use std::iter::ExactSizeIterator;
 use std::io;
 
 use WriteRust;
-use common::Spec;
+use common::{Specs, Spec};
 
 use self::class_mod::ClassModuleWriter;
 use self::frame_payload_enum::FramePayloadEnumWriter;
@@ -23,6 +23,7 @@ use self::header_enum::HeaderEnumWriter;
 use self::method_enum::MethodEnumWriter;
 
 pub struct SpecModuleWriter<'a> {
+    specs: &'a Specs<'a>,
     spec: &'a Spec,
 }
 
@@ -48,7 +49,7 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
 
         try!(writeln!(writer, "\n// Class Modules"));
         for class in self.spec.classes() {
-            let module_writer = ClassModuleWriter::new(class);
+            let module_writer = ClassModuleWriter::new(self.specs, self.spec, class);
             try!(module_writer.write_rust_to(writer));
         }
 
@@ -74,8 +75,9 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
 }
 
 impl<'a> SpecModuleWriter<'a> {
-    pub fn new(spec: &'a Spec) -> Self {
+    pub fn new(specs: &'a Specs<'a>, spec: &'a Spec) -> Self {
         SpecModuleWriter {
+            specs: specs,
             spec: spec,
         }
     }

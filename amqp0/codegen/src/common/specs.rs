@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -8,15 +8,32 @@
 
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
+use std::iter;
 use std::ops::Deref;
 
 use common::Spec;
+use lazycell::LazyCell;
 
-#[derive(Clone)]
 pub struct Specs<'a> {
     /// TODO: is Cow<> really the appropriate type, here?
     /// Would AsRef or Borrow be better, since we never take ownership?
-    specs: Cow<'a, [Spec]>
+    specs: Cow<'a, [Spec]>,
+    methods: LazyCell<HashMap<(&'static str, &'static str), SpecMethod>>,
+}
+
+pub struct SpecMethod {
+    has_lifetimes: bool,
+    has_usable_fields: bool,
+}
+
+impl SpecMethod {
+    pub fn has_lifetimes(&self) -> bool {
+        self.has_lifetimes
+    }
+
+    pub fn has_usable_fields(&self) -> bool {
+        self.has_usable_fields
+    }
 }
 
 impl<'a> Specs<'a> {
@@ -24,7 +41,8 @@ impl<'a> Specs<'a> {
         where S: Into<Cow<'a, [Spec]>>
     {
         Specs {
-            specs: specs.into()
+            specs: specs.into(),
+            methods: LazyCell::new(),
         }
     }
 
@@ -107,6 +125,39 @@ impl<'a> Specs<'a> {
             .filter(|&(_, v)| v.0 > 1)
             .map(|(k, v)| (k, v.1))
             .collect()
+    }
+
+    fn methods(&self) -> &HashMap<(&'static str, &'static str), SpecMethod> {
+        self.methods.borrow_with(|| {
+            self.specs.iter()
+                .flat_map(|spec| spec.classes())
+                .flat_map(|class| iter::repeat(class).zip(class.methods()))
+                .fold(HashMap::new(), |mut map, (class, method)| {
+                    let class_name: &'static str = class.name();
+                    let method_name: &'static str = method.name();
+                    {
+                        let mut entry = map.entry((class_name, method_name))
+                            .or_insert(SpecMethod {
+                                has_lifetimes: false,
+                                has_usable_fields: false,
+                            });
+
+                        if method.has_lifetimes() {
+                            entry.has_lifetimes = true;
+                        }
+
+                        if method.has_usable_fields() {
+                            entry.has_usable_fields = true;
+                        }
+                    }
+                    map
+                })
+        })
+    }
+
+    pub fn method<'b>(&'b self, class_name: &'b str, method_name: &'b str) -> Option<&SpecMethod> {
+        let key = (class_name, method_name);
+        self.methods().get(&key)
     }
 
     ///
@@ -200,6 +251,16 @@ impl<'a> Specs<'a> {
                 (class_name, methods)
             })
             .collect()
+    }
+}
+
+use std::slice::Iter;
+
+impl<'a> IntoIterator for &'a Specs<'a> {
+    type Item = <Self::IntoIter as Iterator>::Item;
+    type IntoIter = Iter<'a, Spec>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.specs.iter()
     }
 }
 

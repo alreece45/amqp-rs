@@ -7,33 +7,40 @@
 // except according to those terms.
 
 mod header_struct;
+mod common_impl;
 mod method_enum;
 mod method_impl;
+mod method_default_impl;
 mod method_encodable_impl;
 mod method_payload_impl;
 mod method_setter_impl;
 mod method_struct;
 
 use std::io;
-use common::Class;
-
+use common::{Specs, Spec, Class};
 use WriteRust;
 
+use self::common_impl::CommonImplWriter;
 use self::header_struct::HeaderStructWriter;
 use self::method_enum::MethodEnumWriter;
 use self::method_impl::MethodImplWriter;
+use self::method_default_impl::DefaultImplWriter;
 use self::method_encodable_impl::EncodableMethodImplWriter;
 use self::method_payload_impl::MethodPayloadImplWriter;
 use self::method_setter_impl::MethodSetterImplWriter;
 use self::method_struct::MethodStructWriter;
 
 pub struct ClassModuleWriter<'a> {
+    specs: &'a Specs<'a>,
+    spec: &'a Spec,
     class: &'a Class,
 }
 
 impl<'a> ClassModuleWriter<'a> {
-    pub fn new(class: &'a Class) -> Self {
+    pub fn new(specs: &'a Specs, spec: &'a Spec, class: &'a Class) -> Self {
         ClassModuleWriter {
+            specs: specs,
+            spec: spec,
             class: class,
         }
     }
@@ -49,12 +56,17 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
         try!(header.write_to(writer));
 
         for method in self.class.methods() {
-            // write the struct and its implementations
+            let common_impl= CommonImplWriter::new(self.specs, self.spec, self.class, method);
+            try!(common_impl.write_rust_to(writer));
+
             let struct_writer = MethodStructWriter::new(method);
             try!(struct_writer.write_rust_to(writer));
 
             let inherit_impl = MethodImplWriter::new(method);
             try!(inherit_impl.write_rust_to(writer));
+
+            let default_impl = DefaultImplWriter::new(method);
+            try!(default_impl.write_rust_to(writer));
 
             let encodable_impl = EncodableMethodImplWriter::new(method);
             try!(encodable_impl.write_rust_to(writer));
@@ -62,7 +74,7 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
             let payload_impl = MethodPayloadImplWriter::new(self.class, method);
             try!(payload_impl.write_rust_to(writer));
 
-            let setter_impl = MethodSetterImplWriter::new(self.class, method);
+            let setter_impl = MethodSetterImplWriter::new(self.specs, self.class, method);
             try!(setter_impl.write_rust_to(writer));
         }
 
