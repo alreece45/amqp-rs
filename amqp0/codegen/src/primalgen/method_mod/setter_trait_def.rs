@@ -87,7 +87,7 @@ impl<'a> WriteRust for SetterTraitDefinitionWriter<'a> {
             if ty.is_copy() {
                 try!(writeln!(
                     writer,
-                    "fn set_{0}(_: {1}) {{}}",
+                    "fn set_{0}(&mut self, _: {1}) {{}}",
                     var_name,
                     ty.owned_type()
                 ));
@@ -95,7 +95,7 @@ impl<'a> WriteRust for SetterTraitDefinitionWriter<'a> {
             else {
                 try!(writeln!(
                     writer,
-                    "fn set_{0}<V>(_: V) where V: Into<{1}> {{}}",
+                    "fn set_{0}<V>(&mut self, _: V) where V: Into<{1}> {{}}",
                     var_name,
                     ty.cow_definition("a")
                 ));
