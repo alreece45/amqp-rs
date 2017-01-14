@@ -39,8 +39,6 @@ pub struct MethodPayloadImplWriter<'a> {
 
 impl<'a> MethodPayloadImplWriter<'a> {
     pub fn new(class: &'a Class, method: &'a ClassMethod) -> Self {
-        let has_fields = method.fields().iter().any(|f| !f.is_reserved());
-
         MethodPayloadImplWriter {
             class: class,
             method: method,

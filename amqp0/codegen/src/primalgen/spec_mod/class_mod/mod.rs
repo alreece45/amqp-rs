@@ -18,8 +18,11 @@ use common::Class;
 
 use WriteRust;
 
-use self::method_enum::MethodEnumWriter;
 use self::header_struct::HeaderStructWriter;
+use self::method_enum::MethodEnumWriter;
+use self::method_impl::MethodImplWriter;
+use self::method_encodable_impl::EncodableMethodImplWriter;
+use self::method_payload_impl::MethodPayloadImplWriter;
 use self::method_struct::MethodStructWriter;
 
 pub struct ClassModuleWriter<'a> {
@@ -44,13 +47,18 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
         try!(header.write_to(writer));
 
         for method in self.class.methods() {
-            // try!(writeln!(writer, "pub mod {} {{", method.snake_case()));
+            // write the struct and its implementations
+            let struct_writer = MethodStructWriter::new(method);
+            try!(struct_writer.write_rust_to(writer));
 
-            // write the struct
-            let struct_writer = MethodStructWriter::new(self.class, method);
-            try!(struct_writer.write_rust_to(writer))
+            let inherit_impl = MethodImplWriter::new(method);
+            try!(inherit_impl.write_rust_to(writer));
 
-            // try!(writeln!(writer, "}} // mod {}\n", method.snake_case()));
+            let encodable_impl = EncodableMethodImplWriter::new(method);
+            try!(encodable_impl.write_rust_to(writer));
+
+            let payload_impl = MethodPayloadImplWriter::new(self.class, method);
+            try!(payload_impl.write_rust_to(writer));
         }
 
         let method_enum = MethodEnumWriter::new(self.class);
