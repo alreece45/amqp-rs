@@ -192,16 +192,6 @@ pub const METHOD_TX_COMMIT_OK: u16 = 21;
 pub const METHOD_TX_ROLLBACK: u16 = 30;
 pub const METHOD_TX_ROLLBACK_OK: u16 = 31;
 
-// Index values for methods common among the different specs
-//
-// Methods are only considered common when:
-//
-//   * The index value is consistent across all of the specs
-//   * The method is used in more than one primalgen.spec
-//
-// This may change in the future-- in that case, methods *may* be removed, or
-// one of the requirements may be relaxed.
-//
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq)]

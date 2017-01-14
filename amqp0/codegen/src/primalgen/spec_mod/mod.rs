@@ -33,7 +33,7 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
         }
 
         for class in self.spec.classes() {
-            try!(writeln!(writer, "mod {};", class.snake_case()));
+            try!(writeln!(writer, "pub mod {};", class.snake_case()));
         }
 
         try!(self.write_class_constants(writer));
