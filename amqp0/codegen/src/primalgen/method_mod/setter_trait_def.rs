@@ -64,7 +64,7 @@ impl<'a> WriteRust for SetterTraitDefinitionWriter<'a> {
                 .map(|ty| (ty.owned_type(), ty))
                 .collect::<HashMap<_, _>>();
 
-            if tys.len() == 0 {
+            if tys.is_empty() {
                 unreachable!(
                     "No field types for field {}::{}.{}",
                     self.class_name,
