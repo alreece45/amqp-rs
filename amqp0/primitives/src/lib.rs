@@ -9,6 +9,9 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(not(feature="clippy"), allow(unknown_lints))]
 
+extern crate byteorder;
+extern crate bit_vec;
+
 #[macro_use]
 extern crate cfg_if;
 
@@ -16,6 +19,7 @@ extern crate cfg_if;
 mod macros;
 
 pub mod field;
+mod encodable;
 
 // default: pregen/mod.rs
 // build    OUT_DIR/mod.rs
@@ -30,22 +34,9 @@ cfg_if! {
     }
 }
 
-use std::borrow::Cow;
+use std::io;
 
-pub trait Encodable {
-    fn encoded_size(&self) -> usize;
-}
-
-impl<'a> Encodable for Cow<'a, [u8]> {
-    fn encoded_size(&self) -> usize {
-        self.len()
-    }
-}
-impl<'a> Encodable for Cow<'a, str> {
-    fn encoded_size(&self) -> usize {
-        self.len()
-    }
-}
+pub use self::encodable::Encodable;
 
 pub trait Protocol<'a> {
     type Frame: 'a;
