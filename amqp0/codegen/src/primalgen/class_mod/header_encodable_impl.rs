@@ -21,25 +21,25 @@ impl<'a> WriteRust for EncodableHeaderImplWriter<'a> {
 
         let lifetimes = if self.class.has_field_lifetimes() { ("<'a>") } else { ("") };
 
-        try!(writeln!(writer, "\nimpl{0} ::Encodable for Header{0} {{", lifetimes));
+        try!(writeln!(writer, "\nimpl{0} ::Encodable for Properties{0} {{", lifetimes));
         try!(self.write_encoded_size(writer));
         try!(self.write_encoded_writer(writer));
         try!(writeln!(writer, "}} // impl Encodable"));
 
         try!(writeln!(writer, "\n#[test]\n\
             fn test_headers_encodable_bytes_written_matches_len() {{\n\
-                let payload: Header = Default::default();\n\
-                let expected_len = ::Encodable::encoded_size(&payload);\n\
+                let properties: Properties = Default::default();\n\
+                let expected_len = ::Encodable::encoded_size(&properties);\n\
                 let mut writer = ::std::io::Cursor::new(Vec::with_capacity(expected_len));\n\
-                ::Encodable::write_encoded_to(&payload, &mut writer).unwrap();\n\
-                let payload = writer.into_inner();\n\
+                ::Encodable::write_encoded_to(&properties, &mut writer).unwrap();\n\
+                let buffer = writer.into_inner();\n\
                 \n\
-                if payload.len() != expected_len {{\n\
+                if buffer.len() != expected_len {{\n\
                     panic!(\n\
-                        \"Expected payload len {{}}, got {{}}, {{:?}}\",\n\
+                        \"Expected properties len {{}}, got {{}}, {{:?}}\",\n\
                         expected_len,\n\
-                        payload.len(),\n\
-                        &payload[..]\n\
+                        buffer.len(),\n\
+                        &buffer[..]\n\
                     );\n\
                 }}\n\
             }}\n\n",

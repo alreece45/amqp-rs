@@ -144,7 +144,7 @@ impl ClassModFrameType {
     {
         match *self {
             ClassModFrameType::Method(ref name) => writeln!(writer, "{}(SpecMethod<'a>),", name),
-            ClassModFrameType::Header(ref name) => writeln!(writer, "{}(SpecHeader<'a>),", name),
+            ClassModFrameType::Header(ref name) => writeln!(writer, "{}(SpecProperties<'a>),", name),
             ClassModFrameType::Bytes(ref name) => writeln!(writer, "{}(&'a [u8]),", name),
             ClassModFrameType::Empty(ref name) => writeln!(writer, "{},", name),
         }

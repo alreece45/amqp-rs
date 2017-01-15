@@ -41,11 +41,11 @@ impl<'a> HeaderStructWriter<'a> {
 
         let lifetimes = if self.class.has_field_lifetimes() { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "pub struct Header{} {{", lifetimes));
+        try!(writeln!(writer, "pub struct Properties{} {{", lifetimes));
         for field in self.class.fields() {
             try!(writeln!(writer, "{}: Option<{}>,", field.var_name(), field.ty().cow_definition("a")));
         }
-        try!(writeln!(writer, "}} // struct Header"));
+        try!(writeln!(writer, "}} // struct Properties"));
         Ok(())
     }
 
@@ -54,10 +54,10 @@ impl<'a> HeaderStructWriter<'a> {
     {
         let lifetimes = if self.class.has_field_lifetimes() { "<'a>" } else { "" };
 
-        try!(writeln!(writer, "\nimpl{0} Header{0} {{", lifetimes));
+        try!(writeln!(writer, "\nimpl{0} Properties{0} {{", lifetimes));
         try!(self.write_flag_bits(writer));
         try!(self.write_getters(writer));
-        try!(writeln!(writer, "}} // impl Headers"));
+        try!(writeln!(writer, "}} // impl Properties"));
 
         Ok(())
     }

@@ -52,12 +52,12 @@ impl<'a> WriteRust for SpecModuleWriter<'a> {
             try!(writeln!(writer, "pub use self::{}::ClassMethod as {}Method;", class.snake_case(), class.pascal_case()));
         }
 
-        try!(writeln!(writer, "\n// Class headers"));
+        try!(writeln!(writer, "\n// Class properties"));
         for class in self.spec.classes() {
             if class.fields().is_empty() {
                 continue;
             }
-            try!(writeln!(writer, "pub use self::{}::Header as {}Header;", class.snake_case(), class.pascal_case()));
+            try!(writeln!(writer, "pub use self::{}::Properties as {}Properties;", class.snake_case(), class.pascal_case()));
         }
 
         let method_enum = MethodEnumWriter::new(self.spec);
