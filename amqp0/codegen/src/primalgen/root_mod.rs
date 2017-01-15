@@ -13,6 +13,7 @@ use WriteRust;
 use common::Specs;
 
 use super::spec_struct::SpecStructWriter;
+use super::protocol_trait::ProtocolTraitWriter;
 
 pub struct RootModuleWriter<'a> {
     specs: &'a Specs<'a>,
@@ -34,6 +35,9 @@ impl<'a> WriteRust for RootModuleWriter<'a> {
         try!(self.write_frame_type_constants(writer));
         try!(self.write_class_constants(writer));
         try!(self.write_method_constants(writer));
+
+        let protocol_trait = ProtocolTraitWriter::new(self.specs);
+        try!(protocol_trait.write_rust_to(writer));
 
         for spec in self.specs {
             let spec_struct = SpecStructWriter::new(spec);

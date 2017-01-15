@@ -36,12 +36,6 @@ cfg_if! {
 
 pub use self::encodable::Encodable;
 
-pub trait Protocol<'a> {
-    type Frame: 'a;
-
-    fn protocol_header() -> &'static [u8];
-}
-
 pub trait ProtocolFramePayload<'a>: Encodable {
     type Method: ProtocolMethod<'a>;
 

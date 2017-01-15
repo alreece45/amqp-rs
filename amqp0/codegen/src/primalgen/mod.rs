@@ -9,6 +9,7 @@
 mod class_mod;
 mod method_mod;
 mod root_mod;
+mod protocol_trait;
 mod spec_mod;
 mod spec_struct;
 
