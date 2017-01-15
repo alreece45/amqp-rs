@@ -49,7 +49,7 @@ impl<'a> WriteRust for RootModuleWriter<'a> {
 }
 
 impl<'a> RootModuleWriter<'a> {
-    pub fn new(specs: &'a Specs) -> Self {
+    pub fn new(specs: &'a Specs<'a>) -> Self {
         RootModuleWriter {
             specs: specs
         }
