@@ -13,6 +13,7 @@ mod method_enum;
 mod method_impl;
 mod method_default_impl;
 mod method_encodable_impl;
+mod method_from_impls;
 mod method_payload_impl;
 mod method_setter_impl;
 mod method_struct;
@@ -31,6 +32,7 @@ use self::method_encodable_impl::EncodableMethodImplWriter;
 use self::method_payload_impl::MethodPayloadImplWriter;
 use self::method_setter_impl::MethodSetterImplWriter;
 use self::method_struct::MethodStructWriter;
+use self::method_from_impls::MethodFromImplsWriter;
 
 pub struct ClassModuleWriter<'a> {
     specs: &'a Specs<'a>,
@@ -82,6 +84,9 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
 
             let setter_impl = MethodSetterImplWriter::new(self.specs, self.class, method);
             try!(setter_impl.write_rust_to(writer));
+
+            let from_impls = MethodFromImplsWriter::new(self.class, method);
+            try!(from_impls.write_rust_to(writer));
         }
 
         let method_enum = MethodEnumWriter::new(self.class);
