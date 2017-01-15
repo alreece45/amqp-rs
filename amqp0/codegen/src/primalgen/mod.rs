@@ -55,7 +55,7 @@ impl<'a, S> ModulesWriter<'a, S>
         Ok(path)
     }
 
-    fn write_methods_mod(&self) -> io::Result<PathBuf> {
+    fn write_method_mods(&self) -> io::Result<PathBuf> {
         debug!("Preparing primalgen methods module");
         let path = self.source.base_dir().join("method.rs");
         let writer = MethodModuleWriter::new(&self.specs);
@@ -97,7 +97,7 @@ impl<'a, S> ModulesWriter<'a, S>
             let mut paths = Vec::with_capacity(2 + num_classes);
 
             paths.push(try!(self.write_root_mod()));
-            paths.push(try!(self.write_methods_mod()));
+            paths.push(try!(self.write_method_mods()));
 
             for spec in &self.specs {
                 paths.push(try!(self.write_spec_mod(spec)));
