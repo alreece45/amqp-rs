@@ -20,7 +20,7 @@ pub use self::class_method::{ClassMethod, ClassMethodField};
 pub use self::domain::{Domain, DomainMapper};
 pub use self::field::Field;
 pub use self::spec::Spec;
-pub use self::specs::Specs;
+pub use self::specs::{Specs, SpecMethod};
 
 pub fn frame_type_name(name: &str) -> String {
     let name_start = if name.starts_with("frame-") { 6 } else { 0 };

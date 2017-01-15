@@ -7,34 +7,33 @@
 // except according to those terms.
 
 use std::borrow::Cow;
-use std::collections::{HashMap, HashSet};
+use std::collections::{btree_map, btree_set, BTreeMap, BTreeSet, HashMap, HashSet};
 use std::iter;
 use std::ops::Deref;
 
-use common::Spec;
+use common::{Spec, Domain};
 use lazycell::LazyCell;
 
 pub struct Specs<'a> {
     /// TODO: is Cow<> really the appropriate type, here?
     /// Would AsRef or Borrow be better, since we never take ownership?
     specs: Cow<'a, [Spec]>,
-    methods: LazyCell<HashMap<(&'static str, &'static str), SpecMethod>>,
+    class_set: LazyCell<BTreeSet<&'static str>>,
+    methods: LazyCell<BTreeMap<(&'static str, &'static str), SpecMethod>>,
 }
 
+#[derive(Debug)]
 pub struct SpecMethod {
+    class_name: &'static str,
+    method_name: &'static str,
+    field_tys: BTreeMap<String, Domain>,
     has_lifetimes: bool,
-    has_usable_fields: bool,
 }
 
-impl SpecMethod {
-    pub fn has_lifetimes(&self) -> bool {
-        self.has_lifetimes
-    }
-
-    pub fn has_usable_fields(&self) -> bool {
-        self.has_usable_fields
-    }
-}
+pub struct Methods<'a>(btree_map::Values<'a, (&'a str, &'a str), SpecMethod>);
+pub struct ClassMethods<'a>(&'a str, btree_map::Iter<'a, (&'a str, &'a str), SpecMethod>);
+pub struct ClassNames<'a>(btree_set::Iter<'a, &'a str>);
+pub struct FieldNames<'a>(btree_map::Keys<'a, String, Domain>);
 
 impl<'a> Specs<'a> {
     pub fn new<S>(specs: S) -> Self
@@ -42,6 +41,7 @@ impl<'a> Specs<'a> {
     {
         Specs {
             specs: specs.into(),
+            class_set: LazyCell::new(),
             methods: LazyCell::new(),
         }
     }
@@ -127,37 +127,44 @@ impl<'a> Specs<'a> {
             .collect()
     }
 
-    fn methods(&self) -> &HashMap<(&'static str, &'static str), SpecMethod> {
-        self.methods.borrow_with(|| {
+    fn class_set(&self) -> &BTreeSet<&'static str> {
+        self.class_set.borrow_with(|| {
             self.specs.iter()
                 .flat_map(|spec| spec.classes())
-                .flat_map(|class| iter::repeat(class).zip(class.methods()))
-                .fold(HashMap::new(), |mut map, (class, method)| {
-                    let class_name: &'static str = class.name();
-                    let method_name: &'static str = method.name();
-                    {
-                        let mut entry = map.entry((class_name, method_name))
-                            .or_insert(SpecMethod {
-                                has_lifetimes: false,
-                                has_usable_fields: false,
-                            });
-
-                        if method.has_lifetimes() {
-                            entry.has_lifetimes = true;
-                        }
-
-                        if method.has_usable_fields() {
-                            entry.has_usable_fields = true;
-                        }
-                    }
-                    map
-                })
+                .map(|class| class.name())
+                .collect::<BTreeSet<_>>()
         })
+    }
+
+    pub fn class_names(&self) -> ClassNames {
+        ClassNames(self.class_set().iter())
+    }
+
+    pub fn class_methods<'b>(&'b self, class_name: &'b str) -> ClassMethods<'b> {
+        ClassMethods(class_name, self.method_map().iter())
+    }
+
+    fn method_map(&self) -> &BTreeMap<(&'static str, &'static str), SpecMethod> {
+        self.methods.borrow_with(|| {
+            let class_methods = self.specs.iter()
+                .flat_map(|spec| spec.classes())
+                .flat_map(|class| iter::repeat(class).zip(class.methods()))
+                .map(|(class, method)| (class.name(), method.name()))
+                .collect::<BTreeSet<_>>();
+
+            class_methods.into_iter()
+                .map(|(class, method)| ((class, method), SpecMethod::new(self, class, method)))
+                .collect()
+        })
+    }
+
+    pub fn methods(&self) -> Methods {
+        Methods(self.method_map().values())
     }
 
     pub fn method<'b>(&'b self, class_name: &'b str, method_name: &'b str) -> Option<&SpecMethod> {
         let key = (class_name, method_name);
-        self.methods().get(&key)
+        self.method_map().get(&key)
     }
 
     ///
@@ -254,6 +261,84 @@ impl<'a> Specs<'a> {
     }
 }
 
+impl SpecMethod {
+    fn new(specs: &Specs, class_name: &'static str, method_name: &'static str) -> Self {
+        let methods = specs.iter()
+            .filter_map(|spec| spec.class(class_name))
+            .filter_map(|class| class.method(method_name))
+            .collect::<Vec<_>>();
+        let has_lifetimes = methods.iter().any(|method| method.has_lifetimes());
+
+        let fields = methods.iter()
+            .flat_map(|method| method.fields())
+            .filter(|field| !field.is_reserved())
+            .collect::<Vec<_>>();
+        let field_names = fields.iter()
+            .map(|field| field.var_name())
+            .collect::<BTreeSet<&str>>();
+
+        let field_tys = field_names.into_iter()
+            .map(|field_name| {
+                let tys = fields.iter()
+                    .filter(|field| field.var_name() == field_name)
+                    .map(|field| (field.ty()))
+                    .map(|ty| (ty.owned_type(), ty))
+                    .collect::<HashMap<_, _>>();
+
+                if tys.len() > 1 {
+                    panic!(
+                        "Conflicting types for {}::{}::{}",
+                        class_name,
+                        method_name,
+                        field_name
+                    );
+                }
+
+                match tys.into_iter().next() {
+                    Some(ty) => (field_name.to_owned(), ty.1.clone()),
+                    _ => panic!(
+                        "No field types for field {}::{}.{}",
+                        class_name,
+                        method_name,
+                        field_name
+                    )
+                }
+            })
+            .collect();
+
+        SpecMethod {
+            class_name: class_name,
+            method_name: method_name,
+            has_lifetimes: has_lifetimes,
+            field_tys: field_tys,
+        }
+    }
+
+    pub fn class_name(&self) -> &'static str {
+        self.class_name
+    }
+
+    pub fn method_name(&self) -> &'static str {
+        self.method_name
+    }
+
+    pub fn has_lifetimes(&self) -> bool {
+        self.has_lifetimes
+    }
+
+    pub fn has_usable_fields(&self) -> bool {
+        !self.field_tys.is_empty()
+    }
+
+    pub fn field_names(&self) -> FieldNames {
+        FieldNames(self.field_tys.keys())
+    }
+
+    pub fn field_ty(&self, var_name: &str) -> Option<&Domain> {
+        self.field_tys.get(var_name)
+    }
+}
+
 use std::slice::Iter;
 
 impl<'a> IntoIterator for &'a Specs<'a> {
@@ -269,5 +354,48 @@ impl<'a> Deref for Specs<'a> {
 
     fn deref(&self) -> &Self::Target {
         &*self.specs
+    }
+}
+
+impl<'a> Iterator for Methods<'a> {
+    type Item = &'a SpecMethod;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next()
+    }
+}
+
+impl<'a> Iterator for ClassNames<'a> {
+    type Item = &'a str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(|name| *name)
+    }
+}
+
+impl<'a> Iterator for ClassMethods<'a> {
+    type Item = &'a SpecMethod;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        for (&(class, _), method) in self.1.by_ref() {
+            if self.0 == class {
+                return Some(method);
+            }
+        }
+        None
+    }
+}
+
+impl<'a> Iterator for FieldNames<'a> {
+    type Item = &'a str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(|name| name.as_str())
+    }
+}
+
+impl<'a> ExactSizeIterator for Methods<'a> {
+    fn len(&self) -> usize {
+        self.0.len()
     }
 }
