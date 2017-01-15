@@ -41,7 +41,7 @@ pub struct ClassModuleWriter<'a> {
 }
 
 impl<'a> ClassModuleWriter<'a> {
-    pub fn new(specs: &'a Specs, spec: &'a Spec, class: &'a Class) -> Self {
+    pub fn new(specs: &'a Specs<'a>, spec: &'a Spec, class: &'a Class) -> Self {
         ClassModuleWriter {
             specs: specs,
             spec: spec,

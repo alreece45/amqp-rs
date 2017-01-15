@@ -82,7 +82,7 @@ impl<'a> WriteRust for MethodSetterImplWriter<'a> {
 }
 
 impl<'a> MethodSetterImplWriter<'a> {
-    pub fn new(specs: &'a Specs, class: &'a Class, method: &'a ClassMethod) -> Self {
+    pub fn new(specs: &'a Specs<'a>, class: &'a Class, method: &'a ClassMethod) -> Self {
         MethodSetterImplWriter {
             specs: specs,
             class: class,
