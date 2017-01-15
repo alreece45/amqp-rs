@@ -65,6 +65,17 @@ impl ::ProtocolMethodPayload for Commit {
         20
     } // fn method_id()
 } // impl ::Payload for Commit
+impl From<Commit> for ClassMethod {
+    fn from(from: Commit) -> Self {
+        ClassMethod::Commit(from)
+    } // fn from()
+} // impl From<Commit> for ClassMethod
+
+impl From<Commit> for super::SpecMethod<'static> {
+    fn from(from: Commit) -> Self {
+        super::SpecMethod::Tx(from.into())
+    } // fn default()
+} // impl From<Commit> for ::super::SpecMethod
 impl ::method::tx::CommitOkMethod for ::Qpid8_0 {
     type Payload = CommitOk;
 } // impl ::method::tx::CommitOkMethod for ::Qpid8_0
@@ -121,6 +132,17 @@ impl ::ProtocolMethodPayload for CommitOk {
         21
     } // fn method_id()
 } // impl ::Payload for CommitOk
+impl From<CommitOk> for ClassMethod {
+    fn from(from: CommitOk) -> Self {
+        ClassMethod::CommitOk(from)
+    } // fn from()
+} // impl From<CommitOk> for ClassMethod
+
+impl From<CommitOk> for super::SpecMethod<'static> {
+    fn from(from: CommitOk) -> Self {
+        super::SpecMethod::Tx(from.into())
+    } // fn default()
+} // impl From<CommitOk> for ::super::SpecMethod
 impl ::method::tx::RollbackMethod for ::Qpid8_0 {
     type Payload = Rollback;
 } // impl ::method::tx::RollbackMethod for ::Qpid8_0
@@ -177,6 +199,17 @@ impl ::ProtocolMethodPayload for Rollback {
         30
     } // fn method_id()
 } // impl ::Payload for Rollback
+impl From<Rollback> for ClassMethod {
+    fn from(from: Rollback) -> Self {
+        ClassMethod::Rollback(from)
+    } // fn from()
+} // impl From<Rollback> for ClassMethod
+
+impl From<Rollback> for super::SpecMethod<'static> {
+    fn from(from: Rollback) -> Self {
+        super::SpecMethod::Tx(from.into())
+    } // fn default()
+} // impl From<Rollback> for ::super::SpecMethod
 impl ::method::tx::RollbackOkMethod for ::Qpid8_0 {
     type Payload = RollbackOk;
 } // impl ::method::tx::RollbackOkMethod for ::Qpid8_0
@@ -233,6 +266,17 @@ impl ::ProtocolMethodPayload for RollbackOk {
         31
     } // fn method_id()
 } // impl ::Payload for RollbackOk
+impl From<RollbackOk> for ClassMethod {
+    fn from(from: RollbackOk) -> Self {
+        ClassMethod::RollbackOk(from)
+    } // fn from()
+} // impl From<RollbackOk> for ClassMethod
+
+impl From<RollbackOk> for super::SpecMethod<'static> {
+    fn from(from: RollbackOk) -> Self {
+        super::SpecMethod::Tx(from.into())
+    } // fn default()
+} // impl From<RollbackOk> for ::super::SpecMethod
 impl ::method::tx::SelectMethod for ::Qpid8_0 {
     type Payload = Select;
 } // impl ::method::tx::SelectMethod for ::Qpid8_0
@@ -289,6 +333,17 @@ impl ::ProtocolMethodPayload for Select {
         10
     } // fn method_id()
 } // impl ::Payload for Select
+impl From<Select> for ClassMethod {
+    fn from(from: Select) -> Self {
+        ClassMethod::Select(from)
+    } // fn from()
+} // impl From<Select> for ClassMethod
+
+impl From<Select> for super::SpecMethod<'static> {
+    fn from(from: Select) -> Self {
+        super::SpecMethod::Tx(from.into())
+    } // fn default()
+} // impl From<Select> for ::super::SpecMethod
 impl ::method::tx::SelectOkMethod for ::Qpid8_0 {
     type Payload = SelectOk;
 } // impl ::method::tx::SelectOkMethod for ::Qpid8_0
@@ -345,6 +400,17 @@ impl ::ProtocolMethodPayload for SelectOk {
         11
     } // fn method_id()
 } // impl ::Payload for SelectOk
+impl From<SelectOk> for ClassMethod {
+    fn from(from: SelectOk) -> Self {
+        ClassMethod::SelectOk(from)
+    } // fn from()
+} // impl From<SelectOk> for ClassMethod
+
+impl From<SelectOk> for super::SpecMethod<'static> {
+    fn from(from: SelectOk) -> Self {
+        super::SpecMethod::Tx(from.into())
+    } // fn default()
+} // impl From<SelectOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod {

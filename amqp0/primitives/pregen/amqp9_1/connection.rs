@@ -104,6 +104,17 @@ impl<'a> ::method::connection::SetCloseMethodFields<'a> for Close<'a> {
         self.set_method_id(method_id)
     } // set_method_id()
 } // impl<'a> ::method::connection::SetCloseMethodFields<'a> for Close<'a>
+impl<'a> From<Close<'a>> for ClassMethod<'a> {
+    fn from(from: Close<'a>) -> Self {
+        ClassMethod::Close(from)
+    } // fn from()
+} // impl From<Close<'a>> for ClassMethod
+
+impl<'a> From<Close<'a>> for super::SpecMethod<'a> {
+    fn from(from: Close<'a>) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<Close<'a>> for ::super::SpecMethod
 impl ::method::connection::CloseOkMethod for ::Amqp9_1 {
     type Payload = CloseOk;
 } // impl ::method::connection::CloseOkMethod for ::Amqp9_1
@@ -160,6 +171,17 @@ impl ::ProtocolMethodPayload for CloseOk {
         51
     } // fn method_id()
 } // impl ::Payload for CloseOk
+impl<'a> From<CloseOk> for ClassMethod<'a> {
+    fn from(from: CloseOk) -> Self {
+        ClassMethod::CloseOk(from)
+    } // fn from()
+} // impl From<CloseOk> for ClassMethod
+
+impl From<CloseOk> for super::SpecMethod<'static> {
+    fn from(from: CloseOk) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<CloseOk> for ::super::SpecMethod
 impl<'a> ::method::connection::OpenMethod<'a> for ::Amqp9_1 {
     type Payload = Open<'a>;
 } // impl<'a> ::method::connection::OpenMethod<'a> for ::Amqp9_1
@@ -234,6 +256,17 @@ impl<'a> ::method::connection::SetOpenMethodFields<'a> for Open<'a> {
         self.set_virtual_host(virtual_host.into())
     } // set_virtual_host()
 } // impl<'a> ::method::connection::SetOpenMethodFields<'a> for Open<'a>
+impl<'a> From<Open<'a>> for ClassMethod<'a> {
+    fn from(from: Open<'a>) -> Self {
+        ClassMethod::Open(from)
+    } // fn from()
+} // impl From<Open<'a>> for ClassMethod
+
+impl<'a> From<Open<'a>> for super::SpecMethod<'a> {
+    fn from(from: Open<'a>) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<Open<'a>> for ::super::SpecMethod
 impl<'a> ::method::connection::OpenOkMethod<'a> for ::Amqp9_1 {
     type Payload = OpenOk;
 } // impl<'a> ::method::connection::OpenOkMethod<'a> for ::Amqp9_1
@@ -293,6 +326,17 @@ impl ::ProtocolMethodPayload for OpenOk {
     } // fn method_id()
 } // impl ::Payload for OpenOk
 impl<'a> ::method::connection::SetOpenOkMethodFields<'a> for OpenOk {} // impl<'a> ::method::connection::SetOpenOkMethodFields<'a> for OpenOk
+impl<'a> From<OpenOk> for ClassMethod<'a> {
+    fn from(from: OpenOk) -> Self {
+        ClassMethod::OpenOk(from)
+    } // fn from()
+} // impl From<OpenOk> for ClassMethod
+
+impl From<OpenOk> for super::SpecMethod<'static> {
+    fn from(from: OpenOk) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<OpenOk> for ::super::SpecMethod
 impl<'a> ::method::connection::SecureMethod<'a> for ::Amqp9_1 {
     type Payload = Secure<'a>;
 } // impl<'a> ::method::connection::SecureMethod<'a> for ::Amqp9_1
@@ -365,6 +409,17 @@ impl<'a> ::method::connection::SetSecureMethodFields<'a> for Secure<'a> {
         self.set_challenge(challenge.into())
     } // set_challenge()
 } // impl<'a> ::method::connection::SetSecureMethodFields<'a> for Secure<'a>
+impl<'a> From<Secure<'a>> for ClassMethod<'a> {
+    fn from(from: Secure<'a>) -> Self {
+        ClassMethod::Secure(from)
+    } // fn from()
+} // impl From<Secure<'a>> for ClassMethod
+
+impl<'a> From<Secure<'a>> for super::SpecMethod<'a> {
+    fn from(from: Secure<'a>) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<Secure<'a>> for ::super::SpecMethod
 impl<'a> ::method::connection::SecureOkMethod<'a> for ::Amqp9_1 {
     type Payload = SecureOk<'a>;
 } // impl<'a> ::method::connection::SecureOkMethod<'a> for ::Amqp9_1
@@ -437,6 +492,17 @@ impl<'a> ::method::connection::SetSecureOkMethodFields<'a> for SecureOk<'a> {
         self.set_response(response.into())
     } // set_response()
 } // impl<'a> ::method::connection::SetSecureOkMethodFields<'a> for SecureOk<'a>
+impl<'a> From<SecureOk<'a>> for ClassMethod<'a> {
+    fn from(from: SecureOk<'a>) -> Self {
+        ClassMethod::SecureOk(from)
+    } // fn from()
+} // impl From<SecureOk<'a>> for ClassMethod
+
+impl<'a> From<SecureOk<'a>> for super::SpecMethod<'a> {
+    fn from(from: SecureOk<'a>) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<SecureOk<'a>> for ::super::SpecMethod
 impl<'a> ::method::connection::StartMethod<'a> for ::Amqp9_1 {
     type Payload = Start<'a>;
 } // impl<'a> ::method::connection::StartMethod<'a> for ::Amqp9_1
@@ -552,6 +618,17 @@ impl<'a> ::method::connection::SetStartMethodFields<'a> for Start<'a> {
         self.set_locales(locales.into())
     } // set_locales()
 } // impl<'a> ::method::connection::SetStartMethodFields<'a> for Start<'a>
+impl<'a> From<Start<'a>> for ClassMethod<'a> {
+    fn from(from: Start<'a>) -> Self {
+        ClassMethod::Start(from)
+    } // fn from()
+} // impl From<Start<'a>> for ClassMethod
+
+impl<'a> From<Start<'a>> for super::SpecMethod<'a> {
+    fn from(from: Start<'a>) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<Start<'a>> for ::super::SpecMethod
 impl<'a> ::method::connection::StartOkMethod<'a> for ::Amqp9_1 {
     type Payload = StartOk<'a>;
 } // impl<'a> ::method::connection::StartOkMethod<'a> for ::Amqp9_1
@@ -658,6 +735,17 @@ impl<'a> ::method::connection::SetStartOkMethodFields<'a> for StartOk<'a> {
         self.set_locale(locale.into())
     } // set_locale()
 } // impl<'a> ::method::connection::SetStartOkMethodFields<'a> for StartOk<'a>
+impl<'a> From<StartOk<'a>> for ClassMethod<'a> {
+    fn from(from: StartOk<'a>) -> Self {
+        ClassMethod::StartOk(from)
+    } // fn from()
+} // impl From<StartOk<'a>> for ClassMethod
+
+impl<'a> From<StartOk<'a>> for super::SpecMethod<'a> {
+    fn from(from: StartOk<'a>) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<StartOk<'a>> for ::super::SpecMethod
 impl ::method::connection::TuneMethod for ::Amqp9_1 {
     type Payload = Tune;
 } // impl ::method::connection::TuneMethod for ::Amqp9_1
@@ -742,6 +830,17 @@ impl ::method::connection::SetTuneMethodFields for Tune {
         self.set_heartbeat(heartbeat)
     } // set_heartbeat()
 } // impl ::method::connection::SetTuneMethodFields for Tune
+impl<'a> From<Tune> for ClassMethod<'a> {
+    fn from(from: Tune) -> Self {
+        ClassMethod::Tune(from)
+    } // fn from()
+} // impl From<Tune> for ClassMethod
+
+impl From<Tune> for super::SpecMethod<'static> {
+    fn from(from: Tune) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<Tune> for ::super::SpecMethod
 impl ::method::connection::TuneOkMethod for ::Amqp9_1 {
     type Payload = TuneOk;
 } // impl ::method::connection::TuneOkMethod for ::Amqp9_1
@@ -826,6 +925,17 @@ impl ::method::connection::SetTuneOkMethodFields for TuneOk {
         self.set_heartbeat(heartbeat)
     } // set_heartbeat()
 } // impl ::method::connection::SetTuneOkMethodFields for TuneOk
+impl<'a> From<TuneOk> for ClassMethod<'a> {
+    fn from(from: TuneOk) -> Self {
+        ClassMethod::TuneOk(from)
+    } // fn from()
+} // impl From<TuneOk> for ClassMethod
+
+impl From<TuneOk> for super::SpecMethod<'static> {
+    fn from(from: TuneOk) -> Self {
+        super::SpecMethod::Connection(from.into())
+    } // fn default()
+} // impl From<TuneOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

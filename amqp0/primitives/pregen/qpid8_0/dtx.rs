@@ -65,6 +65,17 @@ impl ::ProtocolMethodPayload for Select {
         10
     } // fn method_id()
 } // impl ::Payload for Select
+impl<'a> From<Select> for ClassMethod<'a> {
+    fn from(from: Select) -> Self {
+        ClassMethod::Select(from)
+    } // fn from()
+} // impl From<Select> for ClassMethod
+
+impl From<Select> for super::SpecMethod<'static> {
+    fn from(from: Select) -> Self {
+        super::SpecMethod::Dtx(from.into())
+    } // fn default()
+} // impl From<Select> for ::super::SpecMethod
 impl ::method::dtx::SelectOkMethod for ::Qpid8_0 {
     type Payload = SelectOk;
 } // impl ::method::dtx::SelectOkMethod for ::Qpid8_0
@@ -121,6 +132,17 @@ impl ::ProtocolMethodPayload for SelectOk {
         11
     } // fn method_id()
 } // impl ::Payload for SelectOk
+impl<'a> From<SelectOk> for ClassMethod<'a> {
+    fn from(from: SelectOk) -> Self {
+        ClassMethod::SelectOk(from)
+    } // fn from()
+} // impl From<SelectOk> for ClassMethod
+
+impl From<SelectOk> for super::SpecMethod<'static> {
+    fn from(from: SelectOk) -> Self {
+        super::SpecMethod::Dtx(from.into())
+    } // fn default()
+} // impl From<SelectOk> for ::super::SpecMethod
 impl<'a> ::method::dtx::StartMethod<'a> for ::Qpid8_0 {
     type Payload = Start<'a>;
 } // impl<'a> ::method::dtx::StartMethod<'a> for ::Qpid8_0
@@ -193,6 +215,17 @@ impl<'a> ::method::dtx::SetStartMethodFields<'a> for Start<'a> {
         self.set_dtx_identifier(dtx_identifier.into())
     } // set_dtx_identifier()
 } // impl<'a> ::method::dtx::SetStartMethodFields<'a> for Start<'a>
+impl<'a> From<Start<'a>> for ClassMethod<'a> {
+    fn from(from: Start<'a>) -> Self {
+        ClassMethod::Start(from)
+    } // fn from()
+} // impl From<Start<'a>> for ClassMethod
+
+impl<'a> From<Start<'a>> for super::SpecMethod<'a> {
+    fn from(from: Start<'a>) -> Self {
+        super::SpecMethod::Dtx(from.into())
+    } // fn default()
+} // impl From<Start<'a>> for ::super::SpecMethod
 impl ::method::dtx::StartOkMethod for ::Qpid8_0 {
     type Payload = StartOk;
 } // impl ::method::dtx::StartOkMethod for ::Qpid8_0
@@ -249,6 +282,17 @@ impl ::ProtocolMethodPayload for StartOk {
         21
     } // fn method_id()
 } // impl ::Payload for StartOk
+impl<'a> From<StartOk> for ClassMethod<'a> {
+    fn from(from: StartOk) -> Self {
+        ClassMethod::StartOk(from)
+    } // fn from()
+} // impl From<StartOk> for ClassMethod
+
+impl From<StartOk> for super::SpecMethod<'static> {
+    fn from(from: StartOk) -> Self {
+        super::SpecMethod::Dtx(from.into())
+    } // fn default()
+} // impl From<StartOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

@@ -93,6 +93,17 @@ impl<'a> ::method::message::SetAppendMethodFields<'a> for Append<'a> {
         self.set_bytes(bytes.into())
     } // set_bytes()
 } // impl<'a> ::method::message::SetAppendMethodFields<'a> for Append<'a>
+impl<'a> From<Append<'a>> for ClassMethod<'a> {
+    fn from(from: Append<'a>) -> Self {
+        ClassMethod::Append(from)
+    } // fn from()
+} // impl From<Append<'a>> for ClassMethod
+
+impl<'a> From<Append<'a>> for super::SpecMethod<'a> {
+    fn from(from: Append<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Append<'a>> for ::super::SpecMethod
 impl<'a> ::method::message::CancelMethod<'a> for ::Qpid9_0 {
     type Payload = Cancel<'a>;
 } // impl<'a> ::method::message::CancelMethod<'a> for ::Qpid9_0
@@ -165,6 +176,17 @@ impl<'a> ::method::message::SetCancelMethodFields<'a> for Cancel<'a> {
         self.set_destination(destination.into())
     } // set_destination()
 } // impl<'a> ::method::message::SetCancelMethodFields<'a> for Cancel<'a>
+impl<'a> From<Cancel<'a>> for ClassMethod<'a> {
+    fn from(from: Cancel<'a>) -> Self {
+        ClassMethod::Cancel(from)
+    } // fn from()
+} // impl From<Cancel<'a>> for ClassMethod
+
+impl<'a> From<Cancel<'a>> for super::SpecMethod<'a> {
+    fn from(from: Cancel<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Cancel<'a>> for ::super::SpecMethod
 impl<'a> ::method::message::CheckpointMethod<'a> for ::Qpid9_0 {
     type Payload = Checkpoint<'a>;
 } // impl<'a> ::method::message::CheckpointMethod<'a> for ::Qpid9_0
@@ -249,6 +271,17 @@ impl<'a> ::method::message::SetCheckpointMethodFields<'a> for Checkpoint<'a> {
         self.set_identifier(identifier.into())
     } // set_identifier()
 } // impl<'a> ::method::message::SetCheckpointMethodFields<'a> for Checkpoint<'a>
+impl<'a> From<Checkpoint<'a>> for ClassMethod<'a> {
+    fn from(from: Checkpoint<'a>) -> Self {
+        ClassMethod::Checkpoint(from)
+    } // fn from()
+} // impl From<Checkpoint<'a>> for ClassMethod
+
+impl<'a> From<Checkpoint<'a>> for super::SpecMethod<'a> {
+    fn from(from: Checkpoint<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Checkpoint<'a>> for ::super::SpecMethod
 impl<'a> ::method::message::CloseMethod<'a> for ::Qpid9_0 {
     type Payload = Close<'a>;
 } // impl<'a> ::method::message::CloseMethod<'a> for ::Qpid9_0
@@ -321,6 +354,17 @@ impl<'a> ::method::message::SetCloseMethodFields<'a> for Close<'a> {
         self.set_reference(reference.into())
     } // set_reference()
 } // impl<'a> ::method::message::SetCloseMethodFields<'a> for Close<'a>
+impl<'a> From<Close<'a>> for ClassMethod<'a> {
+    fn from(from: Close<'a>) -> Self {
+        ClassMethod::Close(from)
+    } // fn from()
+} // impl From<Close<'a>> for ClassMethod
+
+impl<'a> From<Close<'a>> for super::SpecMethod<'a> {
+    fn from(from: Close<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Close<'a>> for ::super::SpecMethod
 impl<'a> ::method::message::ConsumeMethod<'a> for ::Qpid9_0 {
     type Payload = Consume<'a>;
 } // impl<'a> ::method::message::ConsumeMethod<'a> for ::Qpid9_0
@@ -457,6 +501,17 @@ impl<'a> ::method::message::SetConsumeMethodFields<'a> for Consume<'a> {
         self.set_filter(filter.into())
     } // set_filter()
 } // impl<'a> ::method::message::SetConsumeMethodFields<'a> for Consume<'a>
+impl<'a> From<Consume<'a>> for ClassMethod<'a> {
+    fn from(from: Consume<'a>) -> Self {
+        ClassMethod::Consume(from)
+    } // fn from()
+} // impl From<Consume<'a>> for ClassMethod
+
+impl<'a> From<Consume<'a>> for super::SpecMethod<'a> {
+    fn from(from: Consume<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Consume<'a>> for ::super::SpecMethod
 impl ::method::message::EmptyMethod for ::Qpid9_0 {
     type Payload = Empty;
 } // impl ::method::message::EmptyMethod for ::Qpid9_0
@@ -513,6 +568,17 @@ impl ::ProtocolMethodPayload for Empty {
         510
     } // fn method_id()
 } // impl ::Payload for Empty
+impl<'a> From<Empty> for ClassMethod<'a> {
+    fn from(from: Empty) -> Self {
+        ClassMethod::Empty(from)
+    } // fn from()
+} // impl From<Empty> for ClassMethod
+
+impl From<Empty> for super::SpecMethod<'static> {
+    fn from(from: Empty) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Empty> for ::super::SpecMethod
 impl<'a> ::method::message::GetMethod<'a> for ::Qpid9_0 {
     type Payload = Get<'a>;
 } // impl<'a> ::method::message::GetMethod<'a> for ::Qpid9_0
@@ -617,6 +683,17 @@ impl<'a> ::method::message::SetGetMethodFields<'a> for Get<'a> {
         self.set_no_ack(no_ack)
     } // set_no_ack()
 } // impl<'a> ::method::message::SetGetMethodFields<'a> for Get<'a>
+impl<'a> From<Get<'a>> for ClassMethod<'a> {
+    fn from(from: Get<'a>) -> Self {
+        ClassMethod::Get(from)
+    } // fn from()
+} // impl From<Get<'a>> for ClassMethod
+
+impl<'a> From<Get<'a>> for super::SpecMethod<'a> {
+    fn from(from: Get<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Get<'a>> for ::super::SpecMethod
 impl ::method::message::OffsetMethod for ::Qpid9_0 {
     type Payload = Offset;
 } // impl ::method::message::OffsetMethod for ::Qpid9_0
@@ -685,6 +762,17 @@ impl ::method::message::SetOffsetMethodFields for Offset {
         self.set_value(value)
     } // set_value()
 } // impl ::method::message::SetOffsetMethodFields for Offset
+impl<'a> From<Offset> for ClassMethod<'a> {
+    fn from(from: Offset) -> Self {
+        ClassMethod::Offset(from)
+    } // fn from()
+} // impl From<Offset> for ClassMethod
+
+impl From<Offset> for super::SpecMethod<'static> {
+    fn from(from: Offset) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Offset> for ::super::SpecMethod
 impl ::method::message::OkMethod for ::Qpid9_0 {
     type Payload = Ok;
 } // impl ::method::message::OkMethod for ::Qpid9_0
@@ -741,6 +829,17 @@ impl ::ProtocolMethodPayload for Ok {
         500
     } // fn method_id()
 } // impl ::Payload for Ok
+impl<'a> From<Ok> for ClassMethod<'a> {
+    fn from(from: Ok) -> Self {
+        ClassMethod::Ok(from)
+    } // fn from()
+} // impl From<Ok> for ClassMethod
+
+impl From<Ok> for super::SpecMethod<'static> {
+    fn from(from: Ok) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Ok> for ::super::SpecMethod
 impl<'a> ::method::message::OpenMethod<'a> for ::Qpid9_0 {
     type Payload = Open<'a>;
 } // impl<'a> ::method::message::OpenMethod<'a> for ::Qpid9_0
@@ -813,6 +912,17 @@ impl<'a> ::method::message::SetOpenMethodFields<'a> for Open<'a> {
         self.set_reference(reference.into())
     } // set_reference()
 } // impl<'a> ::method::message::SetOpenMethodFields<'a> for Open<'a>
+impl<'a> From<Open<'a>> for ClassMethod<'a> {
+    fn from(from: Open<'a>) -> Self {
+        ClassMethod::Open(from)
+    } // fn from()
+} // impl From<Open<'a>> for ClassMethod
+
+impl<'a> From<Open<'a>> for super::SpecMethod<'a> {
+    fn from(from: Open<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Open<'a>> for ::super::SpecMethod
 impl ::method::message::QosMethod for ::Qpid9_0 {
     type Payload = Qos;
 } // impl ::method::message::QosMethod for ::Qpid9_0
@@ -903,6 +1013,17 @@ impl ::method::message::SetQosMethodFields for Qos {
         self.set_global(global)
     } // set_global()
 } // impl ::method::message::SetQosMethodFields for Qos
+impl<'a> From<Qos> for ClassMethod<'a> {
+    fn from(from: Qos) -> Self {
+        ClassMethod::Qos(from)
+    } // fn from()
+} // impl From<Qos> for ClassMethod
+
+impl From<Qos> for super::SpecMethod<'static> {
+    fn from(from: Qos) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Qos> for ::super::SpecMethod
 impl ::method::message::RecoverMethod for ::Qpid9_0 {
     type Payload = Recover;
 } // impl ::method::message::RecoverMethod for ::Qpid9_0
@@ -977,6 +1098,17 @@ impl ::method::message::SetRecoverMethodFields for Recover {
         self.set_requeue(requeue)
     } // set_requeue()
 } // impl ::method::message::SetRecoverMethodFields for Recover
+impl<'a> From<Recover> for ClassMethod<'a> {
+    fn from(from: Recover) -> Self {
+        ClassMethod::Recover(from)
+    } // fn from()
+} // impl From<Recover> for ClassMethod
+
+impl From<Recover> for super::SpecMethod<'static> {
+    fn from(from: Recover) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Recover> for ::super::SpecMethod
 impl<'a> ::method::message::RejectMethod<'a> for ::Qpid9_0 {
     type Payload = Reject<'a>;
 } // impl<'a> ::method::message::RejectMethod<'a> for ::Qpid9_0
@@ -1058,6 +1190,17 @@ impl<'a> ::method::message::SetRejectMethodFields<'a> for Reject<'a> {
         self.set_text(text.into())
     } // set_text()
 } // impl<'a> ::method::message::SetRejectMethodFields<'a> for Reject<'a>
+impl<'a> From<Reject<'a>> for ClassMethod<'a> {
+    fn from(from: Reject<'a>) -> Self {
+        ClassMethod::Reject(from)
+    } // fn from()
+} // impl From<Reject<'a>> for ClassMethod
+
+impl<'a> From<Reject<'a>> for super::SpecMethod<'a> {
+    fn from(from: Reject<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Reject<'a>> for ::super::SpecMethod
 impl<'a> ::method::message::ResumeMethod<'a> for ::Qpid9_0 {
     type Payload = Resume<'a>;
 } // impl<'a> ::method::message::ResumeMethod<'a> for ::Qpid9_0
@@ -1142,6 +1285,17 @@ impl<'a> ::method::message::SetResumeMethodFields<'a> for Resume<'a> {
         self.set_identifier(identifier.into())
     } // set_identifier()
 } // impl<'a> ::method::message::SetResumeMethodFields<'a> for Resume<'a>
+impl<'a> From<Resume<'a>> for ClassMethod<'a> {
+    fn from(from: Resume<'a>) -> Self {
+        ClassMethod::Resume(from)
+    } // fn from()
+} // impl From<Resume<'a>> for ClassMethod
+
+impl<'a> From<Resume<'a>> for super::SpecMethod<'a> {
+    fn from(from: Resume<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Resume<'a>> for ::super::SpecMethod
 impl<'a> ::method::message::TransferMethod<'a> for ::Qpid9_0 {
     type Payload = Transfer<'a>;
 } // impl<'a> ::method::message::TransferMethod<'a> for ::Qpid9_0
@@ -1463,6 +1617,17 @@ impl<'a> ::method::message::SetTransferMethodFields<'a> for Transfer<'a> {
         self.set_body(body.into())
     } // set_body()
 } // impl<'a> ::method::message::SetTransferMethodFields<'a> for Transfer<'a>
+impl<'a> From<Transfer<'a>> for ClassMethod<'a> {
+    fn from(from: Transfer<'a>) -> Self {
+        ClassMethod::Transfer(from)
+    } // fn from()
+} // impl From<Transfer<'a>> for ClassMethod
+
+impl<'a> From<Transfer<'a>> for super::SpecMethod<'a> {
+    fn from(from: Transfer<'a>) -> Self {
+        super::SpecMethod::Message(from.into())
+    } // fn default()
+} // impl From<Transfer<'a>> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

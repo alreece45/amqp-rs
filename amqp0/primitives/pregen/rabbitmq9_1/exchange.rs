@@ -134,6 +134,17 @@ impl<'a> ::method::exchange::SetBindMethodFields<'a> for Bind<'a> {
         self.set_arguments(arguments.into())
     } // set_arguments()
 } // impl<'a> ::method::exchange::SetBindMethodFields<'a> for Bind<'a>
+impl<'a> From<Bind<'a>> for ClassMethod<'a> {
+    fn from(from: Bind<'a>) -> Self {
+        ClassMethod::Bind(from)
+    } // fn from()
+} // impl From<Bind<'a>> for ClassMethod
+
+impl<'a> From<Bind<'a>> for super::SpecMethod<'a> {
+    fn from(from: Bind<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<Bind<'a>> for ::super::SpecMethod
 impl ::method::exchange::BindOkMethod for ::Rabbitmq9_1 {
     type Payload = BindOk;
 } // impl ::method::exchange::BindOkMethod for ::Rabbitmq9_1
@@ -190,6 +201,17 @@ impl ::ProtocolMethodPayload for BindOk {
         31
     } // fn method_id()
 } // impl ::Payload for BindOk
+impl<'a> From<BindOk> for ClassMethod<'a> {
+    fn from(from: BindOk) -> Self {
+        ClassMethod::BindOk(from)
+    } // fn from()
+} // impl From<BindOk> for ClassMethod
+
+impl From<BindOk> for super::SpecMethod<'static> {
+    fn from(from: BindOk) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<BindOk> for ::super::SpecMethod
 impl<'a> ::method::exchange::DeclareMethod<'a> for ::Rabbitmq9_1 {
     type Payload = Declare<'a>;
 } // impl<'a> ::method::exchange::DeclareMethod<'a> for ::Rabbitmq9_1
@@ -342,6 +364,17 @@ impl<'a> ::method::exchange::SetDeclareMethodFields<'a> for Declare<'a> {
         self.set_arguments(arguments.into())
     } // set_arguments()
 } // impl<'a> ::method::exchange::SetDeclareMethodFields<'a> for Declare<'a>
+impl<'a> From<Declare<'a>> for ClassMethod<'a> {
+    fn from(from: Declare<'a>) -> Self {
+        ClassMethod::Declare(from)
+    } // fn from()
+} // impl From<Declare<'a>> for ClassMethod
+
+impl<'a> From<Declare<'a>> for super::SpecMethod<'a> {
+    fn from(from: Declare<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<Declare<'a>> for ::super::SpecMethod
 impl ::method::exchange::DeclareOkMethod for ::Rabbitmq9_1 {
     type Payload = DeclareOk;
 } // impl ::method::exchange::DeclareOkMethod for ::Rabbitmq9_1
@@ -398,6 +431,17 @@ impl ::ProtocolMethodPayload for DeclareOk {
         11
     } // fn method_id()
 } // impl ::Payload for DeclareOk
+impl<'a> From<DeclareOk> for ClassMethod<'a> {
+    fn from(from: DeclareOk) -> Self {
+        ClassMethod::DeclareOk(from)
+    } // fn from()
+} // impl From<DeclareOk> for ClassMethod
+
+impl From<DeclareOk> for super::SpecMethod<'static> {
+    fn from(from: DeclareOk) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<DeclareOk> for ::super::SpecMethod
 impl<'a> ::method::exchange::DeleteMethod<'a> for ::Rabbitmq9_1 {
     type Payload = Delete<'a>;
 } // impl<'a> ::method::exchange::DeleteMethod<'a> for ::Rabbitmq9_1
@@ -493,6 +537,17 @@ impl<'a> ::method::exchange::SetDeleteMethodFields<'a> for Delete<'a> {
         self.set_no_wait(no_wait)
     } // set_no_wait()
 } // impl<'a> ::method::exchange::SetDeleteMethodFields<'a> for Delete<'a>
+impl<'a> From<Delete<'a>> for ClassMethod<'a> {
+    fn from(from: Delete<'a>) -> Self {
+        ClassMethod::Delete(from)
+    } // fn from()
+} // impl From<Delete<'a>> for ClassMethod
+
+impl<'a> From<Delete<'a>> for super::SpecMethod<'a> {
+    fn from(from: Delete<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<Delete<'a>> for ::super::SpecMethod
 impl ::method::exchange::DeleteOkMethod for ::Rabbitmq9_1 {
     type Payload = DeleteOk;
 } // impl ::method::exchange::DeleteOkMethod for ::Rabbitmq9_1
@@ -549,6 +604,17 @@ impl ::ProtocolMethodPayload for DeleteOk {
         21
     } // fn method_id()
 } // impl ::Payload for DeleteOk
+impl<'a> From<DeleteOk> for ClassMethod<'a> {
+    fn from(from: DeleteOk) -> Self {
+        ClassMethod::DeleteOk(from)
+    } // fn from()
+} // impl From<DeleteOk> for ClassMethod
+
+impl From<DeleteOk> for super::SpecMethod<'static> {
+    fn from(from: DeleteOk) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<DeleteOk> for ::super::SpecMethod
 impl<'a> ::method::exchange::UnbindMethod<'a> for ::Rabbitmq9_1 {
     type Payload = Unbind<'a>;
 } // impl<'a> ::method::exchange::UnbindMethod<'a> for ::Rabbitmq9_1
@@ -674,6 +740,17 @@ impl<'a> ::method::exchange::SetUnbindMethodFields<'a> for Unbind<'a> {
         self.set_arguments(arguments.into())
     } // set_arguments()
 } // impl<'a> ::method::exchange::SetUnbindMethodFields<'a> for Unbind<'a>
+impl<'a> From<Unbind<'a>> for ClassMethod<'a> {
+    fn from(from: Unbind<'a>) -> Self {
+        ClassMethod::Unbind(from)
+    } // fn from()
+} // impl From<Unbind<'a>> for ClassMethod
+
+impl<'a> From<Unbind<'a>> for super::SpecMethod<'a> {
+    fn from(from: Unbind<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<Unbind<'a>> for ::super::SpecMethod
 impl ::method::exchange::UnbindOkMethod for ::Rabbitmq9_1 {
     type Payload = UnbindOk;
 } // impl ::method::exchange::UnbindOkMethod for ::Rabbitmq9_1
@@ -730,6 +807,17 @@ impl ::ProtocolMethodPayload for UnbindOk {
         51
     } // fn method_id()
 } // impl ::Payload for UnbindOk
+impl<'a> From<UnbindOk> for ClassMethod<'a> {
+    fn from(from: UnbindOk) -> Self {
+        ClassMethod::UnbindOk(from)
+    } // fn from()
+} // impl From<UnbindOk> for ClassMethod
+
+impl From<UnbindOk> for super::SpecMethod<'static> {
+    fn from(from: UnbindOk) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<UnbindOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

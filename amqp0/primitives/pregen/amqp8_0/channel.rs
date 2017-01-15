@@ -100,6 +100,17 @@ impl<'a> ::method::channel::SetAlertMethodFields<'a> for Alert<'a> {
         self.set_details(details.into())
     } // set_details()
 } // impl<'a> ::method::channel::SetAlertMethodFields<'a> for Alert<'a>
+impl<'a> From<Alert<'a>> for ClassMethod<'a> {
+    fn from(from: Alert<'a>) -> Self {
+        ClassMethod::Alert(from)
+    } // fn from()
+} // impl From<Alert<'a>> for ClassMethod
+
+impl<'a> From<Alert<'a>> for super::SpecMethod<'a> {
+    fn from(from: Alert<'a>) -> Self {
+        super::SpecMethod::Channel(from.into())
+    } // fn default()
+} // impl From<Alert<'a>> for ::super::SpecMethod
 impl<'a> ::method::channel::CloseMethod<'a> for ::Amqp8_0 {
     type Payload = Close<'a>;
 } // impl<'a> ::method::channel::CloseMethod<'a> for ::Amqp8_0
@@ -195,6 +206,17 @@ impl<'a> ::method::channel::SetCloseMethodFields<'a> for Close<'a> {
         self.set_method_id(method_id)
     } // set_method_id()
 } // impl<'a> ::method::channel::SetCloseMethodFields<'a> for Close<'a>
+impl<'a> From<Close<'a>> for ClassMethod<'a> {
+    fn from(from: Close<'a>) -> Self {
+        ClassMethod::Close(from)
+    } // fn from()
+} // impl From<Close<'a>> for ClassMethod
+
+impl<'a> From<Close<'a>> for super::SpecMethod<'a> {
+    fn from(from: Close<'a>) -> Self {
+        super::SpecMethod::Channel(from.into())
+    } // fn default()
+} // impl From<Close<'a>> for ::super::SpecMethod
 impl ::method::channel::CloseOkMethod for ::Amqp8_0 {
     type Payload = CloseOk;
 } // impl ::method::channel::CloseOkMethod for ::Amqp8_0
@@ -251,6 +273,17 @@ impl ::ProtocolMethodPayload for CloseOk {
         41
     } // fn method_id()
 } // impl ::Payload for CloseOk
+impl<'a> From<CloseOk> for ClassMethod<'a> {
+    fn from(from: CloseOk) -> Self {
+        ClassMethod::CloseOk(from)
+    } // fn from()
+} // impl From<CloseOk> for ClassMethod
+
+impl From<CloseOk> for super::SpecMethod<'static> {
+    fn from(from: CloseOk) -> Self {
+        super::SpecMethod::Channel(from.into())
+    } // fn default()
+} // impl From<CloseOk> for ::super::SpecMethod
 impl ::method::channel::FlowMethod for ::Amqp8_0 {
     type Payload = Flow;
 } // impl ::method::channel::FlowMethod for ::Amqp8_0
@@ -325,6 +358,17 @@ impl ::method::channel::SetFlowMethodFields for Flow {
         self.set_active(active)
     } // set_active()
 } // impl ::method::channel::SetFlowMethodFields for Flow
+impl<'a> From<Flow> for ClassMethod<'a> {
+    fn from(from: Flow) -> Self {
+        ClassMethod::Flow(from)
+    } // fn from()
+} // impl From<Flow> for ClassMethod
+
+impl From<Flow> for super::SpecMethod<'static> {
+    fn from(from: Flow) -> Self {
+        super::SpecMethod::Channel(from.into())
+    } // fn default()
+} // impl From<Flow> for ::super::SpecMethod
 impl ::method::channel::FlowOkMethod for ::Amqp8_0 {
     type Payload = FlowOk;
 } // impl ::method::channel::FlowOkMethod for ::Amqp8_0
@@ -399,6 +443,17 @@ impl ::method::channel::SetFlowOkMethodFields for FlowOk {
         self.set_active(active)
     } // set_active()
 } // impl ::method::channel::SetFlowOkMethodFields for FlowOk
+impl<'a> From<FlowOk> for ClassMethod<'a> {
+    fn from(from: FlowOk) -> Self {
+        ClassMethod::FlowOk(from)
+    } // fn from()
+} // impl From<FlowOk> for ClassMethod
+
+impl From<FlowOk> for super::SpecMethod<'static> {
+    fn from(from: FlowOk) -> Self {
+        super::SpecMethod::Channel(from.into())
+    } // fn default()
+} // impl From<FlowOk> for ::super::SpecMethod
 impl<'a> ::method::channel::OpenMethod<'a> for ::Amqp8_0 {
     type Payload = Open<'a>;
 } // impl<'a> ::method::channel::OpenMethod<'a> for ::Amqp8_0
@@ -471,6 +526,17 @@ impl<'a> ::method::channel::SetOpenMethodFields<'a> for Open<'a> {
         self.set_out_of_band(out_of_band.into())
     } // set_out_of_band()
 } // impl<'a> ::method::channel::SetOpenMethodFields<'a> for Open<'a>
+impl<'a> From<Open<'a>> for ClassMethod<'a> {
+    fn from(from: Open<'a>) -> Self {
+        ClassMethod::Open(from)
+    } // fn from()
+} // impl From<Open<'a>> for ClassMethod
+
+impl<'a> From<Open<'a>> for super::SpecMethod<'a> {
+    fn from(from: Open<'a>) -> Self {
+        super::SpecMethod::Channel(from.into())
+    } // fn default()
+} // impl From<Open<'a>> for ::super::SpecMethod
 impl<'a> ::method::channel::OpenOkMethod<'a> for ::Amqp8_0 {
     type Payload = OpenOk;
 } // impl<'a> ::method::channel::OpenOkMethod<'a> for ::Amqp8_0
@@ -528,6 +594,17 @@ impl ::ProtocolMethodPayload for OpenOk {
     } // fn method_id()
 } // impl ::Payload for OpenOk
 impl<'a> ::method::channel::SetOpenOkMethodFields<'a> for OpenOk {} // impl<'a> ::method::channel::SetOpenOkMethodFields<'a> for OpenOk
+impl<'a> From<OpenOk> for ClassMethod<'a> {
+    fn from(from: OpenOk) -> Self {
+        ClassMethod::OpenOk(from)
+    } // fn from()
+} // impl From<OpenOk> for ClassMethod
+
+impl From<OpenOk> for super::SpecMethod<'static> {
+    fn from(from: OpenOk) -> Self {
+        super::SpecMethod::Channel(from.into())
+    } // fn default()
+} // impl From<OpenOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

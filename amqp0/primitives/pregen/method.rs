@@ -20,6 +20,64 @@ pub mod access {
         fn set_write(&mut self, _: bool) {}
     } // pub trait SetRequestMethodFields<'a>
 
+    pub struct RequestBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RequestBuilder
+
+
+    impl<'a, T> RequestBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> RequestBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RequestBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RequestBuilder { payload: Default::default() }
+        }
+    } // impl Default for RequestBuilder
+    impl<'a, T> RequestBuilder<T>
+        where T: ::Encodable + SetRequestMethodFields<'a>
+    {
+        pub fn active(mut self, active: bool) -> Self {
+            SetRequestMethodFields::set_active(&mut self.payload, active);
+            self
+        } // set_active()
+        pub fn exclusive(mut self, exclusive: bool) -> Self {
+            SetRequestMethodFields::set_exclusive(&mut self.payload, exclusive);
+            self
+        } // set_exclusive()
+        pub fn passive(mut self, passive: bool) -> Self {
+            SetRequestMethodFields::set_passive(&mut self.payload, passive);
+            self
+        } // set_passive()
+        pub fn read(mut self, read: bool) -> Self {
+            SetRequestMethodFields::set_read(&mut self.payload, read);
+            self
+        } // set_read()
+        pub fn realm<V>(mut self, realm: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetRequestMethodFields::set_realm(&mut self.payload, realm.into());
+            self
+        } // set_realm()
+        pub fn write(mut self, write: bool) -> Self {
+            SetRequestMethodFields::set_write(&mut self.payload, write);
+            self
+        } // set_write()
+    } // impl<'a, T> RequestBuilder<T>
     pub trait RequestOkMethod {
         type Payload: Default + SetRequestOkMethodFields;
     } // pub trait RequestOkMethod
@@ -28,6 +86,42 @@ pub mod access {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetRequestOkMethodFields
 
+    pub struct RequestOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RequestOkBuilder
+
+
+    impl<T> RequestOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RequestOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RequestOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RequestOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for RequestOkBuilder
+    impl<T> RequestOkBuilder<T>
+        where T: ::Encodable + SetRequestOkMethodFields
+    {
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetRequestOkMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<T> RequestOkBuilder<T>
 } // mod access
 
 pub mod basic {
@@ -40,6 +134,46 @@ pub mod basic {
         fn set_multiple(&mut self, _: bool) {}
     } // pub trait SetAckMethodFields
 
+    pub struct AckBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct AckBuilder
+
+
+    impl<T> AckBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> AckBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for AckBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            AckBuilder { payload: Default::default() }
+        }
+    } // impl Default for AckBuilder
+    impl<T> AckBuilder<T>
+        where T: ::Encodable + SetAckMethodFields
+    {
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetAckMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn multiple(mut self, multiple: bool) -> Self {
+            SetAckMethodFields::set_multiple(&mut self.payload, multiple);
+            self
+        } // set_multiple()
+    } // impl<T> AckBuilder<T>
     pub trait CancelMethod<'a> {
         type Payload: Default + SetCancelMethodFields<'a>;
     } // pub trait CancelMethod<'a>
@@ -49,6 +183,48 @@ pub mod basic {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
+    pub struct CancelBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CancelBuilder
+
+
+    impl<'a, T> CancelBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CancelBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CancelBuilder { payload: Default::default() }
+        }
+    } // impl Default for CancelBuilder
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable + SetCancelMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCancelMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetCancelMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+    } // impl<'a, T> CancelBuilder<T>
     pub trait CancelOkMethod<'a> {
         type Payload: Default + SetCancelOkMethodFields<'a>;
     } // pub trait CancelOkMethod<'a>
@@ -57,6 +233,44 @@ pub mod basic {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
+    pub struct CancelOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CancelOkBuilder
+
+
+    impl<'a, T> CancelOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CancelOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CancelOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CancelOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for CancelOkBuilder
+    impl<'a, T> CancelOkBuilder<T>
+        where T: ::Encodable + SetCancelOkMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCancelOkMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+    } // impl<'a, T> CancelOkBuilder<T>
     pub trait ConsumeMethod<'a> {
         type Payload: Default + SetConsumeMethodFields<'a>;
     } // pub trait ConsumeMethod<'a>
@@ -73,6 +287,82 @@ pub mod basic {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub struct ConsumeBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ConsumeBuilder
+
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ConsumeBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ConsumeBuilder { payload: Default::default() }
+        }
+    } // impl Default for ConsumeBuilder
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable + SetConsumeMethodFields<'a>
+    {
+        pub fn arguments<V>(mut self, arguments: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetConsumeMethodFields::set_arguments(&mut self.payload, arguments.into());
+            self
+        } // set_arguments()
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn exclusive(mut self, exclusive: bool) -> Self {
+            SetConsumeMethodFields::set_exclusive(&mut self.payload, exclusive);
+            self
+        } // set_exclusive()
+        pub fn filter<V>(mut self, filter: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetConsumeMethodFields::set_filter(&mut self.payload, filter.into());
+            self
+        } // set_filter()
+        pub fn no_ack(mut self, no_ack: bool) -> Self {
+            SetConsumeMethodFields::set_no_ack(&mut self.payload, no_ack);
+            self
+        } // set_no_ack()
+        pub fn no_local(mut self, no_local: bool) -> Self {
+            SetConsumeMethodFields::set_no_local(&mut self.payload, no_local);
+            self
+        } // set_no_local()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetConsumeMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetConsumeMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> ConsumeBuilder<T>
     pub trait ConsumeOkMethod<'a> {
         type Payload: Default + SetConsumeOkMethodFields<'a>;
     } // pub trait ConsumeOkMethod<'a>
@@ -81,6 +371,44 @@ pub mod basic {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
+    pub struct ConsumeOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ConsumeOkBuilder
+
+
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ConsumeOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ConsumeOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for ConsumeOkBuilder
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: ::Encodable + SetConsumeOkMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeOkMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+    } // impl<'a, T> ConsumeOkBuilder<T>
     pub trait DeliverMethod<'a> {
         type Payload: Default + SetDeliverMethodFields<'a>;
     } // pub trait DeliverMethod<'a>
@@ -93,6 +421,64 @@ pub mod basic {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
+    pub struct DeliverBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeliverBuilder
+
+
+    impl<'a, T> DeliverBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeliverBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeliverBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeliverBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeliverBuilder
+    impl<'a, T> DeliverBuilder<T>
+        where T: ::Encodable + SetDeliverMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetDeliverMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn redelivered(mut self, redelivered: bool) -> Self {
+            SetDeliverMethodFields::set_redelivered(&mut self.payload, redelivered);
+            self
+        } // set_redelivered()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+    } // impl<'a, T> DeliverBuilder<T>
     pub trait GetMethod<'a> {
         type Payload: Default + SetGetMethodFields<'a>;
     } // pub trait GetMethod<'a>
@@ -103,6 +489,52 @@ pub mod basic {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
+    pub struct GetBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct GetBuilder
+
+
+    impl<'a, T> GetBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> GetBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for GetBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            GetBuilder { payload: Default::default() }
+        }
+    } // impl Default for GetBuilder
+    impl<'a, T> GetBuilder<T>
+        where T: ::Encodable + SetGetMethodFields<'a>
+    {
+        pub fn no_ack(mut self, no_ack: bool) -> Self {
+            SetGetMethodFields::set_no_ack(&mut self.payload, no_ack);
+            self
+        } // set_no_ack()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetGetMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> GetBuilder<T>
     pub trait GetEmptyMethod<'a> {
         type Payload: Default + SetGetEmptyMethodFields<'a>;
     } // pub trait GetEmptyMethod<'a>
@@ -111,6 +543,44 @@ pub mod basic {
         fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetEmptyMethodFields<'a>
 
+    pub struct GetEmptyBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct GetEmptyBuilder
+
+
+    impl<'a, T> GetEmptyBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> GetEmptyBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for GetEmptyBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            GetEmptyBuilder { payload: Default::default() }
+        }
+    } // impl Default for GetEmptyBuilder
+    impl<'a, T> GetEmptyBuilder<T>
+        where T: ::Encodable + SetGetEmptyMethodFields<'a>
+    {
+        pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetEmptyMethodFields::set_cluster_id(&mut self.payload, cluster_id.into());
+            self
+        } // set_cluster_id()
+    } // impl<'a, T> GetEmptyBuilder<T>
     pub trait GetOkMethod<'a> {
         type Payload: Default + SetGetOkMethodFields<'a>;
     } // pub trait GetOkMethod<'a>
@@ -123,6 +593,62 @@ pub mod basic {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetOkMethodFields<'a>
 
+    pub struct GetOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct GetOkBuilder
+
+
+    impl<'a, T> GetOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> GetOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for GetOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            GetOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for GetOkBuilder
+    impl<'a, T> GetOkBuilder<T>
+        where T: ::Encodable + SetGetOkMethodFields<'a>
+    {
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetGetOkMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn message_count(mut self, message_count: u32) -> Self {
+            SetGetOkMethodFields::set_message_count(&mut self.payload, message_count);
+            self
+        } // set_message_count()
+        pub fn redelivered(mut self, redelivered: bool) -> Self {
+            SetGetOkMethodFields::set_redelivered(&mut self.payload, redelivered);
+            self
+        } // set_redelivered()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+    } // impl<'a, T> GetOkBuilder<T>
     pub trait NackMethod {
         type Payload: Default + SetNackMethodFields;
     } // pub trait NackMethod
@@ -133,6 +659,50 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetNackMethodFields
 
+    pub struct NackBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct NackBuilder
+
+
+    impl<T> NackBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> NackBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for NackBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            NackBuilder { payload: Default::default() }
+        }
+    } // impl Default for NackBuilder
+    impl<T> NackBuilder<T>
+        where T: ::Encodable + SetNackMethodFields
+    {
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetNackMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn multiple(mut self, multiple: bool) -> Self {
+            SetNackMethodFields::set_multiple(&mut self.payload, multiple);
+            self
+        } // set_multiple()
+        pub fn requeue(mut self, requeue: bool) -> Self {
+            SetNackMethodFields::set_requeue(&mut self.payload, requeue);
+            self
+        } // set_requeue()
+    } // impl<T> NackBuilder<T>
     pub trait PublishMethod<'a> {
         type Payload: Default + SetPublishMethodFields<'a>;
     } // pub trait PublishMethod<'a>
@@ -145,6 +715,62 @@ pub mod basic {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
+    pub struct PublishBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct PublishBuilder
+
+
+    impl<'a, T> PublishBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> PublishBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for PublishBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            PublishBuilder { payload: Default::default() }
+        }
+    } // impl Default for PublishBuilder
+    impl<'a, T> PublishBuilder<T>
+        where T: ::Encodable + SetPublishMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn immediate(mut self, immediate: bool) -> Self {
+            SetPublishMethodFields::set_immediate(&mut self.payload, immediate);
+            self
+        } // set_immediate()
+        pub fn mandatory(mut self, mandatory: bool) -> Self {
+            SetPublishMethodFields::set_mandatory(&mut self.payload, mandatory);
+            self
+        } // set_mandatory()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetPublishMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> PublishBuilder<T>
     pub trait QosMethod {
         type Payload: Default + SetQosMethodFields;
     } // pub trait QosMethod
@@ -155,10 +781,82 @@ pub mod basic {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
+    pub struct QosBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct QosBuilder
+
+
+    impl<T> QosBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> QosBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for QosBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            QosBuilder { payload: Default::default() }
+        }
+    } // impl Default for QosBuilder
+    impl<T> QosBuilder<T>
+        where T: ::Encodable + SetQosMethodFields
+    {
+        pub fn global(mut self, global: bool) -> Self {
+            SetQosMethodFields::set_global(&mut self.payload, global);
+            self
+        } // set_global()
+        pub fn prefetch_count(mut self, prefetch_count: u16) -> Self {
+            SetQosMethodFields::set_prefetch_count(&mut self.payload, prefetch_count);
+            self
+        } // set_prefetch_count()
+        pub fn prefetch_size(mut self, prefetch_size: u32) -> Self {
+            SetQosMethodFields::set_prefetch_size(&mut self.payload, prefetch_size);
+            self
+        } // set_prefetch_size()
+    } // impl<T> QosBuilder<T>
     pub trait QosOkMethod {
         type Payload: Default;
     } // pub trait QosOkMethod
 
+    pub struct QosOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct QosOkBuilder
+
+
+    impl<T> QosOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> QosOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for QosOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            QosOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for QosOkBuilder
     pub trait RecoverMethod {
         type Payload: Default + SetRecoverMethodFields;
     } // pub trait RecoverMethod
@@ -167,6 +865,42 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverMethodFields
 
+    pub struct RecoverBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RecoverBuilder
+
+
+    impl<T> RecoverBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RecoverBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RecoverBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RecoverBuilder { payload: Default::default() }
+        }
+    } // impl Default for RecoverBuilder
+    impl<T> RecoverBuilder<T>
+        where T: ::Encodable + SetRecoverMethodFields
+    {
+        pub fn requeue(mut self, requeue: bool) -> Self {
+            SetRecoverMethodFields::set_requeue(&mut self.payload, requeue);
+            self
+        } // set_requeue()
+    } // impl<T> RecoverBuilder<T>
     pub trait RecoverAsyncMethod {
         type Payload: Default + SetRecoverAsyncMethodFields;
     } // pub trait RecoverAsyncMethod
@@ -175,10 +909,74 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverAsyncMethodFields
 
+    pub struct RecoverAsyncBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RecoverAsyncBuilder
+
+
+    impl<T> RecoverAsyncBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RecoverAsyncBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RecoverAsyncBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RecoverAsyncBuilder { payload: Default::default() }
+        }
+    } // impl Default for RecoverAsyncBuilder
+    impl<T> RecoverAsyncBuilder<T>
+        where T: ::Encodable + SetRecoverAsyncMethodFields
+    {
+        pub fn requeue(mut self, requeue: bool) -> Self {
+            SetRecoverAsyncMethodFields::set_requeue(&mut self.payload, requeue);
+            self
+        } // set_requeue()
+    } // impl<T> RecoverAsyncBuilder<T>
     pub trait RecoverOkMethod {
         type Payload: Default;
     } // pub trait RecoverOkMethod
 
+    pub struct RecoverOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RecoverOkBuilder
+
+
+    impl<T> RecoverOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RecoverOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RecoverOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RecoverOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for RecoverOkBuilder
     pub trait RecoverSyncMethod {
         type Payload: Default + SetRecoverSyncMethodFields;
     } // pub trait RecoverSyncMethod
@@ -187,10 +985,74 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverSyncMethodFields
 
+    pub struct RecoverSyncBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RecoverSyncBuilder
+
+
+    impl<T> RecoverSyncBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RecoverSyncBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RecoverSyncBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RecoverSyncBuilder { payload: Default::default() }
+        }
+    } // impl Default for RecoverSyncBuilder
+    impl<T> RecoverSyncBuilder<T>
+        where T: ::Encodable + SetRecoverSyncMethodFields
+    {
+        pub fn requeue(mut self, requeue: bool) -> Self {
+            SetRecoverSyncMethodFields::set_requeue(&mut self.payload, requeue);
+            self
+        } // set_requeue()
+    } // impl<T> RecoverSyncBuilder<T>
     pub trait RecoverSyncOkMethod {
         type Payload: Default;
     } // pub trait RecoverSyncOkMethod
 
+    pub struct RecoverSyncOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RecoverSyncOkBuilder
+
+
+    impl<T> RecoverSyncOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RecoverSyncOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RecoverSyncOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RecoverSyncOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for RecoverSyncOkBuilder
     pub trait RejectMethod {
         type Payload: Default + SetRejectMethodFields;
     } // pub trait RejectMethod
@@ -200,6 +1062,46 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRejectMethodFields
 
+    pub struct RejectBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RejectBuilder
+
+
+    impl<T> RejectBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RejectBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RejectBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RejectBuilder { payload: Default::default() }
+        }
+    } // impl Default for RejectBuilder
+    impl<T> RejectBuilder<T>
+        where T: ::Encodable + SetRejectMethodFields
+    {
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetRejectMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn requeue(mut self, requeue: bool) -> Self {
+            SetRejectMethodFields::set_requeue(&mut self.payload, requeue);
+            self
+        } // set_requeue()
+    } // impl<T> RejectBuilder<T>
     pub trait ReturnMethod<'a> {
         type Payload: Default + SetReturnMethodFields<'a>;
     } // pub trait ReturnMethod<'a>
@@ -211,6 +1113,60 @@ pub mod basic {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
+    pub struct ReturnBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ReturnBuilder
+
+
+    impl<'a, T> ReturnBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ReturnBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ReturnBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ReturnBuilder { payload: Default::default() }
+        }
+    } // impl Default for ReturnBuilder
+    impl<'a, T> ReturnBuilder<T>
+        where T: ::Encodable + SetReturnMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn reply_code(mut self, reply_code: u16) -> Self {
+            SetReturnMethodFields::set_reply_code(&mut self.payload, reply_code);
+            self
+        } // set_reply_code()
+        pub fn reply_text<V>(mut self, reply_text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_reply_text(&mut self.payload, reply_text.into());
+            self
+        } // set_reply_text()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+    } // impl<'a, T> ReturnBuilder<T>
 } // mod basic
 
 pub mod channel {
@@ -224,6 +1180,54 @@ pub mod channel {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetAlertMethodFields<'a>
 
+    pub struct AlertBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct AlertBuilder
+
+
+    impl<'a, T> AlertBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> AlertBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for AlertBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            AlertBuilder { payload: Default::default() }
+        }
+    } // impl Default for AlertBuilder
+    impl<'a, T> AlertBuilder<T>
+        where T: ::Encodable + SetAlertMethodFields<'a>
+    {
+        pub fn details<V>(mut self, details: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetAlertMethodFields::set_details(&mut self.payload, details.into());
+            self
+        } // set_details()
+        pub fn reply_code(mut self, reply_code: u16) -> Self {
+            SetAlertMethodFields::set_reply_code(&mut self.payload, reply_code);
+            self
+        } // set_reply_code()
+        pub fn reply_text<V>(mut self, reply_text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetAlertMethodFields::set_reply_text(&mut self.payload, reply_text.into());
+            self
+        } // set_reply_text()
+    } // impl<'a, T> AlertBuilder<T>
     pub trait CloseMethod<'a> {
         type Payload: Default + SetCloseMethodFields<'a>;
     } // pub trait CloseMethod<'a>
@@ -235,10 +1239,88 @@ pub mod channel {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
+    pub struct CloseBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CloseBuilder
+
+
+    impl<'a, T> CloseBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CloseBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CloseBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CloseBuilder { payload: Default::default() }
+        }
+    } // impl Default for CloseBuilder
+    impl<'a, T> CloseBuilder<T>
+        where T: ::Encodable + SetCloseMethodFields<'a>
+    {
+        pub fn class_id(mut self, class_id: u16) -> Self {
+            SetCloseMethodFields::set_class_id(&mut self.payload, class_id);
+            self
+        } // set_class_id()
+        pub fn method_id(mut self, method_id: u16) -> Self {
+            SetCloseMethodFields::set_method_id(&mut self.payload, method_id);
+            self
+        } // set_method_id()
+        pub fn reply_code(mut self, reply_code: u16) -> Self {
+            SetCloseMethodFields::set_reply_code(&mut self.payload, reply_code);
+            self
+        } // set_reply_code()
+        pub fn reply_text<V>(mut self, reply_text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCloseMethodFields::set_reply_text(&mut self.payload, reply_text.into());
+            self
+        } // set_reply_text()
+    } // impl<'a, T> CloseBuilder<T>
     pub trait CloseOkMethod {
         type Payload: Default;
     } // pub trait CloseOkMethod
 
+    pub struct CloseOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CloseOkBuilder
+
+
+    impl<T> CloseOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> CloseOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CloseOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CloseOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for CloseOkBuilder
     pub trait FlowMethod {
         type Payload: Default + SetFlowMethodFields;
     } // pub trait FlowMethod
@@ -247,6 +1329,42 @@ pub mod channel {
         fn set_active(&mut self, _: bool) {}
     } // pub trait SetFlowMethodFields
 
+    pub struct FlowBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct FlowBuilder
+
+
+    impl<T> FlowBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> FlowBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for FlowBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            FlowBuilder { payload: Default::default() }
+        }
+    } // impl Default for FlowBuilder
+    impl<T> FlowBuilder<T>
+        where T: ::Encodable + SetFlowMethodFields
+    {
+        pub fn active(mut self, active: bool) -> Self {
+            SetFlowMethodFields::set_active(&mut self.payload, active);
+            self
+        } // set_active()
+    } // impl<T> FlowBuilder<T>
     pub trait FlowOkMethod {
         type Payload: Default + SetFlowOkMethodFields;
     } // pub trait FlowOkMethod
@@ -255,10 +1373,74 @@ pub mod channel {
         fn set_active(&mut self, _: bool) {}
     } // pub trait SetFlowOkMethodFields
 
+    pub struct FlowOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct FlowOkBuilder
+
+
+    impl<T> FlowOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> FlowOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for FlowOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            FlowOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for FlowOkBuilder
+    impl<T> FlowOkBuilder<T>
+        where T: ::Encodable + SetFlowOkMethodFields
+    {
+        pub fn active(mut self, active: bool) -> Self {
+            SetFlowOkMethodFields::set_active(&mut self.payload, active);
+            self
+        } // set_active()
+    } // impl<T> FlowOkBuilder<T>
     pub trait OkMethod {
         type Payload: Default;
     } // pub trait OkMethod
 
+    pub struct OkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OkBuilder
+
+
+    impl<T> OkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> OkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OkBuilder { payload: Default::default() }
+        }
+    } // impl Default for OkBuilder
     pub trait OpenMethod<'a> {
         type Payload: Default + SetOpenMethodFields<'a>;
     } // pub trait OpenMethod<'a>
@@ -267,6 +1449,44 @@ pub mod channel {
         fn set_out_of_band<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
+    pub struct OpenBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OpenBuilder
+
+
+    impl<'a, T> OpenBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OpenBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OpenBuilder { payload: Default::default() }
+        }
+    } // impl Default for OpenBuilder
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable + SetOpenMethodFields<'a>
+    {
+        pub fn out_of_band<V>(mut self, out_of_band: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetOpenMethodFields::set_out_of_band(&mut self.payload, out_of_band.into());
+            self
+        } // set_out_of_band()
+    } // impl<'a, T> OpenBuilder<T>
     pub trait OpenOkMethod<'a> {
         type Payload: Default + SetOpenOkMethodFields<'a>;
     } // pub trait OpenOkMethod<'a>
@@ -275,14 +1495,108 @@ pub mod channel {
         fn set_channel_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenOkMethodFields<'a>
 
+    pub struct OpenOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OpenOkBuilder
+
+
+    impl<'a, T> OpenOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> OpenOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OpenOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OpenOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for OpenOkBuilder
+    impl<'a, T> OpenOkBuilder<T>
+        where T: ::Encodable + SetOpenOkMethodFields<'a>
+    {
+        pub fn channel_id<V>(mut self, channel_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetOpenOkMethodFields::set_channel_id(&mut self.payload, channel_id.into());
+            self
+        } // set_channel_id()
+    } // impl<'a, T> OpenOkBuilder<T>
     pub trait PingMethod {
         type Payload: Default;
     } // pub trait PingMethod
 
+    pub struct PingBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct PingBuilder
+
+
+    impl<T> PingBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> PingBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for PingBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            PingBuilder { payload: Default::default() }
+        }
+    } // impl Default for PingBuilder
     pub trait PongMethod {
         type Payload: Default;
     } // pub trait PongMethod
 
+    pub struct PongBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct PongBuilder
+
+
+    impl<T> PongBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> PongBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for PongBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            PongBuilder { payload: Default::default() }
+        }
+    } // impl Default for PongBuilder
     pub trait ResumeMethod<'a> {
         type Payload: Default + SetResumeMethodFields<'a>;
     } // pub trait ResumeMethod<'a>
@@ -291,6 +1605,44 @@ pub mod channel {
         fn set_channel_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
 
+    pub struct ResumeBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ResumeBuilder
+
+
+    impl<'a, T> ResumeBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ResumeBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ResumeBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ResumeBuilder { payload: Default::default() }
+        }
+    } // impl Default for ResumeBuilder
+    impl<'a, T> ResumeBuilder<T>
+        where T: ::Encodable + SetResumeMethodFields<'a>
+    {
+        pub fn channel_id<V>(mut self, channel_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetResumeMethodFields::set_channel_id(&mut self.payload, channel_id.into());
+            self
+        } // set_channel_id()
+    } // impl<'a, T> ResumeBuilder<T>
 } // mod channel
 
 pub mod confirm {
@@ -302,10 +1654,74 @@ pub mod confirm {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetSelectMethodFields
 
+    pub struct SelectBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SelectBuilder
+
+
+    impl<T> SelectBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> SelectBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SelectBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SelectBuilder { payload: Default::default() }
+        }
+    } // impl Default for SelectBuilder
+    impl<T> SelectBuilder<T>
+        where T: ::Encodable + SetSelectMethodFields
+    {
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetSelectMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+    } // impl<T> SelectBuilder<T>
     pub trait SelectOkMethod {
         type Payload: Default;
     } // pub trait SelectOkMethod
 
+    pub struct SelectOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SelectOkBuilder
+
+
+    impl<T> SelectOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> SelectOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SelectOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SelectOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for SelectOkBuilder
 } // mod confirm
 
 pub mod connection {
@@ -317,6 +1733,44 @@ pub mod connection {
         fn set_reason<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBlockedMethodFields<'a>
 
+    pub struct BlockedBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct BlockedBuilder
+
+
+    impl<'a, T> BlockedBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> BlockedBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for BlockedBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            BlockedBuilder { payload: Default::default() }
+        }
+    } // impl Default for BlockedBuilder
+    impl<'a, T> BlockedBuilder<T>
+        where T: ::Encodable + SetBlockedMethodFields<'a>
+    {
+        pub fn reason<V>(mut self, reason: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBlockedMethodFields::set_reason(&mut self.payload, reason.into());
+            self
+        } // set_reason()
+    } // impl<'a, T> BlockedBuilder<T>
     pub trait CloseMethod<'a> {
         type Payload: Default + SetCloseMethodFields<'a>;
     } // pub trait CloseMethod<'a>
@@ -328,10 +1782,88 @@ pub mod connection {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
+    pub struct CloseBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CloseBuilder
+
+
+    impl<'a, T> CloseBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CloseBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CloseBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CloseBuilder { payload: Default::default() }
+        }
+    } // impl Default for CloseBuilder
+    impl<'a, T> CloseBuilder<T>
+        where T: ::Encodable + SetCloseMethodFields<'a>
+    {
+        pub fn class_id(mut self, class_id: u16) -> Self {
+            SetCloseMethodFields::set_class_id(&mut self.payload, class_id);
+            self
+        } // set_class_id()
+        pub fn method_id(mut self, method_id: u16) -> Self {
+            SetCloseMethodFields::set_method_id(&mut self.payload, method_id);
+            self
+        } // set_method_id()
+        pub fn reply_code(mut self, reply_code: u16) -> Self {
+            SetCloseMethodFields::set_reply_code(&mut self.payload, reply_code);
+            self
+        } // set_reply_code()
+        pub fn reply_text<V>(mut self, reply_text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCloseMethodFields::set_reply_text(&mut self.payload, reply_text.into());
+            self
+        } // set_reply_text()
+    } // impl<'a, T> CloseBuilder<T>
     pub trait CloseOkMethod {
         type Payload: Default;
     } // pub trait CloseOkMethod
 
+    pub struct CloseOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CloseOkBuilder
+
+
+    impl<T> CloseOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> CloseOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CloseOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CloseOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for CloseOkBuilder
     pub trait OpenMethod<'a> {
         type Payload: Default + SetOpenMethodFields<'a>;
     } // pub trait OpenMethod<'a>
@@ -342,6 +1874,54 @@ pub mod connection {
         fn set_virtual_host<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
+    pub struct OpenBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OpenBuilder
+
+
+    impl<'a, T> OpenBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OpenBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OpenBuilder { payload: Default::default() }
+        }
+    } // impl Default for OpenBuilder
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable + SetOpenMethodFields<'a>
+    {
+        pub fn capabilities<V>(mut self, capabilities: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetOpenMethodFields::set_capabilities(&mut self.payload, capabilities.into());
+            self
+        } // set_capabilities()
+        pub fn insist(mut self, insist: bool) -> Self {
+            SetOpenMethodFields::set_insist(&mut self.payload, insist);
+            self
+        } // set_insist()
+        pub fn virtual_host<V>(mut self, virtual_host: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetOpenMethodFields::set_virtual_host(&mut self.payload, virtual_host.into());
+            self
+        } // set_virtual_host()
+    } // impl<'a, T> OpenBuilder<T>
     pub trait OpenOkMethod<'a> {
         type Payload: Default + SetOpenOkMethodFields<'a>;
     } // pub trait OpenOkMethod<'a>
@@ -350,6 +1930,44 @@ pub mod connection {
         fn set_known_hosts<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenOkMethodFields<'a>
 
+    pub struct OpenOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OpenOkBuilder
+
+
+    impl<'a, T> OpenOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> OpenOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OpenOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OpenOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for OpenOkBuilder
+    impl<'a, T> OpenOkBuilder<T>
+        where T: ::Encodable + SetOpenOkMethodFields<'a>
+    {
+        pub fn known_hosts<V>(mut self, known_hosts: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetOpenOkMethodFields::set_known_hosts(&mut self.payload, known_hosts.into());
+            self
+        } // set_known_hosts()
+    } // impl<'a, T> OpenOkBuilder<T>
     pub trait RedirectMethod<'a> {
         type Payload: Default + SetRedirectMethodFields<'a>;
     } // pub trait RedirectMethod<'a>
@@ -359,6 +1977,50 @@ pub mod connection {
         fn set_known_hosts<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRedirectMethodFields<'a>
 
+    pub struct RedirectBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RedirectBuilder
+
+
+    impl<'a, T> RedirectBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> RedirectBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RedirectBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RedirectBuilder { payload: Default::default() }
+        }
+    } // impl Default for RedirectBuilder
+    impl<'a, T> RedirectBuilder<T>
+        where T: ::Encodable + SetRedirectMethodFields<'a>
+    {
+        pub fn host<V>(mut self, host: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetRedirectMethodFields::set_host(&mut self.payload, host.into());
+            self
+        } // set_host()
+        pub fn known_hosts<V>(mut self, known_hosts: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetRedirectMethodFields::set_known_hosts(&mut self.payload, known_hosts.into());
+            self
+        } // set_known_hosts()
+    } // impl<'a, T> RedirectBuilder<T>
     pub trait SecureMethod<'a> {
         type Payload: Default + SetSecureMethodFields<'a>;
     } // pub trait SecureMethod<'a>
@@ -367,6 +2029,44 @@ pub mod connection {
         fn set_challenge<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureMethodFields<'a>
 
+    pub struct SecureBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SecureBuilder
+
+
+    impl<'a, T> SecureBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> SecureBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SecureBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SecureBuilder { payload: Default::default() }
+        }
+    } // impl Default for SecureBuilder
+    impl<'a, T> SecureBuilder<T>
+        where T: ::Encodable + SetSecureMethodFields<'a>
+    {
+        pub fn challenge<V>(mut self, challenge: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetSecureMethodFields::set_challenge(&mut self.payload, challenge.into());
+            self
+        } // set_challenge()
+    } // impl<'a, T> SecureBuilder<T>
     pub trait SecureOkMethod<'a> {
         type Payload: Default + SetSecureOkMethodFields<'a>;
     } // pub trait SecureOkMethod<'a>
@@ -375,6 +2075,44 @@ pub mod connection {
         fn set_response<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureOkMethodFields<'a>
 
+    pub struct SecureOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SecureOkBuilder
+
+
+    impl<'a, T> SecureOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> SecureOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SecureOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SecureOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for SecureOkBuilder
+    impl<'a, T> SecureOkBuilder<T>
+        where T: ::Encodable + SetSecureOkMethodFields<'a>
+    {
+        pub fn response<V>(mut self, response: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetSecureOkMethodFields::set_response(&mut self.payload, response.into());
+            self
+        } // set_response()
+    } // impl<'a, T> SecureOkBuilder<T>
     pub trait StartMethod<'a> {
         type Payload: Default + SetStartMethodFields<'a>;
     } // pub trait StartMethod<'a>
@@ -387,6 +2125,65 @@ pub mod connection {
         fn set_version_minor(&mut self, _: u8) {}
     } // pub trait SetStartMethodFields<'a>
 
+    pub struct StartBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct StartBuilder
+
+
+    impl<'a, T> StartBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> StartBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for StartBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            StartBuilder { payload: Default::default() }
+        }
+    } // impl Default for StartBuilder
+    impl<'a, T> StartBuilder<T>
+        where T: ::Encodable + SetStartMethodFields<'a>
+    {
+        pub fn locales<V>(mut self, locales: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetStartMethodFields::set_locales(&mut self.payload, locales.into());
+            self
+        } // set_locales()
+        pub fn mechanisms<V>(mut self, mechanisms: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetStartMethodFields::set_mechanisms(&mut self.payload, mechanisms.into());
+            self
+        } // set_mechanisms()
+        pub fn server_properties<V>(mut self, server_properties: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetStartMethodFields::set_server_properties(&mut self.payload,
+                                                        server_properties.into());
+            self
+        } // set_server_properties()
+        pub fn version_major(mut self, version_major: u8) -> Self {
+            SetStartMethodFields::set_version_major(&mut self.payload, version_major);
+            self
+        } // set_version_major()
+        pub fn version_minor(mut self, version_minor: u8) -> Self {
+            SetStartMethodFields::set_version_minor(&mut self.payload, version_minor);
+            self
+        } // set_version_minor()
+    } // impl<'a, T> StartBuilder<T>
     pub trait StartOkMethod<'a> {
         type Payload: Default + SetStartOkMethodFields<'a>;
     } // pub trait StartOkMethod<'a>
@@ -398,6 +2195,63 @@ pub mod connection {
         fn set_response<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStartOkMethodFields<'a>
 
+    pub struct StartOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct StartOkBuilder
+
+
+    impl<'a, T> StartOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> StartOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for StartOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            StartOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for StartOkBuilder
+    impl<'a, T> StartOkBuilder<T>
+        where T: ::Encodable + SetStartOkMethodFields<'a>
+    {
+        pub fn client_properties<V>(mut self, client_properties: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetStartOkMethodFields::set_client_properties(&mut self.payload,
+                                                          client_properties.into());
+            self
+        } // set_client_properties()
+        pub fn locale<V>(mut self, locale: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStartOkMethodFields::set_locale(&mut self.payload, locale.into());
+            self
+        } // set_locale()
+        pub fn mechanism<V>(mut self, mechanism: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStartOkMethodFields::set_mechanism(&mut self.payload, mechanism.into());
+            self
+        } // set_mechanism()
+        pub fn response<V>(mut self, response: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetStartOkMethodFields::set_response(&mut self.payload, response.into());
+            self
+        } // set_response()
+    } // impl<'a, T> StartOkBuilder<T>
     pub trait TuneMethod {
         type Payload: Default + SetTuneMethodFields;
     } // pub trait TuneMethod
@@ -408,6 +2262,50 @@ pub mod connection {
         fn set_heartbeat(&mut self, _: u16) {}
     } // pub trait SetTuneMethodFields
 
+    pub struct TuneBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct TuneBuilder
+
+
+    impl<T> TuneBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> TuneBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for TuneBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            TuneBuilder { payload: Default::default() }
+        }
+    } // impl Default for TuneBuilder
+    impl<T> TuneBuilder<T>
+        where T: ::Encodable + SetTuneMethodFields
+    {
+        pub fn channel_max(mut self, channel_max: u16) -> Self {
+            SetTuneMethodFields::set_channel_max(&mut self.payload, channel_max);
+            self
+        } // set_channel_max()
+        pub fn frame_max(mut self, frame_max: u32) -> Self {
+            SetTuneMethodFields::set_frame_max(&mut self.payload, frame_max);
+            self
+        } // set_frame_max()
+        pub fn heartbeat(mut self, heartbeat: u16) -> Self {
+            SetTuneMethodFields::set_heartbeat(&mut self.payload, heartbeat);
+            self
+        } // set_heartbeat()
+    } // impl<T> TuneBuilder<T>
     pub trait TuneOkMethod {
         type Payload: Default + SetTuneOkMethodFields;
     } // pub trait TuneOkMethod
@@ -418,10 +2316,82 @@ pub mod connection {
         fn set_heartbeat(&mut self, _: u16) {}
     } // pub trait SetTuneOkMethodFields
 
+    pub struct TuneOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct TuneOkBuilder
+
+
+    impl<T> TuneOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> TuneOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for TuneOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            TuneOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for TuneOkBuilder
+    impl<T> TuneOkBuilder<T>
+        where T: ::Encodable + SetTuneOkMethodFields
+    {
+        pub fn channel_max(mut self, channel_max: u16) -> Self {
+            SetTuneOkMethodFields::set_channel_max(&mut self.payload, channel_max);
+            self
+        } // set_channel_max()
+        pub fn frame_max(mut self, frame_max: u32) -> Self {
+            SetTuneOkMethodFields::set_frame_max(&mut self.payload, frame_max);
+            self
+        } // set_frame_max()
+        pub fn heartbeat(mut self, heartbeat: u16) -> Self {
+            SetTuneOkMethodFields::set_heartbeat(&mut self.payload, heartbeat);
+            self
+        } // set_heartbeat()
+    } // impl<T> TuneOkBuilder<T>
     pub trait UnblockedMethod {
         type Payload: Default;
     } // pub trait UnblockedMethod
 
+    pub struct UnblockedBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct UnblockedBuilder
+
+
+    impl<T> UnblockedBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> UnblockedBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for UnblockedBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            UnblockedBuilder { payload: Default::default() }
+        }
+    } // impl Default for UnblockedBuilder
 } // mod connection
 
 pub mod dtx {
@@ -429,10 +2399,66 @@ pub mod dtx {
         type Payload: Default;
     } // pub trait SelectMethod
 
+    pub struct SelectBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SelectBuilder
+
+
+    impl<T> SelectBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> SelectBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SelectBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SelectBuilder { payload: Default::default() }
+        }
+    } // impl Default for SelectBuilder
     pub trait SelectOkMethod {
         type Payload: Default;
     } // pub trait SelectOkMethod
 
+    pub struct SelectOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SelectOkBuilder
+
+
+    impl<T> SelectOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> SelectOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SelectOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SelectOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for SelectOkBuilder
     pub trait StartMethod<'a> {
         type Payload: Default + SetStartMethodFields<'a>;
     } // pub trait StartMethod<'a>
@@ -441,10 +2467,76 @@ pub mod dtx {
         fn set_dtx_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetStartMethodFields<'a>
 
+    pub struct StartBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct StartBuilder
+
+
+    impl<'a, T> StartBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> StartBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for StartBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            StartBuilder { payload: Default::default() }
+        }
+    } // impl Default for StartBuilder
+    impl<'a, T> StartBuilder<T>
+        where T: ::Encodable + SetStartMethodFields<'a>
+    {
+        pub fn dtx_identifier<V>(mut self, dtx_identifier: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStartMethodFields::set_dtx_identifier(&mut self.payload, dtx_identifier.into());
+            self
+        } // set_dtx_identifier()
+    } // impl<'a, T> StartBuilder<T>
     pub trait StartOkMethod {
         type Payload: Default;
     } // pub trait StartOkMethod
 
+    pub struct StartOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct StartOkBuilder
+
+
+    impl<T> StartOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> StartOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for StartOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            StartOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for StartOkBuilder
 } // mod dtx
 
 pub mod exchange {
@@ -460,10 +2552,98 @@ pub mod exchange {
         fn set_source<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBindMethodFields<'a>
 
+    pub struct BindBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct BindBuilder
+
+
+    impl<'a, T> BindBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> BindBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for BindBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            BindBuilder { payload: Default::default() }
+        }
+    } // impl Default for BindBuilder
+    impl<'a, T> BindBuilder<T>
+        where T: ::Encodable + SetBindMethodFields<'a>
+    {
+        pub fn arguments<V>(mut self, arguments: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetBindMethodFields::set_arguments(&mut self.payload, arguments.into());
+            self
+        } // set_arguments()
+        pub fn destination<V>(mut self, destination: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBindMethodFields::set_destination(&mut self.payload, destination.into());
+            self
+        } // set_destination()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetBindMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBindMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn source<V>(mut self, source: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBindMethodFields::set_source(&mut self.payload, source.into());
+            self
+        } // set_source()
+    } // impl<'a, T> BindBuilder<T>
     pub trait BindOkMethod {
         type Payload: Default;
     } // pub trait BindOkMethod
 
+    pub struct BindOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct BindOkBuilder
+
+
+    impl<T> BindOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> BindOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for BindOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            BindOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for BindOkBuilder
     pub trait BoundMethod<'a> {
         type Payload: Default + SetBoundMethodFields<'a>;
     } // pub trait BoundMethod<'a>
@@ -474,6 +2654,56 @@ pub mod exchange {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundMethodFields<'a>
 
+    pub struct BoundBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct BoundBuilder
+
+
+    impl<'a, T> BoundBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> BoundBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for BoundBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            BoundBuilder { payload: Default::default() }
+        }
+    } // impl Default for BoundBuilder
+    impl<'a, T> BoundBuilder<T>
+        where T: ::Encodable + SetBoundMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBoundMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBoundMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBoundMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+    } // impl<'a, T> BoundBuilder<T>
     pub trait BoundOkMethod<'a> {
         type Payload: Default + SetBoundOkMethodFields<'a>;
     } // pub trait BoundOkMethod<'a>
@@ -483,6 +2713,48 @@ pub mod exchange {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundOkMethodFields<'a>
 
+    pub struct BoundOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct BoundOkBuilder
+
+
+    impl<'a, T> BoundOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> BoundOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for BoundOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            BoundOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for BoundOkBuilder
+    impl<'a, T> BoundOkBuilder<T>
+        where T: ::Encodable + SetBoundOkMethodFields<'a>
+    {
+        pub fn reply_code(mut self, reply_code: u16) -> Self {
+            SetBoundOkMethodFields::set_reply_code(&mut self.payload, reply_code);
+            self
+        } // set_reply_code()
+        pub fn reply_text<V>(mut self, reply_text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBoundOkMethodFields::set_reply_text(&mut self.payload, reply_text.into());
+            self
+        } // set_reply_text()
+    } // impl<'a, T> BoundOkBuilder<T>
     pub trait DeclareMethod<'a> {
         type Payload: Default + SetDeclareMethodFields<'a>;
     } // pub trait DeclareMethod<'a>
@@ -499,10 +2771,112 @@ pub mod exchange {
         fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareMethodFields<'a>
 
+    pub struct DeclareBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeclareBuilder
+
+
+    impl<'a, T> DeclareBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeclareBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeclareBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeclareBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeclareBuilder
+    impl<'a, T> DeclareBuilder<T>
+        where T: ::Encodable + SetDeclareMethodFields<'a>
+    {
+        pub fn arguments<V>(mut self, arguments: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetDeclareMethodFields::set_arguments(&mut self.payload, arguments.into());
+            self
+        } // set_arguments()
+        pub fn auto_delete(mut self, auto_delete: bool) -> Self {
+            SetDeclareMethodFields::set_auto_delete(&mut self.payload, auto_delete);
+            self
+        } // set_auto_delete()
+        pub fn durable(mut self, durable: bool) -> Self {
+            SetDeclareMethodFields::set_durable(&mut self.payload, durable);
+            self
+        } // set_durable()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeclareMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn internal(mut self, internal: bool) -> Self {
+            SetDeclareMethodFields::set_internal(&mut self.payload, internal);
+            self
+        } // set_internal()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetDeclareMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn passive(mut self, passive: bool) -> Self {
+            SetDeclareMethodFields::set_passive(&mut self.payload, passive);
+            self
+        } // set_passive()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetDeclareMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+        pub fn ty<V>(mut self, ty: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeclareMethodFields::set_ty(&mut self.payload, ty.into());
+            self
+        } // set_ty()
+    } // impl<'a, T> DeclareBuilder<T>
     pub trait DeclareOkMethod {
         type Payload: Default;
     } // pub trait DeclareOkMethod
 
+    pub struct DeclareOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeclareOkBuilder
+
+
+    impl<T> DeclareOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> DeclareOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeclareOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeclareOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeclareOkBuilder
     pub trait DeleteMethod<'a> {
         type Payload: Default + SetDeleteMethodFields<'a>;
     } // pub trait DeleteMethod<'a>
@@ -514,10 +2888,88 @@ pub mod exchange {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
+    pub struct DeleteBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeleteBuilder
+
+
+    impl<'a, T> DeleteBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeleteBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeleteBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeleteBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeleteBuilder
+    impl<'a, T> DeleteBuilder<T>
+        where T: ::Encodable + SetDeleteMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeleteMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn if_unused(mut self, if_unused: bool) -> Self {
+            SetDeleteMethodFields::set_if_unused(&mut self.payload, if_unused);
+            self
+        } // set_if_unused()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetDeleteMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetDeleteMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> DeleteBuilder<T>
     pub trait DeleteOkMethod {
         type Payload: Default;
     } // pub trait DeleteOkMethod
 
+    pub struct DeleteOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeleteOkBuilder
+
+
+    impl<T> DeleteOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> DeleteOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeleteOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeleteOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeleteOkBuilder
     pub trait UnbindMethod<'a> {
         type Payload: Default + SetUnbindMethodFields<'a>;
     } // pub trait UnbindMethod<'a>
@@ -530,10 +2982,98 @@ pub mod exchange {
         fn set_source<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetUnbindMethodFields<'a>
 
+    pub struct UnbindBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct UnbindBuilder
+
+
+    impl<'a, T> UnbindBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> UnbindBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for UnbindBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            UnbindBuilder { payload: Default::default() }
+        }
+    } // impl Default for UnbindBuilder
+    impl<'a, T> UnbindBuilder<T>
+        where T: ::Encodable + SetUnbindMethodFields<'a>
+    {
+        pub fn arguments<V>(mut self, arguments: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetUnbindMethodFields::set_arguments(&mut self.payload, arguments.into());
+            self
+        } // set_arguments()
+        pub fn destination<V>(mut self, destination: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetUnbindMethodFields::set_destination(&mut self.payload, destination.into());
+            self
+        } // set_destination()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetUnbindMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetUnbindMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn source<V>(mut self, source: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetUnbindMethodFields::set_source(&mut self.payload, source.into());
+            self
+        } // set_source()
+    } // impl<'a, T> UnbindBuilder<T>
     pub trait UnbindOkMethod {
         type Payload: Default;
     } // pub trait UnbindOkMethod
 
+    pub struct UnbindOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct UnbindOkBuilder
+
+
+    impl<T> UnbindOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> UnbindOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for UnbindOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            UnbindOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for UnbindOkBuilder
 } // mod exchange
 
 pub mod file {
@@ -546,6 +3086,46 @@ pub mod file {
         fn set_multiple(&mut self, _: bool) {}
     } // pub trait SetAckMethodFields
 
+    pub struct AckBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct AckBuilder
+
+
+    impl<T> AckBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> AckBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for AckBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            AckBuilder { payload: Default::default() }
+        }
+    } // impl Default for AckBuilder
+    impl<T> AckBuilder<T>
+        where T: ::Encodable + SetAckMethodFields
+    {
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetAckMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn multiple(mut self, multiple: bool) -> Self {
+            SetAckMethodFields::set_multiple(&mut self.payload, multiple);
+            self
+        } // set_multiple()
+    } // impl<T> AckBuilder<T>
     pub trait CancelMethod<'a> {
         type Payload: Default + SetCancelMethodFields<'a>;
     } // pub trait CancelMethod<'a>
@@ -555,6 +3135,48 @@ pub mod file {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
+    pub struct CancelBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CancelBuilder
+
+
+    impl<'a, T> CancelBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CancelBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CancelBuilder { payload: Default::default() }
+        }
+    } // impl Default for CancelBuilder
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable + SetCancelMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCancelMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetCancelMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+    } // impl<'a, T> CancelBuilder<T>
     pub trait CancelOkMethod<'a> {
         type Payload: Default + SetCancelOkMethodFields<'a>;
     } // pub trait CancelOkMethod<'a>
@@ -563,6 +3185,44 @@ pub mod file {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
+    pub struct CancelOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CancelOkBuilder
+
+
+    impl<'a, T> CancelOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CancelOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CancelOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CancelOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for CancelOkBuilder
+    impl<'a, T> CancelOkBuilder<T>
+        where T: ::Encodable + SetCancelOkMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCancelOkMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+    } // impl<'a, T> CancelOkBuilder<T>
     pub trait ConsumeMethod<'a> {
         type Payload: Default + SetConsumeMethodFields<'a>;
     } // pub trait ConsumeMethod<'a>
@@ -578,6 +3238,76 @@ pub mod file {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub struct ConsumeBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ConsumeBuilder
+
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ConsumeBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ConsumeBuilder { payload: Default::default() }
+        }
+    } // impl Default for ConsumeBuilder
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable + SetConsumeMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn exclusive(mut self, exclusive: bool) -> Self {
+            SetConsumeMethodFields::set_exclusive(&mut self.payload, exclusive);
+            self
+        } // set_exclusive()
+        pub fn filter<V>(mut self, filter: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetConsumeMethodFields::set_filter(&mut self.payload, filter.into());
+            self
+        } // set_filter()
+        pub fn no_ack(mut self, no_ack: bool) -> Self {
+            SetConsumeMethodFields::set_no_ack(&mut self.payload, no_ack);
+            self
+        } // set_no_ack()
+        pub fn no_local(mut self, no_local: bool) -> Self {
+            SetConsumeMethodFields::set_no_local(&mut self.payload, no_local);
+            self
+        } // set_no_local()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetConsumeMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetConsumeMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> ConsumeBuilder<T>
     pub trait ConsumeOkMethod<'a> {
         type Payload: Default + SetConsumeOkMethodFields<'a>;
     } // pub trait ConsumeOkMethod<'a>
@@ -586,6 +3316,44 @@ pub mod file {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
+    pub struct ConsumeOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ConsumeOkBuilder
+
+
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ConsumeOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ConsumeOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for ConsumeOkBuilder
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: ::Encodable + SetConsumeOkMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeOkMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+    } // impl<'a, T> ConsumeOkBuilder<T>
     pub trait DeliverMethod<'a> {
         type Payload: Default + SetDeliverMethodFields<'a>;
     } // pub trait DeliverMethod<'a>
@@ -599,6 +3367,70 @@ pub mod file {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
+    pub struct DeliverBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeliverBuilder
+
+
+    impl<'a, T> DeliverBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeliverBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeliverBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeliverBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeliverBuilder
+    impl<'a, T> DeliverBuilder<T>
+        where T: ::Encodable + SetDeliverMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetDeliverMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn identifier<V>(mut self, identifier: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_identifier(&mut self.payload, identifier.into());
+            self
+        } // set_identifier()
+        pub fn redelivered(mut self, redelivered: bool) -> Self {
+            SetDeliverMethodFields::set_redelivered(&mut self.payload, redelivered);
+            self
+        } // set_redelivered()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+    } // impl<'a, T> DeliverBuilder<T>
     pub trait OpenMethod<'a> {
         type Payload: Default + SetOpenMethodFields<'a>;
     } // pub trait OpenMethod<'a>
@@ -608,6 +3440,48 @@ pub mod file {
         fn set_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
+    pub struct OpenBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OpenBuilder
+
+
+    impl<'a, T> OpenBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OpenBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OpenBuilder { payload: Default::default() }
+        }
+    } // impl Default for OpenBuilder
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable + SetOpenMethodFields<'a>
+    {
+        pub fn content_size(mut self, content_size: u64) -> Self {
+            SetOpenMethodFields::set_content_size(&mut self.payload, content_size);
+            self
+        } // set_content_size()
+        pub fn identifier<V>(mut self, identifier: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetOpenMethodFields::set_identifier(&mut self.payload, identifier.into());
+            self
+        } // set_identifier()
+    } // impl<'a, T> OpenBuilder<T>
     pub trait OpenOkMethod {
         type Payload: Default + SetOpenOkMethodFields;
     } // pub trait OpenOkMethod
@@ -616,6 +3490,42 @@ pub mod file {
         fn set_staged_size(&mut self, _: u64) {}
     } // pub trait SetOpenOkMethodFields
 
+    pub struct OpenOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OpenOkBuilder
+
+
+    impl<T> OpenOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> OpenOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OpenOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OpenOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for OpenOkBuilder
+    impl<T> OpenOkBuilder<T>
+        where T: ::Encodable + SetOpenOkMethodFields
+    {
+        pub fn staged_size(mut self, staged_size: u64) -> Self {
+            SetOpenOkMethodFields::set_staged_size(&mut self.payload, staged_size);
+            self
+        } // set_staged_size()
+    } // impl<T> OpenOkBuilder<T>
     pub trait PublishMethod<'a> {
         type Payload: Default + SetPublishMethodFields<'a>;
     } // pub trait PublishMethod<'a>
@@ -629,6 +3539,68 @@ pub mod file {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
+    pub struct PublishBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct PublishBuilder
+
+
+    impl<'a, T> PublishBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> PublishBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for PublishBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            PublishBuilder { payload: Default::default() }
+        }
+    } // impl Default for PublishBuilder
+    impl<'a, T> PublishBuilder<T>
+        where T: ::Encodable + SetPublishMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn identifier<V>(mut self, identifier: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_identifier(&mut self.payload, identifier.into());
+            self
+        } // set_identifier()
+        pub fn immediate(mut self, immediate: bool) -> Self {
+            SetPublishMethodFields::set_immediate(&mut self.payload, immediate);
+            self
+        } // set_immediate()
+        pub fn mandatory(mut self, mandatory: bool) -> Self {
+            SetPublishMethodFields::set_mandatory(&mut self.payload, mandatory);
+            self
+        } // set_mandatory()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetPublishMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> PublishBuilder<T>
     pub trait QosMethod {
         type Payload: Default + SetQosMethodFields;
     } // pub trait QosMethod
@@ -639,10 +3611,82 @@ pub mod file {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
+    pub struct QosBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct QosBuilder
+
+
+    impl<T> QosBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> QosBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for QosBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            QosBuilder { payload: Default::default() }
+        }
+    } // impl Default for QosBuilder
+    impl<T> QosBuilder<T>
+        where T: ::Encodable + SetQosMethodFields
+    {
+        pub fn global(mut self, global: bool) -> Self {
+            SetQosMethodFields::set_global(&mut self.payload, global);
+            self
+        } // set_global()
+        pub fn prefetch_count(mut self, prefetch_count: u16) -> Self {
+            SetQosMethodFields::set_prefetch_count(&mut self.payload, prefetch_count);
+            self
+        } // set_prefetch_count()
+        pub fn prefetch_size(mut self, prefetch_size: u32) -> Self {
+            SetQosMethodFields::set_prefetch_size(&mut self.payload, prefetch_size);
+            self
+        } // set_prefetch_size()
+    } // impl<T> QosBuilder<T>
     pub trait QosOkMethod {
         type Payload: Default;
     } // pub trait QosOkMethod
 
+    pub struct QosOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct QosOkBuilder
+
+
+    impl<T> QosOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> QosOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for QosOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            QosOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for QosOkBuilder
     pub trait RejectMethod {
         type Payload: Default + SetRejectMethodFields;
     } // pub trait RejectMethod
@@ -652,6 +3696,46 @@ pub mod file {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRejectMethodFields
 
+    pub struct RejectBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RejectBuilder
+
+
+    impl<T> RejectBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RejectBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RejectBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RejectBuilder { payload: Default::default() }
+        }
+    } // impl Default for RejectBuilder
+    impl<T> RejectBuilder<T>
+        where T: ::Encodable + SetRejectMethodFields
+    {
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetRejectMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn requeue(mut self, requeue: bool) -> Self {
+            SetRejectMethodFields::set_requeue(&mut self.payload, requeue);
+            self
+        } // set_requeue()
+    } // impl<T> RejectBuilder<T>
     pub trait ReturnMethod<'a> {
         type Payload: Default + SetReturnMethodFields<'a>;
     } // pub trait ReturnMethod<'a>
@@ -663,10 +3747,92 @@ pub mod file {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
+    pub struct ReturnBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ReturnBuilder
+
+
+    impl<'a, T> ReturnBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ReturnBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ReturnBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ReturnBuilder { payload: Default::default() }
+        }
+    } // impl Default for ReturnBuilder
+    impl<'a, T> ReturnBuilder<T>
+        where T: ::Encodable + SetReturnMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn reply_code(mut self, reply_code: u16) -> Self {
+            SetReturnMethodFields::set_reply_code(&mut self.payload, reply_code);
+            self
+        } // set_reply_code()
+        pub fn reply_text<V>(mut self, reply_text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_reply_text(&mut self.payload, reply_text.into());
+            self
+        } // set_reply_text()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+    } // impl<'a, T> ReturnBuilder<T>
     pub trait StageMethod {
         type Payload: Default;
     } // pub trait StageMethod
 
+    pub struct StageBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct StageBuilder
+
+
+    impl<T> StageBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> StageBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for StageBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            StageBuilder { payload: Default::default() }
+        }
+    } // impl Default for StageBuilder
 } // mod file
 
 pub mod message {
@@ -679,6 +3845,50 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetAppendMethodFields<'a>
 
+    pub struct AppendBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct AppendBuilder
+
+
+    impl<'a, T> AppendBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> AppendBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for AppendBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            AppendBuilder { payload: Default::default() }
+        }
+    } // impl Default for AppendBuilder
+    impl<'a, T> AppendBuilder<T>
+        where T: ::Encodable + SetAppendMethodFields<'a>
+    {
+        pub fn bytes<V>(mut self, bytes: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetAppendMethodFields::set_bytes(&mut self.payload, bytes.into());
+            self
+        } // set_bytes()
+        pub fn reference<V>(mut self, reference: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetAppendMethodFields::set_reference(&mut self.payload, reference.into());
+            self
+        } // set_reference()
+    } // impl<'a, T> AppendBuilder<T>
     pub trait CancelMethod<'a> {
         type Payload: Default + SetCancelMethodFields<'a>;
     } // pub trait CancelMethod<'a>
@@ -687,6 +3897,44 @@ pub mod message {
         fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelMethodFields<'a>
 
+    pub struct CancelBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CancelBuilder
+
+
+    impl<'a, T> CancelBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CancelBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CancelBuilder { payload: Default::default() }
+        }
+    } // impl Default for CancelBuilder
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable + SetCancelMethodFields<'a>
+    {
+        pub fn destination<V>(mut self, destination: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCancelMethodFields::set_destination(&mut self.payload, destination.into());
+            self
+        } // set_destination()
+    } // impl<'a, T> CancelBuilder<T>
     pub trait CheckpointMethod<'a> {
         type Payload: Default + SetCheckpointMethodFields<'a>;
     } // pub trait CheckpointMethod<'a>
@@ -696,6 +3944,50 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCheckpointMethodFields<'a>
 
+    pub struct CheckpointBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CheckpointBuilder
+
+
+    impl<'a, T> CheckpointBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CheckpointBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CheckpointBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CheckpointBuilder { payload: Default::default() }
+        }
+    } // impl Default for CheckpointBuilder
+    impl<'a, T> CheckpointBuilder<T>
+        where T: ::Encodable + SetCheckpointMethodFields<'a>
+    {
+        pub fn identifier<V>(mut self, identifier: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCheckpointMethodFields::set_identifier(&mut self.payload, identifier.into());
+            self
+        } // set_identifier()
+        pub fn reference<V>(mut self, reference: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetCheckpointMethodFields::set_reference(&mut self.payload, reference.into());
+            self
+        } // set_reference()
+    } // impl<'a, T> CheckpointBuilder<T>
     pub trait CloseMethod<'a> {
         type Payload: Default + SetCloseMethodFields<'a>;
     } // pub trait CloseMethod<'a>
@@ -704,6 +3996,44 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCloseMethodFields<'a>
 
+    pub struct CloseBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CloseBuilder
+
+
+    impl<'a, T> CloseBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CloseBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CloseBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CloseBuilder { payload: Default::default() }
+        }
+    } // impl Default for CloseBuilder
+    impl<'a, T> CloseBuilder<T>
+        where T: ::Encodable + SetCloseMethodFields<'a>
+    {
+        pub fn reference<V>(mut self, reference: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetCloseMethodFields::set_reference(&mut self.payload, reference.into());
+            self
+        } // set_reference()
+    } // impl<'a, T> CloseBuilder<T>
     pub trait ConsumeMethod<'a> {
         type Payload: Default + SetConsumeMethodFields<'a>;
     } // pub trait ConsumeMethod<'a>
@@ -718,10 +4048,104 @@ pub mod message {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub struct ConsumeBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ConsumeBuilder
+
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ConsumeBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ConsumeBuilder { payload: Default::default() }
+        }
+    } // impl Default for ConsumeBuilder
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable + SetConsumeMethodFields<'a>
+    {
+        pub fn destination<V>(mut self, destination: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_destination(&mut self.payload, destination.into());
+            self
+        } // set_destination()
+        pub fn exclusive(mut self, exclusive: bool) -> Self {
+            SetConsumeMethodFields::set_exclusive(&mut self.payload, exclusive);
+            self
+        } // set_exclusive()
+        pub fn filter<V>(mut self, filter: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetConsumeMethodFields::set_filter(&mut self.payload, filter.into());
+            self
+        } // set_filter()
+        pub fn no_ack(mut self, no_ack: bool) -> Self {
+            SetConsumeMethodFields::set_no_ack(&mut self.payload, no_ack);
+            self
+        } // set_no_ack()
+        pub fn no_local(mut self, no_local: bool) -> Self {
+            SetConsumeMethodFields::set_no_local(&mut self.payload, no_local);
+            self
+        } // set_no_local()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetConsumeMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> ConsumeBuilder<T>
     pub trait EmptyMethod {
         type Payload: Default;
     } // pub trait EmptyMethod
 
+    pub struct EmptyBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct EmptyBuilder
+
+
+    impl<T> EmptyBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> EmptyBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for EmptyBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            EmptyBuilder { payload: Default::default() }
+        }
+    } // impl Default for EmptyBuilder
     pub trait GetMethod<'a> {
         type Payload: Default + SetGetMethodFields<'a>;
     } // pub trait GetMethod<'a>
@@ -733,6 +4157,58 @@ pub mod message {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
+    pub struct GetBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct GetBuilder
+
+
+    impl<'a, T> GetBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> GetBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for GetBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            GetBuilder { payload: Default::default() }
+        }
+    } // impl Default for GetBuilder
+    impl<'a, T> GetBuilder<T>
+        where T: ::Encodable + SetGetMethodFields<'a>
+    {
+        pub fn destination<V>(mut self, destination: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetMethodFields::set_destination(&mut self.payload, destination.into());
+            self
+        } // set_destination()
+        pub fn no_ack(mut self, no_ack: bool) -> Self {
+            SetGetMethodFields::set_no_ack(&mut self.payload, no_ack);
+            self
+        } // set_no_ack()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetGetMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> GetBuilder<T>
     pub trait OffsetMethod {
         type Payload: Default + SetOffsetMethodFields;
     } // pub trait OffsetMethod
@@ -741,10 +4217,74 @@ pub mod message {
         fn set_value(&mut self, _: u64) {}
     } // pub trait SetOffsetMethodFields
 
+    pub struct OffsetBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OffsetBuilder
+
+
+    impl<T> OffsetBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> OffsetBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OffsetBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OffsetBuilder { payload: Default::default() }
+        }
+    } // impl Default for OffsetBuilder
+    impl<T> OffsetBuilder<T>
+        where T: ::Encodable + SetOffsetMethodFields
+    {
+        pub fn value(mut self, value: u64) -> Self {
+            SetOffsetMethodFields::set_value(&mut self.payload, value);
+            self
+        } // set_value()
+    } // impl<T> OffsetBuilder<T>
     pub trait OkMethod {
         type Payload: Default;
     } // pub trait OkMethod
 
+    pub struct OkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OkBuilder
+
+
+    impl<T> OkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> OkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OkBuilder { payload: Default::default() }
+        }
+    } // impl Default for OkBuilder
     pub trait OpenMethod<'a> {
         type Payload: Default + SetOpenMethodFields<'a>;
     } // pub trait OpenMethod<'a>
@@ -753,6 +4293,44 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenMethodFields<'a>
 
+    pub struct OpenBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct OpenBuilder
+
+
+    impl<'a, T> OpenBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for OpenBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            OpenBuilder { payload: Default::default() }
+        }
+    } // impl Default for OpenBuilder
+    impl<'a, T> OpenBuilder<T>
+        where T: ::Encodable + SetOpenMethodFields<'a>
+    {
+        pub fn reference<V>(mut self, reference: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetOpenMethodFields::set_reference(&mut self.payload, reference.into());
+            self
+        } // set_reference()
+    } // impl<'a, T> OpenBuilder<T>
     pub trait QosMethod {
         type Payload: Default + SetQosMethodFields;
     } // pub trait QosMethod
@@ -763,6 +4341,50 @@ pub mod message {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
+    pub struct QosBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct QosBuilder
+
+
+    impl<T> QosBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> QosBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for QosBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            QosBuilder { payload: Default::default() }
+        }
+    } // impl Default for QosBuilder
+    impl<T> QosBuilder<T>
+        where T: ::Encodable + SetQosMethodFields
+    {
+        pub fn global(mut self, global: bool) -> Self {
+            SetQosMethodFields::set_global(&mut self.payload, global);
+            self
+        } // set_global()
+        pub fn prefetch_count(mut self, prefetch_count: u16) -> Self {
+            SetQosMethodFields::set_prefetch_count(&mut self.payload, prefetch_count);
+            self
+        } // set_prefetch_count()
+        pub fn prefetch_size(mut self, prefetch_size: u32) -> Self {
+            SetQosMethodFields::set_prefetch_size(&mut self.payload, prefetch_size);
+            self
+        } // set_prefetch_size()
+    } // impl<T> QosBuilder<T>
     pub trait RecoverMethod {
         type Payload: Default + SetRecoverMethodFields;
     } // pub trait RecoverMethod
@@ -771,6 +4393,42 @@ pub mod message {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverMethodFields
 
+    pub struct RecoverBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RecoverBuilder
+
+
+    impl<T> RecoverBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RecoverBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RecoverBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RecoverBuilder { payload: Default::default() }
+        }
+    } // impl Default for RecoverBuilder
+    impl<T> RecoverBuilder<T>
+        where T: ::Encodable + SetRecoverMethodFields
+    {
+        pub fn requeue(mut self, requeue: bool) -> Self {
+            SetRecoverMethodFields::set_requeue(&mut self.payload, requeue);
+            self
+        } // set_requeue()
+    } // impl<T> RecoverBuilder<T>
     pub trait RejectMethod<'a> {
         type Payload: Default + SetRejectMethodFields<'a>;
     } // pub trait RejectMethod<'a>
@@ -780,6 +4438,48 @@ pub mod message {
         fn set_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRejectMethodFields<'a>
 
+    pub struct RejectBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RejectBuilder
+
+
+    impl<'a, T> RejectBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> RejectBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RejectBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RejectBuilder { payload: Default::default() }
+        }
+    } // impl Default for RejectBuilder
+    impl<'a, T> RejectBuilder<T>
+        where T: ::Encodable + SetRejectMethodFields<'a>
+    {
+        pub fn code(mut self, code: u16) -> Self {
+            SetRejectMethodFields::set_code(&mut self.payload, code);
+            self
+        } // set_code()
+        pub fn text<V>(mut self, text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetRejectMethodFields::set_text(&mut self.payload, text.into());
+            self
+        } // set_text()
+    } // impl<'a, T> RejectBuilder<T>
     pub trait ResumeMethod<'a> {
         type Payload: Default + SetResumeMethodFields<'a>;
     } // pub trait ResumeMethod<'a>
@@ -789,6 +4489,50 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
 
+    pub struct ResumeBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ResumeBuilder
+
+
+    impl<'a, T> ResumeBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ResumeBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ResumeBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ResumeBuilder { payload: Default::default() }
+        }
+    } // impl Default for ResumeBuilder
+    impl<'a, T> ResumeBuilder<T>
+        where T: ::Encodable + SetResumeMethodFields<'a>
+    {
+        pub fn identifier<V>(mut self, identifier: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetResumeMethodFields::set_identifier(&mut self.payload, identifier.into());
+            self
+        } // set_identifier()
+        pub fn reference<V>(mut self, reference: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetResumeMethodFields::set_reference(&mut self.payload, reference.into());
+            self
+        } // set_reference()
+    } // impl<'a, T> ResumeBuilder<T>
     pub trait TransferMethod<'a> {
         type Payload: Default + SetTransferMethodFields<'a>;
     } // pub trait TransferMethod<'a>
@@ -818,6 +4562,156 @@ pub mod message {
         fn set_user_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetTransferMethodFields<'a>
 
+    pub struct TransferBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct TransferBuilder
+
+
+    impl<'a, T> TransferBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> TransferBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for TransferBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            TransferBuilder { payload: Default::default() }
+        }
+    } // impl Default for TransferBuilder
+    impl<'a, T> TransferBuilder<T>
+        where T: ::Encodable + SetTransferMethodFields<'a>
+    {
+        pub fn app_id<V>(mut self, app_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_app_id(&mut self.payload, app_id.into());
+            self
+        } // set_app_id()
+        pub fn application_headers<V>(mut self, application_headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetTransferMethodFields::set_application_headers(&mut self.payload,
+                                                             application_headers.into());
+            self
+        } // set_application_headers()
+        pub fn body<V>(mut self, body: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetTransferMethodFields::set_body(&mut self.payload, body.into());
+            self
+        } // set_body()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_content_encoding(&mut self.payload,
+                                                          content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
+        pub fn correlation_id<V>(mut self, correlation_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_correlation_id(&mut self.payload, correlation_id.into());
+            self
+        } // set_correlation_id()
+        pub fn delivery_mode(mut self, delivery_mode: u8) -> Self {
+            SetTransferMethodFields::set_delivery_mode(&mut self.payload, delivery_mode);
+            self
+        } // set_delivery_mode()
+        pub fn destination<V>(mut self, destination: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_destination(&mut self.payload, destination.into());
+            self
+        } // set_destination()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn expiration(mut self, expiration: u64) -> Self {
+            SetTransferMethodFields::set_expiration(&mut self.payload, expiration);
+            self
+        } // set_expiration()
+        pub fn immediate(mut self, immediate: bool) -> Self {
+            SetTransferMethodFields::set_immediate(&mut self.payload, immediate);
+            self
+        } // set_immediate()
+        pub fn message_id<V>(mut self, message_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_message_id(&mut self.payload, message_id.into());
+            self
+        } // set_message_id()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetTransferMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
+        pub fn redelivered(mut self, redelivered: bool) -> Self {
+            SetTransferMethodFields::set_redelivered(&mut self.payload, redelivered);
+            self
+        } // set_redelivered()
+        pub fn reply_to<V>(mut self, reply_to: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_reply_to(&mut self.payload, reply_to.into());
+            self
+        } // set_reply_to()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn security_token<V>(mut self, security_token: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetTransferMethodFields::set_security_token(&mut self.payload, security_token.into());
+            self
+        } // set_security_token()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetTransferMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetTransferMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn transaction_id<V>(mut self, transaction_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_transaction_id(&mut self.payload, transaction_id.into());
+            self
+        } // set_transaction_id()
+        pub fn ttl(mut self, ttl: u64) -> Self {
+            SetTransferMethodFields::set_ttl(&mut self.payload, ttl);
+            self
+        } // set_ttl()
+        pub fn user_id<V>(mut self, user_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetTransferMethodFields::set_user_id(&mut self.payload, user_id.into());
+            self
+        } // set_user_id()
+    } // impl<'a, T> TransferBuilder<T>
 } // mod message
 
 pub mod queue {
@@ -834,10 +4728,102 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetBindMethodFields<'a>
 
+    pub struct BindBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct BindBuilder
+
+
+    impl<'a, T> BindBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> BindBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for BindBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            BindBuilder { payload: Default::default() }
+        }
+    } // impl Default for BindBuilder
+    impl<'a, T> BindBuilder<T>
+        where T: ::Encodable + SetBindMethodFields<'a>
+    {
+        pub fn arguments<V>(mut self, arguments: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetBindMethodFields::set_arguments(&mut self.payload, arguments.into());
+            self
+        } // set_arguments()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBindMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetBindMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBindMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetBindMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetBindMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> BindBuilder<T>
     pub trait BindOkMethod {
         type Payload: Default;
     } // pub trait BindOkMethod
 
+    pub struct BindOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct BindOkBuilder
+
+
+    impl<T> BindOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> BindOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for BindOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            BindOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for BindOkBuilder
     pub trait DeclareMethod<'a> {
         type Payload: Default + SetDeclareMethodFields<'a>;
     } // pub trait DeclareMethod<'a>
@@ -853,6 +4839,74 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeclareMethodFields<'a>
 
+    pub struct DeclareBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeclareBuilder
+
+
+    impl<'a, T> DeclareBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeclareBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeclareBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeclareBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeclareBuilder
+    impl<'a, T> DeclareBuilder<T>
+        where T: ::Encodable + SetDeclareMethodFields<'a>
+    {
+        pub fn arguments<V>(mut self, arguments: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetDeclareMethodFields::set_arguments(&mut self.payload, arguments.into());
+            self
+        } // set_arguments()
+        pub fn auto_delete(mut self, auto_delete: bool) -> Self {
+            SetDeclareMethodFields::set_auto_delete(&mut self.payload, auto_delete);
+            self
+        } // set_auto_delete()
+        pub fn durable(mut self, durable: bool) -> Self {
+            SetDeclareMethodFields::set_durable(&mut self.payload, durable);
+            self
+        } // set_durable()
+        pub fn exclusive(mut self, exclusive: bool) -> Self {
+            SetDeclareMethodFields::set_exclusive(&mut self.payload, exclusive);
+            self
+        } // set_exclusive()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetDeclareMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn passive(mut self, passive: bool) -> Self {
+            SetDeclareMethodFields::set_passive(&mut self.payload, passive);
+            self
+        } // set_passive()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeclareMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetDeclareMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> DeclareBuilder<T>
     pub trait DeclareOkMethod<'a> {
         type Payload: Default + SetDeclareOkMethodFields<'a>;
     } // pub trait DeclareOkMethod<'a>
@@ -863,6 +4917,52 @@ pub mod queue {
         fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareOkMethodFields<'a>
 
+    pub struct DeclareOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeclareOkBuilder
+
+
+    impl<'a, T> DeclareOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeclareOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeclareOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeclareOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeclareOkBuilder
+    impl<'a, T> DeclareOkBuilder<T>
+        where T: ::Encodable + SetDeclareOkMethodFields<'a>
+    {
+        pub fn consumer_count(mut self, consumer_count: u32) -> Self {
+            SetDeclareOkMethodFields::set_consumer_count(&mut self.payload, consumer_count);
+            self
+        } // set_consumer_count()
+        pub fn message_count(mut self, message_count: u32) -> Self {
+            SetDeclareOkMethodFields::set_message_count(&mut self.payload, message_count);
+            self
+        } // set_message_count()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeclareOkMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+    } // impl<'a, T> DeclareOkBuilder<T>
     pub trait DeleteMethod<'a> {
         type Payload: Default + SetDeleteMethodFields<'a>;
     } // pub trait DeleteMethod<'a>
@@ -875,6 +4975,60 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
+    pub struct DeleteBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeleteBuilder
+
+
+    impl<'a, T> DeleteBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeleteBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeleteBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeleteBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeleteBuilder
+    impl<'a, T> DeleteBuilder<T>
+        where T: ::Encodable + SetDeleteMethodFields<'a>
+    {
+        pub fn if_empty(mut self, if_empty: bool) -> Self {
+            SetDeleteMethodFields::set_if_empty(&mut self.payload, if_empty);
+            self
+        } // set_if_empty()
+        pub fn if_unused(mut self, if_unused: bool) -> Self {
+            SetDeleteMethodFields::set_if_unused(&mut self.payload, if_unused);
+            self
+        } // set_if_unused()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetDeleteMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeleteMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetDeleteMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> DeleteBuilder<T>
     pub trait DeleteOkMethod {
         type Payload: Default + SetDeleteOkMethodFields;
     } // pub trait DeleteOkMethod
@@ -883,6 +5037,42 @@ pub mod queue {
         fn set_message_count(&mut self, _: u32) {}
     } // pub trait SetDeleteOkMethodFields
 
+    pub struct DeleteOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeleteOkBuilder
+
+
+    impl<T> DeleteOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> DeleteOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeleteOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeleteOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeleteOkBuilder
+    impl<T> DeleteOkBuilder<T>
+        where T: ::Encodable + SetDeleteOkMethodFields
+    {
+        pub fn message_count(mut self, message_count: u32) -> Self {
+            SetDeleteOkMethodFields::set_message_count(&mut self.payload, message_count);
+            self
+        } // set_message_count()
+    } // impl<T> DeleteOkBuilder<T>
     pub trait PurgeMethod<'a> {
         type Payload: Default + SetPurgeMethodFields<'a>;
     } // pub trait PurgeMethod<'a>
@@ -893,6 +5083,52 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPurgeMethodFields<'a>
 
+    pub struct PurgeBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct PurgeBuilder
+
+
+    impl<'a, T> PurgeBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> PurgeBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for PurgeBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            PurgeBuilder { payload: Default::default() }
+        }
+    } // impl Default for PurgeBuilder
+    impl<'a, T> PurgeBuilder<T>
+        where T: ::Encodable + SetPurgeMethodFields<'a>
+    {
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetPurgeMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPurgeMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetPurgeMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> PurgeBuilder<T>
     pub trait PurgeOkMethod {
         type Payload: Default + SetPurgeOkMethodFields;
     } // pub trait PurgeOkMethod
@@ -901,6 +5137,42 @@ pub mod queue {
         fn set_message_count(&mut self, _: u32) {}
     } // pub trait SetPurgeOkMethodFields
 
+    pub struct PurgeOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct PurgeOkBuilder
+
+
+    impl<T> PurgeOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> PurgeOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for PurgeOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            PurgeOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for PurgeOkBuilder
+    impl<T> PurgeOkBuilder<T>
+        where T: ::Encodable + SetPurgeOkMethodFields
+    {
+        pub fn message_count(mut self, message_count: u32) -> Self {
+            SetPurgeOkMethodFields::set_message_count(&mut self.payload, message_count);
+            self
+        } // set_message_count()
+    } // impl<T> PurgeOkBuilder<T>
     pub trait UnbindMethod<'a> {
         type Payload: Default + SetUnbindMethodFields<'a>;
     } // pub trait UnbindMethod<'a>
@@ -913,10 +5185,98 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetUnbindMethodFields<'a>
 
+    pub struct UnbindBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct UnbindBuilder
+
+
+    impl<'a, T> UnbindBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> UnbindBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for UnbindBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            UnbindBuilder { payload: Default::default() }
+        }
+    } // impl Default for UnbindBuilder
+    impl<'a, T> UnbindBuilder<T>
+        where T: ::Encodable + SetUnbindMethodFields<'a>
+    {
+        pub fn arguments<V>(mut self, arguments: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetUnbindMethodFields::set_arguments(&mut self.payload, arguments.into());
+            self
+        } // set_arguments()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetUnbindMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetUnbindMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetUnbindMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetUnbindMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> UnbindBuilder<T>
     pub trait UnbindOkMethod {
         type Payload: Default;
     } // pub trait UnbindOkMethod
 
+    pub struct UnbindOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct UnbindOkBuilder
+
+
+    impl<T> UnbindOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> UnbindOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for UnbindOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            UnbindOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for UnbindOkBuilder
 } // mod queue
 
 pub mod stream {
@@ -929,6 +5289,48 @@ pub mod stream {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
+    pub struct CancelBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CancelBuilder
+
+
+    impl<'a, T> CancelBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CancelBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CancelBuilder { payload: Default::default() }
+        }
+    } // impl Default for CancelBuilder
+    impl<'a, T> CancelBuilder<T>
+        where T: ::Encodable + SetCancelMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCancelMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetCancelMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+    } // impl<'a, T> CancelBuilder<T>
     pub trait CancelOkMethod<'a> {
         type Payload: Default + SetCancelOkMethodFields<'a>;
     } // pub trait CancelOkMethod<'a>
@@ -937,6 +5339,44 @@ pub mod stream {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
+    pub struct CancelOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CancelOkBuilder
+
+
+    impl<'a, T> CancelOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> CancelOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CancelOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CancelOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for CancelOkBuilder
+    impl<'a, T> CancelOkBuilder<T>
+        where T: ::Encodable + SetCancelOkMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetCancelOkMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+    } // impl<'a, T> CancelOkBuilder<T>
     pub trait ConsumeMethod<'a> {
         type Payload: Default + SetConsumeMethodFields<'a>;
     } // pub trait ConsumeMethod<'a>
@@ -951,6 +5391,72 @@ pub mod stream {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
+    pub struct ConsumeBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ConsumeBuilder
+
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ConsumeBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ConsumeBuilder { payload: Default::default() }
+        }
+    } // impl Default for ConsumeBuilder
+    impl<'a, T> ConsumeBuilder<T>
+        where T: ::Encodable + SetConsumeMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn exclusive(mut self, exclusive: bool) -> Self {
+            SetConsumeMethodFields::set_exclusive(&mut self.payload, exclusive);
+            self
+        } // set_exclusive()
+        pub fn filter<V>(mut self, filter: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetConsumeMethodFields::set_filter(&mut self.payload, filter.into());
+            self
+        } // set_filter()
+        pub fn no_local(mut self, no_local: bool) -> Self {
+            SetConsumeMethodFields::set_no_local(&mut self.payload, no_local);
+            self
+        } // set_no_local()
+        pub fn no_wait(mut self, no_wait: bool) -> Self {
+            SetConsumeMethodFields::set_no_wait(&mut self.payload, no_wait);
+            self
+        } // set_no_wait()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetConsumeMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> ConsumeBuilder<T>
     pub trait ConsumeOkMethod<'a> {
         type Payload: Default + SetConsumeOkMethodFields<'a>;
     } // pub trait ConsumeOkMethod<'a>
@@ -959,6 +5465,44 @@ pub mod stream {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
+    pub struct ConsumeOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ConsumeOkBuilder
+
+
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ConsumeOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ConsumeOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for ConsumeOkBuilder
+    impl<'a, T> ConsumeOkBuilder<T>
+        where T: ::Encodable + SetConsumeOkMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetConsumeOkMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+    } // impl<'a, T> ConsumeOkBuilder<T>
     pub trait DeliverMethod<'a> {
         type Payload: Default + SetDeliverMethodFields<'a>;
     } // pub trait DeliverMethod<'a>
@@ -970,6 +5514,60 @@ pub mod stream {
         fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
+    pub struct DeliverBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct DeliverBuilder
+
+
+    impl<'a, T> DeliverBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> DeliverBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for DeliverBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            DeliverBuilder { payload: Default::default() }
+        }
+    } // impl Default for DeliverBuilder
+    impl<'a, T> DeliverBuilder<T>
+        where T: ::Encodable + SetDeliverMethodFields<'a>
+    {
+        pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
+            self
+        } // set_consumer_tag()
+        pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
+            SetDeliverMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
+            self
+        } // set_delivery_tag()
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn queue<V>(mut self, queue: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_queue(&mut self.payload, queue.into());
+            self
+        } // set_queue()
+    } // impl<'a, T> DeliverBuilder<T>
     pub trait PublishMethod<'a> {
         type Payload: Default + SetPublishMethodFields<'a>;
     } // pub trait PublishMethod<'a>
@@ -982,6 +5580,62 @@ pub mod stream {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
+    pub struct PublishBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct PublishBuilder
+
+
+    impl<'a, T> PublishBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> PublishBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for PublishBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            PublishBuilder { payload: Default::default() }
+        }
+    } // impl Default for PublishBuilder
+    impl<'a, T> PublishBuilder<T>
+        where T: ::Encodable + SetPublishMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn immediate(mut self, immediate: bool) -> Self {
+            SetPublishMethodFields::set_immediate(&mut self.payload, immediate);
+            self
+        } // set_immediate()
+        pub fn mandatory(mut self, mandatory: bool) -> Self {
+            SetPublishMethodFields::set_mandatory(&mut self.payload, mandatory);
+            self
+        } // set_mandatory()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+        pub fn ticket(mut self, ticket: u16) -> Self {
+            SetPublishMethodFields::set_ticket(&mut self.payload, ticket);
+            self
+        } // set_ticket()
+    } // impl<'a, T> PublishBuilder<T>
     pub trait QosMethod {
         type Payload: Default + SetQosMethodFields;
     } // pub trait QosMethod
@@ -993,10 +5647,86 @@ pub mod stream {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
+    pub struct QosBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct QosBuilder
+
+
+    impl<T> QosBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> QosBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for QosBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            QosBuilder { payload: Default::default() }
+        }
+    } // impl Default for QosBuilder
+    impl<T> QosBuilder<T>
+        where T: ::Encodable + SetQosMethodFields
+    {
+        pub fn consume_rate(mut self, consume_rate: u32) -> Self {
+            SetQosMethodFields::set_consume_rate(&mut self.payload, consume_rate);
+            self
+        } // set_consume_rate()
+        pub fn global(mut self, global: bool) -> Self {
+            SetQosMethodFields::set_global(&mut self.payload, global);
+            self
+        } // set_global()
+        pub fn prefetch_count(mut self, prefetch_count: u16) -> Self {
+            SetQosMethodFields::set_prefetch_count(&mut self.payload, prefetch_count);
+            self
+        } // set_prefetch_count()
+        pub fn prefetch_size(mut self, prefetch_size: u32) -> Self {
+            SetQosMethodFields::set_prefetch_size(&mut self.payload, prefetch_size);
+            self
+        } // set_prefetch_size()
+    } // impl<T> QosBuilder<T>
     pub trait QosOkMethod {
         type Payload: Default;
     } // pub trait QosOkMethod
 
+    pub struct QosOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct QosOkBuilder
+
+
+    impl<T> QosOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> QosOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for QosOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            QosOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for QosOkBuilder
     pub trait ReturnMethod<'a> {
         type Payload: Default + SetReturnMethodFields<'a>;
     } // pub trait ReturnMethod<'a>
@@ -1008,6 +5738,60 @@ pub mod stream {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
+    pub struct ReturnBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ReturnBuilder
+
+
+    impl<'a, T> ReturnBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> ReturnBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ReturnBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ReturnBuilder { payload: Default::default() }
+        }
+    } // impl Default for ReturnBuilder
+    impl<'a, T> ReturnBuilder<T>
+        where T: ::Encodable + SetReturnMethodFields<'a>
+    {
+        pub fn exchange<V>(mut self, exchange: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_exchange(&mut self.payload, exchange.into());
+            self
+        } // set_exchange()
+        pub fn reply_code(mut self, reply_code: u16) -> Self {
+            SetReturnMethodFields::set_reply_code(&mut self.payload, reply_code);
+            self
+        } // set_reply_code()
+        pub fn reply_text<V>(mut self, reply_text: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_reply_text(&mut self.payload, reply_text.into());
+            self
+        } // set_reply_text()
+        pub fn routing_key<V>(mut self, routing_key: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_routing_key(&mut self.payload, routing_key.into());
+            self
+        } // set_routing_key()
+    } // impl<'a, T> ReturnBuilder<T>
 } // mod stream
 
 pub mod test {
@@ -1015,6 +5799,34 @@ pub mod test {
         type Payload: Default;
     } // pub trait ContentMethod
 
+    pub struct ContentBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ContentBuilder
+
+
+    impl<T> ContentBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> ContentBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ContentBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ContentBuilder { payload: Default::default() }
+        }
+    } // impl Default for ContentBuilder
     pub trait ContentOkMethod {
         type Payload: Default + SetContentOkMethodFields;
     } // pub trait ContentOkMethod
@@ -1023,6 +5835,42 @@ pub mod test {
         fn set_content_checksum(&mut self, _: u32) {}
     } // pub trait SetContentOkMethodFields
 
+    pub struct ContentOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct ContentOkBuilder
+
+
+    impl<T> ContentOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> ContentOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for ContentOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            ContentOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for ContentOkBuilder
+    impl<T> ContentOkBuilder<T>
+        where T: ::Encodable + SetContentOkMethodFields
+    {
+        pub fn content_checksum(mut self, content_checksum: u32) -> Self {
+            SetContentOkMethodFields::set_content_checksum(&mut self.payload, content_checksum);
+            self
+        } // set_content_checksum()
+    } // impl<T> ContentOkBuilder<T>
     pub trait IntegerMethod {
         type Payload: Default + SetIntegerMethodFields;
     } // pub trait IntegerMethod
@@ -1035,6 +5883,58 @@ pub mod test {
         fn set_operation(&mut self, _: u8) {}
     } // pub trait SetIntegerMethodFields
 
+    pub struct IntegerBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct IntegerBuilder
+
+
+    impl<T> IntegerBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> IntegerBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for IntegerBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            IntegerBuilder { payload: Default::default() }
+        }
+    } // impl Default for IntegerBuilder
+    impl<T> IntegerBuilder<T>
+        where T: ::Encodable + SetIntegerMethodFields
+    {
+        pub fn integer_1(mut self, integer_1: u8) -> Self {
+            SetIntegerMethodFields::set_integer_1(&mut self.payload, integer_1);
+            self
+        } // set_integer_1()
+        pub fn integer_2(mut self, integer_2: u16) -> Self {
+            SetIntegerMethodFields::set_integer_2(&mut self.payload, integer_2);
+            self
+        } // set_integer_2()
+        pub fn integer_3(mut self, integer_3: u32) -> Self {
+            SetIntegerMethodFields::set_integer_3(&mut self.payload, integer_3);
+            self
+        } // set_integer_3()
+        pub fn integer_4(mut self, integer_4: u64) -> Self {
+            SetIntegerMethodFields::set_integer_4(&mut self.payload, integer_4);
+            self
+        } // set_integer_4()
+        pub fn operation(mut self, operation: u8) -> Self {
+            SetIntegerMethodFields::set_operation(&mut self.payload, operation);
+            self
+        } // set_operation()
+    } // impl<T> IntegerBuilder<T>
     pub trait IntegerOkMethod {
         type Payload: Default + SetIntegerOkMethodFields;
     } // pub trait IntegerOkMethod
@@ -1043,6 +5943,42 @@ pub mod test {
         fn set_result(&mut self, _: u64) {}
     } // pub trait SetIntegerOkMethodFields
 
+    pub struct IntegerOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct IntegerOkBuilder
+
+
+    impl<T> IntegerOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> IntegerOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for IntegerOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            IntegerOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for IntegerOkBuilder
+    impl<T> IntegerOkBuilder<T>
+        where T: ::Encodable + SetIntegerOkMethodFields
+    {
+        pub fn result(mut self, result: u64) -> Self {
+            SetIntegerOkMethodFields::set_result(&mut self.payload, result);
+            self
+        } // set_result()
+    } // impl<T> IntegerOkBuilder<T>
     pub trait StringMethod<'a> {
         type Payload: Default + SetStringMethodFields<'a>;
     } // pub trait StringMethod<'a>
@@ -1053,6 +5989,54 @@ pub mod test {
         fn set_string_2<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringMethodFields<'a>
 
+    pub struct StringBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct StringBuilder
+
+
+    impl<'a, T> StringBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> StringBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for StringBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            StringBuilder { payload: Default::default() }
+        }
+    } // impl Default for StringBuilder
+    impl<'a, T> StringBuilder<T>
+        where T: ::Encodable + SetStringMethodFields<'a>
+    {
+        pub fn operation(mut self, operation: u8) -> Self {
+            SetStringMethodFields::set_operation(&mut self.payload, operation);
+            self
+        } // set_operation()
+        pub fn string_1<V>(mut self, string_1: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStringMethodFields::set_string_1(&mut self.payload, string_1.into());
+            self
+        } // set_string_1()
+        pub fn string_2<V>(mut self, string_2: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetStringMethodFields::set_string_2(&mut self.payload, string_2.into());
+            self
+        } // set_string_2()
+    } // impl<'a, T> StringBuilder<T>
     pub trait StringOkMethod<'a> {
         type Payload: Default + SetStringOkMethodFields<'a>;
     } // pub trait StringOkMethod<'a>
@@ -1061,6 +6045,44 @@ pub mod test {
         fn set_result<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringOkMethodFields<'a>
 
+    pub struct StringOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct StringOkBuilder
+
+
+    impl<'a, T> StringOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> StringOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for StringOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            StringOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for StringOkBuilder
+    impl<'a, T> StringOkBuilder<T>
+        where T: ::Encodable + SetStringOkMethodFields<'a>
+    {
+        pub fn result<V>(mut self, result: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetStringOkMethodFields::set_result(&mut self.payload, result.into());
+            self
+        } // set_result()
+    } // impl<'a, T> StringOkBuilder<T>
     pub trait TableMethod<'a> {
         type Payload: Default + SetTableMethodFields<'a>;
     } // pub trait TableMethod<'a>
@@ -1071,6 +6093,52 @@ pub mod test {
         fn set_table<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
     } // pub trait SetTableMethodFields<'a>
 
+    pub struct TableBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct TableBuilder
+
+
+    impl<'a, T> TableBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> TableBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for TableBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            TableBuilder { payload: Default::default() }
+        }
+    } // impl Default for TableBuilder
+    impl<'a, T> TableBuilder<T>
+        where T: ::Encodable + SetTableMethodFields<'a>
+    {
+        pub fn integer_op(mut self, integer_op: u8) -> Self {
+            SetTableMethodFields::set_integer_op(&mut self.payload, integer_op);
+            self
+        } // set_integer_op()
+        pub fn string_op(mut self, string_op: u8) -> Self {
+            SetTableMethodFields::set_string_op(&mut self.payload, string_op);
+            self
+        } // set_string_op()
+        pub fn table<V>(mut self, table: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetTableMethodFields::set_table(&mut self.payload, table.into());
+            self
+        } // set_table()
+    } // impl<'a, T> TableBuilder<T>
     pub trait TableOkMethod<'a> {
         type Payload: Default + SetTableOkMethodFields<'a>;
     } // pub trait TableOkMethod<'a>
@@ -1080,6 +6148,48 @@ pub mod test {
         fn set_string_result<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetTableOkMethodFields<'a>
 
+    pub struct TableOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct TableOkBuilder
+
+
+    impl<'a, T> TableOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> TableOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for TableOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            TableOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for TableOkBuilder
+    impl<'a, T> TableOkBuilder<T>
+        where T: ::Encodable + SetTableOkMethodFields<'a>
+    {
+        pub fn integer_result(mut self, integer_result: u64) -> Self {
+            SetTableOkMethodFields::set_integer_result(&mut self.payload, integer_result);
+            self
+        } // set_integer_result()
+        pub fn string_result<V>(mut self, string_result: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            SetTableOkMethodFields::set_string_result(&mut self.payload, string_result.into());
+            self
+        } // set_string_result()
+    } // impl<'a, T> TableOkBuilder<T>
 } // mod test
 
 pub mod tunnel {
@@ -1091,6 +6201,44 @@ pub mod tunnel {
         fn set_meta_data<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
     } // pub trait SetRequestMethodFields<'a>
 
+    pub struct RequestBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RequestBuilder
+
+
+    impl<'a, T> RequestBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<'a, T> RequestBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RequestBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RequestBuilder { payload: Default::default() }
+        }
+    } // impl Default for RequestBuilder
+    impl<'a, T> RequestBuilder<T>
+        where T: ::Encodable + SetRequestMethodFields<'a>
+    {
+        pub fn meta_data<V>(mut self, meta_data: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetRequestMethodFields::set_meta_data(&mut self.payload, meta_data.into());
+            self
+        } // set_meta_data()
+    } // impl<'a, T> RequestBuilder<T>
 } // mod tunnel
 
 pub mod tx {
@@ -1098,24 +6246,192 @@ pub mod tx {
         type Payload: Default;
     } // pub trait CommitMethod
 
+    pub struct CommitBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CommitBuilder
+
+
+    impl<T> CommitBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> CommitBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CommitBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CommitBuilder { payload: Default::default() }
+        }
+    } // impl Default for CommitBuilder
     pub trait CommitOkMethod {
         type Payload: Default;
     } // pub trait CommitOkMethod
 
+    pub struct CommitOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct CommitOkBuilder
+
+
+    impl<T> CommitOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> CommitOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for CommitOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            CommitOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for CommitOkBuilder
     pub trait RollbackMethod {
         type Payload: Default;
     } // pub trait RollbackMethod
 
+    pub struct RollbackBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RollbackBuilder
+
+
+    impl<T> RollbackBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RollbackBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RollbackBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RollbackBuilder { payload: Default::default() }
+        }
+    } // impl Default for RollbackBuilder
     pub trait RollbackOkMethod {
         type Payload: Default;
     } // pub trait RollbackOkMethod
 
+    pub struct RollbackOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct RollbackOkBuilder
+
+
+    impl<T> RollbackOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> RollbackOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for RollbackOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            RollbackOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for RollbackOkBuilder
     pub trait SelectMethod {
         type Payload: Default;
     } // pub trait SelectMethod
 
+    pub struct SelectBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SelectBuilder
+
+
+    impl<T> SelectBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> SelectBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SelectBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SelectBuilder { payload: Default::default() }
+        }
+    } // impl Default for SelectBuilder
     pub trait SelectOkMethod {
         type Payload: Default;
     } // pub trait SelectOkMethod
 
+    pub struct SelectOkBuilder<T: ::Encodable> {
+        payload: T,
+    } // struct SelectOkBuilder
+
+
+    impl<T> SelectOkBuilder<T>
+        where T: Default + ::Encodable
+    {
+        pub fn new() -> Self {
+            Default::default()
+        }
+    } // impl Builder (new)
+
+    impl<T> SelectOkBuilder<T>
+        where T: ::Encodable
+    {
+        pub fn build(self) -> T {
+            self.payload
+        }
+    } // impl Builder (build)
+
+    impl<T> Default for SelectOkBuilder<T>
+        where T: ::Encodable + Default
+    {
+        fn default() -> Self {
+            SelectOkBuilder { payload: Default::default() }
+        }
+    } // impl Default for SelectOkBuilder
 } // mod tx

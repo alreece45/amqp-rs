@@ -65,6 +65,17 @@ impl ::ProtocolMethodPayload for Content {
         40
     } // fn method_id()
 } // impl ::Payload for Content
+impl<'a> From<Content> for ClassMethod<'a> {
+    fn from(from: Content) -> Self {
+        ClassMethod::Content(from)
+    } // fn from()
+} // impl From<Content> for ClassMethod
+
+impl From<Content> for super::SpecMethod<'static> {
+    fn from(from: Content) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<Content> for ::super::SpecMethod
 impl ::method::test::ContentOkMethod for ::Amqp8_0 {
     type Payload = ContentOk;
 } // impl ::method::test::ContentOkMethod for ::Amqp8_0
@@ -133,6 +144,17 @@ impl ::method::test::SetContentOkMethodFields for ContentOk {
         self.set_content_checksum(content_checksum)
     } // set_content_checksum()
 } // impl ::method::test::SetContentOkMethodFields for ContentOk
+impl<'a> From<ContentOk> for ClassMethod<'a> {
+    fn from(from: ContentOk) -> Self {
+        ClassMethod::ContentOk(from)
+    } // fn from()
+} // impl From<ContentOk> for ClassMethod
+
+impl From<ContentOk> for super::SpecMethod<'static> {
+    fn from(from: ContentOk) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<ContentOk> for ::super::SpecMethod
 impl ::method::test::IntegerMethod for ::Amqp8_0 {
     type Payload = Integer;
 } // impl ::method::test::IntegerMethod for ::Amqp8_0
@@ -236,6 +258,17 @@ impl ::method::test::SetIntegerMethodFields for Integer {
         self.set_operation(operation)
     } // set_operation()
 } // impl ::method::test::SetIntegerMethodFields for Integer
+impl<'a> From<Integer> for ClassMethod<'a> {
+    fn from(from: Integer) -> Self {
+        ClassMethod::Integer(from)
+    } // fn from()
+} // impl From<Integer> for ClassMethod
+
+impl From<Integer> for super::SpecMethod<'static> {
+    fn from(from: Integer) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<Integer> for ::super::SpecMethod
 impl ::method::test::IntegerOkMethod for ::Amqp8_0 {
     type Payload = IntegerOk;
 } // impl ::method::test::IntegerOkMethod for ::Amqp8_0
@@ -304,6 +337,17 @@ impl ::method::test::SetIntegerOkMethodFields for IntegerOk {
         self.set_result(result)
     } // set_result()
 } // impl ::method::test::SetIntegerOkMethodFields for IntegerOk
+impl<'a> From<IntegerOk> for ClassMethod<'a> {
+    fn from(from: IntegerOk) -> Self {
+        ClassMethod::IntegerOk(from)
+    } // fn from()
+} // impl From<IntegerOk> for ClassMethod
+
+impl From<IntegerOk> for super::SpecMethod<'static> {
+    fn from(from: IntegerOk) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<IntegerOk> for ::super::SpecMethod
 impl<'a> ::method::test::StringMethod<'a> for ::Amqp8_0 {
     type Payload = String<'a>;
 } // impl<'a> ::method::test::StringMethod<'a> for ::Amqp8_0
@@ -395,6 +439,17 @@ impl<'a> ::method::test::SetStringMethodFields<'a> for String<'a> {
         self.set_operation(operation)
     } // set_operation()
 } // impl<'a> ::method::test::SetStringMethodFields<'a> for String<'a>
+impl<'a> From<String<'a>> for ClassMethod<'a> {
+    fn from(from: String<'a>) -> Self {
+        ClassMethod::String(from)
+    } // fn from()
+} // impl From<String<'a>> for ClassMethod
+
+impl<'a> From<String<'a>> for super::SpecMethod<'a> {
+    fn from(from: String<'a>) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<String<'a>> for ::super::SpecMethod
 impl<'a> ::method::test::StringOkMethod<'a> for ::Amqp8_0 {
     type Payload = StringOk<'a>;
 } // impl<'a> ::method::test::StringOkMethod<'a> for ::Amqp8_0
@@ -467,6 +522,17 @@ impl<'a> ::method::test::SetStringOkMethodFields<'a> for StringOk<'a> {
         self.set_result(result.into())
     } // set_result()
 } // impl<'a> ::method::test::SetStringOkMethodFields<'a> for StringOk<'a>
+impl<'a> From<StringOk<'a>> for ClassMethod<'a> {
+    fn from(from: StringOk<'a>) -> Self {
+        ClassMethod::StringOk(from)
+    } // fn from()
+} // impl From<StringOk<'a>> for ClassMethod
+
+impl<'a> From<StringOk<'a>> for super::SpecMethod<'a> {
+    fn from(from: StringOk<'a>) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<StringOk<'a>> for ::super::SpecMethod
 impl<'a> ::method::test::TableMethod<'a> for ::Amqp8_0 {
     type Payload = Table<'a>;
 } // impl<'a> ::method::test::TableMethod<'a> for ::Amqp8_0
@@ -555,6 +621,17 @@ impl<'a> ::method::test::SetTableMethodFields<'a> for Table<'a> {
         self.set_string_op(string_op)
     } // set_string_op()
 } // impl<'a> ::method::test::SetTableMethodFields<'a> for Table<'a>
+impl<'a> From<Table<'a>> for ClassMethod<'a> {
+    fn from(from: Table<'a>) -> Self {
+        ClassMethod::Table(from)
+    } // fn from()
+} // impl From<Table<'a>> for ClassMethod
+
+impl<'a> From<Table<'a>> for super::SpecMethod<'a> {
+    fn from(from: Table<'a>) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<Table<'a>> for ::super::SpecMethod
 impl<'a> ::method::test::TableOkMethod<'a> for ::Amqp8_0 {
     type Payload = TableOk<'a>;
 } // impl<'a> ::method::test::TableOkMethod<'a> for ::Amqp8_0
@@ -636,6 +713,17 @@ impl<'a> ::method::test::SetTableOkMethodFields<'a> for TableOk<'a> {
         self.set_string_result(string_result.into())
     } // set_string_result()
 } // impl<'a> ::method::test::SetTableOkMethodFields<'a> for TableOk<'a>
+impl<'a> From<TableOk<'a>> for ClassMethod<'a> {
+    fn from(from: TableOk<'a>) -> Self {
+        ClassMethod::TableOk(from)
+    } // fn from()
+} // impl From<TableOk<'a>> for ClassMethod
+
+impl<'a> From<TableOk<'a>> for super::SpecMethod<'a> {
+    fn from(from: TableOk<'a>) -> Self {
+        super::SpecMethod::Test(from.into())
+    } // fn default()
+} // impl From<TableOk<'a>> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

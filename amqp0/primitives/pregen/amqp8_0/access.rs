@@ -130,6 +130,17 @@ impl<'a> ::method::access::SetRequestMethodFields<'a> for Request<'a> {
         self.set_read(read)
     } // set_read()
 } // impl<'a> ::method::access::SetRequestMethodFields<'a> for Request<'a>
+impl<'a> From<Request<'a>> for ClassMethod<'a> {
+    fn from(from: Request<'a>) -> Self {
+        ClassMethod::Request(from)
+    } // fn from()
+} // impl From<Request<'a>> for ClassMethod
+
+impl<'a> From<Request<'a>> for super::SpecMethod<'a> {
+    fn from(from: Request<'a>) -> Self {
+        super::SpecMethod::Access(from.into())
+    } // fn default()
+} // impl From<Request<'a>> for ::super::SpecMethod
 impl ::method::access::RequestOkMethod for ::Amqp8_0 {
     type Payload = RequestOk;
 } // impl ::method::access::RequestOkMethod for ::Amqp8_0
@@ -198,6 +209,17 @@ impl ::method::access::SetRequestOkMethodFields for RequestOk {
         self.set_ticket(ticket)
     } // set_ticket()
 } // impl ::method::access::SetRequestOkMethodFields for RequestOk
+impl<'a> From<RequestOk> for ClassMethod<'a> {
+    fn from(from: RequestOk) -> Self {
+        ClassMethod::RequestOk(from)
+    } // fn from()
+} // impl From<RequestOk> for ClassMethod
+
+impl From<RequestOk> for super::SpecMethod<'static> {
+    fn from(from: RequestOk) -> Self {
+        super::SpecMethod::Access(from.into())
+    } // fn default()
+} // impl From<RequestOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

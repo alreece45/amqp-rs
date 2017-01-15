@@ -192,6 +192,637 @@ pub const METHOD_TX_COMMIT_OK: u16 = 21;
 pub const METHOD_TX_ROLLBACK: u16 = 30;
 pub const METHOD_TX_ROLLBACK_OK: u16 = 31;
 
+pub trait Protocol<'a> {
+    type Frame: 'a;
+
+    fn protocol_header() -> &'static [u8];
+
+fn access_request() -> <Self as ::method::access::RequestMethod<'a>>::Payload
+where Self: ::method::access::RequestMethod<'a>
+{
+        Default::default()
+    }
+fn access_request_ok() -> <Self as ::method::access::RequestOkMethod>::Payload
+where Self: ::method::access::RequestOkMethod
+{
+        Default::default()
+    }
+    fn basic_ack() -> <Self as ::method::basic::AckMethod>::Payload
+        where Self: ::method::basic::AckMethod
+    {
+        Default::default()
+    }
+fn basic_cancel() -> <Self as ::method::basic::CancelMethod<'a>>::Payload
+where Self: ::method::basic::CancelMethod<'a>
+{
+        Default::default()
+    }
+fn basic_cancel_ok() -> <Self as ::method::basic::CancelOkMethod<'a>>::Payload
+where Self: ::method::basic::CancelOkMethod<'a>
+{
+        Default::default()
+    }
+fn basic_consume() -> <Self as ::method::basic::ConsumeMethod<'a>>::Payload
+where Self: ::method::basic::ConsumeMethod<'a>
+{
+        Default::default()
+    }
+fn basic_consume_ok() -> <Self as ::method::basic::ConsumeOkMethod<'a>>::Payload
+where Self: ::method::basic::ConsumeOkMethod<'a>
+{
+        Default::default()
+    }
+fn basic_deliver() -> <Self as ::method::basic::DeliverMethod<'a>>::Payload
+where Self: ::method::basic::DeliverMethod<'a>
+{
+        Default::default()
+    }
+    fn basic_get() -> <Self as ::method::basic::GetMethod<'a>>::Payload
+        where Self: ::method::basic::GetMethod<'a>
+    {
+        Default::default()
+    }
+fn basic_get_empty() -> <Self as ::method::basic::GetEmptyMethod<'a>>::Payload
+where Self: ::method::basic::GetEmptyMethod<'a>
+{
+        Default::default()
+    }
+fn basic_get_ok() -> <Self as ::method::basic::GetOkMethod<'a>>::Payload
+where Self: ::method::basic::GetOkMethod<'a>
+{
+        Default::default()
+    }
+    fn basic_nack() -> <Self as ::method::basic::NackMethod>::Payload
+        where Self: ::method::basic::NackMethod
+    {
+        Default::default()
+    }
+fn basic_publish() -> <Self as ::method::basic::PublishMethod<'a>>::Payload
+where Self: ::method::basic::PublishMethod<'a>
+{
+        Default::default()
+    }
+    fn basic_qos() -> <Self as ::method::basic::QosMethod>::Payload
+        where Self: ::method::basic::QosMethod
+    {
+        Default::default()
+    }
+    fn basic_qos_ok() -> <Self as ::method::basic::QosOkMethod>::Payload
+        where Self: ::method::basic::QosOkMethod
+    {
+        Default::default()
+    }
+    fn basic_recover() -> <Self as ::method::basic::RecoverMethod>::Payload
+        where Self: ::method::basic::RecoverMethod
+    {
+        Default::default()
+    }
+fn basic_recover_async() -> <Self as ::method::basic::RecoverAsyncMethod>::Payload
+where Self: ::method::basic::RecoverAsyncMethod
+{
+        Default::default()
+    }
+fn basic_recover_ok() -> <Self as ::method::basic::RecoverOkMethod>::Payload
+where Self: ::method::basic::RecoverOkMethod
+{
+        Default::default()
+    }
+fn basic_recover_sync() -> <Self as ::method::basic::RecoverSyncMethod>::Payload
+where Self: ::method::basic::RecoverSyncMethod
+{
+        Default::default()
+    }
+fn basic_recover_sync_ok() -> <Self as ::method::basic::RecoverSyncOkMethod>::Payload
+where Self: ::method::basic::RecoverSyncOkMethod
+{
+        Default::default()
+    }
+    fn basic_reject() -> <Self as ::method::basic::RejectMethod>::Payload
+        where Self: ::method::basic::RejectMethod
+    {
+        Default::default()
+    }
+fn basic_return() -> <Self as ::method::basic::ReturnMethod<'a>>::Payload
+where Self: ::method::basic::ReturnMethod<'a>
+{
+        Default::default()
+    }
+fn channel_alert() -> <Self as ::method::channel::AlertMethod<'a>>::Payload
+where Self: ::method::channel::AlertMethod<'a>
+{
+        Default::default()
+    }
+fn channel_close() -> <Self as ::method::channel::CloseMethod<'a>>::Payload
+where Self: ::method::channel::CloseMethod<'a>
+{
+        Default::default()
+    }
+fn channel_close_ok() -> <Self as ::method::channel::CloseOkMethod>::Payload
+where Self: ::method::channel::CloseOkMethod
+{
+        Default::default()
+    }
+    fn channel_flow() -> <Self as ::method::channel::FlowMethod>::Payload
+        where Self: ::method::channel::FlowMethod
+    {
+        Default::default()
+    }
+    fn channel_flow_ok() -> <Self as ::method::channel::FlowOkMethod>::Payload
+        where Self: ::method::channel::FlowOkMethod
+    {
+        Default::default()
+    }
+    fn channel_ok() -> <Self as ::method::channel::OkMethod>::Payload
+        where Self: ::method::channel::OkMethod
+    {
+        Default::default()
+    }
+fn channel_open() -> <Self as ::method::channel::OpenMethod<'a>>::Payload
+where Self: ::method::channel::OpenMethod<'a>
+{
+        Default::default()
+    }
+fn channel_open_ok() -> <Self as ::method::channel::OpenOkMethod<'a>>::Payload
+where Self: ::method::channel::OpenOkMethod<'a>
+{
+        Default::default()
+    }
+    fn channel_ping() -> <Self as ::method::channel::PingMethod>::Payload
+        where Self: ::method::channel::PingMethod
+    {
+        Default::default()
+    }
+    fn channel_pong() -> <Self as ::method::channel::PongMethod>::Payload
+        where Self: ::method::channel::PongMethod
+    {
+        Default::default()
+    }
+fn channel_resume() -> <Self as ::method::channel::ResumeMethod<'a>>::Payload
+where Self: ::method::channel::ResumeMethod<'a>
+{
+        Default::default()
+    }
+    fn confirm_select() -> <Self as ::method::confirm::SelectMethod>::Payload
+        where Self: ::method::confirm::SelectMethod
+    {
+        Default::default()
+    }
+fn confirm_select_ok() -> <Self as ::method::confirm::SelectOkMethod>::Payload
+where Self: ::method::confirm::SelectOkMethod
+{
+        Default::default()
+    }
+fn connection_blocked() -> <Self as ::method::connection::BlockedMethod<'a>>::Payload
+where Self: ::method::connection::BlockedMethod<'a>
+{
+        Default::default()
+    }
+fn connection_close() -> <Self as ::method::connection::CloseMethod<'a>>::Payload
+where Self: ::method::connection::CloseMethod<'a>
+{
+        Default::default()
+    }
+fn connection_close_ok() -> <Self as ::method::connection::CloseOkMethod>::Payload
+where Self: ::method::connection::CloseOkMethod
+{
+        Default::default()
+    }
+fn connection_open() -> <Self as ::method::connection::OpenMethod<'a>>::Payload
+where Self: ::method::connection::OpenMethod<'a>
+{
+        Default::default()
+    }
+fn connection_open_ok() -> <Self as ::method::connection::OpenOkMethod<'a>>::Payload
+where Self: ::method::connection::OpenOkMethod<'a>
+{
+        Default::default()
+    }
+fn connection_redirect() -> <Self as ::method::connection::RedirectMethod<'a>>::Payload
+where Self: ::method::connection::RedirectMethod<'a>
+{
+        Default::default()
+    }
+fn connection_secure() -> <Self as ::method::connection::SecureMethod<'a>>::Payload
+where Self: ::method::connection::SecureMethod<'a>
+{
+        Default::default()
+    }
+fn connection_secure_ok() -> <Self as ::method::connection::SecureOkMethod<'a>>::Payload
+where Self: ::method::connection::SecureOkMethod<'a>
+{
+        Default::default()
+    }
+fn connection_start() -> <Self as ::method::connection::StartMethod<'a>>::Payload
+where Self: ::method::connection::StartMethod<'a>
+{
+        Default::default()
+    }
+fn connection_start_ok() -> <Self as ::method::connection::StartOkMethod<'a>>::Payload
+where Self: ::method::connection::StartOkMethod<'a>
+{
+        Default::default()
+    }
+fn connection_tune() -> <Self as ::method::connection::TuneMethod>::Payload
+where Self: ::method::connection::TuneMethod
+{
+        Default::default()
+    }
+fn connection_tune_ok() -> <Self as ::method::connection::TuneOkMethod>::Payload
+where Self: ::method::connection::TuneOkMethod
+{
+        Default::default()
+    }
+fn connection_unblocked() -> <Self as ::method::connection::UnblockedMethod>::Payload
+where Self: ::method::connection::UnblockedMethod
+{
+        Default::default()
+    }
+    fn dtx_select() -> <Self as ::method::dtx::SelectMethod>::Payload
+        where Self: ::method::dtx::SelectMethod
+    {
+        Default::default()
+    }
+    fn dtx_select_ok() -> <Self as ::method::dtx::SelectOkMethod>::Payload
+        where Self: ::method::dtx::SelectOkMethod
+    {
+        Default::default()
+    }
+    fn dtx_start() -> <Self as ::method::dtx::StartMethod<'a>>::Payload
+        where Self: ::method::dtx::StartMethod<'a>
+    {
+        Default::default()
+    }
+    fn dtx_start_ok() -> <Self as ::method::dtx::StartOkMethod>::Payload
+        where Self: ::method::dtx::StartOkMethod
+    {
+        Default::default()
+    }
+fn exchange_bind() -> <Self as ::method::exchange::BindMethod<'a>>::Payload
+where Self: ::method::exchange::BindMethod<'a>
+{
+        Default::default()
+    }
+fn exchange_bind_ok() -> <Self as ::method::exchange::BindOkMethod>::Payload
+where Self: ::method::exchange::BindOkMethod
+{
+        Default::default()
+    }
+fn exchange_bound() -> <Self as ::method::exchange::BoundMethod<'a>>::Payload
+where Self: ::method::exchange::BoundMethod<'a>
+{
+        Default::default()
+    }
+fn exchange_bound_ok() -> <Self as ::method::exchange::BoundOkMethod<'a>>::Payload
+where Self: ::method::exchange::BoundOkMethod<'a>
+{
+        Default::default()
+    }
+fn exchange_declare() -> <Self as ::method::exchange::DeclareMethod<'a>>::Payload
+where Self: ::method::exchange::DeclareMethod<'a>
+{
+        Default::default()
+    }
+fn exchange_declare_ok() -> <Self as ::method::exchange::DeclareOkMethod>::Payload
+where Self: ::method::exchange::DeclareOkMethod
+{
+        Default::default()
+    }
+fn exchange_delete() -> <Self as ::method::exchange::DeleteMethod<'a>>::Payload
+where Self: ::method::exchange::DeleteMethod<'a>
+{
+        Default::default()
+    }
+fn exchange_delete_ok() -> <Self as ::method::exchange::DeleteOkMethod>::Payload
+where Self: ::method::exchange::DeleteOkMethod
+{
+        Default::default()
+    }
+fn exchange_unbind() -> <Self as ::method::exchange::UnbindMethod<'a>>::Payload
+where Self: ::method::exchange::UnbindMethod<'a>
+{
+        Default::default()
+    }
+fn exchange_unbind_ok() -> <Self as ::method::exchange::UnbindOkMethod>::Payload
+where Self: ::method::exchange::UnbindOkMethod
+{
+        Default::default()
+    }
+    fn file_ack() -> <Self as ::method::file::AckMethod>::Payload
+        where Self: ::method::file::AckMethod
+    {
+        Default::default()
+    }
+fn file_cancel() -> <Self as ::method::file::CancelMethod<'a>>::Payload
+where Self: ::method::file::CancelMethod<'a>
+{
+        Default::default()
+    }
+fn file_cancel_ok() -> <Self as ::method::file::CancelOkMethod<'a>>::Payload
+where Self: ::method::file::CancelOkMethod<'a>
+{
+        Default::default()
+    }
+fn file_consume() -> <Self as ::method::file::ConsumeMethod<'a>>::Payload
+where Self: ::method::file::ConsumeMethod<'a>
+{
+        Default::default()
+    }
+fn file_consume_ok() -> <Self as ::method::file::ConsumeOkMethod<'a>>::Payload
+where Self: ::method::file::ConsumeOkMethod<'a>
+{
+        Default::default()
+    }
+fn file_deliver() -> <Self as ::method::file::DeliverMethod<'a>>::Payload
+where Self: ::method::file::DeliverMethod<'a>
+{
+        Default::default()
+    }
+    fn file_open() -> <Self as ::method::file::OpenMethod<'a>>::Payload
+        where Self: ::method::file::OpenMethod<'a>
+    {
+        Default::default()
+    }
+    fn file_open_ok() -> <Self as ::method::file::OpenOkMethod>::Payload
+        where Self: ::method::file::OpenOkMethod
+    {
+        Default::default()
+    }
+fn file_publish() -> <Self as ::method::file::PublishMethod<'a>>::Payload
+where Self: ::method::file::PublishMethod<'a>
+{
+        Default::default()
+    }
+    fn file_qos() -> <Self as ::method::file::QosMethod>::Payload
+        where Self: ::method::file::QosMethod
+    {
+        Default::default()
+    }
+    fn file_qos_ok() -> <Self as ::method::file::QosOkMethod>::Payload
+        where Self: ::method::file::QosOkMethod
+    {
+        Default::default()
+    }
+    fn file_reject() -> <Self as ::method::file::RejectMethod>::Payload
+        where Self: ::method::file::RejectMethod
+    {
+        Default::default()
+    }
+fn file_return() -> <Self as ::method::file::ReturnMethod<'a>>::Payload
+where Self: ::method::file::ReturnMethod<'a>
+{
+        Default::default()
+    }
+    fn file_stage() -> <Self as ::method::file::StageMethod>::Payload
+        where Self: ::method::file::StageMethod
+    {
+        Default::default()
+    }
+fn message_append() -> <Self as ::method::message::AppendMethod<'a>>::Payload
+where Self: ::method::message::AppendMethod<'a>
+{
+        Default::default()
+    }
+fn message_cancel() -> <Self as ::method::message::CancelMethod<'a>>::Payload
+where Self: ::method::message::CancelMethod<'a>
+{
+        Default::default()
+    }
+fn message_checkpoint() -> <Self as ::method::message::CheckpointMethod<'a>>::Payload
+where Self: ::method::message::CheckpointMethod<'a>
+{
+        Default::default()
+    }
+fn message_close() -> <Self as ::method::message::CloseMethod<'a>>::Payload
+where Self: ::method::message::CloseMethod<'a>
+{
+        Default::default()
+    }
+fn message_consume() -> <Self as ::method::message::ConsumeMethod<'a>>::Payload
+where Self: ::method::message::ConsumeMethod<'a>
+{
+        Default::default()
+    }
+    fn message_empty() -> <Self as ::method::message::EmptyMethod>::Payload
+        where Self: ::method::message::EmptyMethod
+    {
+        Default::default()
+    }
+fn message_get() -> <Self as ::method::message::GetMethod<'a>>::Payload
+where Self: ::method::message::GetMethod<'a>
+{
+        Default::default()
+    }
+    fn message_offset() -> <Self as ::method::message::OffsetMethod>::Payload
+        where Self: ::method::message::OffsetMethod
+    {
+        Default::default()
+    }
+    fn message_ok() -> <Self as ::method::message::OkMethod>::Payload
+        where Self: ::method::message::OkMethod
+    {
+        Default::default()
+    }
+fn message_open() -> <Self as ::method::message::OpenMethod<'a>>::Payload
+where Self: ::method::message::OpenMethod<'a>
+{
+        Default::default()
+    }
+    fn message_qos() -> <Self as ::method::message::QosMethod>::Payload
+        where Self: ::method::message::QosMethod
+    {
+        Default::default()
+    }
+fn message_recover() -> <Self as ::method::message::RecoverMethod>::Payload
+where Self: ::method::message::RecoverMethod
+{
+        Default::default()
+    }
+fn message_reject() -> <Self as ::method::message::RejectMethod<'a>>::Payload
+where Self: ::method::message::RejectMethod<'a>
+{
+        Default::default()
+    }
+fn message_resume() -> <Self as ::method::message::ResumeMethod<'a>>::Payload
+where Self: ::method::message::ResumeMethod<'a>
+{
+        Default::default()
+    }
+fn message_transfer() -> <Self as ::method::message::TransferMethod<'a>>::Payload
+where Self: ::method::message::TransferMethod<'a>
+{
+        Default::default()
+    }
+    fn queue_bind() -> <Self as ::method::queue::BindMethod<'a>>::Payload
+        where Self: ::method::queue::BindMethod<'a>
+    {
+        Default::default()
+    }
+    fn queue_bind_ok() -> <Self as ::method::queue::BindOkMethod>::Payload
+        where Self: ::method::queue::BindOkMethod
+    {
+        Default::default()
+    }
+fn queue_declare() -> <Self as ::method::queue::DeclareMethod<'a>>::Payload
+where Self: ::method::queue::DeclareMethod<'a>
+{
+        Default::default()
+    }
+fn queue_declare_ok() -> <Self as ::method::queue::DeclareOkMethod<'a>>::Payload
+where Self: ::method::queue::DeclareOkMethod<'a>
+{
+        Default::default()
+    }
+fn queue_delete() -> <Self as ::method::queue::DeleteMethod<'a>>::Payload
+where Self: ::method::queue::DeleteMethod<'a>
+{
+        Default::default()
+    }
+    fn queue_delete_ok() -> <Self as ::method::queue::DeleteOkMethod>::Payload
+        where Self: ::method::queue::DeleteOkMethod
+    {
+        Default::default()
+    }
+fn queue_purge() -> <Self as ::method::queue::PurgeMethod<'a>>::Payload
+where Self: ::method::queue::PurgeMethod<'a>
+{
+        Default::default()
+    }
+    fn queue_purge_ok() -> <Self as ::method::queue::PurgeOkMethod>::Payload
+        where Self: ::method::queue::PurgeOkMethod
+    {
+        Default::default()
+    }
+fn queue_unbind() -> <Self as ::method::queue::UnbindMethod<'a>>::Payload
+where Self: ::method::queue::UnbindMethod<'a>
+{
+        Default::default()
+    }
+    fn queue_unbind_ok() -> <Self as ::method::queue::UnbindOkMethod>::Payload
+        where Self: ::method::queue::UnbindOkMethod
+    {
+        Default::default()
+    }
+fn stream_cancel() -> <Self as ::method::stream::CancelMethod<'a>>::Payload
+where Self: ::method::stream::CancelMethod<'a>
+{
+        Default::default()
+    }
+fn stream_cancel_ok() -> <Self as ::method::stream::CancelOkMethod<'a>>::Payload
+where Self: ::method::stream::CancelOkMethod<'a>
+{
+        Default::default()
+    }
+fn stream_consume() -> <Self as ::method::stream::ConsumeMethod<'a>>::Payload
+where Self: ::method::stream::ConsumeMethod<'a>
+{
+        Default::default()
+    }
+fn stream_consume_ok() -> <Self as ::method::stream::ConsumeOkMethod<'a>>::Payload
+where Self: ::method::stream::ConsumeOkMethod<'a>
+{
+        Default::default()
+    }
+fn stream_deliver() -> <Self as ::method::stream::DeliverMethod<'a>>::Payload
+where Self: ::method::stream::DeliverMethod<'a>
+{
+        Default::default()
+    }
+fn stream_publish() -> <Self as ::method::stream::PublishMethod<'a>>::Payload
+where Self: ::method::stream::PublishMethod<'a>
+{
+        Default::default()
+    }
+    fn stream_qos() -> <Self as ::method::stream::QosMethod>::Payload
+        where Self: ::method::stream::QosMethod
+    {
+        Default::default()
+    }
+    fn stream_qos_ok() -> <Self as ::method::stream::QosOkMethod>::Payload
+        where Self: ::method::stream::QosOkMethod
+    {
+        Default::default()
+    }
+fn stream_return() -> <Self as ::method::stream::ReturnMethod<'a>>::Payload
+where Self: ::method::stream::ReturnMethod<'a>
+{
+        Default::default()
+    }
+    fn test_content() -> <Self as ::method::test::ContentMethod>::Payload
+        where Self: ::method::test::ContentMethod
+    {
+        Default::default()
+    }
+    fn test_content_ok() -> <Self as ::method::test::ContentOkMethod>::Payload
+        where Self: ::method::test::ContentOkMethod
+    {
+        Default::default()
+    }
+    fn test_integer() -> <Self as ::method::test::IntegerMethod>::Payload
+        where Self: ::method::test::IntegerMethod
+    {
+        Default::default()
+    }
+    fn test_integer_ok() -> <Self as ::method::test::IntegerOkMethod>::Payload
+        where Self: ::method::test::IntegerOkMethod
+    {
+        Default::default()
+    }
+fn test_string() -> <Self as ::method::test::StringMethod<'a>>::Payload
+where Self: ::method::test::StringMethod<'a>
+{
+        Default::default()
+    }
+fn test_string_ok() -> <Self as ::method::test::StringOkMethod<'a>>::Payload
+where Self: ::method::test::StringOkMethod<'a>
+{
+        Default::default()
+    }
+    fn test_table() -> <Self as ::method::test::TableMethod<'a>>::Payload
+        where Self: ::method::test::TableMethod<'a>
+    {
+        Default::default()
+    }
+fn test_table_ok() -> <Self as ::method::test::TableOkMethod<'a>>::Payload
+where Self: ::method::test::TableOkMethod<'a>
+{
+        Default::default()
+    }
+fn tunnel_request() -> <Self as ::method::tunnel::RequestMethod<'a>>::Payload
+where Self: ::method::tunnel::RequestMethod<'a>
+{
+        Default::default()
+    }
+    fn tx_commit() -> <Self as ::method::tx::CommitMethod>::Payload
+        where Self: ::method::tx::CommitMethod
+    {
+        Default::default()
+    }
+    fn tx_commit_ok() -> <Self as ::method::tx::CommitOkMethod>::Payload
+        where Self: ::method::tx::CommitOkMethod
+    {
+        Default::default()
+    }
+    fn tx_rollback() -> <Self as ::method::tx::RollbackMethod>::Payload
+        where Self: ::method::tx::RollbackMethod
+    {
+        Default::default()
+    }
+    fn tx_rollback_ok() -> <Self as ::method::tx::RollbackOkMethod>::Payload
+        where Self: ::method::tx::RollbackOkMethod
+    {
+        Default::default()
+    }
+    fn tx_select() -> <Self as ::method::tx::SelectMethod>::Payload
+        where Self: ::method::tx::SelectMethod
+    {
+        Default::default()
+    }
+    fn tx_select_ok() -> <Self as ::method::tx::SelectOkMethod>::Payload
+        where Self: ::method::tx::SelectOkMethod
+    {
+        Default::default()
+    }
+} // pub trait Protocol<'a>
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq)]

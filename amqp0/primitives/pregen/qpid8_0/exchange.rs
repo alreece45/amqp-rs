@@ -105,6 +105,17 @@ impl<'a> ::method::exchange::SetBoundMethodFields<'a> for Bound<'a> {
         self.set_queue(queue.into())
     } // set_queue()
 } // impl<'a> ::method::exchange::SetBoundMethodFields<'a> for Bound<'a>
+impl<'a> From<Bound<'a>> for ClassMethod<'a> {
+    fn from(from: Bound<'a>) -> Self {
+        ClassMethod::Bound(from)
+    } // fn from()
+} // impl From<Bound<'a>> for ClassMethod
+
+impl<'a> From<Bound<'a>> for super::SpecMethod<'a> {
+    fn from(from: Bound<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<Bound<'a>> for ::super::SpecMethod
 impl<'a> ::method::exchange::BoundOkMethod<'a> for ::Qpid8_0 {
     type Payload = BoundOk<'a>;
 } // impl<'a> ::method::exchange::BoundOkMethod<'a> for ::Qpid8_0
@@ -186,6 +197,17 @@ impl<'a> ::method::exchange::SetBoundOkMethodFields<'a> for BoundOk<'a> {
         self.set_reply_text(reply_text.into())
     } // set_reply_text()
 } // impl<'a> ::method::exchange::SetBoundOkMethodFields<'a> for BoundOk<'a>
+impl<'a> From<BoundOk<'a>> for ClassMethod<'a> {
+    fn from(from: BoundOk<'a>) -> Self {
+        ClassMethod::BoundOk(from)
+    } // fn from()
+} // impl From<BoundOk<'a>> for ClassMethod
+
+impl<'a> From<BoundOk<'a>> for super::SpecMethod<'a> {
+    fn from(from: BoundOk<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<BoundOk<'a>> for ::super::SpecMethod
 impl<'a> ::method::exchange::DeclareMethod<'a> for ::Qpid8_0 {
     type Payload = Declare<'a>;
 } // impl<'a> ::method::exchange::DeclareMethod<'a> for ::Qpid8_0
@@ -346,6 +368,17 @@ impl<'a> ::method::exchange::SetDeclareMethodFields<'a> for Declare<'a> {
         self.set_arguments(arguments.into())
     } // set_arguments()
 } // impl<'a> ::method::exchange::SetDeclareMethodFields<'a> for Declare<'a>
+impl<'a> From<Declare<'a>> for ClassMethod<'a> {
+    fn from(from: Declare<'a>) -> Self {
+        ClassMethod::Declare(from)
+    } // fn from()
+} // impl From<Declare<'a>> for ClassMethod
+
+impl<'a> From<Declare<'a>> for super::SpecMethod<'a> {
+    fn from(from: Declare<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<Declare<'a>> for ::super::SpecMethod
 impl ::method::exchange::DeclareOkMethod for ::Qpid8_0 {
     type Payload = DeclareOk;
 } // impl ::method::exchange::DeclareOkMethod for ::Qpid8_0
@@ -402,6 +435,17 @@ impl ::ProtocolMethodPayload for DeclareOk {
         11
     } // fn method_id()
 } // impl ::Payload for DeclareOk
+impl<'a> From<DeclareOk> for ClassMethod<'a> {
+    fn from(from: DeclareOk) -> Self {
+        ClassMethod::DeclareOk(from)
+    } // fn from()
+} // impl From<DeclareOk> for ClassMethod
+
+impl From<DeclareOk> for super::SpecMethod<'static> {
+    fn from(from: DeclareOk) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<DeclareOk> for ::super::SpecMethod
 impl<'a> ::method::exchange::DeleteMethod<'a> for ::Qpid8_0 {
     type Payload = Delete<'a>;
 } // impl<'a> ::method::exchange::DeleteMethod<'a> for ::Qpid8_0
@@ -503,6 +547,17 @@ impl<'a> ::method::exchange::SetDeleteMethodFields<'a> for Delete<'a> {
         self.set_no_wait(no_wait)
     } // set_no_wait()
 } // impl<'a> ::method::exchange::SetDeleteMethodFields<'a> for Delete<'a>
+impl<'a> From<Delete<'a>> for ClassMethod<'a> {
+    fn from(from: Delete<'a>) -> Self {
+        ClassMethod::Delete(from)
+    } // fn from()
+} // impl From<Delete<'a>> for ClassMethod
+
+impl<'a> From<Delete<'a>> for super::SpecMethod<'a> {
+    fn from(from: Delete<'a>) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<Delete<'a>> for ::super::SpecMethod
 impl ::method::exchange::DeleteOkMethod for ::Qpid8_0 {
     type Payload = DeleteOk;
 } // impl ::method::exchange::DeleteOkMethod for ::Qpid8_0
@@ -559,6 +614,17 @@ impl ::ProtocolMethodPayload for DeleteOk {
         21
     } // fn method_id()
 } // impl ::Payload for DeleteOk
+impl<'a> From<DeleteOk> for ClassMethod<'a> {
+    fn from(from: DeleteOk) -> Self {
+        ClassMethod::DeleteOk(from)
+    } // fn from()
+} // impl From<DeleteOk> for ClassMethod
+
+impl From<DeleteOk> for super::SpecMethod<'static> {
+    fn from(from: DeleteOk) -> Self {
+        super::SpecMethod::Exchange(from.into())
+    } // fn default()
+} // impl From<DeleteOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

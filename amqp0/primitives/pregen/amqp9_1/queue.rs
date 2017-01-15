@@ -134,6 +134,17 @@ impl<'a> ::method::queue::SetBindMethodFields<'a> for Bind<'a> {
         self.set_arguments(arguments.into())
     } // set_arguments()
 } // impl<'a> ::method::queue::SetBindMethodFields<'a> for Bind<'a>
+impl<'a> From<Bind<'a>> for ClassMethod<'a> {
+    fn from(from: Bind<'a>) -> Self {
+        ClassMethod::Bind(from)
+    } // fn from()
+} // impl From<Bind<'a>> for ClassMethod
+
+impl<'a> From<Bind<'a>> for super::SpecMethod<'a> {
+    fn from(from: Bind<'a>) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<Bind<'a>> for ::super::SpecMethod
 impl ::method::queue::BindOkMethod for ::Amqp9_1 {
     type Payload = BindOk;
 } // impl ::method::queue::BindOkMethod for ::Amqp9_1
@@ -190,6 +201,17 @@ impl ::ProtocolMethodPayload for BindOk {
         21
     } // fn method_id()
 } // impl ::Payload for BindOk
+impl<'a> From<BindOk> for ClassMethod<'a> {
+    fn from(from: BindOk) -> Self {
+        ClassMethod::BindOk(from)
+    } // fn from()
+} // impl From<BindOk> for ClassMethod
+
+impl From<BindOk> for super::SpecMethod<'static> {
+    fn from(from: BindOk) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<BindOk> for ::super::SpecMethod
 impl<'a> ::method::queue::DeclareMethod<'a> for ::Amqp9_1 {
     type Payload = Declare<'a>;
 } // impl<'a> ::method::queue::DeclareMethod<'a> for ::Amqp9_1
@@ -329,6 +351,17 @@ impl<'a> ::method::queue::SetDeclareMethodFields<'a> for Declare<'a> {
         self.set_arguments(arguments.into())
     } // set_arguments()
 } // impl<'a> ::method::queue::SetDeclareMethodFields<'a> for Declare<'a>
+impl<'a> From<Declare<'a>> for ClassMethod<'a> {
+    fn from(from: Declare<'a>) -> Self {
+        ClassMethod::Declare(from)
+    } // fn from()
+} // impl From<Declare<'a>> for ClassMethod
+
+impl<'a> From<Declare<'a>> for super::SpecMethod<'a> {
+    fn from(from: Declare<'a>) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<Declare<'a>> for ::super::SpecMethod
 impl<'a> ::method::queue::DeclareOkMethod<'a> for ::Amqp9_1 {
     type Payload = DeclareOk<'a>;
 } // impl<'a> ::method::queue::DeclareOkMethod<'a> for ::Amqp9_1
@@ -417,6 +450,17 @@ impl<'a> ::method::queue::SetDeclareOkMethodFields<'a> for DeclareOk<'a> {
         self.set_consumer_count(consumer_count)
     } // set_consumer_count()
 } // impl<'a> ::method::queue::SetDeclareOkMethodFields<'a> for DeclareOk<'a>
+impl<'a> From<DeclareOk<'a>> for ClassMethod<'a> {
+    fn from(from: DeclareOk<'a>) -> Self {
+        ClassMethod::DeclareOk(from)
+    } // fn from()
+} // impl From<DeclareOk<'a>> for ClassMethod
+
+impl<'a> From<DeclareOk<'a>> for super::SpecMethod<'a> {
+    fn from(from: DeclareOk<'a>) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<DeclareOk<'a>> for ::super::SpecMethod
 impl<'a> ::method::queue::DeleteMethod<'a> for ::Amqp9_1 {
     type Payload = Delete<'a>;
 } // impl<'a> ::method::queue::DeleteMethod<'a> for ::Amqp9_1
@@ -519,6 +563,17 @@ impl<'a> ::method::queue::SetDeleteMethodFields<'a> for Delete<'a> {
         self.set_no_wait(no_wait)
     } // set_no_wait()
 } // impl<'a> ::method::queue::SetDeleteMethodFields<'a> for Delete<'a>
+impl<'a> From<Delete<'a>> for ClassMethod<'a> {
+    fn from(from: Delete<'a>) -> Self {
+        ClassMethod::Delete(from)
+    } // fn from()
+} // impl From<Delete<'a>> for ClassMethod
+
+impl<'a> From<Delete<'a>> for super::SpecMethod<'a> {
+    fn from(from: Delete<'a>) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<Delete<'a>> for ::super::SpecMethod
 impl ::method::queue::DeleteOkMethod for ::Amqp9_1 {
     type Payload = DeleteOk;
 } // impl ::method::queue::DeleteOkMethod for ::Amqp9_1
@@ -587,6 +642,17 @@ impl ::method::queue::SetDeleteOkMethodFields for DeleteOk {
         self.set_message_count(message_count)
     } // set_message_count()
 } // impl ::method::queue::SetDeleteOkMethodFields for DeleteOk
+impl<'a> From<DeleteOk> for ClassMethod<'a> {
+    fn from(from: DeleteOk) -> Self {
+        ClassMethod::DeleteOk(from)
+    } // fn from()
+} // impl From<DeleteOk> for ClassMethod
+
+impl From<DeleteOk> for super::SpecMethod<'static> {
+    fn from(from: DeleteOk) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<DeleteOk> for ::super::SpecMethod
 impl<'a> ::method::queue::PurgeMethod<'a> for ::Amqp9_1 {
     type Payload = Purge<'a>;
 } // impl<'a> ::method::queue::PurgeMethod<'a> for ::Amqp9_1
@@ -675,6 +741,17 @@ impl<'a> ::method::queue::SetPurgeMethodFields<'a> for Purge<'a> {
         self.set_no_wait(no_wait)
     } // set_no_wait()
 } // impl<'a> ::method::queue::SetPurgeMethodFields<'a> for Purge<'a>
+impl<'a> From<Purge<'a>> for ClassMethod<'a> {
+    fn from(from: Purge<'a>) -> Self {
+        ClassMethod::Purge(from)
+    } // fn from()
+} // impl From<Purge<'a>> for ClassMethod
+
+impl<'a> From<Purge<'a>> for super::SpecMethod<'a> {
+    fn from(from: Purge<'a>) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<Purge<'a>> for ::super::SpecMethod
 impl ::method::queue::PurgeOkMethod for ::Amqp9_1 {
     type Payload = PurgeOk;
 } // impl ::method::queue::PurgeOkMethod for ::Amqp9_1
@@ -743,6 +820,17 @@ impl ::method::queue::SetPurgeOkMethodFields for PurgeOk {
         self.set_message_count(message_count)
     } // set_message_count()
 } // impl ::method::queue::SetPurgeOkMethodFields for PurgeOk
+impl<'a> From<PurgeOk> for ClassMethod<'a> {
+    fn from(from: PurgeOk) -> Self {
+        ClassMethod::PurgeOk(from)
+    } // fn from()
+} // impl From<PurgeOk> for ClassMethod
+
+impl From<PurgeOk> for super::SpecMethod<'static> {
+    fn from(from: PurgeOk) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<PurgeOk> for ::super::SpecMethod
 impl<'a> ::method::queue::UnbindMethod<'a> for ::Amqp9_1 {
     type Payload = Unbind<'a>;
 } // impl<'a> ::method::queue::UnbindMethod<'a> for ::Amqp9_1
@@ -850,6 +938,17 @@ impl<'a> ::method::queue::SetUnbindMethodFields<'a> for Unbind<'a> {
         self.set_arguments(arguments.into())
     } // set_arguments()
 } // impl<'a> ::method::queue::SetUnbindMethodFields<'a> for Unbind<'a>
+impl<'a> From<Unbind<'a>> for ClassMethod<'a> {
+    fn from(from: Unbind<'a>) -> Self {
+        ClassMethod::Unbind(from)
+    } // fn from()
+} // impl From<Unbind<'a>> for ClassMethod
+
+impl<'a> From<Unbind<'a>> for super::SpecMethod<'a> {
+    fn from(from: Unbind<'a>) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<Unbind<'a>> for ::super::SpecMethod
 impl ::method::queue::UnbindOkMethod for ::Amqp9_1 {
     type Payload = UnbindOk;
 } // impl ::method::queue::UnbindOkMethod for ::Amqp9_1
@@ -906,6 +1005,17 @@ impl ::ProtocolMethodPayload for UnbindOk {
         51
     } // fn method_id()
 } // impl ::Payload for UnbindOk
+impl<'a> From<UnbindOk> for ClassMethod<'a> {
+    fn from(from: UnbindOk) -> Self {
+        ClassMethod::UnbindOk(from)
+    } // fn from()
+} // impl From<UnbindOk> for ClassMethod
+
+impl From<UnbindOk> for super::SpecMethod<'static> {
+    fn from(from: UnbindOk) -> Self {
+        super::SpecMethod::Queue(from.into())
+    } // fn default()
+} // impl From<UnbindOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod<'a> {

@@ -83,6 +83,17 @@ impl ::method::confirm::SetSelectMethodFields for Select {
         self.set_no_wait(no_wait)
     } // set_no_wait()
 } // impl ::method::confirm::SetSelectMethodFields for Select
+impl From<Select> for ClassMethod {
+    fn from(from: Select) -> Self {
+        ClassMethod::Select(from)
+    } // fn from()
+} // impl From<Select> for ClassMethod
+
+impl From<Select> for super::SpecMethod<'static> {
+    fn from(from: Select) -> Self {
+        super::SpecMethod::Confirm(from.into())
+    } // fn default()
+} // impl From<Select> for ::super::SpecMethod
 impl ::method::confirm::SelectOkMethod for ::Rabbitmq9_1 {
     type Payload = SelectOk;
 } // impl ::method::confirm::SelectOkMethod for ::Rabbitmq9_1
@@ -139,6 +150,17 @@ impl ::ProtocolMethodPayload for SelectOk {
         11
     } // fn method_id()
 } // impl ::Payload for SelectOk
+impl From<SelectOk> for ClassMethod {
+    fn from(from: SelectOk) -> Self {
+        ClassMethod::SelectOk(from)
+    } // fn from()
+} // impl From<SelectOk> for ClassMethod
+
+impl From<SelectOk> for super::SpecMethod<'static> {
+    fn from(from: SelectOk) -> Self {
+        super::SpecMethod::Confirm(from.into())
+    } // fn default()
+} // impl From<SelectOk> for ::super::SpecMethod
 
 #[derive(Debug)]
 pub enum ClassMethod {
