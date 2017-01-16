@@ -80,13 +80,23 @@ impl<'a> FormatRustCode for ClassMethod<'a> {
         let chassis_client = chassis.get("client");
         let chassis_server = chassis.get("server");
         format!(
-            "::ClassMethod {{\nname: {},\nindex: {},\nchassis_client: {},\nchassis_server: {},\nresponse: {},\nis_synchronous: {},\nfields: {},\n}}",
+            "::ClassMethod {{\n\
+                name: {},\n\
+                index: {},\n\
+                chassis_client: {},\n\
+                chassis_server: {},\n\
+                response: {},\n\
+                is_synchronous: {},\n\
+                has_content: {},\n\
+                fields: {},\n\
+            }}",
             self.name().format_rust(),
             self.index(),
             chassis_client.format_rust(),
             chassis_server.format_rust(),
             self.response().format_rust(),
             self.is_synchronous().format_rust(),
+            self.has_content().format_rust(),
             self.fields().format_rust(),
         )
     }

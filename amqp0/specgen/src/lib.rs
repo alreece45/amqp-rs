@@ -100,6 +100,7 @@ pub struct ClassMethod<'a> {
     response: Option<Cow<'a, str>>,
     fields: Vec<ClassMethodField<'a>>,
     is_synchronous: bool,
+    has_content: bool,
 }
 
 impl<'a> Spec<'a> {
@@ -245,7 +246,7 @@ impl<'a> ClassMethodField<'a> {
 }
 
 impl<'a> ClassMethod<'a> {
-    pub fn new<N, I>(name: N, index: I, is_synchronous: bool) -> Self
+    pub fn new<N, I>(name: N, index: I, is_synchronous: bool, has_content: bool) -> Self
         where N: Into<Cow<'a, str>>,
               I: Into<Cow<'a, str>>
     {
@@ -258,6 +259,7 @@ impl<'a> ClassMethod<'a> {
             response: None,
             fields: vec![],
             is_synchronous: is_synchronous,
+            has_content: has_content,
         }
     }
     pub fn index(&self) -> &str {
@@ -277,5 +279,8 @@ impl<'a> ClassMethod<'a> {
     }
     pub fn is_synchronous(&self) -> bool {
         self.is_synchronous
+    }
+    pub fn has_content(&self) -> bool {
+        self.has_content
     }
 }

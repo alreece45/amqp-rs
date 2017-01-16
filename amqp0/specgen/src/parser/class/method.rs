@@ -25,12 +25,16 @@ impl<'a> Parser<'a> {
             if e.local_name != "method" {
                 return Err(Error::ExpectedElementStart("method".into()));
             }
-            let (mut name, mut index, mut is_synchronous) = (None, None, false);
+
+            let (mut name, mut index) = (None, None);
+            let (mut is_synchronous, mut has_content) = (false, false);
+
             for attribute in attributes {
                 match attribute.name.local_name.as_ref() {
                     "name" => name = name.or_else(|| Some(attribute.value.clone())),
                     "index" => index = index.or_else(|| Some(attribute.value.clone())),
                     "synchronous" => is_synchronous = attribute.value == "1",
+                    "content" => has_content = attribute.value == "1",
                     _ => (),
                 }
             }
@@ -41,7 +45,7 @@ impl<'a> Parser<'a> {
             let index = try!(index.ok_or_else(|| {
                 Error::ExpectedAttribute("field".into(), "index".into())
             }));
-            Ok(Parser::Idle(ClassMethod::new(name, index, is_synchronous)))
+            Ok(Parser::Idle(ClassMethod::new(name, index, is_synchronous, has_content)))
         } else {
             Err(Error::ExpectedElementStart("method".into()))
         }
