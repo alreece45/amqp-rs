@@ -823,6 +823,22 @@ where Self: ::method::tunnel::RequestMethod<'a>
         Default::default()
     }
 } // pub trait Protocol<'a>
+pub enum Class {
+    Access,
+    Basic,
+    Channel,
+    Confirm,
+    Connection,
+    Dtx,
+    Exchange,
+    File,
+    Message,
+    Queue,
+    Stream,
+    Test,
+    Tunnel,
+    Tx,
+} // pub trait Class
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq)]

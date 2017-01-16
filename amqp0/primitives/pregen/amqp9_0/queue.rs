@@ -106,13 +106,22 @@ fn test_bind_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Bind<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         20
-    } // fn method_id()
-} // impl ::Payload for Bind
+    }
+    fn method_name(&self) -> &'static str {
+        "bind"
+    }
+} // impl ::ProtocolMethodPayload for Bind<'a>
 impl<'a> ::method::queue::SetBindMethodFields<'a> for Bind<'a> {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -201,13 +210,22 @@ fn test_bind_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for BindOk {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         21
-    } // fn method_id()
-} // impl ::Payload for BindOk
+    }
+    fn method_name(&self) -> &'static str {
+        "bind-ok"
+    }
+} // impl ::ProtocolMethodPayload for BindOk
 impl<'a> From<BindOk> for ClassMethod<'a> {
     fn from(from: BindOk) -> Self {
         ClassMethod::BindOk(from)
@@ -329,13 +347,22 @@ fn test_declare_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Declare<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Declare
+    }
+    fn method_name(&self) -> &'static str {
+        "declare"
+    }
+} // impl ::ProtocolMethodPayload for Declare<'a>
 impl<'a> ::method::queue::SetDeclareMethodFields<'a> for Declare<'a> {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -445,13 +472,22 @@ fn test_declare_ok_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for DeclareOk<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for DeclareOk
+    }
+    fn method_name(&self) -> &'static str {
+        "declare-ok"
+    }
+} // impl ::ProtocolMethodPayload for DeclareOk<'a>
 impl<'a> ::method::queue::SetDeclareOkMethodFields<'a> for DeclareOk<'a> {
     fn set_queue<V>(&mut self, queue: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -558,13 +594,22 @@ fn test_delete_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Delete<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         40
-    } // fn method_id()
-} // impl ::Payload for Delete
+    }
+    fn method_name(&self) -> &'static str {
+        "delete"
+    }
+} // impl ::ProtocolMethodPayload for Delete<'a>
 impl<'a> ::method::queue::SetDeleteMethodFields<'a> for Delete<'a> {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -651,13 +696,22 @@ fn test_delete_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for DeleteOk {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         41
-    } // fn method_id()
-} // impl ::Payload for DeleteOk
+    }
+    fn method_name(&self) -> &'static str {
+        "delete-ok"
+    }
+} // impl ::ProtocolMethodPayload for DeleteOk
 impl ::method::queue::SetDeleteOkMethodFields for DeleteOk {
     fn set_message_count(&mut self, message_count: u32) {
         self.set_message_count(message_count)
@@ -748,13 +802,22 @@ fn test_purge_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Purge<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         30
-    } // fn method_id()
-} // impl ::Payload for Purge
+    }
+    fn method_name(&self) -> &'static str {
+        "purge"
+    }
+} // impl ::ProtocolMethodPayload for Purge<'a>
 impl<'a> ::method::queue::SetPurgeMethodFields<'a> for Purge<'a> {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -835,13 +898,22 @@ fn test_purge_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for PurgeOk {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         31
-    } // fn method_id()
-} // impl ::Payload for PurgeOk
+    }
+    fn method_name(&self) -> &'static str {
+        "purge-ok"
+    }
+} // impl ::ProtocolMethodPayload for PurgeOk
 impl ::method::queue::SetPurgeOkMethodFields for PurgeOk {
     fn set_message_count(&mut self, message_count: u32) {
         self.set_message_count(message_count)
@@ -939,13 +1011,22 @@ fn test_unbind_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Unbind<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         50
-    } // fn method_id()
-} // impl ::Payload for Unbind
+    }
+    fn method_name(&self) -> &'static str {
+        "unbind"
+    }
+} // impl ::ProtocolMethodPayload for Unbind<'a>
 impl<'a> ::method::queue::SetUnbindMethodFields<'a> for Unbind<'a> {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -1031,13 +1112,22 @@ fn test_unbind_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for UnbindOk {
+    fn class(&self) -> ::Class {
+        ::Class::Queue
+    }
     fn class_id(&self) -> u16 {
         50
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "queue"
+    }
     fn method_id(&self) -> u16 {
         51
-    } // fn method_id()
-} // impl ::Payload for UnbindOk
+    }
+    fn method_name(&self) -> &'static str {
+        "unbind-ok"
+    }
+} // impl ::ProtocolMethodPayload for UnbindOk
 impl<'a> From<UnbindOk> for ClassMethod<'a> {
     fn from(from: UnbindOk) -> Self {
         ClassMethod::UnbindOk(from)
@@ -1090,6 +1180,23 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::BindOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Purge(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::PurgeOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Unbind(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::UnbindOk(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -1107,6 +1214,23 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::BindOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Purge(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::PurgeOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Unbind(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::UnbindOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -1123,4 +1247,21 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Bind(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::BindOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Declare(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::DeclareOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Delete(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::DeleteOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Purge(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::PurgeOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Unbind(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::UnbindOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

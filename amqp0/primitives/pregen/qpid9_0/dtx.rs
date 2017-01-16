@@ -58,13 +58,22 @@ fn test_select_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Select {
+    fn class(&self) -> ::Class {
+        ::Class::Dtx
+    }
     fn class_id(&self) -> u16 {
         100
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "dtx"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Select
+    }
+    fn method_name(&self) -> &'static str {
+        "select"
+    }
+} // impl ::ProtocolMethodPayload for Select
 impl<'a> From<Select> for ClassMethod<'a> {
     fn from(from: Select) -> Self {
         ClassMethod::Select(from)
@@ -125,13 +134,22 @@ fn test_select_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for SelectOk {
+    fn class(&self) -> ::Class {
+        ::Class::Dtx
+    }
     fn class_id(&self) -> u16 {
         100
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "dtx"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for SelectOk
+    }
+    fn method_name(&self) -> &'static str {
+        "select-ok"
+    }
+} // impl ::ProtocolMethodPayload for SelectOk
 impl<'a> From<SelectOk> for ClassMethod<'a> {
     fn from(from: SelectOk) -> Self {
         ClassMethod::SelectOk(from)
@@ -201,13 +219,22 @@ fn test_start_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Start<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Dtx
+    }
     fn class_id(&self) -> u16 {
         100
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "dtx"
+    }
     fn method_id(&self) -> u16 {
         20
-    } // fn method_id()
-} // impl ::Payload for Start
+    }
+    fn method_name(&self) -> &'static str {
+        "start"
+    }
+} // impl ::ProtocolMethodPayload for Start<'a>
 impl<'a> ::method::dtx::SetStartMethodFields<'a> for Start<'a> {
     fn set_dtx_identifier<V>(&mut self, dtx_identifier: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -275,13 +302,22 @@ fn test_start_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for StartOk {
+    fn class(&self) -> ::Class {
+        ::Class::Dtx
+    }
     fn class_id(&self) -> u16 {
         100
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "dtx"
+    }
     fn method_id(&self) -> u16 {
         21
-    } // fn method_id()
-} // impl ::Payload for StartOk
+    }
+    fn method_name(&self) -> &'static str {
+        "start-ok"
+    }
+} // impl ::ProtocolMethodPayload for StartOk
 impl<'a> From<StartOk> for ClassMethod<'a> {
     fn from(from: StartOk) -> Self {
         ClassMethod::StartOk(from)
@@ -322,6 +358,17 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Start(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -333,6 +380,17 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Start(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Select(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -343,4 +401,15 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Start(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

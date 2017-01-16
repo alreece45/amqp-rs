@@ -7,6 +7,7 @@
 // except according to those terms.
 
 mod class_mod;
+mod class_enum;
 mod method_mod;
 mod root_mod;
 mod protocol_trait;

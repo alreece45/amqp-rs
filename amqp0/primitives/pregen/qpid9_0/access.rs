@@ -101,13 +101,22 @@ fn test_request_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Request<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Access
+    }
     fn class_id(&self) -> u16 {
         30
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "access"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Request
+    }
+    fn method_name(&self) -> &'static str {
+        "request"
+    }
+} // impl ::ProtocolMethodPayload for Request<'a>
 impl<'a> ::method::access::SetRequestMethodFields<'a> for Request<'a> {
     fn set_realm<V>(&mut self, realm: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -197,13 +206,22 @@ fn test_request_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for RequestOk {
+    fn class(&self) -> ::Class {
+        ::Class::Access
+    }
     fn class_id(&self) -> u16 {
         30
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "access"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for RequestOk
+    }
+    fn method_name(&self) -> &'static str {
+        "request-ok"
+    }
+} // impl ::ProtocolMethodPayload for RequestOk
 impl ::method::access::SetRequestOkMethodFields for RequestOk {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -245,6 +263,15 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::RequestOk(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -254,6 +281,15 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::RequestOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Request(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -262,4 +298,13 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Request(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::RequestOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

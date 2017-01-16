@@ -67,13 +67,22 @@ fn test_blocked_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Blocked<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         60
-    } // fn method_id()
-} // impl ::Payload for Blocked
+    }
+    fn method_name(&self) -> &'static str {
+        "blocked"
+    }
+} // impl ::ProtocolMethodPayload for Blocked<'a>
 impl<'a> ::method::connection::SetBlockedMethodFields<'a> for Blocked<'a> {
     fn set_reason<V>(&mut self, reason: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -164,13 +173,22 @@ fn test_close_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Close<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         50
-    } // fn method_id()
-} // impl ::Payload for Close
+    }
+    fn method_name(&self) -> &'static str {
+        "close"
+    }
+} // impl ::ProtocolMethodPayload for Close<'a>
 impl<'a> ::method::connection::SetCloseMethodFields<'a> for Close<'a> {
     fn set_reply_code(&mut self, reply_code: u16) {
         self.set_reply_code(reply_code)
@@ -247,13 +265,22 @@ fn test_close_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for CloseOk {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         51
-    } // fn method_id()
-} // impl ::Payload for CloseOk
+    }
+    fn method_name(&self) -> &'static str {
+        "close-ok"
+    }
+} // impl ::ProtocolMethodPayload for CloseOk
 impl<'a> From<CloseOk> for ClassMethod<'a> {
     fn from(from: CloseOk) -> Self {
         ClassMethod::CloseOk(from)
@@ -325,13 +352,22 @@ fn test_open_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Open<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         40
-    } // fn method_id()
-} // impl ::Payload for Open
+    }
+    fn method_name(&self) -> &'static str {
+        "open"
+    }
+} // impl ::ProtocolMethodPayload for Open<'a>
 impl<'a> ::method::connection::SetOpenMethodFields<'a> for Open<'a> {
     fn set_virtual_host<V>(&mut self, virtual_host: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -401,13 +437,22 @@ fn test_open_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for OpenOk {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         41
-    } // fn method_id()
-} // impl ::Payload for OpenOk
+    }
+    fn method_name(&self) -> &'static str {
+        "open-ok"
+    }
+} // impl ::ProtocolMethodPayload for OpenOk
 impl<'a> ::method::connection::SetOpenOkMethodFields<'a> for OpenOk {} // impl<'a> ::method::connection::SetOpenOkMethodFields<'a> for OpenOk
 impl<'a> From<OpenOk> for ClassMethod<'a> {
     fn from(from: OpenOk) -> Self {
@@ -478,13 +523,22 @@ fn test_secure_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Secure<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         20
-    } // fn method_id()
-} // impl ::Payload for Secure
+    }
+    fn method_name(&self) -> &'static str {
+        "secure"
+    }
+} // impl ::ProtocolMethodPayload for Secure<'a>
 impl<'a> ::method::connection::SetSecureMethodFields<'a> for Secure<'a> {
     fn set_challenge<V>(&mut self, challenge: V)
         where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -561,13 +615,22 @@ fn test_secure_ok_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for SecureOk<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         21
-    } // fn method_id()
-} // impl ::Payload for SecureOk
+    }
+    fn method_name(&self) -> &'static str {
+        "secure-ok"
+    }
+} // impl ::ProtocolMethodPayload for SecureOk<'a>
 impl<'a> ::method::connection::SetSecureOkMethodFields<'a> for SecureOk<'a> {
     fn set_response<V>(&mut self, response: V)
         where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -671,13 +734,22 @@ fn test_start_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Start<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Start
+    }
+    fn method_name(&self) -> &'static str {
+        "start"
+    }
+} // impl ::ProtocolMethodPayload for Start<'a>
 impl<'a> ::method::connection::SetStartMethodFields<'a> for Start<'a> {
     fn set_version_major(&mut self, version_major: u8) {
         self.set_version_major(version_major)
@@ -789,13 +861,22 @@ fn test_start_ok_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for StartOk<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for StartOk
+    }
+    fn method_name(&self) -> &'static str {
+        "start-ok"
+    }
+} // impl ::ProtocolMethodPayload for StartOk<'a>
 impl<'a> ::method::connection::SetStartOkMethodFields<'a> for StartOk<'a> {
     fn set_client_properties<V>(&mut self, client_properties: V)
         where V: Into<::field::TableEntries<'a>>
@@ -895,13 +976,22 @@ fn test_tune_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Tune {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         30
-    } // fn method_id()
-} // impl ::Payload for Tune
+    }
+    fn method_name(&self) -> &'static str {
+        "tune"
+    }
+} // impl ::ProtocolMethodPayload for Tune
 impl ::method::connection::SetTuneMethodFields for Tune {
     fn set_channel_max(&mut self, channel_max: u16) {
         self.set_channel_max(channel_max)
@@ -990,13 +1080,22 @@ fn test_tune_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for TuneOk {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         31
-    } // fn method_id()
-} // impl ::Payload for TuneOk
+    }
+    fn method_name(&self) -> &'static str {
+        "tune-ok"
+    }
+} // impl ::ProtocolMethodPayload for TuneOk
 impl ::method::connection::SetTuneOkMethodFields for TuneOk {
     fn set_channel_max(&mut self, channel_max: u16) {
         self.set_channel_max(channel_max)
@@ -1068,13 +1167,22 @@ fn test_unblocked_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Unblocked {
+    fn class(&self) -> ::Class {
+        ::Class::Connection
+    }
     fn class_id(&self) -> u16 {
         10
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "connection"
+    }
     fn method_id(&self) -> u16 {
         61
-    } // fn method_id()
-} // impl ::Payload for Unblocked
+    }
+    fn method_name(&self) -> &'static str {
+        "unblocked"
+    }
+} // impl ::ProtocolMethodPayload for Unblocked
 impl<'a> From<Unblocked> for ClassMethod<'a> {
     fn from(from: Unblocked) -> Self {
         ClassMethod::Unblocked(from)
@@ -1131,6 +1239,25 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Blocked(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Close(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Secure(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::SecureOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Start(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Tune(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::TuneOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Unblocked(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Blocked(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -1150,6 +1277,25 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Blocked(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Close(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Secure(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::SecureOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Start(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Tune(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::TuneOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Unblocked(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Blocked(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -1168,4 +1314,23 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Blocked(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Close(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Secure(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::SecureOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Start(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::StartOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Tune(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::TuneOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Unblocked(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

@@ -58,13 +58,22 @@ fn test_content_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Content {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         40
-    } // fn method_id()
-} // impl ::Payload for Content
+    }
+    fn method_name(&self) -> &'static str {
+        "content"
+    }
+} // impl ::ProtocolMethodPayload for Content
 impl<'a> From<Content> for ClassMethod<'a> {
     fn from(from: Content) -> Self {
         ClassMethod::Content(from)
@@ -132,13 +141,22 @@ fn test_content_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for ContentOk {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         41
-    } // fn method_id()
-} // impl ::Payload for ContentOk
+    }
+    fn method_name(&self) -> &'static str {
+        "content-ok"
+    }
+} // impl ::ProtocolMethodPayload for ContentOk
 impl ::method::test::SetContentOkMethodFields for ContentOk {
     fn set_content_checksum(&mut self, content_checksum: u32) {
         self.set_content_checksum(content_checksum)
@@ -234,13 +252,22 @@ fn test_integer_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Integer {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Integer
+    }
+    fn method_name(&self) -> &'static str {
+        "integer"
+    }
+} // impl ::ProtocolMethodPayload for Integer
 impl ::method::test::SetIntegerMethodFields for Integer {
     fn set_integer_1(&mut self, integer_1: u8) {
         self.set_integer_1(integer_1)
@@ -325,13 +352,22 @@ fn test_integer_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for IntegerOk {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for IntegerOk
+    }
+    fn method_name(&self) -> &'static str {
+        "integer-ok"
+    }
+} // impl ::ProtocolMethodPayload for IntegerOk
 impl ::method::test::SetIntegerOkMethodFields for IntegerOk {
     fn set_result(&mut self, result: u64) {
         self.set_result(result)
@@ -417,13 +453,22 @@ fn test_string_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for String<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         20
-    } // fn method_id()
-} // impl ::Payload for String
+    }
+    fn method_name(&self) -> &'static str {
+        "string"
+    }
+} // impl ::ProtocolMethodPayload for String<'a>
 impl<'a> ::method::test::SetStringMethodFields<'a> for String<'a> {
     fn set_string_1<V>(&mut self, string_1: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -508,13 +553,22 @@ fn test_string_ok_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for StringOk<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         21
-    } // fn method_id()
-} // impl ::Payload for StringOk
+    }
+    fn method_name(&self) -> &'static str {
+        "string-ok"
+    }
+} // impl ::ProtocolMethodPayload for StringOk<'a>
 impl<'a> ::method::test::SetStringOkMethodFields<'a> for StringOk<'a> {
     fn set_result<V>(&mut self, result: V)
         where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -601,13 +655,22 @@ fn test_table_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Table<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         30
-    } // fn method_id()
-} // impl ::Payload for Table
+    }
+    fn method_name(&self) -> &'static str {
+        "table"
+    }
+} // impl ::ProtocolMethodPayload for Table<'a>
 impl<'a> ::method::test::SetTableMethodFields<'a> for Table<'a> {
     fn set_table<V>(&mut self, table: V)
         where V: Into<::field::TableEntries<'a>>
@@ -696,13 +759,22 @@ fn test_table_ok_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for TableOk<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Test
+    }
     fn class_id(&self) -> u16 {
         120
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "test"
+    }
     fn method_id(&self) -> u16 {
         31
-    } // fn method_id()
-} // impl ::Payload for TableOk
+    }
+    fn method_name(&self) -> &'static str {
+        "table-ok"
+    }
+} // impl ::ProtocolMethodPayload for TableOk<'a>
 impl<'a> ::method::test::SetTableOkMethodFields<'a> for TableOk<'a> {
     fn set_integer_result(&mut self, integer_result: u64) {
         self.set_integer_result(integer_result)
@@ -761,6 +833,21 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Content(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::ContentOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Integer(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::IntegerOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::String(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::StringOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Table(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::TableOk(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Content(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -776,6 +863,21 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Content(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::ContentOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Integer(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::IntegerOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::String(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::StringOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Table(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::TableOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Content(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -790,4 +892,19 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Content(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::ContentOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Integer(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::IntegerOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::String(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::StringOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Table(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::TableOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

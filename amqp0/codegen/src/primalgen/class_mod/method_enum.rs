@@ -71,28 +71,33 @@ impl<'a> MethodEnumWriter<'a> {
     fn write_payload_method_payload_impl<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
+        let methods = [
+            ("class", "::Class"),
+            ("class_id", "u16"),
+            ("class_name", "&'static str"),
+            ("method_id", "u16"),
+            ("method_name", "&'static str"),
+        ];
+
         let lifetimes = if self.class.has_method_lifetimes() { "<'a>" } else { "" };
 
         // ProtocolMethod
         try!(writeln!(writer, "\nimpl<'a> ::ProtocolMethodPayload for ClassMethod{} {{", lifetimes));
 
-        // ProtocolMethod::class_id
-        try!(writeln!(writer, "\nfn class_id(&self) -> u16 {{"));
-        try!(writeln!(writer, "match *self {{"));
-        for method in self.class.methods() {
-            try!(writeln!(writer, "ClassMethod::{}(ref method) => ::ProtocolMethodPayload::class_id(method),", method.pascal_case()));
+        for &(method_name, method_return) in &methods {
+            try!(writeln!(writer, "\nfn {}(&self) -> {} {{", method_name, method_return));
+            try!(writeln!(writer, "match *self {{"));
+            for method in self.class.methods() {
+                try!(writeln!(
+                    writer,
+                    "ClassMethod::{}(ref method) => ::ProtocolMethodPayload::{}(method),",
+                    method.pascal_case(),
+                    method_name
+                ));
+            }
+            try!(writeln!(writer, "\n}} // match *self"));
+            try!(writeln!(writer, "\n}} // fn {}", method_name));
         }
-        try!(writeln!(writer, "\n}} // match *self"));
-        try!(writeln!(writer, "\n}} // fn class_id"));
-
-        // ProtocolMethod::method_id
-        try!(writeln!(writer, "\nfn method_id(&self) -> u16 {{"));
-        try!(writeln!(writer, "match *self {{"));
-        for method in self.class.methods() {
-            try!(writeln!(writer, "ClassMethod::{}(ref method) => ::ProtocolMethodPayload::method_id(method),", method.pascal_case()));
-        }
-        try!(writeln!(writer, "\n}} // match *self"));
-        try!(writeln!(writer, "\n}} // fn method_id"));
 
         try!(writeln!(writer, "\n}} // impl ProtocolMethodPayload for ClassMethod"));
 

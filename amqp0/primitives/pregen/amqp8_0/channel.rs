@@ -78,13 +78,22 @@ fn test_alert_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Alert<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Channel
+    }
     fn class_id(&self) -> u16 {
         20
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "channel"
+    }
     fn method_id(&self) -> u16 {
         30
-    } // fn method_id()
-} // impl ::Payload for Alert
+    }
+    fn method_name(&self) -> &'static str {
+        "alert"
+    }
+} // impl ::ProtocolMethodPayload for Alert<'a>
 impl<'a> ::method::channel::SetAlertMethodFields<'a> for Alert<'a> {
     fn set_reply_code(&mut self, reply_code: u16) {
         self.set_reply_code(reply_code)
@@ -183,13 +192,22 @@ fn test_close_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Close<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Channel
+    }
     fn class_id(&self) -> u16 {
         20
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "channel"
+    }
     fn method_id(&self) -> u16 {
         40
-    } // fn method_id()
-} // impl ::Payload for Close
+    }
+    fn method_name(&self) -> &'static str {
+        "close"
+    }
+} // impl ::ProtocolMethodPayload for Close<'a>
 impl<'a> ::method::channel::SetCloseMethodFields<'a> for Close<'a> {
     fn set_reply_code(&mut self, reply_code: u16) {
         self.set_reply_code(reply_code)
@@ -266,13 +284,22 @@ fn test_close_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for CloseOk {
+    fn class(&self) -> ::Class {
+        ::Class::Channel
+    }
     fn class_id(&self) -> u16 {
         20
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "channel"
+    }
     fn method_id(&self) -> u16 {
         41
-    } // fn method_id()
-} // impl ::Payload for CloseOk
+    }
+    fn method_name(&self) -> &'static str {
+        "close-ok"
+    }
+} // impl ::ProtocolMethodPayload for CloseOk
 impl<'a> From<CloseOk> for ClassMethod<'a> {
     fn from(from: CloseOk) -> Self {
         ClassMethod::CloseOk(from)
@@ -346,13 +373,22 @@ fn test_flow_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Flow {
+    fn class(&self) -> ::Class {
+        ::Class::Channel
+    }
     fn class_id(&self) -> u16 {
         20
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "channel"
+    }
     fn method_id(&self) -> u16 {
         20
-    } // fn method_id()
-} // impl ::Payload for Flow
+    }
+    fn method_name(&self) -> &'static str {
+        "flow"
+    }
+} // impl ::ProtocolMethodPayload for Flow
 impl ::method::channel::SetFlowMethodFields for Flow {
     fn set_active(&mut self, active: bool) {
         self.set_active(active)
@@ -431,13 +467,22 @@ fn test_flow_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for FlowOk {
+    fn class(&self) -> ::Class {
+        ::Class::Channel
+    }
     fn class_id(&self) -> u16 {
         20
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "channel"
+    }
     fn method_id(&self) -> u16 {
         21
-    } // fn method_id()
-} // impl ::Payload for FlowOk
+    }
+    fn method_name(&self) -> &'static str {
+        "flow-ok"
+    }
+} // impl ::ProtocolMethodPayload for FlowOk
 impl ::method::channel::SetFlowOkMethodFields for FlowOk {
     fn set_active(&mut self, active: bool) {
         self.set_active(active)
@@ -512,13 +557,22 @@ fn test_open_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Open<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Channel
+    }
     fn class_id(&self) -> u16 {
         20
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "channel"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Open
+    }
+    fn method_name(&self) -> &'static str {
+        "open"
+    }
+} // impl ::ProtocolMethodPayload for Open<'a>
 impl<'a> ::method::channel::SetOpenMethodFields<'a> for Open<'a> {
     fn set_out_of_band<V>(&mut self, out_of_band: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -586,13 +640,22 @@ fn test_open_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for OpenOk {
+    fn class(&self) -> ::Class {
+        ::Class::Channel
+    }
     fn class_id(&self) -> u16 {
         20
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "channel"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for OpenOk
+    }
+    fn method_name(&self) -> &'static str {
+        "open-ok"
+    }
+} // impl ::ProtocolMethodPayload for OpenOk
 impl<'a> ::method::channel::SetOpenOkMethodFields<'a> for OpenOk {} // impl<'a> ::method::channel::SetOpenOkMethodFields<'a> for OpenOk
 impl<'a> From<OpenOk> for ClassMethod<'a> {
     fn from(from: OpenOk) -> Self {
@@ -640,6 +703,20 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Alert(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Close(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Flow(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::FlowOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Alert(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -654,6 +731,20 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Alert(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Close(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Flow(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::FlowOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Alert(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -667,4 +758,18 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Alert(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Close(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::CloseOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Flow(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::FlowOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

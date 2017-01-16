@@ -58,13 +58,22 @@ fn test_commit_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Commit {
+    fn class(&self) -> ::Class {
+        ::Class::Tx
+    }
     fn class_id(&self) -> u16 {
         90
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "tx"
+    }
     fn method_id(&self) -> u16 {
         20
-    } // fn method_id()
-} // impl ::Payload for Commit
+    }
+    fn method_name(&self) -> &'static str {
+        "commit"
+    }
+} // impl ::ProtocolMethodPayload for Commit
 impl From<Commit> for ClassMethod {
     fn from(from: Commit) -> Self {
         ClassMethod::Commit(from)
@@ -125,13 +134,22 @@ fn test_commit_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for CommitOk {
+    fn class(&self) -> ::Class {
+        ::Class::Tx
+    }
     fn class_id(&self) -> u16 {
         90
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "tx"
+    }
     fn method_id(&self) -> u16 {
         21
-    } // fn method_id()
-} // impl ::Payload for CommitOk
+    }
+    fn method_name(&self) -> &'static str {
+        "commit-ok"
+    }
+} // impl ::ProtocolMethodPayload for CommitOk
 impl From<CommitOk> for ClassMethod {
     fn from(from: CommitOk) -> Self {
         ClassMethod::CommitOk(from)
@@ -192,13 +210,22 @@ fn test_rollback_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Rollback {
+    fn class(&self) -> ::Class {
+        ::Class::Tx
+    }
     fn class_id(&self) -> u16 {
         90
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "tx"
+    }
     fn method_id(&self) -> u16 {
         30
-    } // fn method_id()
-} // impl ::Payload for Rollback
+    }
+    fn method_name(&self) -> &'static str {
+        "rollback"
+    }
+} // impl ::ProtocolMethodPayload for Rollback
 impl From<Rollback> for ClassMethod {
     fn from(from: Rollback) -> Self {
         ClassMethod::Rollback(from)
@@ -259,13 +286,22 @@ fn test_rollback_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for RollbackOk {
+    fn class(&self) -> ::Class {
+        ::Class::Tx
+    }
     fn class_id(&self) -> u16 {
         90
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "tx"
+    }
     fn method_id(&self) -> u16 {
         31
-    } // fn method_id()
-} // impl ::Payload for RollbackOk
+    }
+    fn method_name(&self) -> &'static str {
+        "rollback-ok"
+    }
+} // impl ::ProtocolMethodPayload for RollbackOk
 impl From<RollbackOk> for ClassMethod {
     fn from(from: RollbackOk) -> Self {
         ClassMethod::RollbackOk(from)
@@ -326,13 +362,22 @@ fn test_select_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Select {
+    fn class(&self) -> ::Class {
+        ::Class::Tx
+    }
     fn class_id(&self) -> u16 {
         90
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "tx"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Select
+    }
+    fn method_name(&self) -> &'static str {
+        "select"
+    }
+} // impl ::ProtocolMethodPayload for Select
 impl From<Select> for ClassMethod {
     fn from(from: Select) -> Self {
         ClassMethod::Select(from)
@@ -393,13 +438,22 @@ fn test_select_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for SelectOk {
+    fn class(&self) -> ::Class {
+        ::Class::Tx
+    }
     fn class_id(&self) -> u16 {
         90
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "tx"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for SelectOk
+    }
+    fn method_name(&self) -> &'static str {
+        "select-ok"
+    }
+} // impl ::ProtocolMethodPayload for SelectOk
 impl From<SelectOk> for ClassMethod {
     fn from(from: SelectOk) -> Self {
         ClassMethod::SelectOk(from)
@@ -444,6 +498,19 @@ impl ::Encodable for ClassMethod {
 } // impl ::Encodable for ClassMethod
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::CommitOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Rollback(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::RollbackOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -457,6 +524,19 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::CommitOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Rollback(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::RollbackOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -469,4 +549,17 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Commit(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::CommitOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Rollback(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::RollbackOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

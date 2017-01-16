@@ -71,13 +71,22 @@ fn test_select_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Select {
+    fn class(&self) -> ::Class {
+        ::Class::Confirm
+    }
     fn class_id(&self) -> u16 {
         85
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "confirm"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Select
+    }
+    fn method_name(&self) -> &'static str {
+        "select"
+    }
+} // impl ::ProtocolMethodPayload for Select
 impl ::method::confirm::SetSelectMethodFields for Select {
     fn set_no_wait(&mut self, no_wait: bool) {
         self.set_no_wait(no_wait)
@@ -143,13 +152,22 @@ fn test_select_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for SelectOk {
+    fn class(&self) -> ::Class {
+        ::Class::Confirm
+    }
     fn class_id(&self) -> u16 {
         85
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "confirm"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for SelectOk
+    }
+    fn method_name(&self) -> &'static str {
+        "select-ok"
+    }
+} // impl ::ProtocolMethodPayload for SelectOk
 impl From<SelectOk> for ClassMethod {
     fn from(from: SelectOk) -> Self {
         ClassMethod::SelectOk(from)
@@ -186,6 +204,15 @@ impl ::Encodable for ClassMethod {
 } // impl ::Encodable for ClassMethod
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -195,6 +222,15 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Select(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -203,4 +239,13 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Select(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::SelectOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

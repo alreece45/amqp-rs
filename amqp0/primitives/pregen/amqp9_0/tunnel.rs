@@ -136,13 +136,22 @@ fn test_request_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Request<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::Tunnel
+    }
     fn class_id(&self) -> u16 {
         110
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "tunnel"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Request
+    }
+    fn method_name(&self) -> &'static str {
+        "request"
+    }
+} // impl ::ProtocolMethodPayload for Request<'a>
 impl<'a> ::method::tunnel::SetRequestMethodFields<'a> for Request<'a> {
     fn set_meta_data<V>(&mut self, meta_data: V)
         where V: Into<::field::TableEntries<'a>>
@@ -184,6 +193,14 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -192,6 +209,14 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Request(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Request(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -199,4 +224,12 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Request(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

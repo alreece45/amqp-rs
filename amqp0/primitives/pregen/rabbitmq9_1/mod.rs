@@ -221,6 +221,20 @@ impl<'a> ::Encodable for SpecMethod<'a> {
 } // impl ::Encodable for SpecMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for SpecMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::class(method),
+            SpecMethod::Channel(ref method) => ::ProtocolMethodPayload::class(method),
+            SpecMethod::Confirm(ref method) => ::ProtocolMethodPayload::class(method),
+            SpecMethod::Connection(ref method) => ::ProtocolMethodPayload::class(method),
+            SpecMethod::Exchange(ref method) => ::ProtocolMethodPayload::class(method),
+            SpecMethod::Queue(ref method) => ::ProtocolMethodPayload::class(method),
+            SpecMethod::Tx(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -235,6 +249,20 @@ impl<'a> ::ProtocolMethodPayload for SpecMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::class_name(method),
+            SpecMethod::Channel(ref method) => ::ProtocolMethodPayload::class_name(method),
+            SpecMethod::Confirm(ref method) => ::ProtocolMethodPayload::class_name(method),
+            SpecMethod::Connection(ref method) => ::ProtocolMethodPayload::class_name(method),
+            SpecMethod::Exchange(ref method) => ::ProtocolMethodPayload::class_name(method),
+            SpecMethod::Queue(ref method) => ::ProtocolMethodPayload::class_name(method),
+            SpecMethod::Tx(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -248,4 +276,18 @@ impl<'a> ::ProtocolMethodPayload for SpecMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            SpecMethod::Basic(ref method) => ::ProtocolMethodPayload::method_name(method),
+            SpecMethod::Channel(ref method) => ::ProtocolMethodPayload::method_name(method),
+            SpecMethod::Confirm(ref method) => ::ProtocolMethodPayload::method_name(method),
+            SpecMethod::Connection(ref method) => ::ProtocolMethodPayload::method_name(method),
+            SpecMethod::Exchange(ref method) => ::ProtocolMethodPayload::method_name(method),
+            SpecMethod::Queue(ref method) => ::ProtocolMethodPayload::method_name(method),
+            SpecMethod::Tx(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for SpecMethod

@@ -167,13 +167,22 @@ fn test_ack_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Ack {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         90
-    } // fn method_id()
-} // impl ::Payload for Ack
+    }
+    fn method_name(&self) -> &'static str {
+        "ack"
+    }
+} // impl ::ProtocolMethodPayload for Ack
 impl ::method::file::SetAckMethodFields for Ack {
     fn set_delivery_tag(&mut self, delivery_tag: u64) {
         self.set_delivery_tag(delivery_tag)
@@ -263,13 +272,22 @@ fn test_cancel_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Cancel<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         30
-    } // fn method_id()
-} // impl ::Payload for Cancel
+    }
+    fn method_name(&self) -> &'static str {
+        "cancel"
+    }
+} // impl ::ProtocolMethodPayload for Cancel<'a>
 impl<'a> ::method::file::SetCancelMethodFields<'a> for Cancel<'a> {
     fn set_consumer_tag<V>(&mut self, consumer_tag: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -349,13 +367,22 @@ fn test_cancel_ok_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for CancelOk<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         31
-    } // fn method_id()
-} // impl ::Payload for CancelOk
+    }
+    fn method_name(&self) -> &'static str {
+        "cancel-ok"
+    }
+} // impl ::ProtocolMethodPayload for CancelOk<'a>
 impl<'a> ::method::file::SetCancelOkMethodFields<'a> for CancelOk<'a> {
     fn set_consumer_tag<V>(&mut self, consumer_tag: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -472,13 +499,22 @@ fn test_consume_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Consume<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         20
-    } // fn method_id()
-} // impl ::Payload for Consume
+    }
+    fn method_name(&self) -> &'static str {
+        "consume"
+    }
+} // impl ::ProtocolMethodPayload for Consume<'a>
 impl<'a> ::method::file::SetConsumeMethodFields<'a> for Consume<'a> {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -575,13 +611,22 @@ fn test_consume_ok_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for ConsumeOk<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         21
-    } // fn method_id()
-} // impl ::Payload for ConsumeOk
+    }
+    fn method_name(&self) -> &'static str {
+        "consume-ok"
+    }
+} // impl ::ProtocolMethodPayload for ConsumeOk<'a>
 impl<'a> ::method::file::SetConsumeOkMethodFields<'a> for ConsumeOk<'a> {
     fn set_consumer_tag<V>(&mut self, consumer_tag: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -698,13 +743,22 @@ fn test_deliver_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Deliver<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         80
-    } // fn method_id()
-} // impl ::Payload for Deliver
+    }
+    fn method_name(&self) -> &'static str {
+        "deliver"
+    }
+} // impl ::ProtocolMethodPayload for Deliver<'a>
 impl<'a> ::method::file::SetDeliverMethodFields<'a> for Deliver<'a> {
     fn set_consumer_tag<V>(&mut self, consumer_tag: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -808,13 +862,22 @@ fn test_open_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Open<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         40
-    } // fn method_id()
-} // impl ::Payload for Open
+    }
+    fn method_name(&self) -> &'static str {
+        "open"
+    }
+} // impl ::ProtocolMethodPayload for Open<'a>
 impl<'a> ::method::file::SetOpenMethodFields<'a> for Open<'a> {
     fn set_identifier<V>(&mut self, identifier: V)
         where V: Into<::std::borrow::Cow<'a, str>>
@@ -892,13 +955,22 @@ fn test_open_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for OpenOk {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         41
-    } // fn method_id()
-} // impl ::Payload for OpenOk
+    }
+    fn method_name(&self) -> &'static str {
+        "open-ok"
+    }
+} // impl ::ProtocolMethodPayload for OpenOk
 impl ::method::file::SetOpenOkMethodFields for OpenOk {
     fn set_staged_size(&mut self, staged_size: u64) {
         self.set_staged_size(staged_size)
@@ -1011,13 +1083,22 @@ fn test_publish_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Publish<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         60
-    } // fn method_id()
-} // impl ::Payload for Publish
+    }
+    fn method_name(&self) -> &'static str {
+        "publish"
+    }
+} // impl ::ProtocolMethodPayload for Publish<'a>
 impl<'a> ::method::file::SetPublishMethodFields<'a> for Publish<'a> {
     fn set_ticket(&mut self, ticket: u16) {
         self.set_ticket(ticket)
@@ -1127,13 +1208,22 @@ fn test_qos_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Qos {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         10
-    } // fn method_id()
-} // impl ::Payload for Qos
+    }
+    fn method_name(&self) -> &'static str {
+        "qos"
+    }
+} // impl ::ProtocolMethodPayload for Qos
 impl ::method::file::SetQosMethodFields for Qos {
     fn set_prefetch_size(&mut self, prefetch_size: u32) {
         self.set_prefetch_size(prefetch_size)
@@ -1205,13 +1295,22 @@ fn test_qos_ok_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for QosOk {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         11
-    } // fn method_id()
-} // impl ::Payload for QosOk
+    }
+    fn method_name(&self) -> &'static str {
+        "qos-ok"
+    }
+} // impl ::ProtocolMethodPayload for QosOk
 impl<'a> From<QosOk> for ClassMethod<'a> {
     fn from(from: QosOk) -> Self {
         ClassMethod::QosOk(from)
@@ -1291,13 +1390,22 @@ fn test_reject_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Reject {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         100
-    } // fn method_id()
-} // impl ::Payload for Reject
+    }
+    fn method_name(&self) -> &'static str {
+        "reject"
+    }
+} // impl ::ProtocolMethodPayload for Reject
 impl ::method::file::SetRejectMethodFields for Reject {
     fn set_delivery_tag(&mut self, delivery_tag: u64) {
         self.set_delivery_tag(delivery_tag)
@@ -1393,13 +1501,22 @@ fn test_return_encodable_bytes_written_matches_len() {
 
 
 impl<'a> ::ProtocolMethodPayload for Return<'a> {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         70
-    } // fn method_id()
-} // impl ::Payload for Return
+    }
+    fn method_name(&self) -> &'static str {
+        "return"
+    }
+} // impl ::ProtocolMethodPayload for Return<'a>
 impl<'a> ::method::file::SetReturnMethodFields<'a> for Return<'a> {
     fn set_reply_code(&mut self, reply_code: u16) {
         self.set_reply_code(reply_code)
@@ -1480,13 +1597,22 @@ fn test_stage_encodable_bytes_written_matches_len() {
 
 
 impl ::ProtocolMethodPayload for Stage {
+    fn class(&self) -> ::Class {
+        ::Class::File
+    }
     fn class_id(&self) -> u16 {
         70
-    } // fn class_id()
+    }
+    fn class_name(&self) -> &'static str {
+        "file"
+    }
     fn method_id(&self) -> u16 {
         50
-    } // fn method_id()
-} // impl ::Payload for Stage
+    }
+    fn method_name(&self) -> &'static str {
+        "stage"
+    }
+} // impl ::ProtocolMethodPayload for Stage
 impl<'a> From<Stage> for ClassMethod<'a> {
     fn from(from: Stage) -> Self {
         ClassMethod::Stage(from)
@@ -1547,6 +1673,27 @@ impl<'a> ::Encodable for ClassMethod<'a> {
 } // impl ::Encodable for ClassMethod<'a>
 
 impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
+    fn class(&self) -> ::Class {
+        match *self {
+            ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Return(ref method) => ::ProtocolMethodPayload::class(method),
+            ClassMethod::Stage(ref method) => ::ProtocolMethodPayload::class(method),
+
+        } // match *self
+
+    } // fn class
+
     fn class_id(&self) -> u16 {
         match *self {
             ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::class_id(method),
@@ -1568,6 +1715,27 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
 
     } // fn class_id
 
+    fn class_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Return(ref method) => ::ProtocolMethodPayload::class_name(method),
+            ClassMethod::Stage(ref method) => ::ProtocolMethodPayload::class_name(method),
+
+        } // match *self
+
+    } // fn class_name
+
     fn method_id(&self) -> u16 {
         match *self {
             ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::method_id(method),
@@ -1588,4 +1756,25 @@ impl<'a> ::ProtocolMethodPayload for ClassMethod<'a> {
         } // match *self
 
     } // fn method_id
+
+    fn method_name(&self) -> &'static str {
+        match *self {
+            ClassMethod::Ack(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Cancel(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::CancelOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Consume(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::ConsumeOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Deliver(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Open(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::OpenOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Publish(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Qos(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::QosOk(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Reject(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Return(ref method) => ::ProtocolMethodPayload::method_name(method),
+            ClassMethod::Stage(ref method) => ::ProtocolMethodPayload::method_name(method),
+
+        } // match *self
+
+    } // fn method_name
 } // impl ProtocolMethodPayload for ClassMethod

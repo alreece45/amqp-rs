@@ -48,6 +48,9 @@ pub trait ProtocolMethod<'a> {
 }
 
 pub trait ProtocolMethodPayload: Encodable {
+    fn class(&self) -> Class;
+    fn class_name(&self) -> &'static str;
     fn class_id(&self) -> u16;
+    fn method_name(&self) -> &'static str;
     fn method_id(&self) -> u16;
 }

@@ -12,6 +12,7 @@ use inflections::Inflect;
 use WriteRust;
 use common::Specs;
 
+use super::class_enum::ClassEnumWriter;
 use super::spec_struct::SpecStructWriter;
 use super::protocol_trait::ProtocolTraitWriter;
 
@@ -38,6 +39,9 @@ impl<'a> WriteRust for RootModuleWriter<'a> {
 
         let protocol_trait = ProtocolTraitWriter::new(self.specs);
         try!(protocol_trait.write_rust_to(writer));
+
+        let class_enum = ClassEnumWriter::new(self.specs);
+        try!(class_enum.write_rust_to(writer));
 
         for spec in self.specs {
             let spec_struct = SpecStructWriter::new(spec);
