@@ -28,7 +28,7 @@ impl<'a> FormatRustCode for BTreeMap<String, Domain<'a>> {
 impl<'a> FormatRustCode for Version {
     fn format_rust(&self) -> String {
         format!(
-            "Version {{ minor: {}, revision: {} }}",
+            "::Version {{ minor: {}, revision: {} }}",
             self.minor(),
             self.revision(),
         )
@@ -38,7 +38,7 @@ impl<'a> FormatRustCode for Version {
 impl<'a> FormatRustCode for Class<'a> {
     fn format_rust(&self) -> String {
         format!(
-            "Class {{\nname: {},\nfields: {},\nindex: {},\nmethods: {}\n}}",
+            "::Class {{\nname: {},\nfields: {},\nindex: {},\nmethods: {}\n}}",
             self.name().format_rust(),
             self.fields().format_rust(),
             self.index(),
@@ -50,7 +50,7 @@ impl<'a> FormatRustCode for Class<'a> {
 impl<'a> FormatRustCode for ClassField<'a> {
     fn format_rust(&self) -> String {
         format!(
-            "ClassField {{\nname: {},\ndomain: {}\n}}",
+            "::ClassField {{\nname: {},\ndomain: {}\n}}",
             self.name().replace(" ", "-").format_rust(),
             self.domain().replace(" ", "-").format_rust(),
         )
@@ -66,7 +66,7 @@ impl<'a> FormatRustCode for Domain<'a> {
 impl<'a> FormatRustCode for Constant<'a> {
     fn format_rust(&self) -> String {
         format!(
-            "Constant {{\nname: {},\nvalue: {},\nclass: {}\n}}",
+            "::Constant {{\nname: {},\nvalue: {},\nclass: {}\n}}",
             self.name().replace(" ", "-").format_rust(),
             self.value(),
             self.class().map(|c| c.replace(" ", "-")).format_rust()
@@ -80,7 +80,7 @@ impl<'a> FormatRustCode for ClassMethod<'a> {
         let chassis_client = chassis.get("client");
         let chassis_server = chassis.get("server");
         format!(
-            "ClassMethod {{\nname: {},\nindex: {},\nchassis_client: {},\nchassis_server: {},\nresponse: {},\nis_synchronous: {},\nfields: {},\n}}",
+            "::ClassMethod {{\nname: {},\nindex: {},\nchassis_client: {},\nchassis_server: {},\nresponse: {},\nis_synchronous: {},\nfields: {},\n}}",
             self.name().format_rust(),
             self.index(),
             chassis_client.format_rust(),
@@ -95,7 +95,7 @@ impl<'a> FormatRustCode for ClassMethod<'a> {
 impl<'a> FormatRustCode for ClassMethodField<'a> {
     fn format_rust(&self) -> String {
         format!(
-            "ClassMethodField {{\nname: {},\ndomain: {},\nassertions: {},\nis_reserved: {}\n}}",
+            "::ClassMethodField {{\nname: {},\ndomain: {},\nassertions: {},\nis_reserved: {}\n}}",
             self.name().replace(" ", "-").format_rust(),
             self.domain().replace(" ", "-").format_rust(),
             self.assertions().format_rust(),
@@ -107,16 +107,16 @@ impl<'a> FormatRustCode for ClassMethodField<'a> {
 impl FormatRustCode for Assertion {
     fn format_rust(&self) -> String {
         match *self {
-            Assertion::Null => "ClassMethodFieldAssertion::Null".to_string(),
-            Assertion::NotNull => "ClassMethodFieldAssertion::NotNull".to_string(),
-            Assertion::ChannelMax => "ClassMethodFieldAssertion::ChannelMax".to_string(),
-            Assertion::NotZero => "ClassMethodFieldAssertion::NotZero".to_string(),
+            Assertion::Null => "::ClassMethodFieldAssertion::Null".to_string(),
+            Assertion::NotNull => "::ClassMethodFieldAssertion::NotNull".to_string(),
+            Assertion::ChannelMax => "::ClassMethodFieldAssertion::ChannelMax".to_string(),
+            Assertion::NotZero => "::ClassMethodFieldAssertion::NotZero".to_string(),
             Assertion::Enum(ref values) => {
-                format!("ClassMethodFieldAssertion::Enum({})", format_to_slice(values.iter()))
+                format!("::ClassMethodFieldAssertion::Enum({})", format_to_slice(values.iter()))
             },
-            Assertion::Length(ref length) => format!("ClassMethodFieldAssertion::Length({})", length),
+            Assertion::Length(ref length) => format!("::ClassMethodFieldAssertion::Length({})", length),
             Assertion::Regexp(ref pattern) => {
-                format!("ClassMethodFieldAssertion::Regexp({})", pattern.format_rust())
+                format!("::ClassMethodFieldAssertion::Regexp({})", pattern.format_rust())
             },
             Assertion::Syntax(ref syntax) => {
                 format!("ClassMethodFieldAssertion::Syntax({})", syntax.format_rust())

@@ -16,9 +16,9 @@ use phf::OrderedMap;
 use std::hash::{Hash, Hasher};
 
 #[cfg(feature = "amqp0-build-specs")]
-include!(concat!(env!("OUT_DIR"), "/amqp0.rs"));
+include!(concat!(env!("OUT_DIR"), "/mod.rs"));
 #[cfg(not(feature = "amqp0-build-specs"))]
-include!(concat!("lib.pregen.rs"));
+include!(concat!("../pregen/mod.rs"));
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Version {
@@ -107,6 +107,7 @@ pub struct ClassMethod {
     response: Option<&'static str>,
     fields: &'static [ClassMethodField],
     is_synchronous: bool,
+    has_content: bool,
 
     chassis_server: Option<&'static str>,
     chassis_client: Option<&'static str>,

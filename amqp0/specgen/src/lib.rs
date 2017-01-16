@@ -160,7 +160,7 @@ impl<'a> Spec<'a> {
             (ungrouped, frame_types, response_codes)
         };
 
-        try!(writeln!(writer, "Spec {{"));
+        try!(writeln!(writer, "::Spec {{"));
         try!(writeln!(writer, "name: {},", name.format_rust()));
         try!(writeln!(writer, "classes: {},", self.classes().format_rust()));
         try!(writeln!(writer, "constants: {},", codegen::format_to_map(ungrouped.into_iter())));
