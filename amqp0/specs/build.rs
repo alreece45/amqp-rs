@@ -110,7 +110,7 @@ mod spec0_builder {
             for &(_, ref snake_name, ref constant_name, _) in &specs {
                 try!(writeln!(
                     writer,
-                    "fn {snake_name}() -> &'static Spec {{\
+                    "pub fn {snake_name}() -> &'static Spec {{\
                         &{snake_name}::{constant_name}\
                     }}",
                     snake_name = snake_name,

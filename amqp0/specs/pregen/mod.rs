@@ -22,21 +22,21 @@ static SPECS: &'static [&'static ::Spec] = &[&amqp9_1::AMQP9_1,
 pub fn specs() -> &'static [&'static ::Spec] {
     &SPECS
 }
-fn amqp9_1() -> &'static Spec {
+pub fn amqp9_1() -> &'static Spec {
     &amqp9_1::AMQP9_1
 }
-fn amqp9_0() -> &'static Spec {
+pub fn amqp9_0() -> &'static Spec {
     &amqp9_0::AMQP9_0
 }
-fn amqp8_0() -> &'static Spec {
+pub fn amqp8_0() -> &'static Spec {
     &amqp8_0::AMQP8_0
 }
-fn rabbitmq9_1() -> &'static Spec {
+pub fn rabbitmq9_1() -> &'static Spec {
     &rabbitmq9_1::RABBITMQ9_1
 }
-fn qpid9_0() -> &'static Spec {
+pub fn qpid9_0() -> &'static Spec {
     &qpid9_0::QPID9_0
 }
-fn qpid8_0() -> &'static Spec {
+pub fn qpid8_0() -> &'static Spec {
     &qpid8_0::QPID8_0
 }
