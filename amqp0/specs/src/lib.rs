@@ -205,6 +205,9 @@ impl ClassMethod {
     pub fn fields(&self) -> &'static [ClassMethodField] {
         self.fields
     }
+    pub fn has_content(&self) -> bool {
+        self.has_content
+    }
 }
 
 impl ClassMethodField {
