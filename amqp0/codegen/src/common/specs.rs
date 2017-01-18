@@ -11,7 +11,7 @@ use std::collections::{btree_map, btree_set, BTreeMap, BTreeSet, HashMap, HashSe
 use std::iter;
 use std::ops::Deref;
 
-use common::{Spec, Domain};
+use common::{Spec, Fields};
 use lazycell::LazyCell;
 
 pub struct Specs<'a> {
@@ -26,14 +26,13 @@ pub struct Specs<'a> {
 pub struct SpecMethod {
     class_name: &'static str,
     method_name: &'static str,
-    field_tys: BTreeMap<String, Domain>,
-    has_lifetimes: bool,
+    fields: Fields<'static>,
+    has_content: bool,
 }
 
 pub struct Methods<'a>(btree_map::Values<'a, (&'a str, &'a str), SpecMethod>);
 pub struct ClassMethods<'a>(&'a str, btree_map::Iter<'a, (&'a str, &'a str), SpecMethod>);
 pub struct ClassNames<'a>(btree_set::Iter<'a, &'a str>);
-pub struct FieldNames<'a>(btree_map::Keys<'a, String, Domain>);
 
 impl<'a> Specs<'a> {
     pub fn new<S>(specs: S) -> Self
@@ -262,55 +261,28 @@ impl<'a> Specs<'a> {
 }
 
 impl SpecMethod {
-    fn new(specs: &Specs, class_name: &'static str, method_name: &'static str) -> Self {
+    fn new<'a>(specs: &'a Specs<'a>, class_name: &'static str, method_name: &'static str) -> Self {
         let methods = specs.iter()
             .filter_map(|spec| spec.class(class_name))
             .filter_map(|class| class.method(method_name))
             .collect::<Vec<_>>();
-        let has_lifetimes = methods.iter().any(|method| method.has_lifetimes());
+        let has_content = methods.iter().all(|method| (*method).has_content());
 
-        let fields = methods.iter()
+        let mut fields = Fields::new(methods.iter()
             .flat_map(|method| method.fields())
-            .filter(|field| !field.is_reserved())
-            .collect::<Vec<_>>();
-        let field_names = fields.iter()
-            .map(|field| field.var_name())
-            .collect::<BTreeSet<&str>>();
+            .filter(|field| !field.is_reserved()));
 
-        let field_tys = field_names.into_iter()
-            .map(|field_name| {
-                let tys = fields.iter()
-                    .filter(|field| field.var_name() == field_name)
-                    .map(|field| (field.ty()))
-                    .map(|ty| (ty.owned_type(), ty))
-                    .collect::<HashMap<_, _>>();
-
-                if tys.len() > 1 {
-                    panic!(
-                        "Conflicting types for {}::{}::{}",
-                        class_name,
-                        method_name,
-                        field_name
-                    );
-                }
-
-                match tys.into_iter().next() {
-                    Some(ty) => (field_name.to_owned(), ty.1.clone()),
-                    _ => panic!(
-                        "No field types for field {}::{}.{}",
-                        class_name,
-                        method_name,
-                        field_name
-                    )
-                }
-            })
-            .collect();
+        if has_content {
+            fields.extend(specs.iter()
+                .filter_map(|spec| spec.class(class_name))
+                .flat_map(|class| class.fields()))
+        }
 
         SpecMethod {
             class_name: class_name,
             method_name: method_name,
-            has_lifetimes: has_lifetimes,
-            field_tys: field_tys,
+            fields: fields,
+            has_content: has_content,
         }
     }
 
@@ -323,19 +295,27 @@ impl SpecMethod {
     }
 
     pub fn has_lifetimes(&self) -> bool {
-        self.has_lifetimes
+        self.has_content() || self.fields().has_lifetimes()
+    }
+
+    pub fn has_content(&self) -> bool {
+        self.has_content
     }
 
     pub fn has_usable_fields(&self) -> bool {
-        !self.field_tys.is_empty()
+        !self.fields.is_empty()
     }
 
-    pub fn field_names(&self) -> FieldNames {
-        FieldNames(self.field_tys.keys())
+    pub fn fields(&self) -> &Fields {
+        &self.fields
     }
 
-    pub fn field_ty(&self, var_name: &str) -> Option<&Domain> {
-        self.field_tys.get(var_name)
+    pub fn method_traits(&self) -> &'static str {
+        if self.has_content() || self.fields().has_lifetimes() {
+            "::Encodable + ::Content<'a>"
+        } else {
+            "::Encodable"
+        }
     }
 }
 
@@ -383,14 +363,6 @@ impl<'a> Iterator for ClassMethods<'a> {
             }
         }
         None
-    }
-}
-
-impl<'a> Iterator for FieldNames<'a> {
-    type Item = &'a str;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.0.next().map(|name| name.as_str())
     }
 }
 

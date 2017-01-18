@@ -715,7 +715,9 @@ impl<'a> Default for Deliver<'a> {
         Deliver::new("", 0, false, "", "")
     } // fn default()
 } // impl Default for Deliver
-
+impl<'a> ::Content<'a> for Deliver<'a> {
+    type Headers = Properties<'a>;
+}
 impl<'a> ::Encodable for Deliver<'a> {
     fn encoded_size(&self) -> usize {
         9 + ::Encodable::encoded_size(&self.consumer_tag) +
@@ -1061,7 +1063,9 @@ impl<'a> Default for GetOk<'a> {
         GetOk::new(0, false, "", "", 0)
     } // fn default()
 } // impl Default for GetOk
-
+impl<'a> ::Content<'a> for GetOk<'a> {
+    type Headers = Properties<'a>;
+}
 impl<'a> ::Encodable for GetOk<'a> {
     fn encoded_size(&self) -> usize {
         13 + ::Encodable::encoded_size(&self.exchange) +
@@ -1198,7 +1202,9 @@ impl<'a> Default for Publish<'a> {
         Publish::new(0, "", "", false, false)
     } // fn default()
 } // impl Default for Publish
-
+impl<'a> ::Content<'a> for Publish<'a> {
+    type Headers = Properties<'a>;
+}
 impl<'a> ::Encodable for Publish<'a> {
     fn encoded_size(&self) -> usize {
         3 + ::Encodable::encoded_size(&self.exchange) + ::Encodable::encoded_size(&self.routing_key)
@@ -1710,7 +1716,9 @@ impl<'a> Default for Return<'a> {
         Return::new(0, "", "", "")
     } // fn default()
 } // impl Default for Return
-
+impl<'a> ::Content<'a> for Return<'a> {
+    type Headers = Properties<'a>;
+}
 impl<'a> ::Encodable for Return<'a> {
     fn encoded_size(&self) -> usize {
         2 + ::Encodable::encoded_size(&self.reply_text) +

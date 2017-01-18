@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -21,10 +21,6 @@ mod macros;
 pub mod field;
 mod encodable;
 
-// default: pregen/mod.rs
-// build    OUT_DIR/mod.rs
-// pregen:  pregen/mod.rs
-
 cfg_if! {
     if #[cfg(all(feature="amqp0-build-primitives", not(feature="amqp0-pregen-primitives")))] {
         include!(concat!(env!("OUT_DIR"), "/mod.rs"));
@@ -35,12 +31,6 @@ cfg_if! {
 }
 
 pub use self::encodable::Encodable;
-
-pub trait ProtocolFramePayload<'a>: Encodable {
-    type Method: ProtocolMethod<'a>;
-
-    fn as_method(&self) -> Option<&Self::Method>;
-}
 
 pub trait ProtocolMethod<'a> {
     type Start: ProtocolMethodPayload + 'a;
@@ -53,4 +43,8 @@ pub trait ProtocolMethodPayload: Encodable {
     fn class_id(&self) -> u16;
     fn method_name(&self) -> &'static str;
     fn method_id(&self) -> u16;
+}
+
+pub trait Content<'a> {
+    type Headers: 'a;
 }

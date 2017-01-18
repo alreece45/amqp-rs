@@ -20,12 +20,14 @@ pub mod access {
         fn set_write(&mut self, _: bool) {}
     } // pub trait SetRequestMethodFields<'a>
 
-    pub struct RequestBuilder<T: ::Encodable> {
+    pub struct RequestBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RequestBuilder
 
 
-    impl<'a, T> RequestBuilder<T>
+    impl<T> RequestBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -33,13 +35,13 @@ pub mod access {
         }
     } // impl Builder (new)
 
-    impl<'a, T> RequestBuilder<T>
+    impl<T> RequestBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RequestBuilder<T>
 
     impl<T> Default for RequestBuilder<T>
         where T: ::Encodable + Default
@@ -49,7 +51,7 @@ pub mod access {
         }
     } // impl Default for RequestBuilder
     impl<'a, T> RequestBuilder<T>
-        where T: ::Encodable + SetRequestMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetRequestMethodFields<'a>
     {
         pub fn active(mut self, active: bool) -> Self {
             SetRequestMethodFields::set_active(&mut self.payload, active);
@@ -86,7 +88,9 @@ pub mod access {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetRequestOkMethodFields
 
-    pub struct RequestOkBuilder<T: ::Encodable> {
+    pub struct RequestOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RequestOkBuilder
 
@@ -105,7 +109,7 @@ pub mod access {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RequestOkBuilder<T>
 
     impl<T> Default for RequestOkBuilder<T>
         where T: ::Encodable + Default
@@ -134,7 +138,9 @@ pub mod basic {
         fn set_multiple(&mut self, _: bool) {}
     } // pub trait SetAckMethodFields
 
-    pub struct AckBuilder<T: ::Encodable> {
+    pub struct AckBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct AckBuilder
 
@@ -153,7 +159,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> AckBuilder<T>
 
     impl<T> Default for AckBuilder<T>
         where T: ::Encodable + Default
@@ -183,12 +189,14 @@ pub mod basic {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
-    pub struct CancelBuilder<T: ::Encodable> {
+    pub struct CancelBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CancelBuilder
 
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -196,13 +204,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CancelBuilder<T>
 
     impl<T> Default for CancelBuilder<T>
         where T: ::Encodable + Default
@@ -212,7 +220,7 @@ pub mod basic {
         }
     } // impl Default for CancelBuilder
     impl<'a, T> CancelBuilder<T>
-        where T: ::Encodable + SetCancelMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCancelMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -233,12 +241,14 @@ pub mod basic {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
-    pub struct CancelOkBuilder<T: ::Encodable> {
+    pub struct CancelOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CancelOkBuilder
 
 
-    impl<'a, T> CancelOkBuilder<T>
+    impl<T> CancelOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -246,13 +256,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CancelOkBuilder<T>
+    impl<T> CancelOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CancelOkBuilder<T>
 
     impl<T> Default for CancelOkBuilder<T>
         where T: ::Encodable + Default
@@ -262,7 +272,7 @@ pub mod basic {
         }
     } // impl Default for CancelOkBuilder
     impl<'a, T> CancelOkBuilder<T>
-        where T: ::Encodable + SetCancelOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCancelOkMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -287,12 +297,14 @@ pub mod basic {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
-    pub struct ConsumeBuilder<T: ::Encodable> {
+    pub struct ConsumeBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ConsumeBuilder
 
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -300,13 +312,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ConsumeBuilder<T>
 
     impl<T> Default for ConsumeBuilder<T>
         where T: ::Encodable + Default
@@ -316,7 +328,7 @@ pub mod basic {
         }
     } // impl Default for ConsumeBuilder
     impl<'a, T> ConsumeBuilder<T>
-        where T: ::Encodable + SetConsumeMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetConsumeMethodFields<'a>
     {
         pub fn arguments<V>(mut self, arguments: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -371,12 +383,14 @@ pub mod basic {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
-    pub struct ConsumeOkBuilder<T: ::Encodable> {
+    pub struct ConsumeOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ConsumeOkBuilder
 
 
-    impl<'a, T> ConsumeOkBuilder<T>
+    impl<T> ConsumeOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -384,13 +398,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ConsumeOkBuilder<T>
+    impl<T> ConsumeOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ConsumeOkBuilder<T>
 
     impl<T> Default for ConsumeOkBuilder<T>
         where T: ::Encodable + Default
@@ -400,7 +414,7 @@ pub mod basic {
         }
     } // impl Default for ConsumeOkBuilder
     impl<'a, T> ConsumeOkBuilder<T>
-        where T: ::Encodable + SetConsumeOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetConsumeOkMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -414,19 +428,36 @@ pub mod basic {
     } // pub trait DeliverMethod<'a>
 
     pub trait SetDeliverMethodFields<'a> {
+        fn set_app_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_correlation_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_mode(&mut self, _: u8) {}
         fn set_delivery_tag(&mut self, _: u64) {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_expiration<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_priority(&mut self, _: u8) {}
         fn set_redelivered(&mut self, _: bool) {}
+        fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_timestamp(&mut self, _: u64) {}
+        fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_user_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
-    pub struct DeliverBuilder<T: ::Encodable> {
+    pub struct DeliverBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeliverBuilder
 
 
-    impl<'a, T> DeliverBuilder<T>
+    impl<T> DeliverBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -434,13 +465,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeliverBuilder<T>
+    impl<T> DeliverBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeliverBuilder<T>
 
     impl<T> Default for DeliverBuilder<T>
         where T: ::Encodable + Default
@@ -450,14 +481,49 @@ pub mod basic {
         }
     } // impl Default for DeliverBuilder
     impl<'a, T> DeliverBuilder<T>
-        where T: ::Encodable + SetDeliverMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeliverMethodFields<'a>
     {
+        pub fn app_id<V>(mut self, app_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_app_id(&mut self.payload, app_id.into());
+            self
+        } // set_app_id()
+        pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_cluster_id(&mut self.payload, cluster_id.into());
+            self
+        } // set_cluster_id()
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetDeliverMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
             self
         } // set_consumer_tag()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_content_encoding(&mut self.payload,
+                                                         content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
+        pub fn correlation_id<V>(mut self, correlation_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_correlation_id(&mut self.payload, correlation_id.into());
+            self
+        } // set_correlation_id()
+        pub fn delivery_mode(mut self, delivery_mode: u8) -> Self {
+            SetDeliverMethodFields::set_delivery_mode(&mut self.payload, delivery_mode);
+            self
+        } // set_delivery_mode()
         pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
             SetDeliverMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
             self
@@ -468,16 +534,77 @@ pub mod basic {
             SetDeliverMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn expiration<V>(mut self, expiration: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_expiration(&mut self.payload, expiration.into());
+            self
+        } // set_expiration()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetDeliverMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
+        pub fn message_id<V>(mut self, message_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_message_id(&mut self.payload, message_id.into());
+            self
+        } // set_message_id()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetDeliverMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
         pub fn redelivered(mut self, redelivered: bool) -> Self {
             SetDeliverMethodFields::set_redelivered(&mut self.payload, redelivered);
             self
         } // set_redelivered()
+        pub fn reply_to<V>(mut self, reply_to: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_reply_to(&mut self.payload, reply_to.into());
+            self
+        } // set_reply_to()
+        pub fn reserved<V>(mut self, reserved: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_reserved(&mut self.payload, reserved.into());
+            self
+        } // set_reserved()
         pub fn routing_key<V>(mut self, routing_key: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetDeliverMethodFields::set_routing_key(&mut self.payload, routing_key.into());
             self
         } // set_routing_key()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetDeliverMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn ty<V>(mut self, ty: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_ty(&mut self.payload, ty.into());
+            self
+        } // set_ty()
+        pub fn user_id<V>(mut self, user_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_user_id(&mut self.payload, user_id.into());
+            self
+        } // set_user_id()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> DeliverBuilder<T>
     pub trait GetMethod<'a> {
         type Payload: Default + SetGetMethodFields<'a>;
@@ -489,12 +616,14 @@ pub mod basic {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
-    pub struct GetBuilder<T: ::Encodable> {
+    pub struct GetBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct GetBuilder
 
 
-    impl<'a, T> GetBuilder<T>
+    impl<T> GetBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -502,13 +631,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> GetBuilder<T>
+    impl<T> GetBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> GetBuilder<T>
 
     impl<T> Default for GetBuilder<T>
         where T: ::Encodable + Default
@@ -518,7 +647,7 @@ pub mod basic {
         }
     } // impl Default for GetBuilder
     impl<'a, T> GetBuilder<T>
-        where T: ::Encodable + SetGetMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetGetMethodFields<'a>
     {
         pub fn no_ack(mut self, no_ack: bool) -> Self {
             SetGetMethodFields::set_no_ack(&mut self.payload, no_ack);
@@ -543,12 +672,14 @@ pub mod basic {
         fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetEmptyMethodFields<'a>
 
-    pub struct GetEmptyBuilder<T: ::Encodable> {
+    pub struct GetEmptyBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct GetEmptyBuilder
 
 
-    impl<'a, T> GetEmptyBuilder<T>
+    impl<T> GetEmptyBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -556,13 +687,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> GetEmptyBuilder<T>
+    impl<T> GetEmptyBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> GetEmptyBuilder<T>
 
     impl<T> Default for GetEmptyBuilder<T>
         where T: ::Encodable + Default
@@ -572,7 +703,7 @@ pub mod basic {
         }
     } // impl Default for GetEmptyBuilder
     impl<'a, T> GetEmptyBuilder<T>
-        where T: ::Encodable + SetGetEmptyMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetGetEmptyMethodFields<'a>
     {
         pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -586,19 +717,36 @@ pub mod basic {
     } // pub trait GetOkMethod<'a>
 
     pub trait SetGetOkMethodFields<'a> {
+        fn set_app_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_correlation_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_mode(&mut self, _: u8) {}
         fn set_delivery_tag(&mut self, _: u64) {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_expiration<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_message_count(&mut self, _: u32) {}
+        fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_priority(&mut self, _: u8) {}
         fn set_redelivered(&mut self, _: bool) {}
+        fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_timestamp(&mut self, _: u64) {}
+        fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_user_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetGetOkMethodFields<'a>
 
-    pub struct GetOkBuilder<T: ::Encodable> {
+    pub struct GetOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct GetOkBuilder
 
 
-    impl<'a, T> GetOkBuilder<T>
+    impl<T> GetOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -606,13 +754,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> GetOkBuilder<T>
+    impl<T> GetOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> GetOkBuilder<T>
 
     impl<T> Default for GetOkBuilder<T>
         where T: ::Encodable + Default
@@ -622,8 +770,42 @@ pub mod basic {
         }
     } // impl Default for GetOkBuilder
     impl<'a, T> GetOkBuilder<T>
-        where T: ::Encodable + SetGetOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetGetOkMethodFields<'a>
     {
+        pub fn app_id<V>(mut self, app_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_app_id(&mut self.payload, app_id.into());
+            self
+        } // set_app_id()
+        pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_cluster_id(&mut self.payload, cluster_id.into());
+            self
+        } // set_cluster_id()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_content_encoding(&mut self.payload, content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
+        pub fn correlation_id<V>(mut self, correlation_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_correlation_id(&mut self.payload, correlation_id.into());
+            self
+        } // set_correlation_id()
+        pub fn delivery_mode(mut self, delivery_mode: u8) -> Self {
+            SetGetOkMethodFields::set_delivery_mode(&mut self.payload, delivery_mode);
+            self
+        } // set_delivery_mode()
         pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
             SetGetOkMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
             self
@@ -634,20 +816,81 @@ pub mod basic {
             SetGetOkMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn expiration<V>(mut self, expiration: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_expiration(&mut self.payload, expiration.into());
+            self
+        } // set_expiration()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetGetOkMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
         pub fn message_count(mut self, message_count: u32) -> Self {
             SetGetOkMethodFields::set_message_count(&mut self.payload, message_count);
             self
         } // set_message_count()
+        pub fn message_id<V>(mut self, message_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_message_id(&mut self.payload, message_id.into());
+            self
+        } // set_message_id()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetGetOkMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
         pub fn redelivered(mut self, redelivered: bool) -> Self {
             SetGetOkMethodFields::set_redelivered(&mut self.payload, redelivered);
             self
         } // set_redelivered()
+        pub fn reply_to<V>(mut self, reply_to: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_reply_to(&mut self.payload, reply_to.into());
+            self
+        } // set_reply_to()
+        pub fn reserved<V>(mut self, reserved: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_reserved(&mut self.payload, reserved.into());
+            self
+        } // set_reserved()
         pub fn routing_key<V>(mut self, routing_key: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetGetOkMethodFields::set_routing_key(&mut self.payload, routing_key.into());
             self
         } // set_routing_key()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetGetOkMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn ty<V>(mut self, ty: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_ty(&mut self.payload, ty.into());
+            self
+        } // set_ty()
+        pub fn user_id<V>(mut self, user_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetGetOkMethodFields::set_user_id(&mut self.payload, user_id.into());
+            self
+        } // set_user_id()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> GetOkBuilder<T>
     pub trait NackMethod {
         type Payload: Default + SetNackMethodFields;
@@ -659,7 +902,9 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetNackMethodFields
 
-    pub struct NackBuilder<T: ::Encodable> {
+    pub struct NackBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct NackBuilder
 
@@ -678,7 +923,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> NackBuilder<T>
 
     impl<T> Default for NackBuilder<T>
         where T: ::Encodable + Default
@@ -708,19 +953,36 @@ pub mod basic {
     } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
+        fn set_app_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_correlation_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_mode(&mut self, _: u8) {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_expiration<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_immediate(&mut self, _: bool) {}
         fn set_mandatory(&mut self, _: bool) {}
+        fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_priority(&mut self, _: u8) {}
+        fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_ticket(&mut self, _: u16) {}
+        fn set_timestamp(&mut self, _: u64) {}
+        fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_user_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetPublishMethodFields<'a>
 
-    pub struct PublishBuilder<T: ::Encodable> {
+    pub struct PublishBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct PublishBuilder
 
 
-    impl<'a, T> PublishBuilder<T>
+    impl<T> PublishBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -728,13 +990,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> PublishBuilder<T>
+    impl<T> PublishBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> PublishBuilder<T>
 
     impl<T> Default for PublishBuilder<T>
         where T: ::Encodable + Default
@@ -744,14 +1006,61 @@ pub mod basic {
         }
     } // impl Default for PublishBuilder
     impl<'a, T> PublishBuilder<T>
-        where T: ::Encodable + SetPublishMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetPublishMethodFields<'a>
     {
+        pub fn app_id<V>(mut self, app_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_app_id(&mut self.payload, app_id.into());
+            self
+        } // set_app_id()
+        pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_cluster_id(&mut self.payload, cluster_id.into());
+            self
+        } // set_cluster_id()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_content_encoding(&mut self.payload,
+                                                         content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
+        pub fn correlation_id<V>(mut self, correlation_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_correlation_id(&mut self.payload, correlation_id.into());
+            self
+        } // set_correlation_id()
+        pub fn delivery_mode(mut self, delivery_mode: u8) -> Self {
+            SetPublishMethodFields::set_delivery_mode(&mut self.payload, delivery_mode);
+            self
+        } // set_delivery_mode()
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetPublishMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn expiration<V>(mut self, expiration: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_expiration(&mut self.payload, expiration.into());
+            self
+        } // set_expiration()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetPublishMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
         pub fn immediate(mut self, immediate: bool) -> Self {
             SetPublishMethodFields::set_immediate(&mut self.payload, immediate);
             self
@@ -760,6 +1069,28 @@ pub mod basic {
             SetPublishMethodFields::set_mandatory(&mut self.payload, mandatory);
             self
         } // set_mandatory()
+        pub fn message_id<V>(mut self, message_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_message_id(&mut self.payload, message_id.into());
+            self
+        } // set_message_id()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetPublishMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
+        pub fn reply_to<V>(mut self, reply_to: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_reply_to(&mut self.payload, reply_to.into());
+            self
+        } // set_reply_to()
+        pub fn reserved<V>(mut self, reserved: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_reserved(&mut self.payload, reserved.into());
+            self
+        } // set_reserved()
         pub fn routing_key<V>(mut self, routing_key: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
@@ -770,6 +1101,33 @@ pub mod basic {
             SetPublishMethodFields::set_ticket(&mut self.payload, ticket);
             self
         } // set_ticket()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetPublishMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn ty<V>(mut self, ty: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_ty(&mut self.payload, ty.into());
+            self
+        } // set_ty()
+        pub fn user_id<V>(mut self, user_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_user_id(&mut self.payload, user_id.into());
+            self
+        } // set_user_id()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> PublishBuilder<T>
     pub trait QosMethod {
         type Payload: Default + SetQosMethodFields;
@@ -781,7 +1139,9 @@ pub mod basic {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
-    pub struct QosBuilder<T: ::Encodable> {
+    pub struct QosBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct QosBuilder
 
@@ -800,7 +1160,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> QosBuilder<T>
 
     impl<T> Default for QosBuilder<T>
         where T: ::Encodable + Default
@@ -829,7 +1189,9 @@ pub mod basic {
         type Payload: Default;
     } // pub trait QosOkMethod
 
-    pub struct QosOkBuilder<T: ::Encodable> {
+    pub struct QosOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct QosOkBuilder
 
@@ -848,7 +1210,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> QosOkBuilder<T>
 
     impl<T> Default for QosOkBuilder<T>
         where T: ::Encodable + Default
@@ -865,7 +1227,9 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverMethodFields
 
-    pub struct RecoverBuilder<T: ::Encodable> {
+    pub struct RecoverBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RecoverBuilder
 
@@ -884,7 +1248,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RecoverBuilder<T>
 
     impl<T> Default for RecoverBuilder<T>
         where T: ::Encodable + Default
@@ -909,7 +1273,9 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverAsyncMethodFields
 
-    pub struct RecoverAsyncBuilder<T: ::Encodable> {
+    pub struct RecoverAsyncBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RecoverAsyncBuilder
 
@@ -928,7 +1294,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RecoverAsyncBuilder<T>
 
     impl<T> Default for RecoverAsyncBuilder<T>
         where T: ::Encodable + Default
@@ -949,7 +1315,9 @@ pub mod basic {
         type Payload: Default;
     } // pub trait RecoverOkMethod
 
-    pub struct RecoverOkBuilder<T: ::Encodable> {
+    pub struct RecoverOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RecoverOkBuilder
 
@@ -968,7 +1336,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RecoverOkBuilder<T>
 
     impl<T> Default for RecoverOkBuilder<T>
         where T: ::Encodable + Default
@@ -985,7 +1353,9 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverSyncMethodFields
 
-    pub struct RecoverSyncBuilder<T: ::Encodable> {
+    pub struct RecoverSyncBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RecoverSyncBuilder
 
@@ -1004,7 +1374,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RecoverSyncBuilder<T>
 
     impl<T> Default for RecoverSyncBuilder<T>
         where T: ::Encodable + Default
@@ -1025,7 +1395,9 @@ pub mod basic {
         type Payload: Default;
     } // pub trait RecoverSyncOkMethod
 
-    pub struct RecoverSyncOkBuilder<T: ::Encodable> {
+    pub struct RecoverSyncOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RecoverSyncOkBuilder
 
@@ -1044,7 +1416,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RecoverSyncOkBuilder<T>
 
     impl<T> Default for RecoverSyncOkBuilder<T>
         where T: ::Encodable + Default
@@ -1062,7 +1434,9 @@ pub mod basic {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRejectMethodFields
 
-    pub struct RejectBuilder<T: ::Encodable> {
+    pub struct RejectBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RejectBuilder
 
@@ -1081,7 +1455,7 @@ pub mod basic {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RejectBuilder<T>
 
     impl<T> Default for RejectBuilder<T>
         where T: ::Encodable + Default
@@ -1107,18 +1481,35 @@ pub mod basic {
     } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
+        fn set_app_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_correlation_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_delivery_mode(&mut self, _: u8) {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_expiration<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_priority(&mut self, _: u8) {}
         fn set_reply_code(&mut self, _: u16) {}
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_timestamp(&mut self, _: u64) {}
+        fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_user_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetReturnMethodFields<'a>
 
-    pub struct ReturnBuilder<T: ::Encodable> {
+    pub struct ReturnBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ReturnBuilder
 
 
-    impl<'a, T> ReturnBuilder<T>
+    impl<T> ReturnBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1126,13 +1517,13 @@ pub mod basic {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ReturnBuilder<T>
+    impl<T> ReturnBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ReturnBuilder<T>
 
     impl<T> Default for ReturnBuilder<T>
         where T: ::Encodable + Default
@@ -1142,14 +1533,70 @@ pub mod basic {
         }
     } // impl Default for ReturnBuilder
     impl<'a, T> ReturnBuilder<T>
-        where T: ::Encodable + SetReturnMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetReturnMethodFields<'a>
     {
+        pub fn app_id<V>(mut self, app_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_app_id(&mut self.payload, app_id.into());
+            self
+        } // set_app_id()
+        pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_cluster_id(&mut self.payload, cluster_id.into());
+            self
+        } // set_cluster_id()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_content_encoding(&mut self.payload, content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
+        pub fn correlation_id<V>(mut self, correlation_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_correlation_id(&mut self.payload, correlation_id.into());
+            self
+        } // set_correlation_id()
+        pub fn delivery_mode(mut self, delivery_mode: u8) -> Self {
+            SetReturnMethodFields::set_delivery_mode(&mut self.payload, delivery_mode);
+            self
+        } // set_delivery_mode()
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetReturnMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn expiration<V>(mut self, expiration: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_expiration(&mut self.payload, expiration.into());
+            self
+        } // set_expiration()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetReturnMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
+        pub fn message_id<V>(mut self, message_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_message_id(&mut self.payload, message_id.into());
+            self
+        } // set_message_id()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetReturnMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
         pub fn reply_code(mut self, reply_code: u16) -> Self {
             SetReturnMethodFields::set_reply_code(&mut self.payload, reply_code);
             self
@@ -1160,12 +1607,51 @@ pub mod basic {
             SetReturnMethodFields::set_reply_text(&mut self.payload, reply_text.into());
             self
         } // set_reply_text()
+        pub fn reply_to<V>(mut self, reply_to: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_reply_to(&mut self.payload, reply_to.into());
+            self
+        } // set_reply_to()
+        pub fn reserved<V>(mut self, reserved: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_reserved(&mut self.payload, reserved.into());
+            self
+        } // set_reserved()
         pub fn routing_key<V>(mut self, routing_key: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetReturnMethodFields::set_routing_key(&mut self.payload, routing_key.into());
             self
         } // set_routing_key()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetReturnMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn ty<V>(mut self, ty: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_ty(&mut self.payload, ty.into());
+            self
+        } // set_ty()
+        pub fn user_id<V>(mut self, user_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_user_id(&mut self.payload, user_id.into());
+            self
+        } // set_user_id()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> ReturnBuilder<T>
 } // mod basic
 
@@ -1180,12 +1666,14 @@ pub mod channel {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetAlertMethodFields<'a>
 
-    pub struct AlertBuilder<T: ::Encodable> {
+    pub struct AlertBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct AlertBuilder
 
 
-    impl<'a, T> AlertBuilder<T>
+    impl<T> AlertBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1193,13 +1681,13 @@ pub mod channel {
         }
     } // impl Builder (new)
 
-    impl<'a, T> AlertBuilder<T>
+    impl<T> AlertBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> AlertBuilder<T>
 
     impl<T> Default for AlertBuilder<T>
         where T: ::Encodable + Default
@@ -1209,7 +1697,7 @@ pub mod channel {
         }
     } // impl Default for AlertBuilder
     impl<'a, T> AlertBuilder<T>
-        where T: ::Encodable + SetAlertMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetAlertMethodFields<'a>
     {
         pub fn details<V>(mut self, details: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -1239,12 +1727,14 @@ pub mod channel {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
-    pub struct CloseBuilder<T: ::Encodable> {
+    pub struct CloseBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CloseBuilder
 
 
-    impl<'a, T> CloseBuilder<T>
+    impl<T> CloseBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1252,13 +1742,13 @@ pub mod channel {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CloseBuilder<T>
+    impl<T> CloseBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CloseBuilder<T>
 
     impl<T> Default for CloseBuilder<T>
         where T: ::Encodable + Default
@@ -1268,7 +1758,7 @@ pub mod channel {
         }
     } // impl Default for CloseBuilder
     impl<'a, T> CloseBuilder<T>
-        where T: ::Encodable + SetCloseMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCloseMethodFields<'a>
     {
         pub fn class_id(mut self, class_id: u16) -> Self {
             SetCloseMethodFields::set_class_id(&mut self.payload, class_id);
@@ -1293,7 +1783,9 @@ pub mod channel {
         type Payload: Default;
     } // pub trait CloseOkMethod
 
-    pub struct CloseOkBuilder<T: ::Encodable> {
+    pub struct CloseOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CloseOkBuilder
 
@@ -1312,7 +1804,7 @@ pub mod channel {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CloseOkBuilder<T>
 
     impl<T> Default for CloseOkBuilder<T>
         where T: ::Encodable + Default
@@ -1329,7 +1821,9 @@ pub mod channel {
         fn set_active(&mut self, _: bool) {}
     } // pub trait SetFlowMethodFields
 
-    pub struct FlowBuilder<T: ::Encodable> {
+    pub struct FlowBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct FlowBuilder
 
@@ -1348,7 +1842,7 @@ pub mod channel {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> FlowBuilder<T>
 
     impl<T> Default for FlowBuilder<T>
         where T: ::Encodable + Default
@@ -1373,7 +1867,9 @@ pub mod channel {
         fn set_active(&mut self, _: bool) {}
     } // pub trait SetFlowOkMethodFields
 
-    pub struct FlowOkBuilder<T: ::Encodable> {
+    pub struct FlowOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct FlowOkBuilder
 
@@ -1392,7 +1888,7 @@ pub mod channel {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> FlowOkBuilder<T>
 
     impl<T> Default for FlowOkBuilder<T>
         where T: ::Encodable + Default
@@ -1413,7 +1909,9 @@ pub mod channel {
         type Payload: Default;
     } // pub trait OkMethod
 
-    pub struct OkBuilder<T: ::Encodable> {
+    pub struct OkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OkBuilder
 
@@ -1432,7 +1930,7 @@ pub mod channel {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OkBuilder<T>
 
     impl<T> Default for OkBuilder<T>
         where T: ::Encodable + Default
@@ -1449,12 +1947,14 @@ pub mod channel {
         fn set_out_of_band<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
-    pub struct OpenBuilder<T: ::Encodable> {
+    pub struct OpenBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OpenBuilder
 
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1462,13 +1962,13 @@ pub mod channel {
         }
     } // impl Builder (new)
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OpenBuilder<T>
 
     impl<T> Default for OpenBuilder<T>
         where T: ::Encodable + Default
@@ -1478,7 +1978,7 @@ pub mod channel {
         }
     } // impl Default for OpenBuilder
     impl<'a, T> OpenBuilder<T>
-        where T: ::Encodable + SetOpenMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetOpenMethodFields<'a>
     {
         pub fn out_of_band<V>(mut self, out_of_band: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -1495,12 +1995,14 @@ pub mod channel {
         fn set_channel_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenOkMethodFields<'a>
 
-    pub struct OpenOkBuilder<T: ::Encodable> {
+    pub struct OpenOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OpenOkBuilder
 
 
-    impl<'a, T> OpenOkBuilder<T>
+    impl<T> OpenOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1508,13 +2010,13 @@ pub mod channel {
         }
     } // impl Builder (new)
 
-    impl<'a, T> OpenOkBuilder<T>
+    impl<T> OpenOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OpenOkBuilder<T>
 
     impl<T> Default for OpenOkBuilder<T>
         where T: ::Encodable + Default
@@ -1524,7 +2026,7 @@ pub mod channel {
         }
     } // impl Default for OpenOkBuilder
     impl<'a, T> OpenOkBuilder<T>
-        where T: ::Encodable + SetOpenOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetOpenOkMethodFields<'a>
     {
         pub fn channel_id<V>(mut self, channel_id: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -1537,7 +2039,9 @@ pub mod channel {
         type Payload: Default;
     } // pub trait PingMethod
 
-    pub struct PingBuilder<T: ::Encodable> {
+    pub struct PingBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct PingBuilder
 
@@ -1556,7 +2060,7 @@ pub mod channel {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> PingBuilder<T>
 
     impl<T> Default for PingBuilder<T>
         where T: ::Encodable + Default
@@ -1569,7 +2073,9 @@ pub mod channel {
         type Payload: Default;
     } // pub trait PongMethod
 
-    pub struct PongBuilder<T: ::Encodable> {
+    pub struct PongBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct PongBuilder
 
@@ -1588,7 +2094,7 @@ pub mod channel {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> PongBuilder<T>
 
     impl<T> Default for PongBuilder<T>
         where T: ::Encodable + Default
@@ -1605,12 +2111,14 @@ pub mod channel {
         fn set_channel_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
 
-    pub struct ResumeBuilder<T: ::Encodable> {
+    pub struct ResumeBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ResumeBuilder
 
 
-    impl<'a, T> ResumeBuilder<T>
+    impl<T> ResumeBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1618,13 +2126,13 @@ pub mod channel {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ResumeBuilder<T>
+    impl<T> ResumeBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ResumeBuilder<T>
 
     impl<T> Default for ResumeBuilder<T>
         where T: ::Encodable + Default
@@ -1634,7 +2142,7 @@ pub mod channel {
         }
     } // impl Default for ResumeBuilder
     impl<'a, T> ResumeBuilder<T>
-        where T: ::Encodable + SetResumeMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetResumeMethodFields<'a>
     {
         pub fn channel_id<V>(mut self, channel_id: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -1654,7 +2162,9 @@ pub mod confirm {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetSelectMethodFields
 
-    pub struct SelectBuilder<T: ::Encodable> {
+    pub struct SelectBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SelectBuilder
 
@@ -1673,7 +2183,7 @@ pub mod confirm {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SelectBuilder<T>
 
     impl<T> Default for SelectBuilder<T>
         where T: ::Encodable + Default
@@ -1694,7 +2204,9 @@ pub mod confirm {
         type Payload: Default;
     } // pub trait SelectOkMethod
 
-    pub struct SelectOkBuilder<T: ::Encodable> {
+    pub struct SelectOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SelectOkBuilder
 
@@ -1713,7 +2225,7 @@ pub mod confirm {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SelectOkBuilder<T>
 
     impl<T> Default for SelectOkBuilder<T>
         where T: ::Encodable + Default
@@ -1733,12 +2245,14 @@ pub mod connection {
         fn set_reason<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBlockedMethodFields<'a>
 
-    pub struct BlockedBuilder<T: ::Encodable> {
+    pub struct BlockedBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct BlockedBuilder
 
 
-    impl<'a, T> BlockedBuilder<T>
+    impl<T> BlockedBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1746,13 +2260,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> BlockedBuilder<T>
+    impl<T> BlockedBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> BlockedBuilder<T>
 
     impl<T> Default for BlockedBuilder<T>
         where T: ::Encodable + Default
@@ -1762,7 +2276,7 @@ pub mod connection {
         }
     } // impl Default for BlockedBuilder
     impl<'a, T> BlockedBuilder<T>
-        where T: ::Encodable + SetBlockedMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetBlockedMethodFields<'a>
     {
         pub fn reason<V>(mut self, reason: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -1782,12 +2296,14 @@ pub mod connection {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCloseMethodFields<'a>
 
-    pub struct CloseBuilder<T: ::Encodable> {
+    pub struct CloseBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CloseBuilder
 
 
-    impl<'a, T> CloseBuilder<T>
+    impl<T> CloseBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1795,13 +2311,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CloseBuilder<T>
+    impl<T> CloseBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CloseBuilder<T>
 
     impl<T> Default for CloseBuilder<T>
         where T: ::Encodable + Default
@@ -1811,7 +2327,7 @@ pub mod connection {
         }
     } // impl Default for CloseBuilder
     impl<'a, T> CloseBuilder<T>
-        where T: ::Encodable + SetCloseMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCloseMethodFields<'a>
     {
         pub fn class_id(mut self, class_id: u16) -> Self {
             SetCloseMethodFields::set_class_id(&mut self.payload, class_id);
@@ -1836,7 +2352,9 @@ pub mod connection {
         type Payload: Default;
     } // pub trait CloseOkMethod
 
-    pub struct CloseOkBuilder<T: ::Encodable> {
+    pub struct CloseOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CloseOkBuilder
 
@@ -1855,7 +2373,7 @@ pub mod connection {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CloseOkBuilder<T>
 
     impl<T> Default for CloseOkBuilder<T>
         where T: ::Encodable + Default
@@ -1874,12 +2392,14 @@ pub mod connection {
         fn set_virtual_host<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
-    pub struct OpenBuilder<T: ::Encodable> {
+    pub struct OpenBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OpenBuilder
 
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1887,13 +2407,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OpenBuilder<T>
 
     impl<T> Default for OpenBuilder<T>
         where T: ::Encodable + Default
@@ -1903,7 +2423,7 @@ pub mod connection {
         }
     } // impl Default for OpenBuilder
     impl<'a, T> OpenBuilder<T>
-        where T: ::Encodable + SetOpenMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetOpenMethodFields<'a>
     {
         pub fn capabilities<V>(mut self, capabilities: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -1930,12 +2450,14 @@ pub mod connection {
         fn set_known_hosts<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenOkMethodFields<'a>
 
-    pub struct OpenOkBuilder<T: ::Encodable> {
+    pub struct OpenOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OpenOkBuilder
 
 
-    impl<'a, T> OpenOkBuilder<T>
+    impl<T> OpenOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1943,13 +2465,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> OpenOkBuilder<T>
+    impl<T> OpenOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OpenOkBuilder<T>
 
     impl<T> Default for OpenOkBuilder<T>
         where T: ::Encodable + Default
@@ -1959,7 +2481,7 @@ pub mod connection {
         }
     } // impl Default for OpenOkBuilder
     impl<'a, T> OpenOkBuilder<T>
-        where T: ::Encodable + SetOpenOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetOpenOkMethodFields<'a>
     {
         pub fn known_hosts<V>(mut self, known_hosts: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -1977,12 +2499,14 @@ pub mod connection {
         fn set_known_hosts<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRedirectMethodFields<'a>
 
-    pub struct RedirectBuilder<T: ::Encodable> {
+    pub struct RedirectBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RedirectBuilder
 
 
-    impl<'a, T> RedirectBuilder<T>
+    impl<T> RedirectBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -1990,13 +2514,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> RedirectBuilder<T>
+    impl<T> RedirectBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RedirectBuilder<T>
 
     impl<T> Default for RedirectBuilder<T>
         where T: ::Encodable + Default
@@ -2006,7 +2530,7 @@ pub mod connection {
         }
     } // impl Default for RedirectBuilder
     impl<'a, T> RedirectBuilder<T>
-        where T: ::Encodable + SetRedirectMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetRedirectMethodFields<'a>
     {
         pub fn host<V>(mut self, host: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -2029,12 +2553,14 @@ pub mod connection {
         fn set_challenge<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureMethodFields<'a>
 
-    pub struct SecureBuilder<T: ::Encodable> {
+    pub struct SecureBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SecureBuilder
 
 
-    impl<'a, T> SecureBuilder<T>
+    impl<T> SecureBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2042,13 +2568,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> SecureBuilder<T>
+    impl<T> SecureBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SecureBuilder<T>
 
     impl<T> Default for SecureBuilder<T>
         where T: ::Encodable + Default
@@ -2058,7 +2584,7 @@ pub mod connection {
         }
     } // impl Default for SecureBuilder
     impl<'a, T> SecureBuilder<T>
-        where T: ::Encodable + SetSecureMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetSecureMethodFields<'a>
     {
         pub fn challenge<V>(mut self, challenge: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -2075,12 +2601,14 @@ pub mod connection {
         fn set_response<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetSecureOkMethodFields<'a>
 
-    pub struct SecureOkBuilder<T: ::Encodable> {
+    pub struct SecureOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SecureOkBuilder
 
 
-    impl<'a, T> SecureOkBuilder<T>
+    impl<T> SecureOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2088,13 +2616,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> SecureOkBuilder<T>
+    impl<T> SecureOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SecureOkBuilder<T>
 
     impl<T> Default for SecureOkBuilder<T>
         where T: ::Encodable + Default
@@ -2104,7 +2632,7 @@ pub mod connection {
         }
     } // impl Default for SecureOkBuilder
     impl<'a, T> SecureOkBuilder<T>
-        where T: ::Encodable + SetSecureOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetSecureOkMethodFields<'a>
     {
         pub fn response<V>(mut self, response: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -2125,12 +2653,14 @@ pub mod connection {
         fn set_version_minor(&mut self, _: u8) {}
     } // pub trait SetStartMethodFields<'a>
 
-    pub struct StartBuilder<T: ::Encodable> {
+    pub struct StartBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct StartBuilder
 
 
-    impl<'a, T> StartBuilder<T>
+    impl<T> StartBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2138,13 +2668,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> StartBuilder<T>
+    impl<T> StartBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> StartBuilder<T>
 
     impl<T> Default for StartBuilder<T>
         where T: ::Encodable + Default
@@ -2154,7 +2684,7 @@ pub mod connection {
         }
     } // impl Default for StartBuilder
     impl<'a, T> StartBuilder<T>
-        where T: ::Encodable + SetStartMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetStartMethodFields<'a>
     {
         pub fn locales<V>(mut self, locales: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -2195,12 +2725,14 @@ pub mod connection {
         fn set_response<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStartOkMethodFields<'a>
 
-    pub struct StartOkBuilder<T: ::Encodable> {
+    pub struct StartOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct StartOkBuilder
 
 
-    impl<'a, T> StartOkBuilder<T>
+    impl<T> StartOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2208,13 +2740,13 @@ pub mod connection {
         }
     } // impl Builder (new)
 
-    impl<'a, T> StartOkBuilder<T>
+    impl<T> StartOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> StartOkBuilder<T>
 
     impl<T> Default for StartOkBuilder<T>
         where T: ::Encodable + Default
@@ -2224,7 +2756,7 @@ pub mod connection {
         }
     } // impl Default for StartOkBuilder
     impl<'a, T> StartOkBuilder<T>
-        where T: ::Encodable + SetStartOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetStartOkMethodFields<'a>
     {
         pub fn client_properties<V>(mut self, client_properties: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -2262,7 +2794,9 @@ pub mod connection {
         fn set_heartbeat(&mut self, _: u16) {}
     } // pub trait SetTuneMethodFields
 
-    pub struct TuneBuilder<T: ::Encodable> {
+    pub struct TuneBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct TuneBuilder
 
@@ -2281,7 +2815,7 @@ pub mod connection {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> TuneBuilder<T>
 
     impl<T> Default for TuneBuilder<T>
         where T: ::Encodable + Default
@@ -2316,7 +2850,9 @@ pub mod connection {
         fn set_heartbeat(&mut self, _: u16) {}
     } // pub trait SetTuneOkMethodFields
 
-    pub struct TuneOkBuilder<T: ::Encodable> {
+    pub struct TuneOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct TuneOkBuilder
 
@@ -2335,7 +2871,7 @@ pub mod connection {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> TuneOkBuilder<T>
 
     impl<T> Default for TuneOkBuilder<T>
         where T: ::Encodable + Default
@@ -2364,7 +2900,9 @@ pub mod connection {
         type Payload: Default;
     } // pub trait UnblockedMethod
 
-    pub struct UnblockedBuilder<T: ::Encodable> {
+    pub struct UnblockedBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct UnblockedBuilder
 
@@ -2383,7 +2921,7 @@ pub mod connection {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> UnblockedBuilder<T>
 
     impl<T> Default for UnblockedBuilder<T>
         where T: ::Encodable + Default
@@ -2399,7 +2937,9 @@ pub mod dtx {
         type Payload: Default;
     } // pub trait SelectMethod
 
-    pub struct SelectBuilder<T: ::Encodable> {
+    pub struct SelectBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SelectBuilder
 
@@ -2418,7 +2958,7 @@ pub mod dtx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SelectBuilder<T>
 
     impl<T> Default for SelectBuilder<T>
         where T: ::Encodable + Default
@@ -2431,7 +2971,9 @@ pub mod dtx {
         type Payload: Default;
     } // pub trait SelectOkMethod
 
-    pub struct SelectOkBuilder<T: ::Encodable> {
+    pub struct SelectOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SelectOkBuilder
 
@@ -2450,7 +2992,7 @@ pub mod dtx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SelectOkBuilder<T>
 
     impl<T> Default for SelectOkBuilder<T>
         where T: ::Encodable + Default
@@ -2467,12 +3009,14 @@ pub mod dtx {
         fn set_dtx_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetStartMethodFields<'a>
 
-    pub struct StartBuilder<T: ::Encodable> {
+    pub struct StartBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct StartBuilder
 
 
-    impl<'a, T> StartBuilder<T>
+    impl<T> StartBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2480,13 +3024,13 @@ pub mod dtx {
         }
     } // impl Builder (new)
 
-    impl<'a, T> StartBuilder<T>
+    impl<T> StartBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> StartBuilder<T>
 
     impl<T> Default for StartBuilder<T>
         where T: ::Encodable + Default
@@ -2496,7 +3040,7 @@ pub mod dtx {
         }
     } // impl Default for StartBuilder
     impl<'a, T> StartBuilder<T>
-        where T: ::Encodable + SetStartMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetStartMethodFields<'a>
     {
         pub fn dtx_identifier<V>(mut self, dtx_identifier: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -2509,7 +3053,9 @@ pub mod dtx {
         type Payload: Default;
     } // pub trait StartOkMethod
 
-    pub struct StartOkBuilder<T: ::Encodable> {
+    pub struct StartOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct StartOkBuilder
 
@@ -2528,7 +3074,7 @@ pub mod dtx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> StartOkBuilder<T>
 
     impl<T> Default for StartOkBuilder<T>
         where T: ::Encodable + Default
@@ -2552,12 +3098,14 @@ pub mod exchange {
         fn set_source<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBindMethodFields<'a>
 
-    pub struct BindBuilder<T: ::Encodable> {
+    pub struct BindBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct BindBuilder
 
 
-    impl<'a, T> BindBuilder<T>
+    impl<T> BindBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2565,13 +3113,13 @@ pub mod exchange {
         }
     } // impl Builder (new)
 
-    impl<'a, T> BindBuilder<T>
+    impl<T> BindBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> BindBuilder<T>
 
     impl<T> Default for BindBuilder<T>
         where T: ::Encodable + Default
@@ -2581,7 +3129,7 @@ pub mod exchange {
         }
     } // impl Default for BindBuilder
     impl<'a, T> BindBuilder<T>
-        where T: ::Encodable + SetBindMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetBindMethodFields<'a>
     {
         pub fn arguments<V>(mut self, arguments: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -2616,7 +3164,9 @@ pub mod exchange {
         type Payload: Default;
     } // pub trait BindOkMethod
 
-    pub struct BindOkBuilder<T: ::Encodable> {
+    pub struct BindOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct BindOkBuilder
 
@@ -2635,7 +3185,7 @@ pub mod exchange {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> BindOkBuilder<T>
 
     impl<T> Default for BindOkBuilder<T>
         where T: ::Encodable + Default
@@ -2654,12 +3204,14 @@ pub mod exchange {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundMethodFields<'a>
 
-    pub struct BoundBuilder<T: ::Encodable> {
+    pub struct BoundBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct BoundBuilder
 
 
-    impl<'a, T> BoundBuilder<T>
+    impl<T> BoundBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2667,13 +3219,13 @@ pub mod exchange {
         }
     } // impl Builder (new)
 
-    impl<'a, T> BoundBuilder<T>
+    impl<T> BoundBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> BoundBuilder<T>
 
     impl<T> Default for BoundBuilder<T>
         where T: ::Encodable + Default
@@ -2683,7 +3235,7 @@ pub mod exchange {
         }
     } // impl Default for BoundBuilder
     impl<'a, T> BoundBuilder<T>
-        where T: ::Encodable + SetBoundMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetBoundMethodFields<'a>
     {
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -2713,12 +3265,14 @@ pub mod exchange {
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetBoundOkMethodFields<'a>
 
-    pub struct BoundOkBuilder<T: ::Encodable> {
+    pub struct BoundOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct BoundOkBuilder
 
 
-    impl<'a, T> BoundOkBuilder<T>
+    impl<T> BoundOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2726,13 +3280,13 @@ pub mod exchange {
         }
     } // impl Builder (new)
 
-    impl<'a, T> BoundOkBuilder<T>
+    impl<T> BoundOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> BoundOkBuilder<T>
 
     impl<T> Default for BoundOkBuilder<T>
         where T: ::Encodable + Default
@@ -2742,7 +3296,7 @@ pub mod exchange {
         }
     } // impl Default for BoundOkBuilder
     impl<'a, T> BoundOkBuilder<T>
-        where T: ::Encodable + SetBoundOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetBoundOkMethodFields<'a>
     {
         pub fn reply_code(mut self, reply_code: u16) -> Self {
             SetBoundOkMethodFields::set_reply_code(&mut self.payload, reply_code);
@@ -2771,12 +3325,14 @@ pub mod exchange {
         fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareMethodFields<'a>
 
-    pub struct DeclareBuilder<T: ::Encodable> {
+    pub struct DeclareBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeclareBuilder
 
 
-    impl<'a, T> DeclareBuilder<T>
+    impl<T> DeclareBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2784,13 +3340,13 @@ pub mod exchange {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeclareBuilder<T>
+    impl<T> DeclareBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeclareBuilder<T>
 
     impl<T> Default for DeclareBuilder<T>
         where T: ::Encodable + Default
@@ -2800,7 +3356,7 @@ pub mod exchange {
         }
     } // impl Default for DeclareBuilder
     impl<'a, T> DeclareBuilder<T>
-        where T: ::Encodable + SetDeclareMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeclareMethodFields<'a>
     {
         pub fn arguments<V>(mut self, arguments: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -2849,7 +3405,9 @@ pub mod exchange {
         type Payload: Default;
     } // pub trait DeclareOkMethod
 
-    pub struct DeclareOkBuilder<T: ::Encodable> {
+    pub struct DeclareOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeclareOkBuilder
 
@@ -2868,7 +3426,7 @@ pub mod exchange {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeclareOkBuilder<T>
 
     impl<T> Default for DeclareOkBuilder<T>
         where T: ::Encodable + Default
@@ -2888,12 +3446,14 @@ pub mod exchange {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
-    pub struct DeleteBuilder<T: ::Encodable> {
+    pub struct DeleteBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeleteBuilder
 
 
-    impl<'a, T> DeleteBuilder<T>
+    impl<T> DeleteBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2901,13 +3461,13 @@ pub mod exchange {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeleteBuilder<T>
+    impl<T> DeleteBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeleteBuilder<T>
 
     impl<T> Default for DeleteBuilder<T>
         where T: ::Encodable + Default
@@ -2917,7 +3477,7 @@ pub mod exchange {
         }
     } // impl Default for DeleteBuilder
     impl<'a, T> DeleteBuilder<T>
-        where T: ::Encodable + SetDeleteMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeleteMethodFields<'a>
     {
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -2942,7 +3502,9 @@ pub mod exchange {
         type Payload: Default;
     } // pub trait DeleteOkMethod
 
-    pub struct DeleteOkBuilder<T: ::Encodable> {
+    pub struct DeleteOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeleteOkBuilder
 
@@ -2961,7 +3523,7 @@ pub mod exchange {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeleteOkBuilder<T>
 
     impl<T> Default for DeleteOkBuilder<T>
         where T: ::Encodable + Default
@@ -2982,12 +3544,14 @@ pub mod exchange {
         fn set_source<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetUnbindMethodFields<'a>
 
-    pub struct UnbindBuilder<T: ::Encodable> {
+    pub struct UnbindBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct UnbindBuilder
 
 
-    impl<'a, T> UnbindBuilder<T>
+    impl<T> UnbindBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -2995,13 +3559,13 @@ pub mod exchange {
         }
     } // impl Builder (new)
 
-    impl<'a, T> UnbindBuilder<T>
+    impl<T> UnbindBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> UnbindBuilder<T>
 
     impl<T> Default for UnbindBuilder<T>
         where T: ::Encodable + Default
@@ -3011,7 +3575,7 @@ pub mod exchange {
         }
     } // impl Default for UnbindBuilder
     impl<'a, T> UnbindBuilder<T>
-        where T: ::Encodable + SetUnbindMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetUnbindMethodFields<'a>
     {
         pub fn arguments<V>(mut self, arguments: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -3046,7 +3610,9 @@ pub mod exchange {
         type Payload: Default;
     } // pub trait UnbindOkMethod
 
-    pub struct UnbindOkBuilder<T: ::Encodable> {
+    pub struct UnbindOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct UnbindOkBuilder
 
@@ -3065,7 +3631,7 @@ pub mod exchange {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> UnbindOkBuilder<T>
 
     impl<T> Default for UnbindOkBuilder<T>
         where T: ::Encodable + Default
@@ -3086,7 +3652,9 @@ pub mod file {
         fn set_multiple(&mut self, _: bool) {}
     } // pub trait SetAckMethodFields
 
-    pub struct AckBuilder<T: ::Encodable> {
+    pub struct AckBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct AckBuilder
 
@@ -3105,7 +3673,7 @@ pub mod file {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> AckBuilder<T>
 
     impl<T> Default for AckBuilder<T>
         where T: ::Encodable + Default
@@ -3135,12 +3703,14 @@ pub mod file {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
-    pub struct CancelBuilder<T: ::Encodable> {
+    pub struct CancelBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CancelBuilder
 
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3148,13 +3718,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CancelBuilder<T>
 
     impl<T> Default for CancelBuilder<T>
         where T: ::Encodable + Default
@@ -3164,7 +3734,7 @@ pub mod file {
         }
     } // impl Default for CancelBuilder
     impl<'a, T> CancelBuilder<T>
-        where T: ::Encodable + SetCancelMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCancelMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3185,12 +3755,14 @@ pub mod file {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
-    pub struct CancelOkBuilder<T: ::Encodable> {
+    pub struct CancelOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CancelOkBuilder
 
 
-    impl<'a, T> CancelOkBuilder<T>
+    impl<T> CancelOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3198,13 +3770,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CancelOkBuilder<T>
+    impl<T> CancelOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CancelOkBuilder<T>
 
     impl<T> Default for CancelOkBuilder<T>
         where T: ::Encodable + Default
@@ -3214,7 +3786,7 @@ pub mod file {
         }
     } // impl Default for CancelOkBuilder
     impl<'a, T> CancelOkBuilder<T>
-        where T: ::Encodable + SetCancelOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCancelOkMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3238,12 +3810,14 @@ pub mod file {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
-    pub struct ConsumeBuilder<T: ::Encodable> {
+    pub struct ConsumeBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ConsumeBuilder
 
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3251,13 +3825,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ConsumeBuilder<T>
 
     impl<T> Default for ConsumeBuilder<T>
         where T: ::Encodable + Default
@@ -3267,7 +3841,7 @@ pub mod file {
         }
     } // impl Default for ConsumeBuilder
     impl<'a, T> ConsumeBuilder<T>
-        where T: ::Encodable + SetConsumeMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetConsumeMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3316,12 +3890,14 @@ pub mod file {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
-    pub struct ConsumeOkBuilder<T: ::Encodable> {
+    pub struct ConsumeOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ConsumeOkBuilder
 
 
-    impl<'a, T> ConsumeOkBuilder<T>
+    impl<T> ConsumeOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3329,13 +3905,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ConsumeOkBuilder<T>
+    impl<T> ConsumeOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ConsumeOkBuilder<T>
 
     impl<T> Default for ConsumeOkBuilder<T>
         where T: ::Encodable + Default
@@ -3345,7 +3921,7 @@ pub mod file {
         }
     } // impl Default for ConsumeOkBuilder
     impl<'a, T> ConsumeOkBuilder<T>
-        where T: ::Encodable + SetConsumeOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetConsumeOkMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3367,12 +3943,14 @@ pub mod file {
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeliverMethodFields<'a>
 
-    pub struct DeliverBuilder<T: ::Encodable> {
+    pub struct DeliverBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeliverBuilder
 
 
-    impl<'a, T> DeliverBuilder<T>
+    impl<T> DeliverBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3380,13 +3958,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeliverBuilder<T>
+    impl<T> DeliverBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeliverBuilder<T>
 
     impl<T> Default for DeliverBuilder<T>
         where T: ::Encodable + Default
@@ -3396,7 +3974,7 @@ pub mod file {
         }
     } // impl Default for DeliverBuilder
     impl<'a, T> DeliverBuilder<T>
-        where T: ::Encodable + SetDeliverMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeliverMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3440,12 +4018,14 @@ pub mod file {
         fn set_identifier<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetOpenMethodFields<'a>
 
-    pub struct OpenBuilder<T: ::Encodable> {
+    pub struct OpenBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OpenBuilder
 
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3453,13 +4033,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OpenBuilder<T>
 
     impl<T> Default for OpenBuilder<T>
         where T: ::Encodable + Default
@@ -3469,7 +4049,7 @@ pub mod file {
         }
     } // impl Default for OpenBuilder
     impl<'a, T> OpenBuilder<T>
-        where T: ::Encodable + SetOpenMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetOpenMethodFields<'a>
     {
         pub fn content_size(mut self, content_size: u64) -> Self {
             SetOpenMethodFields::set_content_size(&mut self.payload, content_size);
@@ -3490,7 +4070,9 @@ pub mod file {
         fn set_staged_size(&mut self, _: u64) {}
     } // pub trait SetOpenOkMethodFields
 
-    pub struct OpenOkBuilder<T: ::Encodable> {
+    pub struct OpenOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OpenOkBuilder
 
@@ -3509,7 +4091,7 @@ pub mod file {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OpenOkBuilder<T>
 
     impl<T> Default for OpenOkBuilder<T>
         where T: ::Encodable + Default
@@ -3539,12 +4121,14 @@ pub mod file {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPublishMethodFields<'a>
 
-    pub struct PublishBuilder<T: ::Encodable> {
+    pub struct PublishBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct PublishBuilder
 
 
-    impl<'a, T> PublishBuilder<T>
+    impl<T> PublishBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3552,13 +4136,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> PublishBuilder<T>
+    impl<T> PublishBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> PublishBuilder<T>
 
     impl<T> Default for PublishBuilder<T>
         where T: ::Encodable + Default
@@ -3568,7 +4152,7 @@ pub mod file {
         }
     } // impl Default for PublishBuilder
     impl<'a, T> PublishBuilder<T>
-        where T: ::Encodable + SetPublishMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetPublishMethodFields<'a>
     {
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3611,7 +4195,9 @@ pub mod file {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
-    pub struct QosBuilder<T: ::Encodable> {
+    pub struct QosBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct QosBuilder
 
@@ -3630,7 +4216,7 @@ pub mod file {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> QosBuilder<T>
 
     impl<T> Default for QosBuilder<T>
         where T: ::Encodable + Default
@@ -3659,7 +4245,9 @@ pub mod file {
         type Payload: Default;
     } // pub trait QosOkMethod
 
-    pub struct QosOkBuilder<T: ::Encodable> {
+    pub struct QosOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct QosOkBuilder
 
@@ -3678,7 +4266,7 @@ pub mod file {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> QosOkBuilder<T>
 
     impl<T> Default for QosOkBuilder<T>
         where T: ::Encodable + Default
@@ -3696,7 +4284,9 @@ pub mod file {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRejectMethodFields
 
-    pub struct RejectBuilder<T: ::Encodable> {
+    pub struct RejectBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RejectBuilder
 
@@ -3715,7 +4305,7 @@ pub mod file {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RejectBuilder<T>
 
     impl<T> Default for RejectBuilder<T>
         where T: ::Encodable + Default
@@ -3741,18 +4331,29 @@ pub mod file {
     } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
+        fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_filename<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_priority(&mut self, _: u8) {}
         fn set_reply_code(&mut self, _: u16) {}
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_timestamp(&mut self, _: u64) {}
     } // pub trait SetReturnMethodFields<'a>
 
-    pub struct ReturnBuilder<T: ::Encodable> {
+    pub struct ReturnBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ReturnBuilder
 
 
-    impl<'a, T> ReturnBuilder<T>
+    impl<T> ReturnBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3760,13 +4361,13 @@ pub mod file {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ReturnBuilder<T>
+    impl<T> ReturnBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ReturnBuilder<T>
 
     impl<T> Default for ReturnBuilder<T>
         where T: ::Encodable + Default
@@ -3776,14 +4377,54 @@ pub mod file {
         }
     } // impl Default for ReturnBuilder
     impl<'a, T> ReturnBuilder<T>
-        where T: ::Encodable + SetReturnMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetReturnMethodFields<'a>
     {
+        pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_cluster_id(&mut self.payload, cluster_id.into());
+            self
+        } // set_cluster_id()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_content_encoding(&mut self.payload, content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetReturnMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn filename<V>(mut self, filename: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_filename(&mut self.payload, filename.into());
+            self
+        } // set_filename()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetReturnMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
+        pub fn message_id<V>(mut self, message_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_message_id(&mut self.payload, message_id.into());
+            self
+        } // set_message_id()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetReturnMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
         pub fn reply_code(mut self, reply_code: u16) -> Self {
             SetReturnMethodFields::set_reply_code(&mut self.payload, reply_code);
             self
@@ -3794,18 +4435,53 @@ pub mod file {
             SetReturnMethodFields::set_reply_text(&mut self.payload, reply_text.into());
             self
         } // set_reply_text()
+        pub fn reply_to<V>(mut self, reply_to: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_reply_to(&mut self.payload, reply_to.into());
+            self
+        } // set_reply_to()
         pub fn routing_key<V>(mut self, routing_key: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetReturnMethodFields::set_routing_key(&mut self.payload, routing_key.into());
             self
         } // set_routing_key()
-    } // impl<'a, T> ReturnBuilder<T>
-    pub trait StageMethod {
-        type Payload: Default;
-    } // pub trait StageMethod
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetReturnMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
 
-    pub struct StageBuilder<T: ::Encodable> {
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
+    } // impl<'a, T> ReturnBuilder<T>
+    pub trait StageMethod<'a> {
+        type Payload: Default + SetStageMethodFields<'a>;
+    } // pub trait StageMethod<'a>
+
+    pub trait SetStageMethodFields<'a> {
+        fn set_cluster_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_filename<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_priority(&mut self, _: u8) {}
+        fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_timestamp(&mut self, _: u64) {}
+    } // pub trait SetStageMethodFields<'a>
+
+    pub struct StageBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct StageBuilder
 
@@ -3824,7 +4500,7 @@ pub mod file {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> StageBuilder<T>
 
     impl<T> Default for StageBuilder<T>
         where T: ::Encodable + Default
@@ -3833,6 +4509,71 @@ pub mod file {
             StageBuilder { payload: Default::default() }
         }
     } // impl Default for StageBuilder
+    impl<'a, T> StageBuilder<T>
+        where T: ::Encodable + ::Content<'a> + SetStageMethodFields<'a>
+    {
+        pub fn cluster_id<V>(mut self, cluster_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStageMethodFields::set_cluster_id(&mut self.payload, cluster_id.into());
+            self
+        } // set_cluster_id()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStageMethodFields::set_content_encoding(&mut self.payload, content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStageMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
+        pub fn filename<V>(mut self, filename: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStageMethodFields::set_filename(&mut self.payload, filename.into());
+            self
+        } // set_filename()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetStageMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
+        pub fn message_id<V>(mut self, message_id: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStageMethodFields::set_message_id(&mut self.payload, message_id.into());
+            self
+        } // set_message_id()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetStageMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
+        pub fn reply_to<V>(mut self, reply_to: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetStageMethodFields::set_reply_to(&mut self.payload, reply_to.into());
+            self
+        } // set_reply_to()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetStageMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
+    } // impl<'a, T> StageBuilder<T>
 } // mod file
 
 pub mod message {
@@ -3845,12 +4586,14 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetAppendMethodFields<'a>
 
-    pub struct AppendBuilder<T: ::Encodable> {
+    pub struct AppendBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct AppendBuilder
 
 
-    impl<'a, T> AppendBuilder<T>
+    impl<T> AppendBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3858,13 +4601,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> AppendBuilder<T>
+    impl<T> AppendBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> AppendBuilder<T>
 
     impl<T> Default for AppendBuilder<T>
         where T: ::Encodable + Default
@@ -3874,7 +4617,7 @@ pub mod message {
         }
     } // impl Default for AppendBuilder
     impl<'a, T> AppendBuilder<T>
-        where T: ::Encodable + SetAppendMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetAppendMethodFields<'a>
     {
         pub fn bytes<V>(mut self, bytes: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -3897,12 +4640,14 @@ pub mod message {
         fn set_destination<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelMethodFields<'a>
 
-    pub struct CancelBuilder<T: ::Encodable> {
+    pub struct CancelBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CancelBuilder
 
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3910,13 +4655,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CancelBuilder<T>
 
     impl<T> Default for CancelBuilder<T>
         where T: ::Encodable + Default
@@ -3926,7 +4671,7 @@ pub mod message {
         }
     } // impl Default for CancelBuilder
     impl<'a, T> CancelBuilder<T>
-        where T: ::Encodable + SetCancelMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCancelMethodFields<'a>
     {
         pub fn destination<V>(mut self, destination: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3944,12 +4689,14 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCheckpointMethodFields<'a>
 
-    pub struct CheckpointBuilder<T: ::Encodable> {
+    pub struct CheckpointBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CheckpointBuilder
 
 
-    impl<'a, T> CheckpointBuilder<T>
+    impl<T> CheckpointBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -3957,13 +4704,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CheckpointBuilder<T>
+    impl<T> CheckpointBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CheckpointBuilder<T>
 
     impl<T> Default for CheckpointBuilder<T>
         where T: ::Encodable + Default
@@ -3973,7 +4720,7 @@ pub mod message {
         }
     } // impl Default for CheckpointBuilder
     impl<'a, T> CheckpointBuilder<T>
-        where T: ::Encodable + SetCheckpointMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCheckpointMethodFields<'a>
     {
         pub fn identifier<V>(mut self, identifier: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -3996,12 +4743,14 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetCloseMethodFields<'a>
 
-    pub struct CloseBuilder<T: ::Encodable> {
+    pub struct CloseBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CloseBuilder
 
 
-    impl<'a, T> CloseBuilder<T>
+    impl<T> CloseBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4009,13 +4758,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CloseBuilder<T>
+    impl<T> CloseBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CloseBuilder<T>
 
     impl<T> Default for CloseBuilder<T>
         where T: ::Encodable + Default
@@ -4025,7 +4774,7 @@ pub mod message {
         }
     } // impl Default for CloseBuilder
     impl<'a, T> CloseBuilder<T>
-        where T: ::Encodable + SetCloseMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCloseMethodFields<'a>
     {
         pub fn reference<V>(mut self, reference: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -4048,12 +4797,14 @@ pub mod message {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
-    pub struct ConsumeBuilder<T: ::Encodable> {
+    pub struct ConsumeBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ConsumeBuilder
 
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4061,13 +4812,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ConsumeBuilder<T>
 
     impl<T> Default for ConsumeBuilder<T>
         where T: ::Encodable + Default
@@ -4077,7 +4828,7 @@ pub mod message {
         }
     } // impl Default for ConsumeBuilder
     impl<'a, T> ConsumeBuilder<T>
-        where T: ::Encodable + SetConsumeMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetConsumeMethodFields<'a>
     {
         pub fn destination<V>(mut self, destination: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -4118,7 +4869,9 @@ pub mod message {
         type Payload: Default;
     } // pub trait EmptyMethod
 
-    pub struct EmptyBuilder<T: ::Encodable> {
+    pub struct EmptyBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct EmptyBuilder
 
@@ -4137,7 +4890,7 @@ pub mod message {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> EmptyBuilder<T>
 
     impl<T> Default for EmptyBuilder<T>
         where T: ::Encodable + Default
@@ -4157,12 +4910,14 @@ pub mod message {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetGetMethodFields<'a>
 
-    pub struct GetBuilder<T: ::Encodable> {
+    pub struct GetBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct GetBuilder
 
 
-    impl<'a, T> GetBuilder<T>
+    impl<T> GetBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4170,13 +4925,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> GetBuilder<T>
+    impl<T> GetBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> GetBuilder<T>
 
     impl<T> Default for GetBuilder<T>
         where T: ::Encodable + Default
@@ -4186,7 +4941,7 @@ pub mod message {
         }
     } // impl Default for GetBuilder
     impl<'a, T> GetBuilder<T>
-        where T: ::Encodable + SetGetMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetGetMethodFields<'a>
     {
         pub fn destination<V>(mut self, destination: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -4217,7 +4972,9 @@ pub mod message {
         fn set_value(&mut self, _: u64) {}
     } // pub trait SetOffsetMethodFields
 
-    pub struct OffsetBuilder<T: ::Encodable> {
+    pub struct OffsetBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OffsetBuilder
 
@@ -4236,7 +4993,7 @@ pub mod message {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OffsetBuilder<T>
 
     impl<T> Default for OffsetBuilder<T>
         where T: ::Encodable + Default
@@ -4257,7 +5014,9 @@ pub mod message {
         type Payload: Default;
     } // pub trait OkMethod
 
-    pub struct OkBuilder<T: ::Encodable> {
+    pub struct OkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OkBuilder
 
@@ -4276,7 +5035,7 @@ pub mod message {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OkBuilder<T>
 
     impl<T> Default for OkBuilder<T>
         where T: ::Encodable + Default
@@ -4293,12 +5052,14 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetOpenMethodFields<'a>
 
-    pub struct OpenBuilder<T: ::Encodable> {
+    pub struct OpenBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct OpenBuilder
 
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4306,13 +5067,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> OpenBuilder<T>
+    impl<T> OpenBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> OpenBuilder<T>
 
     impl<T> Default for OpenBuilder<T>
         where T: ::Encodable + Default
@@ -4322,7 +5083,7 @@ pub mod message {
         }
     } // impl Default for OpenBuilder
     impl<'a, T> OpenBuilder<T>
-        where T: ::Encodable + SetOpenMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetOpenMethodFields<'a>
     {
         pub fn reference<V>(mut self, reference: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -4341,7 +5102,9 @@ pub mod message {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
-    pub struct QosBuilder<T: ::Encodable> {
+    pub struct QosBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct QosBuilder
 
@@ -4360,7 +5123,7 @@ pub mod message {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> QosBuilder<T>
 
     impl<T> Default for QosBuilder<T>
         where T: ::Encodable + Default
@@ -4393,7 +5156,9 @@ pub mod message {
         fn set_requeue(&mut self, _: bool) {}
     } // pub trait SetRecoverMethodFields
 
-    pub struct RecoverBuilder<T: ::Encodable> {
+    pub struct RecoverBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RecoverBuilder
 
@@ -4412,7 +5177,7 @@ pub mod message {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RecoverBuilder<T>
 
     impl<T> Default for RecoverBuilder<T>
         where T: ::Encodable + Default
@@ -4438,12 +5203,14 @@ pub mod message {
         fn set_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRejectMethodFields<'a>
 
-    pub struct RejectBuilder<T: ::Encodable> {
+    pub struct RejectBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RejectBuilder
 
 
-    impl<'a, T> RejectBuilder<T>
+    impl<T> RejectBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4451,13 +5218,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> RejectBuilder<T>
+    impl<T> RejectBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RejectBuilder<T>
 
     impl<T> Default for RejectBuilder<T>
         where T: ::Encodable + Default
@@ -4467,7 +5234,7 @@ pub mod message {
         }
     } // impl Default for RejectBuilder
     impl<'a, T> RejectBuilder<T>
-        where T: ::Encodable + SetRejectMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetRejectMethodFields<'a>
     {
         pub fn code(mut self, code: u16) -> Self {
             SetRejectMethodFields::set_code(&mut self.payload, code);
@@ -4489,12 +5256,14 @@ pub mod message {
         fn set_reference<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetResumeMethodFields<'a>
 
-    pub struct ResumeBuilder<T: ::Encodable> {
+    pub struct ResumeBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ResumeBuilder
 
 
-    impl<'a, T> ResumeBuilder<T>
+    impl<T> ResumeBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4502,13 +5271,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ResumeBuilder<T>
+    impl<T> ResumeBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ResumeBuilder<T>
 
     impl<T> Default for ResumeBuilder<T>
         where T: ::Encodable + Default
@@ -4518,7 +5287,7 @@ pub mod message {
         }
     } // impl Default for ResumeBuilder
     impl<'a, T> ResumeBuilder<T>
-        where T: ::Encodable + SetResumeMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetResumeMethodFields<'a>
     {
         pub fn identifier<V>(mut self, identifier: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -4562,12 +5331,14 @@ pub mod message {
         fn set_user_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetTransferMethodFields<'a>
 
-    pub struct TransferBuilder<T: ::Encodable> {
+    pub struct TransferBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct TransferBuilder
 
 
-    impl<'a, T> TransferBuilder<T>
+    impl<T> TransferBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4575,13 +5346,13 @@ pub mod message {
         }
     } // impl Builder (new)
 
-    impl<'a, T> TransferBuilder<T>
+    impl<T> TransferBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> TransferBuilder<T>
 
     impl<T> Default for TransferBuilder<T>
         where T: ::Encodable + Default
@@ -4591,7 +5362,7 @@ pub mod message {
         }
     } // impl Default for TransferBuilder
     impl<'a, T> TransferBuilder<T>
-        where T: ::Encodable + SetTransferMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetTransferMethodFields<'a>
     {
         pub fn app_id<V>(mut self, app_id: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -4728,12 +5499,14 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetBindMethodFields<'a>
 
-    pub struct BindBuilder<T: ::Encodable> {
+    pub struct BindBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct BindBuilder
 
 
-    impl<'a, T> BindBuilder<T>
+    impl<T> BindBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4741,13 +5514,13 @@ pub mod queue {
         }
     } // impl Builder (new)
 
-    impl<'a, T> BindBuilder<T>
+    impl<T> BindBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> BindBuilder<T>
 
     impl<T> Default for BindBuilder<T>
         where T: ::Encodable + Default
@@ -4757,7 +5530,7 @@ pub mod queue {
         }
     } // impl Default for BindBuilder
     impl<'a, T> BindBuilder<T>
-        where T: ::Encodable + SetBindMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetBindMethodFields<'a>
     {
         pub fn arguments<V>(mut self, arguments: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -4796,7 +5569,9 @@ pub mod queue {
         type Payload: Default;
     } // pub trait BindOkMethod
 
-    pub struct BindOkBuilder<T: ::Encodable> {
+    pub struct BindOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct BindOkBuilder
 
@@ -4815,7 +5590,7 @@ pub mod queue {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> BindOkBuilder<T>
 
     impl<T> Default for BindOkBuilder<T>
         where T: ::Encodable + Default
@@ -4839,12 +5614,14 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeclareMethodFields<'a>
 
-    pub struct DeclareBuilder<T: ::Encodable> {
+    pub struct DeclareBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeclareBuilder
 
 
-    impl<'a, T> DeclareBuilder<T>
+    impl<T> DeclareBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4852,13 +5629,13 @@ pub mod queue {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeclareBuilder<T>
+    impl<T> DeclareBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeclareBuilder<T>
 
     impl<T> Default for DeclareBuilder<T>
         where T: ::Encodable + Default
@@ -4868,7 +5645,7 @@ pub mod queue {
         }
     } // impl Default for DeclareBuilder
     impl<'a, T> DeclareBuilder<T>
-        where T: ::Encodable + SetDeclareMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeclareMethodFields<'a>
     {
         pub fn arguments<V>(mut self, arguments: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -4917,12 +5694,14 @@ pub mod queue {
         fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetDeclareOkMethodFields<'a>
 
-    pub struct DeclareOkBuilder<T: ::Encodable> {
+    pub struct DeclareOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeclareOkBuilder
 
 
-    impl<'a, T> DeclareOkBuilder<T>
+    impl<T> DeclareOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4930,13 +5709,13 @@ pub mod queue {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeclareOkBuilder<T>
+    impl<T> DeclareOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeclareOkBuilder<T>
 
     impl<T> Default for DeclareOkBuilder<T>
         where T: ::Encodable + Default
@@ -4946,7 +5725,7 @@ pub mod queue {
         }
     } // impl Default for DeclareOkBuilder
     impl<'a, T> DeclareOkBuilder<T>
-        where T: ::Encodable + SetDeclareOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeclareOkMethodFields<'a>
     {
         pub fn consumer_count(mut self, consumer_count: u32) -> Self {
             SetDeclareOkMethodFields::set_consumer_count(&mut self.payload, consumer_count);
@@ -4975,12 +5754,14 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetDeleteMethodFields<'a>
 
-    pub struct DeleteBuilder<T: ::Encodable> {
+    pub struct DeleteBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeleteBuilder
 
 
-    impl<'a, T> DeleteBuilder<T>
+    impl<T> DeleteBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -4988,13 +5769,13 @@ pub mod queue {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeleteBuilder<T>
+    impl<T> DeleteBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeleteBuilder<T>
 
     impl<T> Default for DeleteBuilder<T>
         where T: ::Encodable + Default
@@ -5004,7 +5785,7 @@ pub mod queue {
         }
     } // impl Default for DeleteBuilder
     impl<'a, T> DeleteBuilder<T>
-        where T: ::Encodable + SetDeleteMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeleteMethodFields<'a>
     {
         pub fn if_empty(mut self, if_empty: bool) -> Self {
             SetDeleteMethodFields::set_if_empty(&mut self.payload, if_empty);
@@ -5037,7 +5818,9 @@ pub mod queue {
         fn set_message_count(&mut self, _: u32) {}
     } // pub trait SetDeleteOkMethodFields
 
-    pub struct DeleteOkBuilder<T: ::Encodable> {
+    pub struct DeleteOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeleteOkBuilder
 
@@ -5056,7 +5839,7 @@ pub mod queue {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeleteOkBuilder<T>
 
     impl<T> Default for DeleteOkBuilder<T>
         where T: ::Encodable + Default
@@ -5083,12 +5866,14 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetPurgeMethodFields<'a>
 
-    pub struct PurgeBuilder<T: ::Encodable> {
+    pub struct PurgeBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct PurgeBuilder
 
 
-    impl<'a, T> PurgeBuilder<T>
+    impl<T> PurgeBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5096,13 +5881,13 @@ pub mod queue {
         }
     } // impl Builder (new)
 
-    impl<'a, T> PurgeBuilder<T>
+    impl<T> PurgeBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> PurgeBuilder<T>
 
     impl<T> Default for PurgeBuilder<T>
         where T: ::Encodable + Default
@@ -5112,7 +5897,7 @@ pub mod queue {
         }
     } // impl Default for PurgeBuilder
     impl<'a, T> PurgeBuilder<T>
-        where T: ::Encodable + SetPurgeMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetPurgeMethodFields<'a>
     {
         pub fn no_wait(mut self, no_wait: bool) -> Self {
             SetPurgeMethodFields::set_no_wait(&mut self.payload, no_wait);
@@ -5137,7 +5922,9 @@ pub mod queue {
         fn set_message_count(&mut self, _: u32) {}
     } // pub trait SetPurgeOkMethodFields
 
-    pub struct PurgeOkBuilder<T: ::Encodable> {
+    pub struct PurgeOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct PurgeOkBuilder
 
@@ -5156,7 +5943,7 @@ pub mod queue {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> PurgeOkBuilder<T>
 
     impl<T> Default for PurgeOkBuilder<T>
         where T: ::Encodable + Default
@@ -5185,12 +5972,14 @@ pub mod queue {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetUnbindMethodFields<'a>
 
-    pub struct UnbindBuilder<T: ::Encodable> {
+    pub struct UnbindBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct UnbindBuilder
 
 
-    impl<'a, T> UnbindBuilder<T>
+    impl<T> UnbindBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5198,13 +5987,13 @@ pub mod queue {
         }
     } // impl Builder (new)
 
-    impl<'a, T> UnbindBuilder<T>
+    impl<T> UnbindBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> UnbindBuilder<T>
 
     impl<T> Default for UnbindBuilder<T>
         where T: ::Encodable + Default
@@ -5214,7 +6003,7 @@ pub mod queue {
         }
     } // impl Default for UnbindBuilder
     impl<'a, T> UnbindBuilder<T>
-        where T: ::Encodable + SetUnbindMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetUnbindMethodFields<'a>
     {
         pub fn arguments<V>(mut self, arguments: V) -> Self
             where V: Into<::field::TableEntries<'a>>
@@ -5249,7 +6038,9 @@ pub mod queue {
         type Payload: Default;
     } // pub trait UnbindOkMethod
 
-    pub struct UnbindOkBuilder<T: ::Encodable> {
+    pub struct UnbindOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct UnbindOkBuilder
 
@@ -5268,7 +6059,7 @@ pub mod queue {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> UnbindOkBuilder<T>
 
     impl<T> Default for UnbindOkBuilder<T>
         where T: ::Encodable + Default
@@ -5289,12 +6080,14 @@ pub mod stream {
         fn set_no_wait(&mut self, _: bool) {}
     } // pub trait SetCancelMethodFields<'a>
 
-    pub struct CancelBuilder<T: ::Encodable> {
+    pub struct CancelBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CancelBuilder
 
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5302,13 +6095,13 @@ pub mod stream {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CancelBuilder<T>
+    impl<T> CancelBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CancelBuilder<T>
 
     impl<T> Default for CancelBuilder<T>
         where T: ::Encodable + Default
@@ -5318,7 +6111,7 @@ pub mod stream {
         }
     } // impl Default for CancelBuilder
     impl<'a, T> CancelBuilder<T>
-        where T: ::Encodable + SetCancelMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCancelMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -5339,12 +6132,14 @@ pub mod stream {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetCancelOkMethodFields<'a>
 
-    pub struct CancelOkBuilder<T: ::Encodable> {
+    pub struct CancelOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CancelOkBuilder
 
 
-    impl<'a, T> CancelOkBuilder<T>
+    impl<T> CancelOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5352,13 +6147,13 @@ pub mod stream {
         }
     } // impl Builder (new)
 
-    impl<'a, T> CancelOkBuilder<T>
+    impl<T> CancelOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CancelOkBuilder<T>
 
     impl<T> Default for CancelOkBuilder<T>
         where T: ::Encodable + Default
@@ -5368,7 +6163,7 @@ pub mod stream {
         }
     } // impl Default for CancelOkBuilder
     impl<'a, T> CancelOkBuilder<T>
-        where T: ::Encodable + SetCancelOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetCancelOkMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -5391,12 +6186,14 @@ pub mod stream {
         fn set_ticket(&mut self, _: u16) {}
     } // pub trait SetConsumeMethodFields<'a>
 
-    pub struct ConsumeBuilder<T: ::Encodable> {
+    pub struct ConsumeBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ConsumeBuilder
 
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5404,13 +6201,13 @@ pub mod stream {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ConsumeBuilder<T>
+    impl<T> ConsumeBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ConsumeBuilder<T>
 
     impl<T> Default for ConsumeBuilder<T>
         where T: ::Encodable + Default
@@ -5420,7 +6217,7 @@ pub mod stream {
         }
     } // impl Default for ConsumeBuilder
     impl<'a, T> ConsumeBuilder<T>
-        where T: ::Encodable + SetConsumeMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetConsumeMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -5465,12 +6262,14 @@ pub mod stream {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetConsumeOkMethodFields<'a>
 
-    pub struct ConsumeOkBuilder<T: ::Encodable> {
+    pub struct ConsumeOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ConsumeOkBuilder
 
 
-    impl<'a, T> ConsumeOkBuilder<T>
+    impl<T> ConsumeOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5478,13 +6277,13 @@ pub mod stream {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ConsumeOkBuilder<T>
+    impl<T> ConsumeOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ConsumeOkBuilder<T>
 
     impl<T> Default for ConsumeOkBuilder<T>
         where T: ::Encodable + Default
@@ -5494,7 +6293,7 @@ pub mod stream {
         }
     } // impl Default for ConsumeOkBuilder
     impl<'a, T> ConsumeOkBuilder<T>
-        where T: ::Encodable + SetConsumeOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetConsumeOkMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -5509,17 +6308,24 @@ pub mod stream {
 
     pub trait SetDeliverMethodFields<'a> {
         fn set_consumer_tag<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_delivery_tag(&mut self, _: u64) {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_priority(&mut self, _: u8) {}
         fn set_queue<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_timestamp(&mut self, _: u64) {}
     } // pub trait SetDeliverMethodFields<'a>
 
-    pub struct DeliverBuilder<T: ::Encodable> {
+    pub struct DeliverBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct DeliverBuilder
 
 
-    impl<'a, T> DeliverBuilder<T>
+    impl<T> DeliverBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5527,13 +6333,13 @@ pub mod stream {
         }
     } // impl Builder (new)
 
-    impl<'a, T> DeliverBuilder<T>
+    impl<T> DeliverBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> DeliverBuilder<T>
 
     impl<T> Default for DeliverBuilder<T>
         where T: ::Encodable + Default
@@ -5543,7 +6349,7 @@ pub mod stream {
         }
     } // impl Default for DeliverBuilder
     impl<'a, T> DeliverBuilder<T>
-        where T: ::Encodable + SetDeliverMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetDeliverMethodFields<'a>
     {
         pub fn consumer_tag<V>(mut self, consumer_tag: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
@@ -5551,6 +6357,19 @@ pub mod stream {
             SetDeliverMethodFields::set_consumer_tag(&mut self.payload, consumer_tag.into());
             self
         } // set_consumer_tag()
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_content_encoding(&mut self.payload,
+                                                         content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetDeliverMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
         pub fn delivery_tag(mut self, delivery_tag: u64) -> Self {
             SetDeliverMethodFields::set_delivery_tag(&mut self.payload, delivery_tag);
             self
@@ -5561,31 +6380,63 @@ pub mod stream {
             SetDeliverMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetDeliverMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetDeliverMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
         pub fn queue<V>(mut self, queue: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetDeliverMethodFields::set_queue(&mut self.payload, queue.into());
             self
         } // set_queue()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetDeliverMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> DeliverBuilder<T>
     pub trait PublishMethod<'a> {
         type Payload: Default + SetPublishMethodFields<'a>;
     } // pub trait PublishMethod<'a>
 
     pub trait SetPublishMethodFields<'a> {
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_immediate(&mut self, _: bool) {}
         fn set_mandatory(&mut self, _: bool) {}
+        fn set_priority(&mut self, _: u8) {}
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_ticket(&mut self, _: u16) {}
+        fn set_timestamp(&mut self, _: u64) {}
     } // pub trait SetPublishMethodFields<'a>
 
-    pub struct PublishBuilder<T: ::Encodable> {
+    pub struct PublishBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct PublishBuilder
 
 
-    impl<'a, T> PublishBuilder<T>
+    impl<T> PublishBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5593,13 +6444,13 @@ pub mod stream {
         }
     } // impl Builder (new)
 
-    impl<'a, T> PublishBuilder<T>
+    impl<T> PublishBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> PublishBuilder<T>
 
     impl<T> Default for PublishBuilder<T>
         where T: ::Encodable + Default
@@ -5609,14 +6460,33 @@ pub mod stream {
         }
     } // impl Default for PublishBuilder
     impl<'a, T> PublishBuilder<T>
-        where T: ::Encodable + SetPublishMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetPublishMethodFields<'a>
     {
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_content_encoding(&mut self.payload,
+                                                         content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetPublishMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetPublishMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetPublishMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
         pub fn immediate(mut self, immediate: bool) -> Self {
             SetPublishMethodFields::set_immediate(&mut self.payload, immediate);
             self
@@ -5625,6 +6495,10 @@ pub mod stream {
             SetPublishMethodFields::set_mandatory(&mut self.payload, mandatory);
             self
         } // set_mandatory()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetPublishMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
         pub fn routing_key<V>(mut self, routing_key: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
@@ -5635,6 +6509,21 @@ pub mod stream {
             SetPublishMethodFields::set_ticket(&mut self.payload, ticket);
             self
         } // set_ticket()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetPublishMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> PublishBuilder<T>
     pub trait QosMethod {
         type Payload: Default + SetQosMethodFields;
@@ -5647,7 +6536,9 @@ pub mod stream {
         fn set_prefetch_size(&mut self, _: u32) {}
     } // pub trait SetQosMethodFields
 
-    pub struct QosBuilder<T: ::Encodable> {
+    pub struct QosBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct QosBuilder
 
@@ -5666,7 +6557,7 @@ pub mod stream {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> QosBuilder<T>
 
     impl<T> Default for QosBuilder<T>
         where T: ::Encodable + Default
@@ -5699,7 +6590,9 @@ pub mod stream {
         type Payload: Default;
     } // pub trait QosOkMethod
 
-    pub struct QosOkBuilder<T: ::Encodable> {
+    pub struct QosOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct QosOkBuilder
 
@@ -5718,7 +6611,7 @@ pub mod stream {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> QosOkBuilder<T>
 
     impl<T> Default for QosOkBuilder<T>
         where T: ::Encodable + Default
@@ -5732,18 +6625,25 @@ pub mod stream {
     } // pub trait ReturnMethod<'a>
 
     pub trait SetReturnMethodFields<'a> {
+        fn set_content_encoding<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_content_type<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_exchange<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_priority(&mut self, _: u8) {}
         fn set_reply_code(&mut self, _: u16) {}
         fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
         fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_timestamp(&mut self, _: u64) {}
     } // pub trait SetReturnMethodFields<'a>
 
-    pub struct ReturnBuilder<T: ::Encodable> {
+    pub struct ReturnBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ReturnBuilder
 
 
-    impl<'a, T> ReturnBuilder<T>
+    impl<T> ReturnBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -5751,13 +6651,13 @@ pub mod stream {
         }
     } // impl Builder (new)
 
-    impl<'a, T> ReturnBuilder<T>
+    impl<T> ReturnBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ReturnBuilder<T>
 
     impl<T> Default for ReturnBuilder<T>
         where T: ::Encodable + Default
@@ -5767,14 +6667,36 @@ pub mod stream {
         }
     } // impl Default for ReturnBuilder
     impl<'a, T> ReturnBuilder<T>
-        where T: ::Encodable + SetReturnMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetReturnMethodFields<'a>
     {
+        pub fn content_encoding<V>(mut self, content_encoding: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_content_encoding(&mut self.payload, content_encoding.into());
+            self
+        } // set_content_encoding()
+        pub fn content_type<V>(mut self, content_type: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetReturnMethodFields::set_content_type(&mut self.payload, content_type.into());
+            self
+        } // set_content_type()
         pub fn exchange<V>(mut self, exchange: V) -> Self
             where V: Into<::std::borrow::Cow<'a, str>>
         {
             SetReturnMethodFields::set_exchange(&mut self.payload, exchange.into());
             self
         } // set_exchange()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetReturnMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
+        pub fn priority(mut self, priority: u8) -> Self {
+            SetReturnMethodFields::set_priority(&mut self.payload, priority);
+            self
+        } // set_priority()
         pub fn reply_code(mut self, reply_code: u16) -> Self {
             SetReturnMethodFields::set_reply_code(&mut self.payload, reply_code);
             self
@@ -5791,15 +6713,32 @@ pub mod stream {
             SetReturnMethodFields::set_routing_key(&mut self.payload, routing_key.into());
             self
         } // set_routing_key()
+        pub fn timestamp(mut self, timestamp: u64) -> Self {
+            SetReturnMethodFields::set_timestamp(&mut self.payload, timestamp);
+            self
+        } // set_timestamp()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> ReturnBuilder<T>
 } // mod stream
 
 pub mod test {
-    pub trait ContentMethod {
+    pub trait ContentMethod<'a> {
         type Payload: Default;
-    } // pub trait ContentMethod
+    } // pub trait ContentMethod<'a>
 
-    pub struct ContentBuilder<T: ::Encodable> {
+    pub struct ContentBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ContentBuilder
 
@@ -5818,7 +6757,7 @@ pub mod test {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ContentBuilder<T>
 
     impl<T> Default for ContentBuilder<T>
         where T: ::Encodable + Default
@@ -5827,15 +6766,17 @@ pub mod test {
             ContentBuilder { payload: Default::default() }
         }
     } // impl Default for ContentBuilder
-    pub trait ContentOkMethod {
-        type Payload: Default + SetContentOkMethodFields;
-    } // pub trait ContentOkMethod
+    pub trait ContentOkMethod<'a> {
+        type Payload: Default + SetContentOkMethodFields<'a>;
+    } // pub trait ContentOkMethod<'a>
 
-    pub trait SetContentOkMethodFields {
+    pub trait SetContentOkMethodFields<'a> {
         fn set_content_checksum(&mut self, _: u32) {}
-    } // pub trait SetContentOkMethodFields
+    } // pub trait SetContentOkMethodFields<'a>
 
-    pub struct ContentOkBuilder<T: ::Encodable> {
+    pub struct ContentOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct ContentOkBuilder
 
@@ -5854,7 +6795,7 @@ pub mod test {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> ContentOkBuilder<T>
 
     impl<T> Default for ContentOkBuilder<T>
         where T: ::Encodable + Default
@@ -5863,14 +6804,25 @@ pub mod test {
             ContentOkBuilder { payload: Default::default() }
         }
     } // impl Default for ContentOkBuilder
-    impl<T> ContentOkBuilder<T>
-        where T: ::Encodable + SetContentOkMethodFields
+    impl<'a, T> ContentOkBuilder<T>
+        where T: ::Encodable + ::Content<'a> + SetContentOkMethodFields<'a>
     {
         pub fn content_checksum(mut self, content_checksum: u32) -> Self {
             SetContentOkMethodFields::set_content_checksum(&mut self.payload, content_checksum);
             self
         } // set_content_checksum()
-    } // impl<T> ContentOkBuilder<T>
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
+    } // impl<'a, T> ContentOkBuilder<T>
     pub trait IntegerMethod {
         type Payload: Default + SetIntegerMethodFields;
     } // pub trait IntegerMethod
@@ -5883,7 +6835,9 @@ pub mod test {
         fn set_operation(&mut self, _: u8) {}
     } // pub trait SetIntegerMethodFields
 
-    pub struct IntegerBuilder<T: ::Encodable> {
+    pub struct IntegerBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct IntegerBuilder
 
@@ -5902,7 +6856,7 @@ pub mod test {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> IntegerBuilder<T>
 
     impl<T> Default for IntegerBuilder<T>
         where T: ::Encodable + Default
@@ -5943,7 +6897,9 @@ pub mod test {
         fn set_result(&mut self, _: u64) {}
     } // pub trait SetIntegerOkMethodFields
 
-    pub struct IntegerOkBuilder<T: ::Encodable> {
+    pub struct IntegerOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct IntegerOkBuilder
 
@@ -5962,7 +6918,7 @@ pub mod test {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> IntegerOkBuilder<T>
 
     impl<T> Default for IntegerOkBuilder<T>
         where T: ::Encodable + Default
@@ -5989,12 +6945,14 @@ pub mod test {
         fn set_string_2<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringMethodFields<'a>
 
-    pub struct StringBuilder<T: ::Encodable> {
+    pub struct StringBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct StringBuilder
 
 
-    impl<'a, T> StringBuilder<T>
+    impl<T> StringBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -6002,13 +6960,13 @@ pub mod test {
         }
     } // impl Builder (new)
 
-    impl<'a, T> StringBuilder<T>
+    impl<T> StringBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> StringBuilder<T>
 
     impl<T> Default for StringBuilder<T>
         where T: ::Encodable + Default
@@ -6018,7 +6976,7 @@ pub mod test {
         }
     } // impl Default for StringBuilder
     impl<'a, T> StringBuilder<T>
-        where T: ::Encodable + SetStringMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetStringMethodFields<'a>
     {
         pub fn operation(mut self, operation: u8) -> Self {
             SetStringMethodFields::set_operation(&mut self.payload, operation);
@@ -6045,12 +7003,14 @@ pub mod test {
         fn set_result<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetStringOkMethodFields<'a>
 
-    pub struct StringOkBuilder<T: ::Encodable> {
+    pub struct StringOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct StringOkBuilder
 
 
-    impl<'a, T> StringOkBuilder<T>
+    impl<T> StringOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -6058,13 +7018,13 @@ pub mod test {
         }
     } // impl Builder (new)
 
-    impl<'a, T> StringOkBuilder<T>
+    impl<T> StringOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> StringOkBuilder<T>
 
     impl<T> Default for StringOkBuilder<T>
         where T: ::Encodable + Default
@@ -6074,7 +7034,7 @@ pub mod test {
         }
     } // impl Default for StringOkBuilder
     impl<'a, T> StringOkBuilder<T>
-        where T: ::Encodable + SetStringOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetStringOkMethodFields<'a>
     {
         pub fn result<V>(mut self, result: V) -> Self
             where V: Into<::std::borrow::Cow<'a, [u8]>>
@@ -6093,12 +7053,14 @@ pub mod test {
         fn set_table<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
     } // pub trait SetTableMethodFields<'a>
 
-    pub struct TableBuilder<T: ::Encodable> {
+    pub struct TableBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct TableBuilder
 
 
-    impl<'a, T> TableBuilder<T>
+    impl<T> TableBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -6106,13 +7068,13 @@ pub mod test {
         }
     } // impl Builder (new)
 
-    impl<'a, T> TableBuilder<T>
+    impl<T> TableBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> TableBuilder<T>
 
     impl<T> Default for TableBuilder<T>
         where T: ::Encodable + Default
@@ -6122,7 +7084,7 @@ pub mod test {
         }
     } // impl Default for TableBuilder
     impl<'a, T> TableBuilder<T>
-        where T: ::Encodable + SetTableMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetTableMethodFields<'a>
     {
         pub fn integer_op(mut self, integer_op: u8) -> Self {
             SetTableMethodFields::set_integer_op(&mut self.payload, integer_op);
@@ -6148,12 +7110,14 @@ pub mod test {
         fn set_string_result<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, [u8]>> {}
     } // pub trait SetTableOkMethodFields<'a>
 
-    pub struct TableOkBuilder<T: ::Encodable> {
+    pub struct TableOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct TableOkBuilder
 
 
-    impl<'a, T> TableOkBuilder<T>
+    impl<T> TableOkBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -6161,13 +7125,13 @@ pub mod test {
         }
     } // impl Builder (new)
 
-    impl<'a, T> TableOkBuilder<T>
+    impl<T> TableOkBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> TableOkBuilder<T>
 
     impl<T> Default for TableOkBuilder<T>
         where T: ::Encodable + Default
@@ -6177,7 +7141,7 @@ pub mod test {
         }
     } // impl Default for TableOkBuilder
     impl<'a, T> TableOkBuilder<T>
-        where T: ::Encodable + SetTableOkMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetTableOkMethodFields<'a>
     {
         pub fn integer_result(mut self, integer_result: u64) -> Self {
             SetTableOkMethodFields::set_integer_result(&mut self.payload, integer_result);
@@ -6198,15 +7162,22 @@ pub mod tunnel {
     } // pub trait RequestMethod<'a>
 
     pub trait SetRequestMethodFields<'a> {
+        fn set_broadcast(&mut self, _: u8) {}
+        fn set_data_name<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
+        fn set_durable(&mut self, _: u8) {}
+        fn set_headers<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
         fn set_meta_data<V>(&mut self, _: V) where V: Into<::field::TableEntries<'a>> {}
+        fn set_proxy_name<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     } // pub trait SetRequestMethodFields<'a>
 
-    pub struct RequestBuilder<T: ::Encodable> {
+    pub struct RequestBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RequestBuilder
 
 
-    impl<'a, T> RequestBuilder<T>
+    impl<T> RequestBuilder<T>
         where T: Default + ::Encodable
     {
         pub fn new() -> Self {
@@ -6214,13 +7185,13 @@ pub mod tunnel {
         }
     } // impl Builder (new)
 
-    impl<'a, T> RequestBuilder<T>
+    impl<T> RequestBuilder<T>
         where T: ::Encodable
     {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RequestBuilder<T>
 
     impl<T> Default for RequestBuilder<T>
         where T: ::Encodable + Default
@@ -6230,14 +7201,51 @@ pub mod tunnel {
         }
     } // impl Default for RequestBuilder
     impl<'a, T> RequestBuilder<T>
-        where T: ::Encodable + SetRequestMethodFields<'a>
+        where T: ::Encodable + ::Content<'a> + SetRequestMethodFields<'a>
     {
+        pub fn broadcast(mut self, broadcast: u8) -> Self {
+            SetRequestMethodFields::set_broadcast(&mut self.payload, broadcast);
+            self
+        } // set_broadcast()
+        pub fn data_name<V>(mut self, data_name: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetRequestMethodFields::set_data_name(&mut self.payload, data_name.into());
+            self
+        } // set_data_name()
+        pub fn durable(mut self, durable: u8) -> Self {
+            SetRequestMethodFields::set_durable(&mut self.payload, durable);
+            self
+        } // set_durable()
+        pub fn headers<V>(mut self, headers: V) -> Self
+            where V: Into<::field::TableEntries<'a>>
+        {
+            SetRequestMethodFields::set_headers(&mut self.payload, headers.into());
+            self
+        } // set_headers()
         pub fn meta_data<V>(mut self, meta_data: V) -> Self
             where V: Into<::field::TableEntries<'a>>
         {
             SetRequestMethodFields::set_meta_data(&mut self.payload, meta_data.into());
             self
         } // set_meta_data()
+        pub fn proxy_name<V>(mut self, proxy_name: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, str>>
+        {
+            SetRequestMethodFields::set_proxy_name(&mut self.payload, proxy_name.into());
+            self
+        } // set_proxy_name()
+        pub fn set_headers<V>(self, _: V) -> Self
+            where V: Into<<T as ::Content<'a>>::Headers>
+        {
+            self
+        }
+
+        pub fn set_body<V>(self, _: V) -> Self
+            where V: Into<::std::borrow::Cow<'a, [u8]>>
+        {
+            self
+        }
     } // impl<'a, T> RequestBuilder<T>
 } // mod tunnel
 
@@ -6246,7 +7254,9 @@ pub mod tx {
         type Payload: Default;
     } // pub trait CommitMethod
 
-    pub struct CommitBuilder<T: ::Encodable> {
+    pub struct CommitBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CommitBuilder
 
@@ -6265,7 +7275,7 @@ pub mod tx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CommitBuilder<T>
 
     impl<T> Default for CommitBuilder<T>
         where T: ::Encodable + Default
@@ -6278,7 +7288,9 @@ pub mod tx {
         type Payload: Default;
     } // pub trait CommitOkMethod
 
-    pub struct CommitOkBuilder<T: ::Encodable> {
+    pub struct CommitOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct CommitOkBuilder
 
@@ -6297,7 +7309,7 @@ pub mod tx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> CommitOkBuilder<T>
 
     impl<T> Default for CommitOkBuilder<T>
         where T: ::Encodable + Default
@@ -6310,7 +7322,9 @@ pub mod tx {
         type Payload: Default;
     } // pub trait RollbackMethod
 
-    pub struct RollbackBuilder<T: ::Encodable> {
+    pub struct RollbackBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RollbackBuilder
 
@@ -6329,7 +7343,7 @@ pub mod tx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RollbackBuilder<T>
 
     impl<T> Default for RollbackBuilder<T>
         where T: ::Encodable + Default
@@ -6342,7 +7356,9 @@ pub mod tx {
         type Payload: Default;
     } // pub trait RollbackOkMethod
 
-    pub struct RollbackOkBuilder<T: ::Encodable> {
+    pub struct RollbackOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct RollbackOkBuilder
 
@@ -6361,7 +7377,7 @@ pub mod tx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> RollbackOkBuilder<T>
 
     impl<T> Default for RollbackOkBuilder<T>
         where T: ::Encodable + Default
@@ -6374,7 +7390,9 @@ pub mod tx {
         type Payload: Default;
     } // pub trait SelectMethod
 
-    pub struct SelectBuilder<T: ::Encodable> {
+    pub struct SelectBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SelectBuilder
 
@@ -6393,7 +7411,7 @@ pub mod tx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SelectBuilder<T>
 
     impl<T> Default for SelectBuilder<T>
         where T: ::Encodable + Default
@@ -6406,7 +7424,9 @@ pub mod tx {
         type Payload: Default;
     } // pub trait SelectOkMethod
 
-    pub struct SelectOkBuilder<T: ::Encodable> {
+    pub struct SelectOkBuilder<T>
+        where T: ::Encodable
+    {
         payload: T,
     } // struct SelectOkBuilder
 
@@ -6425,7 +7445,7 @@ pub mod tx {
         pub fn build(self) -> T {
             self.payload
         }
-    } // impl Builder (build)
+    } // impl<T> SelectOkBuilder<T>
 
     impl<T> Default for SelectOkBuilder<T>
         where T: ::Encodable + Default

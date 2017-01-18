@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -39,8 +39,8 @@ impl<'a> FieldChunk<'a> {
         else {
             let name = field.var_name();
             match *field.ty() {
-                Domain::Bit => FieldChunk::Flags(flag_num, vec![!field.is_reserved()], Some(name.into())),
-                _ => FieldChunk::Field(field.ty().nom_parser(), Some(name)),
+                Domain::Bit => FieldChunk::Flags(flag_num, vec![!field.is_reserved()], Some(name.as_str().into())),
+                _ => FieldChunk::Field(field.ty().nom_parser(), Some(name.as_str())),
             }
         }
     }

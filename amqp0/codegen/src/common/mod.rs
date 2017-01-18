@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -8,6 +8,7 @@
 
 mod domain;
 mod field;
+mod fields;
 mod class;
 mod class_method;
 mod spec;
@@ -19,6 +20,7 @@ pub use self::class::{Class, ClassField};
 pub use self::class_method::{ClassMethod, ClassMethodField};
 pub use self::domain::{Domain, DomainMapper};
 pub use self::field::Field;
+pub use self::fields::Fields;
 pub use self::spec::Spec;
 pub use self::specs::{Specs, SpecMethod};
 

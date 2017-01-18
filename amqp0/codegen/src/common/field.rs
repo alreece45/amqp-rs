@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -7,9 +7,10 @@
 // except according to those terms.
 
 use std::ops::Deref;
+use std::rc::Rc;
 use inflections::Inflect;
-use specs::{ClassField, ClassMethodField};
 
+use specs::{ClassField, ClassMethodField};
 use common::domain::Domain;
 
 #[derive(Debug, Clone)]
@@ -17,7 +18,8 @@ pub struct Field<T>
     where T: BasicField
 {
     field: T,
-    var_name: String,
+    name: &'static str,
+    var_name: Rc<String>,
     ty: Domain,
 }
 
@@ -28,20 +30,25 @@ impl<T> Field<T>
         field: T,
         ty: Domain
     ) -> Self {
-        let var_name = match field.name() {
+        let name = match field.name() {
             "type" => "ty".into(),
-            "nowait" => "no_wait".into(),
-            name => name.to_snake_case().into(),
+            "nowait" => "no-wait",
+            name => name,
         };
 
         Field {
             field: field,
-            var_name: var_name,
+            name: name,
+            var_name: Rc::new(name.to_snake_case()),
             ty: ty,
         }
     }
 
-    pub fn var_name(&self) -> &str {
+    pub fn name(&self) -> &'static str {
+        self.name
+    }
+
+    pub fn var_name(&self) -> &Rc<String> {
         &self.var_name
     }
 

@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -11,6 +11,7 @@ mod header_encodable_impl;
 mod common_impl;
 mod method_enum;
 mod method_impl;
+mod method_content_impl;
 mod method_default_impl;
 mod method_encodable_impl;
 mod method_from_impls;
@@ -27,6 +28,7 @@ use self::header_struct::HeaderStructWriter;
 use self::header_encodable_impl::EncodableHeaderImplWriter;
 use self::method_enum::MethodEnumWriter;
 use self::method_impl::MethodImplWriter;
+use self::method_content_impl::MethodContentImplWriter;
 use self::method_default_impl::DefaultImplWriter;
 use self::method_encodable_impl::EncodableMethodImplWriter;
 use self::method_payload_impl::MethodPayloadImplWriter;
@@ -75,6 +77,9 @@ impl<'a> WriteRust for ClassModuleWriter<'a> {
 
             let default_impl = DefaultImplWriter::new(method);
             try!(default_impl.write_rust_to(writer));
+
+            let content_impl = MethodContentImplWriter::new(self.class, method);
+            try!(content_impl.write_rust_to(writer));
 
             let encodable_impl = EncodableMethodImplWriter::new(method);
             try!(encodable_impl.write_rust_to(writer));

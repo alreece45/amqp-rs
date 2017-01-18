@@ -572,8 +572,8 @@ where Self: ::method::file::ReturnMethod<'a>
 {
         Default::default()
     }
-    fn file_stage() -> <Self as ::method::file::StageMethod>::Payload
-        where Self: ::method::file::StageMethod
+    fn file_stage() -> <Self as ::method::file::StageMethod<'a>>::Payload
+        where Self: ::method::file::StageMethod<'a>
     {
         Default::default()
     }
@@ -742,18 +742,18 @@ where Self: ::method::stream::PublishMethod<'a>
     {
         Default::default()
     }
-fn stream_return() -> <Self as ::method::stream::ReturnMethod<'a>>::Payload
-where Self: ::method::stream::ReturnMethod<'a>
-{
-        Default::default()
-    }
-    fn test_content() -> <Self as ::method::test::ContentMethod>::Payload
-        where Self: ::method::test::ContentMethod
+    fn stream_return() -> <Self as ::method::stream::ReturnMethod<'a>>::Payload
+        where Self: ::method::stream::ReturnMethod<'a>
     {
         Default::default()
     }
-    fn test_content_ok() -> <Self as ::method::test::ContentOkMethod>::Payload
-        where Self: ::method::test::ContentOkMethod
+    fn test_content() -> <Self as ::method::test::ContentMethod<'a>>::Payload
+        where Self: ::method::test::ContentMethod<'a>
+    {
+        Default::default()
+    }
+    fn test_content_ok() -> <Self as ::method::test::ContentOkMethod<'a>>::Payload
+        where Self: ::method::test::ContentOkMethod<'a>
     {
         Default::default()
     }

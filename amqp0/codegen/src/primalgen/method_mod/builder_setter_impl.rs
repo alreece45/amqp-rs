@@ -10,7 +10,7 @@ use std::borrow::Cow;
 use std::io;
 use inflections::Inflect;
 
-use common::{Specs, SpecMethod};
+use common::SpecMethod;
 use WriteRust;
 
 pub struct BuilderSetterImplWriter<'a> {
@@ -34,17 +34,16 @@ impl<'a> WriteRust for BuilderSetterImplWriter<'a> {
 
         try!(writeln!(
             writer,
-            "{}\n\
-                where T: ::Encodable + Set{method}MethodFields{lifetimes}\n\
+            "{section}\n\
+                where T: {traits} + Set{method}MethodFields{lifetimes}\n\
             {{\n",
-            section,
+            section = section,
             method = pascal_method,
-            lifetimes = if self.method.has_lifetimes() { "<'a>" } else { "" }
+            traits = self.method.method_traits(),
+            lifetimes = if self.method.has_lifetimes() { "<'a>" } else { "" },
         ));
 
-        for var_name in self.method.field_names() {
-            let ty = self.method.field_ty(&var_name).unwrap();
-
+        for (var_name, ty) in self.method.fields().vars() {
             let (ty, generics, bounds, into) = if ty.is_copy() {
                 (ty.owned_type(), "", "". into(), "")
             } else {
@@ -70,6 +69,24 @@ impl<'a> WriteRust for BuilderSetterImplWriter<'a> {
                 into = into,
             ));
         }
+
+        if self.method.has_content() {
+            try!(writeln!(
+                writer,
+                "pub fn set_headers<V>(self, _: V) -> Self\n\
+                    where V: Into<<T as ::Content<'a>>::Headers>\n\
+                {{\n\
+                    self\n\
+                }}\n\
+                \n\
+                pub fn set_body<V>(self, _: V) -> Self\n\
+                    where V: Into<::std::borrow::Cow<'a, [u8]>>\n\
+                {{\n\
+                    self\n\
+                }}",
+            ))
+        }
+
         try!(writeln!(writer, "}} // {}", section));
         Ok(())
     }

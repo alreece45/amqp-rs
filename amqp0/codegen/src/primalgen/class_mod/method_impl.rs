@@ -1,4 +1,4 @@
-// Copyright 2016-7 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -56,7 +56,7 @@ impl<'a> MethodImplWriter<'a> {
                     }
 
                     labels.insert(label.clone());
-                    (name, label)
+                    (name.as_str(), label)
                 })
                 .collect()
         };
@@ -82,7 +82,7 @@ impl<'a> MethodImplWriter<'a> {
         // generic arguments: <A, B, C>
         if !self.generic_types.is_empty() {
             let generics = self.method.fields().iter()
-                .filter_map(|f| self.generic_types.get(f.var_name()))
+                .filter_map(|f| self.generic_types.get(f.var_name().as_str()))
                 .map(|s| s.as_str())
                 .collect::<Vec<_>>()
                 .join(", ");
@@ -92,7 +92,7 @@ impl<'a> MethodImplWriter<'a> {
         let arguments = self.method.fields().iter()
             .filter(|f| !f.is_reserved())
             .map(|field| {
-                let ty = if let Some(generic) = self.generic_types.get(field.var_name()) {
+                let ty = if let Some(generic) = self.generic_types.get(field.var_name().as_str()) {
                     generic
                 } else {
                     field.ty().owned_type()
@@ -108,7 +108,7 @@ impl<'a> MethodImplWriter<'a> {
         if !self.generic_types.is_empty() {
             try!(write!(writer, "\n where "));
             for field in self.method.fields() {
-                if let Some(label) = self.generic_types.get(field.var_name()) {
+                if let Some(label) = self.generic_types.get(field.var_name().as_str()) {
                     let ty = field.ty().cow_definition("a");
                     try!(writeln!(writer, "{}: Into<{}>,", label, ty));
                 }
@@ -125,7 +125,7 @@ impl<'a> MethodImplWriter<'a> {
             }
 
             let name = field.var_name();
-            if self.generic_types.contains_key(field.var_name()) {
+            if self.generic_types.contains_key(field.var_name().as_str()) {
                 try!(writeln!(writer, "{}: {}.into(),", name, name));
             }
                 else {

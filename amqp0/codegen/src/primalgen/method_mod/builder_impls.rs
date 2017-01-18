@@ -6,11 +6,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::borrow::Cow;
 use std::io;
 use inflections::Inflect;
 
-use common::{Specs, SpecMethod};
+use common::SpecMethod;
 use WriteRust;
 
 pub struct BuilderImplsWriter<'a> {
@@ -22,15 +21,11 @@ impl<'a> WriteRust for BuilderImplsWriter<'a> {
         where W: io::Write
     {
         let pascal_method = self.method.method_name().to_pascal_case();
-        let section = format!(
-            "impl<{lifetimes}T> {method}Builder<T>",
-            lifetimes = if self.method.has_lifetimes() { "'a, " } else { "" },
-            method = pascal_method,
-        );
+        let section = format!("impl<T> {}Builder<T>", pascal_method,);
 
         try!(writeln!(
             writer, "\
-            {0}\n\
+            {section}\n\
                 where T: Default + ::Encodable\n\
             {{\n\
             \n\
@@ -39,14 +34,14 @@ impl<'a> WriteRust for BuilderImplsWriter<'a> {
                 }}\n\
             }} // impl Builder (new)\n\
             \n\
-            {0}\n\
+            {section}\n\
                 where T: ::Encodable\n\
             {{\n\
                 pub fn build(self) -> T {{\n\
                     self.payload\n\
                 }}\n\
-            }} // impl Builder (build)\n",
-            section,
+            }} // {section} \n",
+            section = section,
         ));
 
         Ok(())

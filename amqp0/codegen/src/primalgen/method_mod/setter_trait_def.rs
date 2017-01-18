@@ -37,26 +37,28 @@ impl<'a> WriteRust for SetterTraitDefinitionWriter<'a> {
         let section = format!("pub trait Set{}MethodFields{}", method_pascal, lifetimes);
 
         try!(writeln!(writer, "{} {{", section));
-        for var_name in self.method.field_names() {
-            let ty = self.method.field_ty(&var_name).unwrap();
+        let fields = self.method.fields();
 
-            if ty.is_copy() {
-                try!(writeln!(
-                    writer,
-                    "fn set_{0}(&mut self, _: {1}) {{}}",
-                    var_name,
-                    ty.owned_type()
-                ));
-            }
-            else {
-                try!(writeln!(
-                    writer,
-                    "fn set_{0}<V>(&mut self, _: V) where V: Into<{1}> {{}}",
-                    var_name,
-                    ty.cow_definition("a")
-                ));
+        if !fields.is_empty() {
+            for (var_name, ty) in fields.vars() {
+                if ty.is_copy() {
+                    try!(writeln!(
+                        writer,
+                        "fn set_{0}(&mut self, _: {1}) {{}}",
+                        var_name,
+                        ty.owned_type()
+                    ));
+                } else {
+                    try!(writeln!(
+                        writer,
+                        "fn set_{0}<V>(&mut self, _: V) where V: Into<{1}> {{}}",
+                        var_name,
+                        ty.cow_definition("a")
+                    ));
+                }
             }
         }
+
         try!(writeln!(writer, "}} // {}\n", section));
 
         Ok(())

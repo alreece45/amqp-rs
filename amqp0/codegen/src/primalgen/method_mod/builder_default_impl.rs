@@ -6,11 +6,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::borrow::Cow;
 use std::io;
 use inflections::Inflect;
 
-use common::{Specs, SpecMethod};
+use common::SpecMethod;
 use WriteRust;
 
 pub struct DefaultImplWriter<'a> {
@@ -22,8 +21,8 @@ impl<'a> WriteRust for DefaultImplWriter<'a> {
         where W: io::Write
     {
         writeln!(
-            writer, "\
-            impl<T> Default for {method}Builder<T>\n\
+            writer,
+            "impl<T> Default for {method}Builder<T>\n\
                 where T: ::Encodable + Default\n\
             {{\n\
                 fn default() -> Self {{\n\

@@ -103,7 +103,9 @@ impl<'a> Default for Request<'a> {
         Request::new(::field::TableEntries::new())
     } // fn default()
 } // impl Default for Request
-
+impl<'a> ::Content<'a> for Request<'a> {
+    type Headers = Properties<'a>;
+}
 impl<'a> ::Encodable for Request<'a> {
     fn encoded_size(&self) -> usize {
         0 + ::Encodable::encoded_size(&self.meta_data)

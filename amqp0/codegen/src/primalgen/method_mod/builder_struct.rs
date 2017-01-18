@@ -30,7 +30,9 @@ impl<'a> WriteRust for BuilderStructWriter<'a> {
     {
         writeln!(
             writer,
-            "pub struct {struct_name}Builder<T: ::Encodable> {{\n\
+            "pub struct {struct_name}Builder<T>\n\
+                where T: ::Encodable\n\
+            {{\n\
                 payload: T,\n\
             }} // struct {struct_name}Builder \n\
             \n",
