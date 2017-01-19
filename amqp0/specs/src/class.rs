@@ -102,3 +102,11 @@ impl Iterator for ClassMethods {
         self.0.next()
     }
 }
+
+impl Iterator for ClassMethodFields {
+    type Item = &'static ClassMethodField;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next()
+    }
+}
