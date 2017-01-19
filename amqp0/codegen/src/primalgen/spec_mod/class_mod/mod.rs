@@ -36,15 +36,15 @@ use self::method_setter_impl::MethodSetterImplWriter;
 use self::method_struct::MethodStructWriter;
 use self::method_from_impls::MethodFromImplsWriter;
 
-pub struct ClassModuleWriter<'a> {
+pub struct SpecClassModuleWriter<'a> {
     specs: &'a Specs<'a>,
     spec: &'a Spec,
     class: &'a Class,
 }
 
-impl<'a> ClassModuleWriter<'a> {
+impl<'a> SpecClassModuleWriter<'a> {
     pub fn new(specs: &'a Specs<'a>, spec: &'a Spec, class: &'a Class) -> Self {
-        ClassModuleWriter {
+        SpecClassModuleWriter {
             specs: specs,
             spec: spec,
             class: class,
@@ -52,7 +52,7 @@ impl<'a> ClassModuleWriter<'a> {
     }
 }
 
-impl<'a> WriteRust for ClassModuleWriter<'a> {
+impl<'a> WriteRust for SpecClassModuleWriter<'a> {
     fn write_rust_to<W>(&self, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {

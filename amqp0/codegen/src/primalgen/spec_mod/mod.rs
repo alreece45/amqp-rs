@@ -6,6 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+mod class_mod;
 mod frame_payload_enum;
 mod header_enum;
 mod method_enum;
@@ -19,6 +20,8 @@ use common::Spec;
 use self::frame_payload_enum::FramePayloadEnumWriter;
 use self::header_enum::HeaderEnumWriter;
 use self::method_enum::MethodEnumWriter;
+
+pub use self::class_mod::SpecClassModuleWriter;
 
 pub struct SpecModuleWriter<'a> {
     spec: &'a Spec,
