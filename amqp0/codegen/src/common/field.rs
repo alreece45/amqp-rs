@@ -65,8 +65,9 @@ impl Field {
 
     pub fn is_reserved(&self) -> bool {
         match self.field {
-            SpecField::ClassMethod(ref method) => method.is_reserved(),
-            SpecField::Class(_) => false,
+            SpecField::ClassMethod(ref field) => field.is_reserved(),
+            SpecField::Class(ref field) => field.name() == "reserved",
+            SpecField::Manual(_, is_reserved) => is_reserved,
         }
     }
 }

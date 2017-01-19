@@ -319,7 +319,6 @@ pub trait SetDeliverMethodFields<'a> {
     fn set_priority(&mut self, _: u8) {}
     fn set_redelivered(&mut self, _: bool) {}
     fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-    fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_timestamp(&mut self, _: u64) {}
     fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -441,12 +440,6 @@ impl<'a, T> DeliverBuilder<T>
         SetDeliverMethodFields::set_reply_to(&mut self.payload, reply_to.into());
         self
     } // set_reply_to()
-    pub fn reserved<V>(mut self, reserved: V) -> Self
-        where V: Into<::std::borrow::Cow<'a, str>>
-    {
-        SetDeliverMethodFields::set_reserved(&mut self.payload, reserved.into());
-        self
-    } // set_reserved()
     pub fn routing_key<V>(mut self, routing_key: V) -> Self
         where V: Into<::std::borrow::Cow<'a, str>>
     {
@@ -607,7 +600,6 @@ pub trait SetGetOkMethodFields<'a> {
     fn set_priority(&mut self, _: u8) {}
     fn set_redelivered(&mut self, _: bool) {}
     fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-    fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_timestamp(&mut self, _: u64) {}
     fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -727,12 +719,6 @@ impl<'a, T> GetOkBuilder<T>
         SetGetOkMethodFields::set_reply_to(&mut self.payload, reply_to.into());
         self
     } // set_reply_to()
-    pub fn reserved<V>(mut self, reserved: V) -> Self
-        where V: Into<::std::borrow::Cow<'a, str>>
-    {
-        SetGetOkMethodFields::set_reserved(&mut self.payload, reserved.into());
-        self
-    } // set_reserved()
     pub fn routing_key<V>(mut self, routing_key: V) -> Self
         where V: Into<::std::borrow::Cow<'a, str>>
     {
@@ -842,7 +828,6 @@ pub trait SetPublishMethodFields<'a> {
     fn set_message_id<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_priority(&mut self, _: u8) {}
     fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-    fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_ticket(&mut self, _: u16) {}
     fn set_timestamp(&mut self, _: u64) {}
@@ -959,12 +944,6 @@ impl<'a, T> PublishBuilder<T>
         SetPublishMethodFields::set_reply_to(&mut self.payload, reply_to.into());
         self
     } // set_reply_to()
-    pub fn reserved<V>(mut self, reserved: V) -> Self
-        where V: Into<::std::borrow::Cow<'a, str>>
-    {
-        SetPublishMethodFields::set_reserved(&mut self.payload, reserved.into());
-        self
-    } // set_reserved()
     pub fn routing_key<V>(mut self, routing_key: V) -> Self
         where V: Into<::std::borrow::Cow<'a, str>>
     {
@@ -1369,7 +1348,6 @@ pub trait SetReturnMethodFields<'a> {
     fn set_reply_code(&mut self, _: u16) {}
     fn set_reply_text<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_reply_to<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
-    fn set_reserved<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_routing_key<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
     fn set_timestamp(&mut self, _: u64) {}
     fn set_ty<V>(&mut self, _: V) where V: Into<::std::borrow::Cow<'a, str>> {}
@@ -1487,12 +1465,6 @@ impl<'a, T> ReturnBuilder<T>
         SetReturnMethodFields::set_reply_to(&mut self.payload, reply_to.into());
         self
     } // set_reply_to()
-    pub fn reserved<V>(mut self, reserved: V) -> Self
-        where V: Into<::std::borrow::Cow<'a, str>>
-    {
-        SetReturnMethodFields::set_reserved(&mut self.payload, reserved.into());
-        self
-    } // set_reserved()
     pub fn routing_key<V>(mut self, routing_key: V) -> Self
         where V: Into<::std::borrow::Cow<'a, str>>
     {
