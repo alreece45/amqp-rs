@@ -6,6 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use std::collections::BTreeMap;
 use std::ops::Deref;
 
 use inflections::Inflect;
@@ -17,6 +18,8 @@ use common::{Field, DomainMapper};
 pub struct ClassMethod {
     method: &'static specs::ClassMethod,
     fields: Vec<Field>,
+    field_names: BTreeMap<&'static str, usize>,
+    field_vars: BTreeMap<String, usize>,
     constant_case: String,
     pascal_case: String,
     snake_case: String,
@@ -30,7 +33,7 @@ impl ClassMethod {
         let fields = method.fields()
             .map(|field| {
                 let domain = domain_mapper.map(field.domain());
-                Field::new(field, domain)
+                Field::from_field(field, domain)
             })
             .collect::<Vec<_>>();
 
@@ -42,10 +45,20 @@ impl ClassMethod {
         let pascal_case = method.name().to_pascal_case();
         let snake_case = method.name().to_snake_case();
         let has_usable_fields = method.fields().any(|f| !f.is_reserved());
+        let field_names = method.fields()
+            .enumerate()
+            .map(|(index, field)| (field.name(), index))
+            .collect();
+        let field_vars = fields.iter()
+            .enumerate()
+            .map(|(index, field)| ((&**field.var_name()).clone(), index))
+            .collect();
 
         ClassMethod {
             method: method,
             fields: fields,
+            field_names: field_names,
+            field_vars: field_vars,
             constant_case: constant_case,
             pascal_case: pascal_case,
             snake_case: snake_case,
@@ -60,6 +73,16 @@ impl ClassMethod {
 
     pub fn name(&self) -> &'static str {
         self.method.name()
+    }
+
+    pub fn field(&self, name: &str) -> Option<&Field> {
+        self.field_names.get(name)
+            .map(|index| &self.fields[*index])
+    }
+
+    pub fn field_by_var(&self, var_name: &str) -> Option<&Field> {
+        self.field_vars.get(var_name)
+            .map(|index| &self.fields[*index])
     }
 
     pub fn fields(&self) -> &[Field] {
