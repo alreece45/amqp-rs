@@ -6,7 +6,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-mod class_mod;
 mod class_enum;
 mod method_mod;
 mod root_mod;
@@ -23,10 +22,9 @@ use common::{Specs, Spec, Class};
 
 use specs;
 
-use self::class_mod::ClassModuleWriter;
 use self::method_mod::{MethodsModuleWriter, MethodModuleWriter};
 use self::root_mod::RootModuleWriter;
-use self::spec_mod::SpecModuleWriter;
+use self::spec_mod::{SpecModuleWriter, SpecClassModuleWriter};
 
 pub struct ModulesWriter<'a, S>
     where S: Source + 'a
@@ -92,13 +90,13 @@ impl<'a, S> ModulesWriter<'a, S>
         Ok(path)
     }
 
-    fn write_class_mod(&self, spec: &Spec, class: &Class) -> io::Result<PathBuf> {
+    fn write_spec_class_mod(&self, spec: &Spec, class: &Class) -> io::Result<PathBuf> {
         debug!("Preparing primalgen class module {}", spec.name());
         let mod_path = self.source.base_dir().join(spec.mod_name());
         let path = mod_path.join(format!("{}.rs", class.snake_case()));
 
         info!("Writing primalgen class module {} to {}", spec.name(), path.display());
-        let writer = ClassModuleWriter::new(&self.specs, spec, class);
+        let writer = SpecClassModuleWriter::new(&self.specs, spec, class);
         try!(writer.write_rust_to_path(self.source, &path));
         Ok(path)
     }
@@ -117,7 +115,7 @@ impl<'a, S> ModulesWriter<'a, S>
             for spec in &self.specs {
                 paths.push(try!(self.write_spec_mod(spec)));
                 for class in spec.classes() {
-                    paths.push(try!(self.write_class_mod(spec, class)));
+                    paths.push(try!(self.write_spec_class_mod(spec, class)));
                 }
             }
             paths
