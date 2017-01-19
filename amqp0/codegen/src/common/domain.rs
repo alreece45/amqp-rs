@@ -97,6 +97,7 @@ impl Domain {
             _ => self.owned_type(),
         }
     }
+
     pub fn owned_type(&self) -> &'static str {
         match *self {
             Domain::Bit => "bool",
@@ -127,6 +128,29 @@ impl Domain {
             Domain::ShortString | Domain::LongString | Domain::Content => Some("len"),
             Domain::Table => Some("Encodable::encoded_size"),
             _ => None,
+        }
+    }
+
+    pub fn option_type(&self) -> &'static str {
+        match *self {
+            Domain::Bit => "Option<bool>",
+            Domain::Octet => "Option<u8>",
+            Domain::Short => "Option<u16>",
+            Domain::Long => "Option<u32>",
+            Domain::LongLong | Domain::Timestamp => "Option<u64>",
+            Domain::ShortString => "Option<&str>",
+            Domain::LongString => "Option<Vec<u8>>",
+
+            // table entries and content are... present
+            Domain::Content => "Vec<u8>",
+            Domain::Table => "::field::TableEntries<'a>",
+        }
+    }
+
+    pub fn is_option_type(&self) -> bool {
+        match *self {
+            Domain::Content | Domain::Table => false,
+            _ => true,
         }
     }
 

@@ -16,6 +16,7 @@ fn field_name(spec: &SpecField) -> &'static str {
     let name = match *spec {
         SpecField::ClassMethod(method) => method.name(),
         SpecField::Class(class) => class.name(),
+        SpecField::Manual(ref name, _) => name,
     };
 
     match name {
@@ -29,6 +30,7 @@ fn field_name(spec: &SpecField) -> &'static str {
 pub enum SpecField {
     ClassMethod(&'static ClassMethodField),
     Class(&'static ClassField),
+    Manual(&'static str, bool),
 }
 
 #[derive(Debug, Clone)]
@@ -39,7 +41,15 @@ pub struct Field {
 }
 
 impl Field {
-    pub fn new<T>(field: T, ty: Domain) -> Self
+    pub fn new(name: &'static str, ty: Domain, is_reserved: bool) -> Self {
+        Field {
+            field: SpecField::Manual(name, is_reserved),
+            var_name: Rc::new(name.to_snake_case()),
+            ty: ty,
+        }
+    }
+
+    pub fn from_field<T>(field: T, ty: Domain) -> Self
         where T: Into<SpecField>
     {
         let field = field.into();
@@ -61,6 +71,17 @@ impl Field {
 
     pub fn ty(&self) -> &Domain {
         &self.ty
+    }
+
+    pub fn is_optional_property(&self) -> bool {
+        if self.ty == Domain::Content || self.ty == Domain::Table {
+            return false;
+        }
+
+        match self.field {
+            SpecField::Class(_) => true,
+            _ => true,
+        }
     }
 
     pub fn is_reserved(&self) -> bool {

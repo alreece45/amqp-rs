@@ -104,10 +104,7 @@ impl Class {
         self.fields.borrow_with(|| {
             let domain_mapper = DomainMapper::from_spec(self.spec);
             self.class.fields()
-                .map(|field| {
-                    let domain = domain_mapper.map(field.domain());
-                    Field::new(field, domain)
-                })
+                .map(|field| Field::from_field(field, domain_mapper.map(field.domain())))
                 .collect::<Vec<_>>()
         })
     }

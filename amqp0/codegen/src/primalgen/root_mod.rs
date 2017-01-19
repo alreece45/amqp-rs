@@ -27,7 +27,7 @@ impl<'a> WriteRust for RootModuleWriter<'a> {
         // ensure that class ids remain consistent across the specs
         self.specs.assert_name_indexes_consistent();
 
-        try!(writeln!(writer, "\npub mod method;"));
+        try!(writeln!(writer, "\npub mod method;\npub mod message;"));
         for spec in self.specs {
             try!(writeln!(writer, "pub mod {};", spec.mod_name()));
         }

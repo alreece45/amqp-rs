@@ -8,6 +8,7 @@
 
 mod class_enum;
 mod method_mod;
+mod message_mod;
 mod root_mod;
 mod protocol_trait;
 mod spec_mod;
@@ -22,6 +23,7 @@ use common::{Specs, Spec, Class};
 
 use specs;
 
+use self::message_mod::MessageModuleWriter;
 use self::method_mod::{MethodsModuleWriter, MethodModuleWriter};
 use self::root_mod::RootModuleWriter;
 use self::spec_mod::{SpecModuleWriter, SpecClassModuleWriter};
@@ -50,6 +52,16 @@ impl<'a, S> ModulesWriter<'a, S>
         let writer = RootModuleWriter::new(&self.specs);
 
         info!("Writing primalgen root module to {}", path.display());
+        try!(writer.write_rust_to_path(self.source, &path));
+        Ok(path)
+    }
+
+    fn write_message_mod(&self) -> io::Result<PathBuf> {
+        debug!("Preparing primalgen message module");
+        let path = self.source.base_dir().join("message.rs");
+        let writer = MessageModuleWriter::new(&self.specs);
+
+        info!("Writing primalgen message module to {}", path.display());
         try!(writer.write_rust_to_path(self.source, &path));
         Ok(path)
     }
@@ -107,7 +119,9 @@ impl<'a, S> ModulesWriter<'a, S>
             let mut paths = Vec::with_capacity(2 + num_classes);
 
             paths.push(try!(self.write_root_mod()));
+            paths.push(try!(self.write_message_mod()));
             paths.push(try!(self.write_method_mod()));
+
             for class_name in self.specs.class_names() {
                 paths.push(try!(self.write_method_class_mod(class_name)));
             }

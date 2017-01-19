@@ -7,6 +7,7 @@
 // EDITORS BEWARE: Your modifications may be overridden or removed.
 
 pub mod method;
+pub mod message;
 pub mod amqp9_1;
 pub mod amqp9_0;
 pub mod amqp8_0;
