@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -7,25 +7,24 @@
 // except according to those terms.
 
 use std::borrow::Cow;
-use phf::OrderedMap;
 
 #[derive(Debug, Clone)]
 pub struct DomainMapper {
-    domains: &'static OrderedMap<&'static str, &'static str>,
+    spec: &'static ::specs::Spec,
 }
 
 impl DomainMapper {
     pub fn from_spec(spec: &'static ::specs::Spec) -> Self {
         DomainMapper {
-            domains: spec.domains()
+            spec: spec
         }
     }
 
     pub fn map(&self, domain: &str) -> Domain {
         let mut ty = domain;
-        while let Some(mapping) = self.domains.get(ty) {
+        while let Some(mapping) = self.spec.domain(ty) {
             // detect identity mappings
-            if ty == *mapping {
+            if ty == mapping {
                 break;
             }
             ty = mapping;

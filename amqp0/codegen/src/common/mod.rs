@@ -16,8 +16,8 @@ mod specs;
 
 use inflections::Inflect;
 
-pub use self::class::{Class, ClassField};
-pub use self::class_method::{ClassMethod, ClassMethodField};
+pub use self::class::Class;
+pub use self::class_method::ClassMethod;
 pub use self::domain::{Domain, DomainMapper};
 pub use self::field::Field;
 pub use self::fields::Fields;

@@ -7,23 +7,20 @@
 // except according to those terms.
 
 use std::collections::{btree_map, BTreeMap};
-use std::rc::Rc;
 
-use super::field::BasicField;
-use common::{Domain, Field};
-
-pub struct FieldVars<'a>(btree_map::Values<'a, &'a str, (Rc<String>, Domain)>);
+use common::Field;
 
 #[derive(Debug)]
 pub struct Fields<'a> {
-    fields: BTreeMap<&'a str, (Rc<String>, Domain)>,
+    fields: BTreeMap<&'a str, Field>,
     has_lifetimes: bool,
 }
 
+pub struct Iter<'a>(btree_map::Values<'a, &'a str, Field>);
+
 impl<'a> Fields<'a> {
-    pub fn new<'b, I, T>(iter: I) -> Self
-        where I: IntoIterator<Item = &'b Field<T>>,
-              T: BasicField + 'b
+    pub fn new<'b, I>(iter: I) -> Self
+        where I: IntoIterator<Item = &'b Field>
     {
         let mut fields = Fields {
             fields: BTreeMap::new(),
@@ -33,16 +30,15 @@ impl<'a> Fields<'a> {
         fields
     }
 
-    pub fn extend<'b, I, T>(&mut self, fields: I)
-        where I: IntoIterator<Item = &'b Field<T>>,
-            T: BasicField + 'b
+    pub fn extend<'b, I>(&mut self, fields: I)
+        where I: IntoIterator<Item = &'b Field>,
     {
         for field in fields {
             let ty = field.ty();
 
             match self.fields.get(field.name()) {
-                Some(&(_, ref ty)) if ty == ty => continue,
-                Some(&(_, ref ty)) => panic!(
+                Some(ref field) if field.ty() == ty => continue,
+                Some(ref field) => panic!(
                     "Conflicting field types for {} ({:?} and {:?})",
                     field.name(), ty, field.ty()
                 ),
@@ -53,7 +49,7 @@ impl<'a> Fields<'a> {
                 self.has_lifetimes = true;
             }
 
-            self.fields.insert(field.name(), (field.var_name().clone(), ty.clone()));
+            self.fields.insert(field.name(), field.clone());
         }
     }
 
@@ -65,15 +61,23 @@ impl<'a> Fields<'a> {
         self.has_lifetimes
     }
 
-    pub fn vars(&self) -> FieldVars {
-        FieldVars(self.fields.values())
+    pub fn iter(&self) -> Iter {
+        Iter(self.fields.values())
     }
 }
 
-impl<'a> Iterator for FieldVars<'a> {
-    type Item = (&'a str, &'a Domain);
+impl<'a> IntoIterator for &'a Fields<'a> {
+    type Item = &'a Field;
+    type IntoIter = Iter<'a>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a> Iterator for Iter<'a> {
+    type Item = &'a Field;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.0.next().map(|&(ref name, ref ty)| (name.as_str(), ty))
+        self.0.next()
     }
 }

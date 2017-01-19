@@ -114,7 +114,7 @@ impl<'a> Specs<'a> {
     pub fn common_frame_types(&self) -> HashMap<&str, u8> {
         let mut frame_types = HashMap::new();
         for spec in self.specs.iter() {
-            for frame_type in spec.frame_types().values() {
+            for frame_type in spec.frame_types() {
                 let entry = frame_types.entry(frame_type.name()).or_insert((1, frame_type.value() as u8));
                 entry.0 += 1;
             }

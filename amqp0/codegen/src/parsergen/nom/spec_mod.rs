@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -78,7 +78,7 @@ impl<'a> SpecModuleWriter<'a> {
         };
 
         let mut has_parent = false;
-        for ty in self.spec.frame_types().values() {
+        for ty in self.spec.frame_types() {
             let name = frame_type_name(ty.name());
 
             // FIXME: implement header parsing
@@ -245,10 +245,8 @@ impl<'a> SpecModuleWriter<'a> {
     fn write_class_header_parser<W>(&self, class: &Class, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let domain_mapper = self.spec.domain_mapper();
         let has_lifetimes = class.fields().iter()
-            .map(|field| domain_mapper.map(field.domain()))
-            .any(|domain| !domain.is_copy());
+            .any(|field| !field.ty().is_copy());
 
         let lifetimes = if has_lifetimes { "<'a>" } else { "" };
 
@@ -302,12 +300,10 @@ impl<'a> SpecModuleWriter<'a> {
     fn write_class_method_parser<W>(&self, class: &Class, writer: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        let domain_mapper = self.spec.domain_mapper();
         let has_lifetimes = class.methods()
             .flat_map(|method| method.fields())
             .filter(|field| !field.is_reserved())
-            .map(|field| domain_mapper.map(field.domain()))
-            .any(|domain| !domain.is_copy());
+            .any(|domain| !domain.ty().is_copy());
 
         let lifetimes = if has_lifetimes { "<'a>" } else { "" };
 

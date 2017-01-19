@@ -8,7 +8,7 @@
 
 use std::io;
 
-use common::{Class, ClassField, Domain};
+use common::{Class, Field, Domain};
 use WriteRust;
 
 impl<'a> WriteRust for EncodableHeaderImplWriter<'a> {
@@ -60,7 +60,7 @@ impl<'a> EncodableHeaderImplWriter<'a> {
         }
     }
 
-    fn write_bit_fields<W>(&self, writer: &mut W, fields: &mut Vec<&ClassField>) -> io::Result<()>
+    fn write_bit_fields<W>(&self, writer: &mut W, fields: &mut Vec<&Field>) -> io::Result<()>
         where W: io::Write
     {
         let num_padding_bytes = if fields.len() % 8 != 0 { 1 } else { 0 };

@@ -43,7 +43,8 @@ impl<'a> WriteRust for BuilderSetterImplWriter<'a> {
             lifetimes = if self.method.has_lifetimes() { "<'a>" } else { "" },
         ));
 
-        for (var_name, ty) in self.method.fields().vars() {
+        for field in self.method.fields() {
+            let (var_name, ty) = (field.var_name(), field.ty());
             let (ty, generics, bounds, into) = if ty.is_copy() {
                 (ty.owned_type(), "", "". into(), "")
             } else {

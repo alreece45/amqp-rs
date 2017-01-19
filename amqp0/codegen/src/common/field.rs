@@ -6,46 +6,53 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::ops::Deref;
 use std::rc::Rc;
 use inflections::Inflect;
 
 use specs::{ClassField, ClassMethodField};
 use common::domain::Domain;
 
+fn field_name(spec: &SpecField) -> &'static str {
+    let name = match *spec {
+        SpecField::ClassMethod(method) => method.name(),
+        SpecField::Class(class) => class.name(),
+    };
+
+    match name {
+        "type" => "ty",
+        "nowait" => "no-wait",
+        name => name,
+    }
+}
+
 #[derive(Debug, Clone)]
-pub struct Field<T>
-    where T: BasicField
-{
-    field: T,
-    name: &'static str,
+pub enum SpecField {
+    ClassMethod(&'static ClassMethodField),
+    Class(&'static ClassField),
+}
+
+#[derive(Debug, Clone)]
+pub struct Field {
+    field: SpecField,
     var_name: Rc<String>,
     ty: Domain,
 }
 
-impl<T> Field<T>
-    where T: BasicField
-{
-    pub fn from_amqp0_field(
-        field: T,
-        ty: Domain
-    ) -> Self {
-        let name = match field.name() {
-            "type" => "ty".into(),
-            "nowait" => "no-wait",
-            name => name,
-        };
-
+impl Field {
+    pub fn new<T>(field: T, ty: Domain) -> Self
+        where T: Into<SpecField>
+    {
+        let field = field.into();
+        let name = field_name(&field);
         Field {
             field: field,
-            name: name,
             var_name: Rc::new(name.to_snake_case()),
             ty: ty,
         }
     }
 
     pub fn name(&self) -> &'static str {
-        self.name
+        field_name(&self.field)
     }
 
     pub fn var_name(&self) -> &Rc<String> {
@@ -55,30 +62,23 @@ impl<T> Field<T>
     pub fn ty(&self) -> &Domain {
         &self.ty
     }
-}
 
-impl<T> Deref for Field<T>
-    where T: BasicField
-{
-    type Target = T;
-
-    fn deref(&self) -> &Self::Target {
-        &self.field
+    pub fn is_reserved(&self) -> bool {
+        match self.field {
+            SpecField::ClassMethod(ref method) => method.is_reserved(),
+            SpecField::Class(_) => false,
+        }
     }
 }
 
-pub trait BasicField {
-    fn name(&self) -> &'static str;
-}
-
-impl BasicField for ClassMethodField {
-    fn name(&self) -> &'static str {
-        self.name()
+impl From<&'static ClassField> for SpecField {
+    fn from(field: &'static ClassField) -> Self {
+        SpecField::Class(field)
     }
 }
 
-impl BasicField for ClassField {
-    fn name(&self) -> &'static str {
-        self.name()
+impl From<&'static ClassMethodField> for SpecField {
+    fn from(field: &'static ClassMethodField) -> Self {
+        SpecField::ClassMethod(field)
     }
 }

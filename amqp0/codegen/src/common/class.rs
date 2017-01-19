@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -17,9 +17,7 @@ use lazycell::LazyCell;
 
 use specs;
 
-use common::{self, ClassMethod, DomainMapper};
-
-pub type ClassField = common::Field<specs::ClassField>;
+use common::{ClassMethod, Field, DomainMapper};
 
 #[derive(Clone)]
 pub struct Class {
@@ -30,7 +28,7 @@ pub struct Class {
     snake_case: Rc<LazyCell<String>>,
     pascal_case: Rc<LazyCell<String>>,
 
-    fields: Rc<LazyCell<Vec<ClassField>>>,
+    fields: Rc<LazyCell<Vec<Field>>>,
     methods: Rc<LazyCell<BTreeMap<&'static str, ClassMethod>>>,
     method_indexes: Rc<LazyCell<BTreeMap<u16, Vec<&'static str>>>>,
 
@@ -67,7 +65,7 @@ impl Class {
 
     fn method_map(&self) -> &BTreeMap<&str, ClassMethod> {
         self.methods.borrow_with(|| {
-            self.class.methods().iter()
+            self.class.methods()
                 .map(|method| (method.name(), ClassMethod::new(self.spec, method)))
                 .collect::<_>()
         })
@@ -75,7 +73,7 @@ impl Class {
 
     fn method_index_map(&self) -> &BTreeMap<u16, Vec<&str>> {
         self.method_indexes.borrow_with(|| {
-            self.class.methods().iter()
+            self.class.methods()
                 .fold(HashMap::new(), |mut map, method| {
                     map.entry(method.index())
                         .or_insert_with(BTreeSet::new)
@@ -102,14 +100,13 @@ impl Class {
         MethodIndexes(self.method_index_map().iter())
     }
 
-    pub fn fields(&self) -> &[ClassField] {
+    pub fn fields(&self) -> &[Field] {
         self.fields.borrow_with(|| {
             let domain_mapper = DomainMapper::from_spec(self.spec);
-            self.class.fields().iter()
-                .cloned()
+            self.class.fields()
                 .map(|field| {
                     let domain = domain_mapper.map(field.domain());
-                    ClassField::from_amqp0_field(field, domain)
+                    Field::new(field, domain)
                 })
                 .collect::<Vec<_>>()
         })

@@ -43,8 +43,9 @@ impl WriteRust for FramePayloadEnumWriter {
 
 impl FramePayloadEnumWriter {
     pub fn new(spec: &Spec) -> Self {
-        let frame_types = spec.frame_types().keys()
-            .map(|name| {
+        let frame_types = spec.frame_types()
+            .map(|frame_type| {
+                let name = frame_type.name();
                 let name = if name.starts_with("frame") { &name[6..] } else { name };
                 ClassModFrameType::new(name.to_pascal_case())
             })

@@ -40,7 +40,8 @@ impl<'a> WriteRust for SetterTraitDefinitionWriter<'a> {
         let fields = self.method.fields();
 
         if !fields.is_empty() {
-            for (var_name, ty) in fields.vars() {
+            for field in fields {
+                let (var_name, ty) = (field.var_name(), field.ty());
                 if ty.is_copy() {
                     try!(writeln!(
                         writer,

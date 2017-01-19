@@ -63,7 +63,7 @@ impl Spec {
 
     fn class_name_map(&self) -> &BTreeMap<&'static str, Class> {
         self.class_map.borrow_with(|| {
-            self.spec.classes().values()
+            self.spec.classes()
                 .map(|class| (class.name(), Class::new(self.spec, class)))
                 .collect::<BTreeMap<_, _>>()
         })
@@ -71,11 +71,11 @@ impl Spec {
 
     fn class_index_map<'a>(&'a self) -> &BTreeMap<u16, Vec<&'static str>> {
         self.class_indexes.borrow_with(|| {
-            self.spec.classes().entries()
-                .fold(HashMap::new(), |mut map, (name, class)| {
+            self.spec.classes()
+                .fold(HashMap::new(), |mut map, class| {
                     map.entry(class.index())
                         .or_insert_with(BTreeSet::new)
-                        .insert(*name);
+                        .insert(class.name());
                     map
                 })
                 .into_iter()

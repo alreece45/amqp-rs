@@ -11,7 +11,7 @@ inflections = "1.0.0"
 log = "0.3.6"
 lazycell = "0.5.0"
 phf = "0.7.20"
-amqp0-specs = { version = "0.0.6", path = "../specs" }
+amqp0-specs = { version = "0.0.7", path = "../specs" }
 
 [dependencies.clippy]
 version = "*"

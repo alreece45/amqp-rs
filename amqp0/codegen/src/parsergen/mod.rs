@@ -10,11 +10,10 @@ pub mod nom;
 
 use std::borrow::Cow;
 use std::mem;
-use specs::ClassMethodField;
 
 use common::{self, Domain};
 
-type Field = common::Field<ClassMethodField>;
+type Field = common::Field;
 
 ///
 /// The values for multiple fields can be packed into one byte.

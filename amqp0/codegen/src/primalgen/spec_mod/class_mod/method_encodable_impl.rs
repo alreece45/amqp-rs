@@ -8,7 +8,7 @@
 
 use std::io;
 
-use common::{Domain, ClassMethod, ClassMethodField};
+use common::{Domain, ClassMethod, Field};
 use WriteRust;
 
 impl<'a> WriteRust for EncodableMethodImplWriter<'a> {
@@ -58,7 +58,7 @@ impl<'a> EncodableMethodImplWriter<'a> {
         }
     }
 
-    fn write_bit_fields<W>(&self, writer: &mut W, fields: &mut Vec<&ClassMethodField>) -> io::Result<()>
+    fn write_bit_fields<W>(&self, writer: &mut W, fields: &mut Vec<&Field>) -> io::Result<()>
         where W: io::Write
     {
         let has_usable_fields = fields.iter().any(|field| !field.is_reserved());

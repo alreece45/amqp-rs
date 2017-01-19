@@ -1,4 +1,4 @@
-// Copyright 2016 Alexander Reece
+// Copyright 2016-17 Alexander Reece
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -11,14 +11,12 @@ use std::ops::Deref;
 use inflections::Inflect;
 use specs;
 
-use common::{self, DomainMapper};
-
-pub type ClassMethodField = common::Field<specs::ClassMethodField>;
+use common::{Field, DomainMapper};
 
 #[derive(Debug, Clone)]
 pub struct ClassMethod {
     method: &'static specs::ClassMethod,
-    fields: Vec<ClassMethodField>,
+    fields: Vec<Field>,
     constant_case: String,
     pascal_case: String,
     snake_case: String,
@@ -29,11 +27,10 @@ pub struct ClassMethod {
 impl ClassMethod {
     pub fn new(spec: &'static specs::Spec, method: &'static specs::ClassMethod) -> Self {
         let domain_mapper = DomainMapper::from_spec(spec);
-        let fields = method.fields().iter()
-            .cloned()
+        let fields = method.fields()
             .map(|field| {
                 let domain = domain_mapper.map(field.domain());
-                ClassMethodField::from_amqp0_field(field, domain)
+                Field::new(field, domain)
             })
             .collect::<Vec<_>>();
 
@@ -44,7 +41,7 @@ impl ClassMethod {
         let constant_case = method.name().to_constant_case();
         let pascal_case = method.name().to_pascal_case();
         let snake_case = method.name().to_snake_case();
-        let has_usable_fields = method.fields().iter().any(|f| !f.is_reserved());
+        let has_usable_fields = method.fields().any(|f| !f.is_reserved());
 
         ClassMethod {
             method: method,
@@ -65,7 +62,7 @@ impl ClassMethod {
         self.method.name()
     }
 
-    pub fn fields(&self) -> &[ClassMethodField] {
+    pub fn fields(&self) -> &[Field] {
         &self.fields
     }
 
