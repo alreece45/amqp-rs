@@ -24,7 +24,7 @@ use common::{Specs, Spec, Class};
 use specs;
 
 use self::class_mod::ClassModuleWriter;
-use self::method_mod::MethodModuleWriter;
+use self::method_mod::{MethodsModuleWriter, MethodModuleWriter};
 use self::root_mod::RootModuleWriter;
 use self::spec_mod::SpecModuleWriter;
 
@@ -56,12 +56,23 @@ impl<'a, S> ModulesWriter<'a, S>
         Ok(path)
     }
 
-    fn write_method_mods(&self) -> io::Result<PathBuf> {
-        debug!("Preparing primalgen methods module");
-        let path = self.source.base_dir().join("method.rs");
-        let writer = MethodModuleWriter::new(&self.specs);
+    fn write_method_mod(&self) -> io::Result<PathBuf> {
+        debug!("Preparing primalgen method module");
+        let path = self.source.base_dir().join("method/mod.rs");
+        let writer = MethodsModuleWriter::new(&self.specs);
+        let _ = fs::remove_file(self.source.base_dir().join("method.rs"));
 
         info!("Writing primalgen methods module to {}", path.display());
+        try!(writer.write_rust_to_path(self.source, &path));
+        Ok(path)
+    }
+
+    fn write_method_class_mod(&self, class_name: &'a str) -> io::Result<PathBuf> {
+        debug!("Preparing primalgen methods class {} module", class_name);
+        let path = self.source.base_dir().join(format!("method/{}.rs", class_name));
+        let writer = MethodModuleWriter::new(&self.specs, class_name);
+
+        info!("Writing primalgen method class ({}) to {}", class_name, &path.display());
         try!(writer.write_rust_to_path(self.source, &path));
         Ok(path)
     }
@@ -98,7 +109,10 @@ impl<'a, S> ModulesWriter<'a, S>
             let mut paths = Vec::with_capacity(2 + num_classes);
 
             paths.push(try!(self.write_root_mod()));
-            paths.push(try!(self.write_method_mods()));
+            paths.push(try!(self.write_method_mod()));
+            for class_name in self.specs.class_names() {
+                paths.push(try!(self.write_method_class_mod(class_name)));
+            }
 
             for spec in &self.specs {
                 paths.push(try!(self.write_spec_mod(spec)));
