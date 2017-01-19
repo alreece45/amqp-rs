@@ -25,6 +25,9 @@ impl Spec {
     pub fn constants(&self) -> Constants {
         Constants(self.constants.values())
     }
+    pub fn domain(&self, domain: &str) -> Option<&str> {
+        self.domains.get(domain).map(|mapping| *mapping)
+    }
     pub fn domains(&self) -> Domains {
         Domains(self.domains.entries())
     }
