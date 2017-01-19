@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 fn main() {
     let mut classes = BTreeMap::new();
     for spec in amqp0::specs().iter() {
-        for class in spec.classes().values() {
+        for class in spec.classes() {
             let entry = classes.entry(class.name())
                 .or_insert((1, class.index()));
             entry.0 += 1;
