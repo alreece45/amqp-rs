@@ -34,6 +34,10 @@ impl<'a> Fields<'a> {
         where I: IntoIterator<Item = &'b Field>,
     {
         for field in fields {
+            if field.is_reserved() {
+                continue;
+            }
+
             let ty = field.ty();
 
             match self.fields.get(field.name()) {
